@@ -17,7 +17,7 @@ Follow instructions in .env.example in each app
 #### With docker
 In `backend-nest` execute `docker-compose -f .\docker-compose.dev.yaml up -d`.
 
-ATTTENTION: Port 3307 and 9999 must not be in use.
+ATTTENTION: Port 3307 and 7777 must not be in use.
 
 ### Nest CLI or Vue CLI for development
 

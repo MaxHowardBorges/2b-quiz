@@ -6,17 +6,23 @@ services:
   db:
     image: mariadb
     restart: always
+    container_name: mariadb
     environment:
-      MARIADB_ROOT_PASSWORD: test
-      MARIADB_ROOT_HOST: test
-      MARIADB_DATABASE : sae5
+      MYSQL_USER: adminer
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: sae5
+      MYSQL_ROOT_PASSWORD: example
+
     volumes:
       - ./db:/var/lib/mysql
     ports:
-      - "3307:3307"
+      - 3307:3306
 
   adminer:
     image: adminer
+    container_name: adminer
     restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
     ports:
-      - 9999:9999
+      - 7777:8080
