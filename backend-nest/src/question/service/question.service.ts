@@ -20,4 +20,8 @@ export class QuestionService {
   async findAllWithQuestion(): Promise<Question[]> {
     return this.questionRepository.find({ relations: ['answers'] });
   }
+
+  async findOne(idQuestion: number): Promise<Question>{
+    return this.questionRepository.findOne({ where:{id:idQuestion} })
+  }
 }
