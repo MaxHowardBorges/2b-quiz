@@ -4,6 +4,7 @@
     <router-link to="/about">About</router-link> |
     <router-link to="/question">Question</router-link> |
     <router-link to="/findesession">Fin de Session</router-link> |
+    <router-link to="/attenteparticipant">En Attente de Participant</router-link> |
 
   </nav>
   <router-view/>
