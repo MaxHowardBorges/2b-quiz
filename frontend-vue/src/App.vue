@@ -12,6 +12,8 @@
       En Attente de Participant
     </router-link>
     |
+    <router-link to="/menuenseignant">Menu enseignant</router-link>
+    |
   </nav>
   <router-view />
 </template>
@@ -55,4 +57,5 @@
     color: #42b983;
   }
 </style>
-<script setup></script>
+<script setup>
+</script>
