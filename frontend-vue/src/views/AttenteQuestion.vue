@@ -29,15 +29,6 @@
 </script>
 
 <style scoped>
-  .join-session {
-    text-align: center;
-    margin-top: 20px;
-    background-color: #fff; /* Fond blanc */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
   .join-session h1 {
     font-size: 24px;
     margin-bottom: 20px;
@@ -71,10 +62,6 @@
 
   button:hover {
     background-color: #ffa500; /* Jaune foncé au survol */
-  }
-
-  .language-switch {
-    text-align: right;
   }
 
   .language-switch button {
