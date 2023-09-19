@@ -8,8 +8,8 @@
       </div>
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
       <div class="actions">
-        <button @click="cancelSession">Annuler la session</button>
-        <button @click="startSession"><router-link to="/question">Lancer la session</router-link></button>
+        <router-link to="/menuenseignant"><btn nomB="Annuler la session"/></router-link>
+        <router-link to="/question"><btn nomB="Lancer la session" /></router-link>
       </div>
     </div>
   </div>
@@ -55,18 +55,9 @@
     color: #333; /* Couleur de texte normale */
   }
 
-  button {
-    background-color: #FFD700; /* Jaune */
-    color: #fff; /* Texte blanc */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-  }
 
-  button:hover {
-    background-color: #FFA500; /* Jaune foncé au survol */
-  }
 </style>
+
+<script setup>
+import btn from '@/components/BoutonComp.vue';
+</script>

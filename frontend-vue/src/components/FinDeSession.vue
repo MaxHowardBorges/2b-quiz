@@ -2,14 +2,17 @@
   <div class="end-session-page">
     <h1>C'est la fin de la session !</h1>
     <div class="actions">
-      <button @click="relaunchSession">Relancer une session</button>
-      <button @click="returnToMenu">Retourner au menu</button>
+      <router-link to="/attenteparticipant"><btn nomB="Relancer une session" /></router-link>
+      <router-link to="/menuenseignant"><btn nomB="Retourner au menu" /></router-link>
     </div>
   </div>
 </template>
 
 <script>
+  import btn from '@/components/BoutonComp.vue';
+
   export default {
+    components: { btn },
     methods: {
       relaunchSession() {
         // Logique pour relancer une nouvelle session
@@ -43,18 +46,5 @@
     margin-top: 10px;
   }
 
-  button {
-    background-color: #FFD700; /* Jaune */
-    color: #fff; /* Texte blanc */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-  }
 
-  button:hover {
-    background-color: #FFA500; /* Jaune foncé au survol */
-  }
 </style>

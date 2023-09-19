@@ -1,13 +1,18 @@
 <template>
   <div class="teacher-interface">
     <h1>Menu enseignant</h1>
-    <button @click="createSession"><router-link to="/attenteparticipant">Créer une session</router-link></button>
-    <button @click="viewHistory"><router-link to="/">Historique de sessions</router-link></button>
+
+    <router-link to="/attenteparticipant"><btn nomB="Créer une session" /></router-link>
+    <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
+
   </div>
 </template>
 
 <script>
+  import btn from '@/components/BoutonComp.vue';
+
   export default {
+    components: { btn },
     methods: {
       createSession() {
         // Logique pour créer une nouvelle session
@@ -37,18 +42,4 @@
     color: #FFD700; /* Couleur jaune */
   }
 
-  button {
-    background-color: #FFD700; /* Jaune */
-    color: #fff; /* Texte blanc */
-    padding: 15px 30px;
-    border: none;
-    border-radius: 4px;
-    font-size: 20px;
-    margin: 10px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #FFA500; /* Jaune foncé au survol */
-  }
 </style>
