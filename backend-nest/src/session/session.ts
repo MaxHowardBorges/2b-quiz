@@ -5,13 +5,14 @@ import { Question } from '../question/entity/question.entity';
 export class Session {
   id: string;
 
-  questionList: Question[];
+  private questionList: Question[];
 
   questionNumber: number;
 
   connectedUsers: string[];
 
-  constructor(id) {
+  constructor(id, questionList) {
     this.id = id;
+    this.questionList = questionList;
   }
 }
