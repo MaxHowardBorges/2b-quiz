@@ -63,7 +63,6 @@
     border-radius: 8px;
     margin: 8px 0;
     font-size: 15px;
-    border: none;
     cursor: pointer;
     width: 100%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
