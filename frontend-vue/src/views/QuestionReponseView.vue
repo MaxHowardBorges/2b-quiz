@@ -11,7 +11,7 @@
   <btn nomB="Question suivante" />
   <div class="btnD">
     <div class="button-group">
-      <btn nomB="Arrêter la session" />
+      <router-link to="/findesession"><btn nomB="Arrêter la session" /></router-link>
       <btn nomB="Changer la langue" />
     </div>
   </div>
