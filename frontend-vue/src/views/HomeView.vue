@@ -5,9 +5,20 @@
       type="text"
       placeholder="ID de la Session"
       style="border: 1px solid #000000" />
-    <input id="submit1" type="submit" value="Join" />
+    <input @click="joinSession" id="submit1" type="submit" value="Join" />
   </form>
 </template>
+
+<script>
+  export default {
+    methods: {
+      joinSession() {
+        // Logique pour annuler la session
+        console.log('Session joined');
+      },
+    },
+  };
+</script>
 
 <style scoped>
   body {
