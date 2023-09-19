@@ -5,7 +5,7 @@ import { SessionService } from './session.service';
 
 @Controller('session')
 export class SessionController {
-  private sessionMap: Map<string, Session>;
+  private sessionMap: Map<string, Session> = new Map();
   constructor(
     private questionService: QuestionService,
     private sessionService: SessionService,
@@ -13,6 +13,8 @@ export class SessionController {
 
   @Post('/create')
   createSession(): string {
-    return this.sessionService.createSession();
+    let idSession = this.sessionService.createSession();
+    !this.sessionMap.has(idSession) ? this.sessionMap.set(idSession,new Session()) : false;
+    return idSession;
   }
 }
