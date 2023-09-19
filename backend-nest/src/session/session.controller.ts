@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Session } from './session';
 import { QuestionService } from '../question/service/question.service';
 import { SessionService } from './session.service';
@@ -12,9 +12,23 @@ export class SessionController {
   ) {}
 
   @Post('/create')
-  createSession(): string {
-    let idSession = this.sessionService.createSession();
-    !this.sessionMap.has(idSession) ? this.sessionMap.set(idSession,new Session()) : false;
-    return idSession;
+  createSession(): Session {
+    let idSession = '000000';
+    do {
+      idSession = this.sessionService.createSession();
+    } while (this.sessionMap.has(idSession));
+
+    this.sessionMap.set(idSession, new Session(idSession));
+    return this.sessionMap.get(idSession);
+  }
+
+  @Post('/start')
+  startSession(@Body() idSession: { id: string }): boolean {
+    return this.sessionMap.has(idSession.id);
+  }
+
+  @Get('/list')
+  getMap() {
+    return [...this.sessionMap];
   }
 }

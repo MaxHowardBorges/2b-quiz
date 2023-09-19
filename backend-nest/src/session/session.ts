@@ -10,4 +10,8 @@ export class Session {
   questionNumber: number;
 
   connectedUsers: string[];
+
+  constructor(id) {
+    this.id = id;
+  }
 }
