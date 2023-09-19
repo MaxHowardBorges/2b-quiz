@@ -1,4 +1,4 @@
-<script >
+<script>
   export default {
     name: 'QuestionComp',
     props: {
@@ -8,20 +8,19 @@
 </script>
 
 <template>
-
-  <div>{{quest}}</div>
-
+  <div>
+    <b>{{ quest }}</b>
+  </div>
 </template>
 
 <style scoped>
-
-  *{
+  div {
     text-align: center;
-    max-width: 800px;
-    border: 3px solid;
+    max-width: 620px;
+    min-width: 75px;
+    border: 4px solid #f6c70a;
     font-size: 18px;
     font-size-adjust: initial;
+    background-color: #fcfcfc;
   }
-
-
 </style>

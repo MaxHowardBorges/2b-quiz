@@ -1,4 +1,4 @@
-<script >
+<script>
   export default {
     name: 'ReponseComp',
     props: {
@@ -8,20 +8,18 @@
 </script>
 
 <template>
-
-  <div>{{reponseQuest}}</div>
-
+  <button type="button">{{ reponseQuest }}</button>
 </template>
 
 <style scoped>
-
-  *{
-    text-align: center;
-    max-width: 100px;
-    border: 3px solid;
-    font-size: 18px;
-    font-size-adjust: initial;
+  button {
+    min-height: 20px;
+    border-radius: 4px;
+    background-color: lightskyblue;
+    padding: 16px 32px;
+    margin: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 125px;
   }
-
-
 </style>
