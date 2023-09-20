@@ -2,7 +2,7 @@
   <div class="home">
     <h2><b>Question</b></h2>
     <QuestionComp
-      quest="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ? " />
+      :quest= question />
   </div>
   <div class="reponseQ">
     <BlockReponse />
@@ -27,6 +27,11 @@
       QuestionComp,
       BlockReponse,
       btn,
+    },
+    data() {
+      return {
+        question : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ?"
+      };
     },
   };
 </script>
