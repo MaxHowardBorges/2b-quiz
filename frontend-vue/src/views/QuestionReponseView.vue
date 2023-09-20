@@ -43,6 +43,11 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    min-height: 250px;
+  }
+
+  div{
+    min-widht: 50px;
   }
 
   QuestionComp {
@@ -59,6 +64,7 @@
     border: 4px solid #f6c70a;
     margin: 20px auto;
     background-color: #fcfcfc;
+    min-width: 150px;
   }
 
   .btnD {
@@ -66,6 +72,7 @@
     display: flex;
     justify-content: flex-end; /* Align children to the right */
     align-items: center; /* Vertically center children */
+
   }
 
 </style>

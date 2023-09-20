@@ -19,9 +19,13 @@
     border-radius: 4px;
     padding: 16px 32px;
     margin: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 125px;
+    text-overflow: ellipsis;
+    width: auto;
+    height: auto;
+    max-width: 300px;
+    white-space: normal;
+    overflow: auto;
+
   }
 
   button:active {

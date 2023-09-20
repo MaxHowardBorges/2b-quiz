@@ -19,6 +19,7 @@
     font-size: 18px;
     font-size-adjust: initial;
     margin: 0 auto;
+    min-height: 50px;
   }
 
 </style>
@@ -32,7 +33,7 @@
     },
     data() {
       return {
-        reponses: ['Lorem ', 'ipsum', 'dolor', 'sit amet','Lorem', 'ipsum', 'dolor', 'sit amet' /* ... Add more responses here ... */],
+        reponses: ['LoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem ', 'ipsumLoremLoremLoremLorem', 'dolorLoremLoremLoremLorem', 'sit amet','Lorem', 'ipsum', 'dolor', 'sit amet' /* ... Add more responses here ... */],
         // Liste de couleurs prédéfinies
         couleurs: ['lightskyblue', 'lightcoral', 'lightgreen', 'lightpink', 'lightyellow', 'lightblue', 'lightsalmon', 'lightpink','lightseagreen'],
       };
