@@ -31,13 +31,23 @@ export class SessionController {
     return this.sessionMap.has(idSession.id);
   }
 
-  /** @Post('/nextQuestion')
-  nextQuestion(@Body() idSession: string): Promise<Question> {
-    this.
-  }**/
+  @Post('/nextQuestion')
+  nextQuestion(@Body() idSession: { id: string }): Question {
+    let currentSession = this.sessionMap.get(idSession.id);
+    if ((currentSession.getQuestionNumber + 1) <= currentSession.getQuestionList.length) {
+      currentSession.setQuestionNumber = currentSession.getQuestionNumber + 1;
+    }
+    return currentSession.getQuestionList[currentSession.getQuestionNumber];
+  }
 
   @Get('/list')
   getMap() {
     return [...this.sessionMap];
+  }
+
+  @Post('/currentQuestion')
+  getCurrentQuestion(@Body() idSession: { id: string }) : Question {
+    let session = this.sessionMap.get(idSession.id);
+    return session.getQuestionList[session.getQuestionNumber];
   }
 }
