@@ -2,7 +2,7 @@
 
 import { Question } from '../../question/entity/question.entity';
 
-export class SessionDto {
+export class Session {
   id: string;
 
   private questionList: Question[];
@@ -16,7 +16,6 @@ export class SessionDto {
     this.questionList = questionList;
     this.questionNumber = 0;
   }
-
 
   get getQuestionList(): Question[] {
     return this.questionList;
