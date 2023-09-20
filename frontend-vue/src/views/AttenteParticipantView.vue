@@ -1,6 +1,5 @@
 <template>
   <div class="participant-waiting-page">
-    <img alt="Vue logo" src="../assets/logo.png">
     <AttenteParticipant/>
   </div>
 </template>

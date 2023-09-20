@@ -1,6 +1,5 @@
 <template>
   <div class="endof-session">
-    <img alt="Vue logo" src="../assets/logo.png">
     <FinDeSession/>
   </div>
 </template>

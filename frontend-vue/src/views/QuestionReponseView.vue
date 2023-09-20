@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <img src="../assets/logo.png" />
     <h2><b>Question</b></h2>
     <QuestionComp
       quest="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ? " />

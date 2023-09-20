@@ -29,11 +29,12 @@
 <style scoped>
   .end-session-page {
     text-align: center;
-    margin-top: 20px;
-    background-color: #fff; /* Fond blanc */
+    margin: 0 auto; /* Centrer horizontalement */
+    max-width: 400px; /* Définir la largeur maximale souhaitée */
     padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* Fond blanc */
   }
 
   .end-session-page h1 {
@@ -45,6 +46,4 @@
   .actions {
     margin-top: 10px;
   }
-
-
 </style>
