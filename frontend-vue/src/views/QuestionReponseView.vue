@@ -57,8 +57,10 @@
   }
 
   .btnD {
+    margin-top: 15%;
     display: flex;
     justify-content: flex-end; /* Align children to the right */
     align-items: center; /* Vertically center children */
   }
+
 </style>
