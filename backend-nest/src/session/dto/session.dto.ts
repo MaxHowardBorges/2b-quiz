@@ -1,8 +1,8 @@
 // id, liste question, nomero question, string[] connecté
 
-import { Question } from '../question/entity/question.entity';
+import { Question } from '../../question/entity/question.entity';
 
-export class Session {
+export class SessionDto {
   id: string;
 
   private questionList: Question[];

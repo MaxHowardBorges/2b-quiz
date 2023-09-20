@@ -1,19 +1,19 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { Session } from './session';
-import { QuestionService } from '../question/service/question.service';
-import { SessionService } from './session.service';
-import { Question } from '../question/entity/question.entity';
+import { SessionDto } from '../dto/session.dto';
+import { QuestionService } from '../../question/service/question.service';
+import { SessionService } from '../service/session.service';
+import { Question } from '../../question/entity/question.entity';
 
 @Controller('session')
 export class SessionController {
-  private sessionMap: Map<string, Session> = new Map();
+  private sessionMap: Map<string, SessionDto> = new Map();
   constructor(
     private questionService: QuestionService,
     private sessionService: SessionService,
   ) {}
 
   @Post('/create')
-  async createSession(): Promise<Session> {
+  async createSession(): Promise<SessionDto> {
     let idSession = '000000';
     do {
       idSession = this.sessionService.createSession();
@@ -21,7 +21,7 @@ export class SessionController {
 
     this.sessionMap.set(
       idSession,
-      new Session(idSession, await this.questionService.findAllWithQuestion()),
+      new SessionDto(idSession, await this.questionService.findAllWithQuestion()),
     );
     return this.sessionMap.get(idSession);
   }

@@ -6,7 +6,7 @@ import { getTypeOrmConfig } from './config/database.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionModule } from './question/question.module';
 import { SessionModule } from './session/session.module';
-import { SessionService } from './session/session.service';
+import { SessionService } from './session/service/session.service';
 
 @Module({
   imports: [
