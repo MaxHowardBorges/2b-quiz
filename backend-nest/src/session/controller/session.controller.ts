@@ -17,13 +17,13 @@ export class SessionController {
     return this.sessionService.currentQuestion(idSession.id);
   }
 
-  // @Post('/respond')
-  // respondQuestion(
-  //   @Body() idSession: { id: string },
-  //   @Body() idAnswer: { answer: string },
-  // ) {
-  //   return this.sessionService.respond(idSession.id, idAnswer);
-  // }
+  @Post('/respond')
+  respondQuestion(
+    @Body() idSession: { id: string },
+    @Body() idAnswer: { answer: number },
+  ) {
+    return this.sessionService.respond(idSession.id, idAnswer.answer);
+  }
 
   @Post('/create')
   async createSession(): Promise<Session> {
