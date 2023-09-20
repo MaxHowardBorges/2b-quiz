@@ -12,16 +12,16 @@ export class SessionController {
     private sessionService: SessionService,
   ) {}
 
-  @Post('/create')
-  async createSession(): Promise<SessionDto> {
-    let idSession = '000000';
-    do {
-      idSession = this.sessionService.createSession();
-    } while (this.sessionMap.has(idSession));
+  @Post('/generateId')
+  async generateIdSession(): Promise<SessionDto> {
+    let idSession = this.sessionService.generateIdSession();
+    while (this.sessionMap.has(idSession)) {
+      idSession = this.sessionService.generateIdSession();
+    }
 
     this.sessionMap.set(
       idSession,
-      new SessionDto(idSession, await this.questionService.findAllWithQuestion()),
+      await this.sessionService.createSession(idSession)
     );
     return this.sessionMap.get(idSession);
   }
