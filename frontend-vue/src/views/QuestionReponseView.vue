@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h2><b>Question</b></h2>
+    <h2 onload="loadQuestion"><b>Question</b></h2>
     <QuestionComp
       :quest= question />
   </div>
@@ -20,6 +20,7 @@
   import QuestionComp from '@/components/QuestionComp.vue';
   import BlockReponse from '@/components/ComponentBlockReponse.vue';
   import btn from '@/components/BoutonComp.vue';
+  import { mapState, mapActions } from 'vuex';
 
   export default {
     name: 'QuestionReponseView',
@@ -30,8 +31,20 @@
     },
     data() {
       return {
-        question : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ?"
+        questi : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ?"
       };
+    },
+    computed: {
+      ...mapState(['question']),
+    },
+    methods: {
+      ...mapActions(['fetchQuestion']),
+      loadQuestion() {
+        this.fetchQuestion();
+      },
+    },
+    created() {
+      this.loadQuestion();
     },
   };
 </script>
@@ -46,9 +59,6 @@
     min-height: 250px;
   }
 
-  div{
-    min-widht: 50px;
-  }
 
   QuestionComp {
     margin-left: 10px;
@@ -62,13 +72,12 @@
     padding: 10px;
     max-width: 600px;
     border: 4px solid #f6c70a;
-    margin: 20px auto;
     background-color: #fcfcfc;
     min-width: 150px;
   }
 
   .btnD {
-    margin-top: 15%;
+    margin-top: 5%;
     display: flex;
     justify-content: flex-end; /* Align children to the right */
     align-items: center; /* Vertically center children */

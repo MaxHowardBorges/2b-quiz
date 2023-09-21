@@ -33,7 +33,7 @@
     },
     data() {
       return {
-        reponses: ['LoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem ', 'ipsumLoremLoremLoremLorem', 'dolorLoremLoremLoremLorem', 'sit amet','Lorem', 'ipsum', 'dolor', 'sit amet' /* ... Add more responses here ... */],
+        reponses: ['LoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem ', 'ipsumLoremLoremLoremLorem', 'dolorLoremLoremLoremL', 'sit amet','Lorem', 'ipsum', 'dolor', 'sit amet' /* ... Add more responses here ... */],
         // Liste de couleurs prédéfinies
         couleurs: ['lightskyblue', 'lightcoral', 'lightgreen', 'lightpink', 'lightyellow', 'lightblue', 'lightsalmon', 'lightpink','lightseagreen'],
       };
