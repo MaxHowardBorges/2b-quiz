@@ -20,4 +20,13 @@ export class QuestionService {
   async findAllWithQuestion(): Promise<Question[]> {
     return this.questionRepository.find({ relations: ['answers'] });
   }
+
+  async questionContainsAnswer(question: Question, idAnswer: number) {
+    for (let i = 0; i < question.answers.length; i++) {
+      if (question.answers[i].id == idAnswer) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

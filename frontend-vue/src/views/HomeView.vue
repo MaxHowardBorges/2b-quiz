@@ -1,11 +1,11 @@
 <template>
-  <form action="" method="POST">
+  <form @submit="joinSession">
     <label id="id" for="id"></label>
     <input
       type="text"
       placeholder="ID de la Session"
       style="border: 1px solid #000000" />
-    <input @click="joinSession" id="submit1" type="submit" value="Join" />
+    <input id="submit1" type="submit" value="Join" />
   </form>
 </template>
 
