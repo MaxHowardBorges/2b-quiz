@@ -2,7 +2,7 @@
   <div class="teacher-interface">
     <h1>Menu enseignant</h1>
 
-    <router-link to="/attenteparticipant"><btn nomB="Créer une session" /></router-link>
+    <btn @click='handleCreateSession' nomB="Créer une session" />
     <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
 
   </div>
@@ -14,13 +14,14 @@
   export default {
     components: { btn },
     methods: {
-      createSession() {
-        // Logique pour créer une nouvelle session
-        // Vous pouvez rediriger l'enseignant vers la page de création de session
-      },
-      viewHistory() {
-        // Logique pour accéder à l'historique de sessions
-        // Vous pouvez rediriger l'enseignant vers la page d'historique de sessions
+      handleCreateSession() {
+        this.$store.dispatch('createSession')
+          .then(() => {
+            this.$router.push('/attenteparticipant');
+          })
+          .catch((error) => {
+            console.error('Error while creating session:', error);
+          });
       },
     },
   };

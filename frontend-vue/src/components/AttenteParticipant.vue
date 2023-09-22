@@ -3,13 +3,13 @@
     <div class="content-container">
       <h1>En attente des participants...</h1>
       <div class="session-info">
-        <p>ID de Session : {{ sessionID }}</p>
+        <p>ID de Session : {{idSession}}</p>
         <img alt="Qr code" src="../assets/qrcode.png" style="width: 100px;">
       </div>
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
       <div class="actions">
-        <router-link to="/menuenseignant"><btn nomB="Annuler la session"/></router-link>
-        <router-link to="/question"><btn nomB="Lancer la session" /></router-link>
+        <router-link to="/menuenseignant"><BoutonComp nomB="Annuler la session"/></router-link>
+        <router-link to="/question"><BoutonComp nomB="Lancer la session" /></router-link>
       </div>
     </div>
   </div>
@@ -58,6 +58,25 @@
 
 </style>
 
-<script setup>
-import btn from '@/components/BoutonComp.vue';
+
+<script>
+  import { mapGetters } from 'vuex';
+  import { ref } from 'vue';
+  import BoutonComp from '@/components/BoutonComp.vue';
+
+  export default {
+    components: { BoutonComp },
+    computed: {
+      ...mapGetters(['actualSession']), // Use mapGetters to map the getter to a computed property
+    },
+    setup() {
+      return  {
+        idSession : ref('data'),
+      }
+    },
+    mounted() {
+      this.idSession = this.actualSession;
+    }
+
+  };
 </script>
