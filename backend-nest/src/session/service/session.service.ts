@@ -6,6 +6,8 @@ import { Question } from '../../question/entity/question.entity';
 import { Answer } from '../../question/entity/answer.entity';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
+import { AnswersNoneException } from '../exception/answersNone.exception';
+import { QuestionNoneException } from '../exception/questionNone.exception';
 
 @Injectable()
 export class SessionService {
@@ -33,9 +35,23 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
 
+    if (session.questionNumber == undefined) {
+      throw new QuestionNumberNoneException();
+    }
     const indice = session.questionNumber;
+
+    if (session.questionList[indice] == undefined) {
+      throw new QuestionNoneException();
+    }
     const question = session.questionList[indice];
+
+    if (
+      this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
+    ) {
+      throw new AnswersNoneException();
+    }
     const answers = this.answerMapper.mapAnswersStudentDtos(question.answers);
+
     return { question, answers };
   }
 
@@ -50,6 +66,10 @@ export class SessionService {
       throw new QuestionNumberNoneException();
     }
     const indice = session.questionNumber;
+
+    if (session.questionList[indice] == undefined) {
+      throw new QuestionNoneException();
+    }
     const question = session.questionList[indice];
 
     return this.questionService.questionContainsAnswer(question, idAnswer);
