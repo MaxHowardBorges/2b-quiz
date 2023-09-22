@@ -66,11 +66,11 @@
   }
 
   .reponseQ {
-    margin-top: 2%;
+    margin-top: -2%;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    max-width: 600px;
+    max-width: 2000px;
     border: 4px solid #f6c70a;
     background-color: #fcfcfc;
     min-width: 150px;

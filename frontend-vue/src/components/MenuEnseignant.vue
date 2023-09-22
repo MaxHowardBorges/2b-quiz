@@ -2,14 +2,17 @@
   <div class="teacher-interface">
     <h1>Menu enseignant</h1>
 
-    <router-link to="/attenteparticipant"><btn nomB="Créer une session" /></router-link>
-    <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
-
+    <router-link to="/attenteparticipant">
+      <btn nomB="Créer une session" />
+    </router-link>
+    <router-link to="/">
+      <btn nomB="Historique de sessions" />
+    </router-link>
   </div>
 </template>
 
 <script>
-  import btn from '@/components/BoutonComp.vue';
+  import btn from "@/components/BoutonComp.vue";
 
   export default {
     components: { btn },
@@ -29,7 +32,8 @@
 <style scoped>
   .teacher-interface {
     text-align: center;
-    margin-top: 20px;
+    margin: 0 auto; /* Centrer horizontalement */
+    max-width: 400px; /* Largeur maximale pour le contenu */
     background-color: rgb(255, 255, 255); /* Fond blanc */
     padding: 20px;
     border-radius: 8px;
@@ -41,5 +45,4 @@
     margin-bottom: 20px;
     color: #FFD700; /* Couleur jaune */
   }
-
 </style>
