@@ -30,7 +30,8 @@
 <style scoped>
   .teacher-interface {
     text-align: center;
-    margin-top: 20px;
+    margin: 0 auto; /* Centrer horizontalement */
+    max-width: 400px; /* Largeur maximale pour le contenu */
     background-color: rgb(255, 255, 255); /* Fond blanc */
     padding: 20px;
     border-radius: 8px;
