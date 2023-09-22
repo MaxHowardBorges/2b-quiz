@@ -3,7 +3,7 @@
 <template>
   <div>
     <ReponseComp
-      v-for="(reponse, index) in questionr.answers"
+      v-for="(reponse, index) in actualQuestion().answers"
       :key="index"
       :reponseQuest="reponse.content"
       :backgroundColor="getColor(index)"

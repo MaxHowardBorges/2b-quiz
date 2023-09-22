@@ -7,7 +7,7 @@
   <div class="reponseQ">
     <BlockReponse />
   </div>
-  <btn nomB="Question suivante" />
+  <btn @click='handleNextQuestion(actualSession)' nomB="Question suivante" />
   <div class="btnD">
     <div class="button-group">
       <router-link to="/findesession"><btn nomB="Arrêter la session" /></router-link>
@@ -39,12 +39,30 @@
       async getActualQuestion() {
         await this.actualQuestion;
       },
+
+      ...mapGetters(['actualSession']),
+      async getActualSession() {
+        await this.actualSession;
+      },
+
+      handleNextQuestion(id) {
+
+        this.$store.dispatch('nextQuestion', id)
+          .then(() => {
+            //this.$router.push('/question');
+            console.log(this.getActualQuestion());
+          })
+          .catch((error) => {
+            console.error('Error while creating session:', error);
+          });
+      },
     },
     created() {
-      console.log(this.getActualQuestion());
+      this.getActualQuestion()
     },
     computed:{
       ...mapGetters(['actualQuestion']),
+      ...mapGetters(['actualSession']),
     },
   };
 </script>

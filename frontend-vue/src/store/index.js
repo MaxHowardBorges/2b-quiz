@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { createStore, mapActions } from 'vuex';
 // index.js (fichier principal du store Vuex)
 
 export default createStore({
@@ -66,8 +66,37 @@ export default createStore({
       } catch (error) {
         console.error(error);
       }
-    }
-    ,
+    },
+    ...mapActions(['nextQuestion']),
+    async nextQuestion({ commit }, id) {
+      const body = { id: id };
+      console.log(JSON.stringify(body));
+      console.log(id);
+      try {
+        const response = await fetch(
+          process.env.VUE_APP_API_URL + '/session/nextQuestion',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          },
+        );
+
+        console.log(response);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question');
+        }
+
+        const success = await response.json();
+
+        commit('setQuestion', success);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
   },
   modules: {
   }
