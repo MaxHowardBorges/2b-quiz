@@ -38,9 +38,9 @@
       ...mapState(['question']),
     },
     methods: {
-      ...mapActions(['fetchQuestion']),
+      ...mapActions(['getQuestion']),
       loadQuestion() {
-        this.fetchQuestion();
+        this.getQuestion();
       },
     },
     created() {
