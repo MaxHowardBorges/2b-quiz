@@ -40,6 +40,7 @@
   .end-session-page h1 {
     font-size: 24px;
     margin-bottom: 10px;
+    color: #f6c70a;
     /* Styles CSS supplémentaires pour la police et la mise en forme */
   }
 
