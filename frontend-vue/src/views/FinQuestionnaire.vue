@@ -32,7 +32,7 @@
   }
 
   body{
-    font-family: "Roboto Thin";
+    font-family: "Roboto Thin",sans-serif;
     justify-content: center;
     display: flex;
     align-items: center;
