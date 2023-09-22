@@ -4,7 +4,6 @@
     <div class="session-info">
       <p>ID de Session : {{ sessionID }}</p>
     </div>
-    <p>{{ participantsCount }} personnes ont rejoint la session !</p>
     <div class="actions">
       <button @click="quitSession">Quitter la session</button>
     </div>
@@ -13,12 +12,6 @@
 
 <script>
   export default {
-    data() {
-      return {
-        sessionID: '123456', // Remplacez par l'ID de session réel
-        participantsCount: 0,
-      };
-    },
     methods: {
       quitSession() {
         // Logique pour annuler la session
