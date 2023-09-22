@@ -32,15 +32,18 @@ export class SessionService {
     return this.sessionMap.has(idSession.id);
   }
 
-  nextQuestion(@Body() idSession: { id: string }): Question {
+  nextQuestion(@Body() idSession: { id: string }): Question | boolean{
     let currentSession = this.sessionMap.get(idSession.id);
     if (
       currentSession.getQuestionNumber + 1 <
       currentSession.getQuestionList.length
     ) {
       currentSession.setQuestionNumber = currentSession.getQuestionNumber + 1;
+      return currentSession.getQuestionList[currentSession.getQuestionNumber];
     }
-    return currentSession.getQuestionList[currentSession.getQuestionNumber];
+    else {
+      return false;
+    }
   }
 
   getMap() {

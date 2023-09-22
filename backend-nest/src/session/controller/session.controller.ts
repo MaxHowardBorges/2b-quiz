@@ -22,7 +22,7 @@ export class SessionController {
   }
 
   @Post('/nextQuestion')
-  nextQuestion(@Body() idSession: { id: string }): Question {
+  nextQuestion(@Body() idSession: { id: string }): Question | boolean{
     return this.sessionService.nextQuestion(idSession);
   }
 
