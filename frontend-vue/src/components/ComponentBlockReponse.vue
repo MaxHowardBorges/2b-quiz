@@ -3,9 +3,9 @@
 <template>
   <div>
     <ReponseComp
-      v-for="(reponse, index) in reponses"
+      v-for="(reponse, index) in questionr.answers"
       :key="index"
-      :reponseQuest="reponse"
+      :reponseQuest="reponse.content"
       :backgroundColor="getColor(index)"
     />
   </div>
@@ -25,6 +25,7 @@
 </style>
 <script>
   import ReponseComp from '@/components/ReponseComp.vue';
+  import {  mapGetters } from 'vuex';
 
   export default {
     name: 'ComponentBlockReponse',
@@ -33,14 +34,19 @@
     },
     data() {
       return {
-        reponses: ['LoremLoremLorem LoremLoremLoremLorem LoremLoremLoremLorem ', 'ipsumLoremLoremLoremLorem', 'dolorLoremLoremLoremL', 'sit amet','Lorem', 'ipsum', 'dolor', 'sit amet' /* ... Add more responses here ... */],
         // Liste de couleurs prédéfinies
         couleurs: ['lightskyblue', 'lightcoral', 'lightgreen', 'lightpink', 'lightyellow', 'lightblue', 'lightsalmon', 'lightpink','lightseagreen'],
+        questionr: this.getAnswers()
       };
     },
+    computed: {
+    },
     methods: {
+      ...mapGetters(['actualQuestion']),
+      getAnswers(){
+        return this.actualQuestion();
+      },
       getColor(index) {
-        // Utilisation de l'opérateur modulo pour répéter les couleurs
         return this.couleurs[index % this.couleurs.length];
       },
     },

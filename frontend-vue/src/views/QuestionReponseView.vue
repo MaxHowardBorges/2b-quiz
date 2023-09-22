@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <h2 onload="loadQuestion"><b>Question</b></h2>
+    <h2><b>Question</b></h2>
     <QuestionComp
-      :quest= question />
+      :quest= actualQuestion.content />
   </div>
   <div class="reponseQ">
     <BlockReponse />
@@ -20,7 +20,7 @@
   import QuestionComp from '@/components/QuestionComp.vue';
   import BlockReponse from '@/components/ComponentBlockReponse.vue';
   import btn from '@/components/BoutonComp.vue';
-  import { mapState, mapActions } from 'vuex';
+  import { mapGetters } from 'vuex';
 
   export default {
     name: 'QuestionReponseView',
@@ -29,22 +29,22 @@
       BlockReponse,
       btn,
     },
-    data() {
-      return {
-        questi : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ?"
-      };
-    },
-    computed: {
-      ...mapState(['question']),
-    },
+    // data() {
+    //   return {
+    //     question:  null
+    //   };
+    // },
     methods: {
-      ...mapActions(['getQuestion']),
-      loadQuestion() {
-        this.getQuestion();
+      ...mapGetters(['actualQuestion']),
+      async getActualQuestion() {
+        await this.actualQuestion;
       },
     },
     created() {
-      this.loadQuestion();
+      console.log(this.getActualQuestion());
+    },
+    computed:{
+      ...mapGetters(['actualQuestion']),
     },
   };
 </script>

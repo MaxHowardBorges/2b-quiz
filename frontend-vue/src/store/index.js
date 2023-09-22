@@ -61,7 +61,7 @@ export default createStore({
           throw new Error('Erreur de chargement de la question');
         }
         const actualQuestion = await response.json();
-        commit('setQuestion', actualQuestion.content);
+        commit('setQuestion', actualQuestion);
         console.log(actualQuestion);
       } catch (error) {
         console.error(error);

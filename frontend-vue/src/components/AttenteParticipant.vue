@@ -9,7 +9,7 @@
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
       <div class="actions">
         <router-link to="/menuenseignant"><BoutonComp nomB="Annuler la session"/></router-link>
-        <router-link to="/question"><BoutonComp nomB="Lancer la session" /></router-link>
+        <BoutonComp @click="handleLaunch" nomB="Lancer la session" />
       </div>
     </div>
   </div>
@@ -60,7 +60,7 @@
 
 
 <script>
-  import { mapGetters } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
   import { ref } from 'vue';
   import BoutonComp from '@/components/BoutonComp.vue';
 
@@ -76,7 +76,13 @@
     },
     mounted() {
       this.idSession = this.actualSession;
+    },
+    methods:{
+      ...mapActions(['getQuestion']),
+      async handleLaunch() {
+        await this.getQuestion();
+        this.$router.push('/question');
+      }
     }
-
   };
 </script>
