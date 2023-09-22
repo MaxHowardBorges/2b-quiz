@@ -29,4 +29,8 @@ export class QuestionService {
     }
     return false;
   }
+
+  async findOne(idQuestion: number): Promise<Question>{
+    return this.questionRepository.findOne({ where:{id:idQuestion} })
+  }
 }
