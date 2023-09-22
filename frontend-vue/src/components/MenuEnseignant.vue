@@ -1,6 +1,6 @@
 <template>
   <div class="teacher-interface">
-    <h1>Menu enseignant</h1>
+    <h1>Menu Enseignant</h1>
 
     <btn @click='handleCreateSession' nomB="Créer une session" />
     <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
@@ -27,6 +27,9 @@
   };
 </script>
 
+
+
+
 <style scoped>
   .teacher-interface {
     text-align: center;
@@ -43,5 +46,6 @@
     margin-bottom: 20px;
     color: #FFD700; /* Couleur jaune */
   }
+
 
 </style>

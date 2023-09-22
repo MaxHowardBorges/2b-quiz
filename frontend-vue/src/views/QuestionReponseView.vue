@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h2 onload="loadQuestion"><b>Question</b></h2>
+    <h2 onload="loadQuestion"><b>Le quizz est en cours...</b></h2>
     <QuestionComp
       :quest= question />
   </div>
