@@ -2,7 +2,7 @@
   <div class="end-session-page">
     <h1>C'est la fin de la session !</h1>
     <div class="actions">
-      <router-link to="/attenteparticipant"><btn nomB="Relancer une session" /></router-link>
+      <btn  @click='handleCreateSession()' nomB="Relancer une session" />
       <router-link to="/menuenseignant"><btn nomB="Retourner au menu" /></router-link>
     </div>
   </div>
@@ -14,13 +14,14 @@
   export default {
     components: { btn },
     methods: {
-      relaunchSession() {
-        // Logique pour relancer une nouvelle session
-        // Vous pouvez rediriger l'utilisateur vers la page appropriée
-      },
-      returnToMenu() {
-        // Logique pour retourner au menu principal
-        // Vous pouvez rediriger l'utilisateur vers la page du menu
+      handleCreateSession() {
+        this.$store.dispatch('createSession')
+          .then(() => {
+            this.$router.push('/attenteparticipant');
+          })
+          .catch((error) => {
+            console.error('Error while creating session:', error);
+          });
       },
     },
   };
