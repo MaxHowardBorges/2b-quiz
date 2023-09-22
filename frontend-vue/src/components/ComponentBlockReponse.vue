@@ -6,16 +6,19 @@
     components: {
       ReponseComp,
     },
+    props: {
+      question: Object, // Prop pour stocker les données de la question
+      answers: Array, // Prop pour stocker les données des réponses
+    },
   };
 </script>
 
 <template>
   <div>
     <ReponseComp
-      reponseQuest="LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem" />
-    <ReponseComp reponseQuest="ipsumLoremLoremLoremLoremLorem" />
-    <ReponseComp reponseQuest="dolorLoremLoremLoremLoremLoremLoremLorem" />
-    <ReponseComp reponseQuest="sit ametLoremLoremLoremLoremLoremLorem" />
+      v-for="(reponse, index) in answers"
+      :key="index"
+      :reponseQuest="reponse" />
   </div>
 </template>
 

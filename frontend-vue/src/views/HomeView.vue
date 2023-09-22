@@ -1,21 +1,38 @@
 <template>
-  <form @submit="joinSession">
+  <form @submit="handleJoinSession">
     <label id="id" for="id"></label>
     <input
+      id="id-Session"
       type="text"
       placeholder="ID de la Session"
+      v-model="idSession"
       style="border: 1px solid #000000" />
     <input id="submit1" type="submit" value="Join" />
   </form>
 </template>
 
 <script>
+  import { mapActions, mapGetters } from 'vuex';
+  import { ref } from 'vue';
+
   export default {
     methods: {
-      joinSession() {
-        // Logique pour annuler la session
-        console.log('Session joined');
+      ...mapGetters(['getSuccess']), // Utilisez le nom de votre getter ici
+      ...mapActions(['joinSession']),
+      async handleJoinSession() {
+        try {
+          await this.$store.dispatch('joinSession', this.idSession);
+          console.log(this.getSuccess);
+          this.$router.push('/attente');
+        } catch (error) {
+          console.error('Error while joining session');
+        }
       },
+    },
+    data() {
+      return {
+        idSession: ref(''),
+      };
     },
   };
 </script>
