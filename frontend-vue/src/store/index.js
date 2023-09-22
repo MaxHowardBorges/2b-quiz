@@ -19,7 +19,7 @@ export default createStore({
     },
   },
   actions: {
-    async fetchQuestion({ commit }) {
+    /*async fetchQuestion({ commit }) {
       try {
         const response = await fetch(process.env.VUE_APP_API_URL+"/session/question");
         if (!response.ok) {
@@ -30,7 +30,7 @@ export default createStore({
       } catch (error) {
         console.error(error);
       }
-    },
+    },*/
 
     async createSession({ commit }) {
       try {
@@ -41,6 +41,28 @@ export default createStore({
         const idSession = await response.json();
         commit('setIdSession', idSession.id);
         console.log(idSession.id);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    ,
+    async getQuestion({ commit }) {
+      try {
+        const requestBody = '{"id":'+JSON.stringify(this.state.idSession)+'}';
+        console.log(requestBody);
+        const response = await fetch(process.env.VUE_APP_API_URL + "/session/currentQuestion",{method:"POST",
+          headers: {
+            "Content-Type": "application/json", // Indiquez que vous envoyez du JSON
+          },
+          body: requestBody, // Utilisez le corps de la requête JSON que vous avez créé
+        });
+        console.log(requestBody);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question');
+        }
+        const actualQuestion = await response.json();
+        commit('setQuestion', actualQuestion.content);
+        console.log(actualQuestion);
       } catch (error) {
         console.error(error);
       }
