@@ -14,6 +14,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger: Logger = new Logger('EventGateway');
 
   sendMessage(eventName: any, payload: any): void {
+    this.logger.log(`Message send: ${eventName} ${payload}`);
     this.server.emit(eventName, payload);
   }
 

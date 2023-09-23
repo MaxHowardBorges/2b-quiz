@@ -18,7 +18,7 @@
     <ReponseComp
       v-for="(reponse, index) in answers"
       :key="index"
-      :reponseQuest="reponse" />
+      :reponseQuest="reponse.content" />
   </div>
 </template>
 

@@ -1,13 +1,17 @@
 import { createStore } from 'vuex';
+import { socketModule } from '@/store/socketStore';
 
 export default createStore({
   state: {
+    router: null,
     success: null,
-    rechercheSession: null,
     reponseList: null,
     idSession: null,
   },
   getters: {
+    getRouter: (state) => {
+      return state.router;
+    },
     getSuccess: (state) => {
       return state.success;
     },
@@ -19,6 +23,9 @@ export default createStore({
     },
   },
   mutations: {
+    setRouter(state, router) {
+      state.router = router;
+    },
     setSuccess(state, success) {
       state.success = success;
     },
@@ -30,7 +37,7 @@ export default createStore({
     },
   },
   actions: {
-    async joinSession({ commit }, id) {
+    async joinSession({ commit, dispatch }, id) {
       const body = { id: id };
       try {
         const response = await fetch(
@@ -48,19 +55,17 @@ export default createStore({
           throw new Error('Erreur de chargement de la question');
         }
 
-        const success = await response.json();
-
-        commit('setSuccess', success);
+        dispatch('connectToWebSocket');
         commit('setIdSession', id);
       } catch (error) {
         console.error(error);
         throw error;
       }
     },
-    async getQuestions({ commit }, id) {
-      const body = { id: id };
+    async getQuestions({ commit, state }) {
+      const body = { id: state.idSession };
       console.log(JSON.stringify(body));
-      console.log(id);
+      console.log(state.idSession);
       try {
         const response = await fetch(
           process.env.VUE_APP_API_URL + '/session/question/current',
@@ -87,5 +92,5 @@ export default createStore({
       }
     },
   },
-  modules: {},
+  modules: { socketModule },
 });

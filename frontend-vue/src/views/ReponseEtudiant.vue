@@ -1,12 +1,10 @@
 <template>
   <div class="home">
     <h2><b>Question</b></h2>
-    <QuestionComp
-      quest="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sed do eiusmod ? " />
+    <QuestionComp :quest="questionData.question.content" />
   </div>
   <div class="reponseQ">
-    <BlockReponse
-      v-if="getSuccess"
+    <ComponentBlockReponse
       :question="questionData.question"
       :answers="questionData.answers" />
   </div>
@@ -15,22 +13,20 @@
 
 <script>
   import QuestionComp from '@/components/QuestionComp.vue';
-  import BlockReponse from '@/components/ComponentBlockReponse.vue';
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapGetters } from 'vuex';
   import { ref } from 'vue';
+  import ComponentBlockReponse from '@/components/ComponentBlockReponse.vue';
 
   export default {
     name: 'QuestionReponseView',
     components: {
+      ComponentBlockReponse,
       QuestionComp,
-      BlockReponse,
     },
     methods: {
-      ...mapGetters(['getQuestion', 'getIdSession']), // Utilisez le nom de votre getter ici
-      ...mapActions(['getQuestions']),
+      ...mapGetters(['getQuestion']), // Utilisez le nom de votre getter ici
       async handleGetQuestion() {
         try {
-          await this.$store.dispatch('getQuestions', this.getIdSession());
           this.questionData = this.getQuestion(); // Supposons que les données sont dans response.data
           console.log(this.questionData);
         } catch (error) {

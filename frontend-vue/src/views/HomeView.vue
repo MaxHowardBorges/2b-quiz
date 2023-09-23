@@ -21,6 +21,7 @@
       ...mapActions(['joinSession']),
       async handleJoinSession() {
         try {
+          await this.$store.commit('setRouter', this.$router);
           await this.$store.dispatch('joinSession', this.idSession);
           console.log(this.getSuccess);
           this.$router.push('/attente');
