@@ -1,5 +1,3 @@
-// id, liste question, nomero question, string[] connecté
-
 import { Question } from '../question/entity/question.entity';
 import { Answer } from '../question/entity/answer.entity';
 

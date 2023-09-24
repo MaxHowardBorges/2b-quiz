@@ -42,12 +42,12 @@ export class SessionService {
     if (session.questionNumber == undefined) {
       throw new QuestionNumberNoneException();
     }
-    const indice = session.questionNumber;
+    const index = session.questionNumber;
 
-    if (session.questionList[indice] == undefined) {
+    if (session.questionList[index] == undefined) {
       throw new QuestionNoneException();
     }
-    const question = session.questionList[indice];
+    const question = session.questionList[index];
 
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
@@ -59,8 +59,7 @@ export class SessionService {
     return { question, answers };
   }
 
-  async respond(idSession: string, idAnswer: number, username: string) {
-    // eviter les trucs cassables, gerer si la session ex pas pareil pr la reponse
+  async saveAnswer(idSession: string, idAnswer: number, username: string) {
     if (this.sessionMap.get(idSession) == undefined) {
       throw new IdSessionNoneException();
     }
@@ -72,7 +71,10 @@ export class SessionService {
       throw new UserUnknownException();
     }
     if (
-      !(await this.questionService.questionContainsAnswer(question, idAnswer))
+      !(await this.questionService.checkQuestionContainingAnswer(
+        question,
+        idAnswer,
+      ))
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }

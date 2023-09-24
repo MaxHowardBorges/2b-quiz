@@ -65,7 +65,7 @@ export default createStore({
         }
 
         dispatch('connectToWebSocket');
-        commit('setIdSession', body.id);
+        commit('setIdSession', body.idSession);
         commit('setUsername', body.username);
       } catch (error) {
         console.error(error);
@@ -73,7 +73,7 @@ export default createStore({
       }
     },
     async getQuestions({ commit, state }) {
-      const body = { id: state.idSession };
+      const body = { idSession: state.idSession };
       console.log(JSON.stringify(body));
       console.log(state.idSession);
       try {
@@ -103,7 +103,7 @@ export default createStore({
     },
     async sendAnswer({ getters }, idAnswer) {
       const body = {
-        id: getters.getIdSession,
+        idSession: getters.getIdSession,
         answer: idAnswer,
         username: getters.getUsername,
       };

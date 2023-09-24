@@ -9,21 +9,27 @@ export class SessionController {
 
   @Post('/join')
   @HttpCode(HttpStatus.NO_CONTENT)
-  joinSession(@Body() body: { id: string; username: string }) {
-    this.sessionService.join(body.id, body.username);
+  joinSession(@Body() body: { idSession: string; username: string }) {
+    this.sessionService.join(body.idSession, body.username);
   }
 
   @Post('/question/current')
-  getCurrentQuestion(@Body() idSession: { id: string }): CurrentQuestionDto {
-    return this.sessionService.currentQuestion(idSession.id);
+  getCurrentQuestion(
+    @Body() idSession: { idSession: string },
+  ): CurrentQuestionDto {
+    return this.sessionService.currentQuestion(idSession.idSession);
   }
 
   @Post('/respond')
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
-    @Body() body: { id: string; answer: number; username: string },
+    @Body() body: { idSession: string; answer: number; username: string },
   ) {
-    await this.sessionService.respond(body.id, body.answer, body.username);
+    await this.sessionService.saveAnswer(
+      body.idSession,
+      body.answer,
+      body.username,
+    );
   }
 
   @Post('/create')

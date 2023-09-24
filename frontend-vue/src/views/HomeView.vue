@@ -27,7 +27,7 @@
       ...mapActions(['joinSession']),
       async handleJoinSession() {
         try {
-          const body = { id: this.idSession, username: this.username };
+          const body = { idSession: this.idSession, username: this.username };
           await this.$store.commit('setRouter', this.$router);
           await this.$store.dispatch('joinSession', body);
           console.log(this.getSuccess);
