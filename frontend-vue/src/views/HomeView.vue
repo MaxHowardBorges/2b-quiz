@@ -2,6 +2,12 @@
   <form @submit.prevent="handleJoinSession">
     <label id="id" for="id"></label>
     <input
+      id="username"
+      type="text"
+      placeholder="Votre nom"
+      v-model="username"
+      style="border: 1px solid #000000" />
+    <input
       id="id-Session"
       type="text"
       placeholder="ID de la Session"
@@ -21,8 +27,9 @@
       ...mapActions(['joinSession']),
       async handleJoinSession() {
         try {
+          const body = { id: this.idSession, username: this.username };
           await this.$store.commit('setRouter', this.$router);
-          await this.$store.dispatch('joinSession', this.idSession);
+          await this.$store.dispatch('joinSession', body);
           console.log(this.getSuccess);
           this.$router.push('/waiting-session');
         } catch (error) {
@@ -33,6 +40,7 @@
     data() {
       return {
         idSession: ref(''),
+        username: ref(''),
       };
     },
   };

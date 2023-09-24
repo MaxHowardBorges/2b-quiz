@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
@@ -8,8 +8,9 @@ export class SessionController {
   constructor(private sessionService: SessionService) {}
 
   @Post('/join')
-  joinSession(@Body() idSession: { id: string }) {
-    return this.sessionService.join(idSession.id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  joinSession(@Body() body: { id: string; username: string }) {
+    this.sessionService.join(body.id, body.username);
   }
 
   @Post('/question/current')
@@ -18,11 +19,11 @@ export class SessionController {
   }
 
   @Post('/respond')
-  respondQuestion(
-    @Body() idSession: { id: string },
-    @Body() idAnswer: { answer: number },
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async respondQuestion(
+    @Body() body: { id: string; answer: number; username: string },
   ) {
-    return this.sessionService.respond(idSession.id, idAnswer.answer);
+    await this.sessionService.respond(body.id, body.answer, body.username);
   }
 
   @Post('/create')
