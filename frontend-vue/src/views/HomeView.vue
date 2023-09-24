@@ -1,5 +1,5 @@
 <template>
-  <form @submit="handleJoinSession">
+  <form @submit.prevent="handleJoinSession">
     <label id="id" for="id"></label>
     <input
       id="id-Session"
@@ -24,7 +24,7 @@
           await this.$store.commit('setRouter', this.$router);
           await this.$store.dispatch('joinSession', this.idSession);
           console.log(this.getSuccess);
-          this.$router.push('/attente');
+          this.$router.push('/waiting-session');
         } catch (error) {
           console.error('Error while joining session');
         }

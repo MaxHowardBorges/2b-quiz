@@ -40,9 +40,9 @@ export const socketModule = {
         });
       }
     },
-    async loadNextQuestion({ dispatch, getters }) {
+    async loadNextQuestion({ dispatch, commit }) {
       await dispatch('getQuestions');
-      getters.getRouter.push('/reponse');
+      commit('changePage', '/reponse');
     },
     loadEnd() {},
   },

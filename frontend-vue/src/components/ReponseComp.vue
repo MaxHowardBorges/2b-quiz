@@ -1,28 +1,52 @@
 <script>
   export default {
     name: 'ReponseComp',
+    emits: ['selectedOptionChanged'],
     props: {
-      reponseQuest: String,
+      reponse: Object,
+      field: String,
+    },
+    data() {
+      return {
+        selectedOption: null,
+      };
+    },
+    methods: {
+      emitValue() {
+        this.$emit('selectedOptionChanged', this.selectedOption);
+      },
     },
   };
 </script>
 
 <template>
-  <button type="button">{{ reponseQuest }}</button>
+  <input
+    type="radio"
+    :id="reponse.id"
+    v-model="selectedOption"
+    :value="reponse.id"
+    :name="field"
+    @change="emitValue" />
+  <label :for="reponse.id">{{ reponse.content }}</label>
 </template>
 
 <style scoped>
-  button {
+  input {
+    display: none;
+  }
+
+  label {
     min-height: 20px;
-    border-radius: 4px;
-    background-color: lightskyblue;
     white-space: nowrap;
     overflow: hidden;
     height: 85px;
     width: 45%;
   }
 
-  button[type='button'] {
+  label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #f6c70a;
     border: none;
     color: white;
@@ -35,15 +59,22 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 
-  button[type='button']:hover {
+  label:hover {
     transform: scale(1.06);
     background-position: -60px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   }
 
-  button[type='button']:active {
+  label:active {
     transform: scale(1);
     background-position: 500px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+
+  input:checked + label {
+    box-shadow: inset 2px 2px 4px rgba(112, 110, 110, 0.64),
+      inset 2px 3px 5px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24),
+      inset -2px -3px 5px rgba(255, 255, 255, 0.5);
   }
 </style>

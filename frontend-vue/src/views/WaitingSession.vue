@@ -1,20 +1,22 @@
 <template>
   <div class="participant-waiting-page">
-    <h1>En attente du prochain question</h1>
+    <h1>En attente du lancement du questionnaire...</h1>
     <div class="session-info">
       <p>ID de Session : {{ sessionID }}</p>
+    </div>
+    <div class="actions">
+      <button @click="quitSession">Quitter la session</button>
     </div>
   </div>
 </template>
 
 <script>
-  import { ref } from 'vue';
-
   export default {
-    data() {
-      return {
-        sessionID: ref(''),
-      };
+    methods: {
+      quitSession() {
+        // Logique pour annuler la session
+        console.log('Session quittée');
+      },
     },
   };
 </script>

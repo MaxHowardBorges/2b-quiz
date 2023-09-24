@@ -35,6 +35,9 @@ export default createStore({
     setIdSession(state, idSession) {
       state.idSession = idSession;
     },
+    changePage(state, pageLink) {
+      state.router.push(pageLink);
+    },
   },
   actions: {
     async joinSession({ commit, dispatch }, id) {
@@ -86,6 +89,29 @@ export default createStore({
         const question = await response.json();
         console.log(question);
         commit('setQuestion', question);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async sendAnswer({ getters }, idAnswer) {
+      const body = { id: getters.getIdSession, answer: idAnswer };
+      console.log(JSON.stringify(body));
+      try {
+        const response = await fetch(
+          process.env.VUE_APP_API_URL + '/session/respond',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error('Erreur de réponse'); //TODO
+        }
       } catch (error) {
         console.error(error);
         throw error;

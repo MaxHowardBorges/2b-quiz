@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue';
 import AttenteQuestion from '@/views/AttenteQuestion.vue';
 import ReponseEtudiant from '@/views/ReponseEtudiant.vue';
 import FinQuestionnaire from '@/views/FinQuestionnaire.vue';
+import WaitingSession from '@/views/WaitingSession.vue';
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
     path: '/attente',
     name: 'attente',
     component: AttenteQuestion,
+  },
+  {
+    path: '/waiting-session',
+    name: 'waiting-session',
+    component: WaitingSession,
   },
   {
     path: '/reponse',
