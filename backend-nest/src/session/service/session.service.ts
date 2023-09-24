@@ -1,5 +1,5 @@
-import { Body, Get, Injectable, Post } from '@nestjs/common';
-import { Session } from '../dto/session';
+import { Body, Injectable } from '@nestjs/common';
+import { Session } from '../session';
 import { QuestionService } from '../../question/service/question.service';
 import { Question } from '../../question/entity/question.entity';
 
@@ -32,8 +32,8 @@ export class SessionService {
     return this.sessionMap.has(idSession.id);
   }
 
-  nextQuestion(@Body() idSession: { id: string }): Question | boolean{
-    let currentSession = this.sessionMap.get(idSession.id);
+  nextQuestion(@Body() idSession: { id: string }): Question {
+    const currentSession = this.sessionMap.get(idSession.id);
     if (
       currentSession.getQuestionNumber + 1 <
       currentSession.getQuestionList.length
@@ -41,9 +41,7 @@ export class SessionService {
       currentSession.setQuestionNumber = currentSession.getQuestionNumber + 1;
       return currentSession.getQuestionList[currentSession.getQuestionNumber];
     }
-    else {
-      return false;
-    }
+    return null;
   }
 
   getMap() {
@@ -51,7 +49,7 @@ export class SessionService {
   }
 
   getCurrentQuestion(@Body() idSession: { id: string }): Question {
-    let session = this.sessionMap.get(idSession.id);
+    const session = this.sessionMap.get(idSession.id);
     return session.getQuestionList[session.getQuestionNumber];
   }
 }

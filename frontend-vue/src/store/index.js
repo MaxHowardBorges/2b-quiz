@@ -1,16 +1,24 @@
-import { createStore, mapActions } from 'vuex';
+import { createStore } from 'vuex';
 // index.js (fichier principal du store Vuex)
 
 export default createStore({
   state: {
+    router: null,
     question: null,
-    idSession: null
+    idSession: null,
   },
   getters: {
+    getRouter: (state) => {
+      return state.router;
+    },
+
     actualQuestion: (state) => state.question,
-    actualSession: (state) => state.idSession
+    actualSession: (state) => state.idSession,
   },
   mutations: {
+    setRouter(state, router) {
+      state.router = router;
+    },
     setQuestion(state, question) {
       state.question = question;
     },
@@ -34,7 +42,10 @@ export default createStore({
 
     async createSession({ commit }) {
       try {
-        const response = await fetch(process.env.VUE_APP_API_URL + "/session/create",{method:"POST"});
+        const response = await fetch(
+          process.env.VUE_APP_API_URL + '/session/create',
+          { method: 'POST' },
+        );
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question');
         }
@@ -44,34 +55,11 @@ export default createStore({
       } catch (error) {
         console.error(error);
       }
-    }
-    ,
-    async getQuestion({ commit }) {
-      try {
-        const requestBody = '{"id":'+JSON.stringify(this.state.idSession)+'}';
-        console.log(requestBody);
-        const response = await fetch(process.env.VUE_APP_API_URL + "/session/currentQuestion",{method:"POST",
-          headers: {
-            "Content-Type": "application/json", // Indiquez que vous envoyez du JSON
-          },
-          body: requestBody, // Utilisez le corps de la requête JSON que vous avez créé
-        });
-        console.log(requestBody);
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question');
-        }
-        const actualQuestion = await response.json();
-        commit('setQuestion', actualQuestion);
-        console.log(actualQuestion);
-      } catch (error) {
-        console.error(error);
-      }
     },
-    ...mapActions(['nextQuestion']),
-    async nextQuestion({ commit }, id) {
-      const body = { id: id };
+    async nextQuestion({ commit, getters }) {
+      const body = { id: getters.actualSession };
       console.log(JSON.stringify(body));
-      console.log(id);
+      console.log(getters.actualSession);
       try {
         const response = await fetch(
           process.env.VUE_APP_API_URL + '/session/nextQuestion',
@@ -89,15 +77,16 @@ export default createStore({
           throw new Error('Erreur de chargement de la question');
         }
 
-        const success = await response.json();
-
-        commit('setQuestion', success);
+        const question = await response.json();
+        if (Object.entries(question).length === 0) {
+          getters.getRouter.push('findesession');
+        }
+        commit('setQuestion', question);
       } catch (error) {
         console.error(error);
         throw error;
       }
     },
   },
-  modules: {
-  }
-})
+  modules: {},
+});

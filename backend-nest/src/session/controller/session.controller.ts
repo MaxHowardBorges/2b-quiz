@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { Session } from '../dto/session';
+import { Session } from '../session';
 import { QuestionService } from '../../question/service/question.service';
 import { SessionService } from '../service/session.service';
 import { Question } from '../../question/entity/question.entity';
@@ -22,8 +22,14 @@ export class SessionController {
   }
 
   @Post('/nextQuestion')
-  nextQuestion(@Body() idSession: { id: string }): Question | boolean{
-    return this.sessionService.nextQuestion(idSession);
+  nextQuestion(
+    @Body() idSession: { id: string },
+  ): Question | NonNullable<unknown> {
+    const question = this.sessionService.nextQuestion(idSession);
+    if (question) {
+      return question;
+    }
+    return {};
   }
 
   @Get('/list')

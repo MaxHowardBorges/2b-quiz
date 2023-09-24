@@ -1,6 +1,6 @@
 // id, liste question, nomero question, string[] connecté
 
-import { Question } from '../../question/entity/question.entity';
+import { Question } from '../question/entity/question.entity';
 
 export class Session {
   id: string;
@@ -14,7 +14,7 @@ export class Session {
   constructor(id: string, questionList: Question[]) {
     this.id = id;
     this.questionList = questionList;
-    this.questionNumber = 0;
+    this.questionNumber = -1;
   }
 
   get getQuestionList(): Question[] {
