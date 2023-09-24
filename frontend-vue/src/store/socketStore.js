@@ -44,7 +44,11 @@ export const socketModule = {
       await dispatch('getQuestions');
       commit('changePage', '/reponse');
     },
-    loadEnd() {},
+    loadEnd({ commit, getters }) {
+      const socket = getters.getSocket;
+      socket.disconnect();
+      commit('changePage', '/fin');
+    },
   },
   getters: {
     getSocket: (state) => state.socket,
