@@ -12,9 +12,7 @@ export class QuestionController {
   }
 
   @Post('/nextquestion')
-  async nextQuestion(@Body() dto : UserUpdateDto): Promise<Question>{
-    return await this.questionService.findOne(dto.id)
+  async nextQuestion(@Body() dto: UserUpdateDto): Promise<Question> {
+    return await this.questionService.findOne(dto.id);
   }
-
-
 }

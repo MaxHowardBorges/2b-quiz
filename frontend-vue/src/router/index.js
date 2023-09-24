@@ -1,11 +1,15 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import WaitingQuestion from '@/views/WaitingQuestion.vue';
+import StudentAnswer from '@/views/StudentAnswer.vue';
+import EndSession from '@/views/EndSession.vue';
+import WaitingSession from '@/views/WaitingSession.vue';
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
   },
   {
     path: '/about',
@@ -48,14 +52,32 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/MenuEnseignantView.vue')
-  }
-
-
-]
+  },
+  {
+    path: '/waiting',
+    name: 'waiting',
+    component: WaitingQuestion,
+  },
+  {
+    path: '/waiting-session',
+    name: 'waiting-session',
+    component: WaitingSession,
+  },
+  {
+    path: '/answer',
+    name: 'answer',
+    component: StudentAnswer,
+  },
+  {
+    path: '/end',
+    name: 'end',
+    component: EndSession,
+  },
+];
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

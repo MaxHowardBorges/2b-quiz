@@ -6,7 +6,8 @@ import { getTypeOrmConfig } from './config/database.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionModule } from './question/question.module';
 import { SessionModule } from './session/session.module';
-import { SessionService } from './session/service/session.service';
+import { SessionModule } from './session/session.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -20,8 +21,9 @@ import { SessionService } from './session/service/session.service';
     }),
     QuestionModule,
     SessionModule,
+    EventModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SessionService],
+  providers: [AppService],
 })
 export class AppModule {}

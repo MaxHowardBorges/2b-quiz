@@ -10,7 +10,7 @@ export class QuestionService {
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
     @InjectRepository(Answer)
-    private readonly postRepository: Repository<Answer>,
+    private readonly answerRepository: Repository<Answer>,
   ) {}
 
   async findAll(): Promise<Question[]> {
@@ -21,7 +21,15 @@ export class QuestionService {
     return this.questionRepository.find({ relations: ['answers'] });
   }
 
-  async findOne(idQuestion: number): Promise<Question>{
-    return this.questionRepository.findOne({ where:{id:idQuestion} })
+  async checkQuestionContainingAnswer(question: Question, idAnswer: number) {
+    const answer = await this.answerRepository.findOne({
+      where: { id: idAnswer },
+      relations: ['question'],
+    });
+    return answer.question.id === question.id;
+  }
+
+  async findOne(idQuestion: number): Promise<Question> {
+    return this.questionRepository.findOne({ where: { id: idQuestion } });
   }
 }

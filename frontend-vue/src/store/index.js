@@ -1,19 +1,30 @@
 import { createStore } from 'vuex';
-// index.js (fichier principal du store Vuex)
+import { socketModule } from '@/store/socket.store';
+import { fetchAPIModule } from '@/store/fetchAPI.store';
 
 export default createStore({
   state: {
     router: null,
     question: null,
     idSession: null,
+    success: null,
+    username: null,
   },
   getters: {
+    actualQuestion: (state) => state.question,
+    actualSession: (state) => state.idSession,
     getRouter: (state) => {
       return state.router;
     },
-
-    actualQuestion: (state) => state.question,
-    actualSession: (state) => state.idSession,
+    getSuccess: (state) => {
+      return state.success;
+    },
+    getIdSession: (state) => {
+      return state.idSession;
+    },
+    getUsername: (state) => {
+      return state.username;
+    },
   },
   mutations: {
     setRouter(state, router) {
@@ -24,6 +35,15 @@ export default createStore({
     },
     setIdSession(state, idSession) {
       state.idSession = idSession;
+    },
+    setSuccess(state, success) {
+      state.success = success;
+    },
+    setUsername(state, idSession) {
+      state.username = idSession;
+    },
+    changePage(state, pageLink) {
+      state.router.push(pageLink);
     },
   },
   actions: {
@@ -88,5 +108,5 @@ export default createStore({
       }
     },
   },
-  modules: {},
+  modules: { socketModule, fetchAPIModule },
 });
