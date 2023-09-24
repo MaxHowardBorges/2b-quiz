@@ -18,7 +18,7 @@
         console.log(this.selectedOption);
         try {
           await this.$store.dispatch('sendAnswer', this.selectedOption);
-          this.$router.push('/attente');
+          this.$router.push('/waiting');
         } catch (e) {
           console.error(e);
         }
@@ -36,9 +36,9 @@
   <form @submit.prevent="handleSubmit">
     <div>
       <ReponseComp
-        v-for="(reponse, index) in answers"
+        v-for="(answer, index) in answers"
         :key="index"
-        :reponse="reponse"
+        :answer="answer"
         field="quizz"
         @selected-option-changed="updateSelectedOption" />
     </div>

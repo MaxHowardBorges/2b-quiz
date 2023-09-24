@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import AttenteQuestion from '@/views/AttenteQuestion.vue';
-import ReponseEtudiant from '@/views/ReponseEtudiant.vue';
-import FinQuestionnaire from '@/views/FinQuestionnaire.vue';
+import WaitingQuestion from '@/views/WaitingQuestion.vue';
+import StudentAnswer from '@/views/StudentAnswer.vue';
+import EndSession from '@/views/EndSession.vue';
 import WaitingSession from '@/views/WaitingSession.vue';
 
 const routes = [
@@ -14,16 +14,13 @@ const routes = [
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
   },
   {
-    path: '/attente',
-    name: 'attente',
-    component: AttenteQuestion,
+    path: '/waiting',
+    name: 'waiting',
+    component: WaitingQuestion,
   },
   {
     path: '/waiting-session',
@@ -31,14 +28,14 @@ const routes = [
     component: WaitingSession,
   },
   {
-    path: '/reponse',
-    name: 'reponse',
-    component: ReponseEtudiant,
+    path: '/answer',
+    name: 'answer',
+    component: StudentAnswer,
   },
   {
-    path: '/fin',
-    name: 'fin',
-    component: FinQuestionnaire,
+    path: '/end',
+    name: 'end',
+    component: EndSession,
   },
 ];
 

@@ -3,7 +3,7 @@
     name: 'ReponseComp',
     emits: ['selectedOptionChanged'],
     props: {
-      reponse: Object,
+      answer: Object,
       field: String,
     },
     data() {
@@ -22,12 +22,12 @@
 <template>
   <input
     type="radio"
-    :id="reponse.id"
+    :id="answer.id"
     v-model="selectedOption"
-    :value="reponse.id"
+    :value="answer.id"
     :name="field"
     @change="emitValue" />
-  <label :for="reponse.id">{{ reponse.content }}</label>
+  <label :for="answer.id">{{ answer.content }}</label>
 </template>
 
 <style scoped>

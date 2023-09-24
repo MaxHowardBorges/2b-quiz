@@ -42,12 +42,12 @@ export const socketModule = {
     },
     async loadNextQuestion({ dispatch, commit }) {
       await dispatch('getQuestions');
-      commit('changePage', '/reponse');
+      commit('changePage', '/answer');
     },
     loadEnd({ commit, getters }) {
       const socket = getters.getSocket;
       socket.disconnect();
-      commit('changePage', '/fin');
+      commit('changePage', '/end');
     },
   },
   getters: {

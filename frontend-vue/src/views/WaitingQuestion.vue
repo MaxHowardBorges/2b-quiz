@@ -2,7 +2,7 @@
   <div class="participant-waiting-page">
     <h1>En attente du prochain question</h1>
     <div class="session-info">
-      <p>ID de Session : {{ sessionID }}</p>
+      <p>ID de Session : {{ idSession }}</p>
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
   export default {
     data() {
       return {
-        sessionID: ref(''),
+        idSession: ref(''), // TODO Get idsession from store
       };
     },
   };
