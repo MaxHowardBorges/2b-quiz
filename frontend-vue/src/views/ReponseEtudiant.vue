@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <h2><b>Question</b></h2>
-    <QuestionComp :quest="questionData.question.content" />
+    <QuestionComp :quest="questionData.content" />
   </div>
   <div class="reponseQ">
     <ComponentBlockReponse
-      :question="questionData.question"
+      :question="questionData"
       :answers="questionData.answers" />
   </div>
   <div class="btnD"></div>

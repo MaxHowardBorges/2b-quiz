@@ -8,7 +8,7 @@ import { AnswerMapper } from './mapper/answer.mapper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Answer, Question])],
-  exports: [TypeOrmModule, QuestionService],
+  exports: [TypeOrmModule, QuestionService, AnswerMapper],
   controllers: [QuestionController],
   providers: [QuestionService, AnswerMapper],
 })

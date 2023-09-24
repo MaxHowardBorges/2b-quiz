@@ -33,7 +33,7 @@ export class SessionService {
     session.userAnswers.set(username, new Map<Question, Answer>());
   }
 
-  currentQuestion(idSession: string): any {
+  currentQuestion(idSession: string): Question {
     if (this.sessionMap.get(idSession) == undefined) {
       throw new IdSessionNoneException();
     }
@@ -54,9 +54,8 @@ export class SessionService {
     ) {
       throw new AnswersNoneException();
     }
-    const answers = this.answerMapper.mapAnswersStudentDtos(question.answers);
 
-    return { question, answers };
+    return question;
   }
 
   async saveAnswer(idSession: string, idAnswer: number, username: string) {

@@ -2,10 +2,14 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
+import { SessionMapper } from '../mapper/session.mapper';
 
 @Controller('session')
 export class SessionController {
-  constructor(private sessionService: SessionService) {}
+  constructor(
+    private sessionService: SessionService,
+    private readonly sessionMapper: SessionMapper,
+  ) {}
 
   @Post('/join')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -17,7 +21,8 @@ export class SessionController {
   getCurrentQuestion(
     @Body() idSession: { idSession: string },
   ): CurrentQuestionDto {
-    return this.sessionService.currentQuestion(idSession.idSession);
+    const question = this.sessionService.currentQuestion(idSession.idSession);
+    return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
   @Post('/respond')

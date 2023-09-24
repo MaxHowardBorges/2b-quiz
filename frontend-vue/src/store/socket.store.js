@@ -13,7 +13,7 @@ export const socketModule = {
   actions: {
     connectToWebSocket({ commit, dispatch }) {
       console.log('attempt to connect to ' + process.env.VUE_APP_WS_URL);
-      const socket = new io(process.env.VUE_APP_WS_URL);
+      const socket = io(process.env.VUE_APP_WS_URL);
       socket.on('connect', () => {
         console.log('connected to ' + process.env.VUE_APP_WS_URL);
         commit('setSocket', socket);
