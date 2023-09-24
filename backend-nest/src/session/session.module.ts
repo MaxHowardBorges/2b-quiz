@@ -4,10 +4,11 @@ import { SessionService } from './service/session.service';
 import { QuestionModule } from '../question/question.module';
 import { QuestionService } from '../question/service/question.service';
 import { SessionMapper } from './mapper/session.mapper';
+import { EventModule } from '../event/event.module';
 
 @Module({
   controllers: [SessionController],
   providers: [SessionService, SessionMapper, QuestionService],
-  imports: [QuestionModule],
+  imports: [QuestionModule, EventModule],
 })
 export class SessionModule {}

@@ -2,11 +2,26 @@ import { Body, Injectable } from '@nestjs/common';
 import { Session } from '../session';
 import { QuestionService } from '../../question/service/question.service';
 import { Question } from '../../question/entity/question.entity';
+import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCurrentQuestion.exception';
+import { UserUnknownException } from '../exception/userUnknown.exception';
+import { IdSessionNoneException } from '../exception/idSessionNone.exception';
+import { AnswersNoneException } from '../exception/answersNone.exception';
+import { QuestionNoneException } from '../exception/questionNone.exception';
+import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
+import { AnswerMapper } from '../../question/mapper/answer.mapper';
+import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
+import { Answer } from '../../question/entity/answer.entity';
+import { EventEnum } from '../../event/enum/event.enum';
+import { EventService } from '../../event/service/event.service';
 
 @Injectable()
 export class SessionService {
-  private sessionMap: Map<string, Session> = new Map();
-  constructor(private questionService: QuestionService) {}
+  private sessionMap: Map<string, Session> = new Map<string, Session>();
+  constructor(
+    private questionService: QuestionService,
+    private answerMapper: AnswerMapper,
+    private eventService: EventService,
+  ) {}
 
   async initializeSession(): Promise<Session> {
     let idSession = this.generateIdSession();
@@ -17,7 +32,9 @@ export class SessionService {
     this.sessionMap.set(idSession, await this.createSession(idSession));
     return this.sessionMap.get(idSession);
   }
+
   generateIdSession(): string {
+    //TODO change to 6 characters
     return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
   }
 
@@ -35,44 +52,20 @@ export class SessionService {
   nextQuestion(@Body() idSession: { id: string }): Question {
     const currentSession = this.sessionMap.get(idSession.id);
     if (
-      currentSession.getQuestionNumber + 1 <
-      currentSession.getQuestionList.length
+      currentSession.questionNumber + 1 <
+      currentSession.questionList.length
     ) {
-      currentSession.setQuestionNumber = currentSession.getQuestionNumber + 1;
-      return currentSession.getQuestionList[currentSession.getQuestionNumber];
+      currentSession.questionNumber = currentSession.questionNumber + 1;
+      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession.id);
+      return currentSession.questionList[currentSession.questionNumber];
     }
+    this.eventService.sendEvent(EventEnum.END_SESSION, idSession.id);
     return null;
   }
 
   getMap() {
     return [...this.sessionMap];
   }
-
-  getCurrentQuestion(@Body() idSession: { id: string }): Question {
-    const session = this.sessionMap.get(idSession.id);
-    return session.getQuestionList[session.getQuestionNumber];
-import { Injectable } from '@nestjs/common';
-import { AnswerMapper } from '../../question/mapper/answer.mapper';
-import { Session } from '../session';
-import { QuestionService } from '../../question/service/question.service';
-import { IdSessionNoneException } from '../exception/idSessionNone.exception';
-import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
-import { AnswersNoneException } from '../exception/answersNone.exception';
-import { QuestionNoneException } from '../exception/questionNone.exception';
-import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
-import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCurrentQuestion.exception';
-import { Question } from '../../question/entity/question.entity';
-import { Answer } from '../../question/entity/answer.entity';
-import { UserUnknownException } from '../exception/userUnknown.exception';
-
-@Injectable()
-export class SessionService {
-  private sessionMap: Map<string, Session> = new Map<string, Session>();
-
-  constructor(
-    private answerMapper: AnswerMapper,
-    private questionService: QuestionService,
-  ) {}
 
   join(idSession: string, username: string): void {
     if (this.sessionMap.has(idSession) == false) {
@@ -134,23 +127,5 @@ export class SessionService {
       question,
       question.answers.find((answer) => answer.id === idAnswer),
     );
-  }
-
-  // TEST
-  createSession(): string {
-    return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
-  }
-
-  async create() {
-    let idSession = '000000';
-    do {
-      idSession = this.createSession();
-    } while (this.sessionMap.has(idSession));
-
-    this.sessionMap.set(
-      idSession,
-      new Session(idSession, await this.questionService.findAllWithQuestion()),
-    );
-    return this.sessionMap.get(idSession);
   }
 }

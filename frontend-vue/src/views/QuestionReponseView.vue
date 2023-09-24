@@ -1,16 +1,17 @@
 <template>
   <div class="home">
     <h2><b>Question</b></h2>
-    <QuestionComp
-      :quest= actualQuestion.content />
+    <QuestionComp :quest="actualQuestion.content" />
   </div>
   <div class="reponseQ">
-    <BlockReponse />
+    <ComponentBlockReponseTeacher />
   </div>
-  <btn @click='handleNextQuestion(actualSession)' nomB="Question suivante" />
+  <btn @click="handleNextQuestion(actualSession)" nomB="Question suivante" />
   <div class="btnD">
     <div class="button-group">
-      <router-link to="/findesession"><btn nomB="Arrêter la session" /></router-link>
+      <router-link to="/findesession">
+        <btn nomB="Arrêter la session" />
+      </router-link>
       <btn nomB="Changer la langue" />
     </div>
   </div>
@@ -18,15 +19,15 @@
 
 <script>
   import QuestionComp from '@/components/QuestionComp.vue';
-  import BlockReponse from '@/components/ComponentBlockReponse.vue';
   import btn from '@/components/BoutonComp.vue';
   import { mapGetters } from 'vuex';
+  import ComponentBlockReponseTeacher from '@/components/teacher/ComponentBlockReponseTeacher.vue';
 
   export default {
     name: 'QuestionReponseView',
     components: {
       QuestionComp,
-      BlockReponse,
+      ComponentBlockReponseTeacher,
       btn,
     },
     // data() {
@@ -46,8 +47,8 @@
       },
 
       handleNextQuestion(id) {
-
-        this.$store.dispatch('nextQuestion', id)
+        this.$store
+          .dispatch('nextQuestion', id)
           .then(() => {
             //this.$router.push('/question');
             console.log(this.getActualQuestion());
@@ -58,9 +59,9 @@
       },
     },
     created() {
-      this.getActualQuestion()
+      this.getActualQuestion();
     },
-    computed:{
+    computed: {
       ...mapGetters(['actualQuestion']),
       ...mapGetters(['actualSession']),
     },
@@ -76,7 +77,6 @@
     text-align: center;
     min-height: 250px;
   }
-
 
   QuestionComp {
     margin-left: 10px;
@@ -99,7 +99,5 @@
     display: flex;
     justify-content: flex-end; /* Align children to the right */
     align-items: center; /* Vertically center children */
-
   }
-
 </style>

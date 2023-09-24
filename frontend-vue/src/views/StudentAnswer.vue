@@ -4,7 +4,7 @@
     <QuestionComp :quest="questionData.content" />
   </div>
   <div class="reponseQ">
-    <ComponentBlockReponse
+    <ComponentBlockReponseStudent
       :question="questionData"
       :answers="questionData.answers" />
   </div>
@@ -15,12 +15,12 @@
   import QuestionComp from '@/components/QuestionComp.vue';
   import { mapGetters } from 'vuex';
   import { ref } from 'vue';
-  import ComponentBlockReponse from '@/components/ComponentBlockReponse.vue';
+  import ComponentBlockReponseStudent from '@/components/student/ComponentBlockReponseStudent.vue';
 
   export default {
     name: 'QuestionReponseView',
     components: {
-      ComponentBlockReponse,
+      ComponentBlockReponseStudent,
       QuestionComp,
     },
     methods: {
