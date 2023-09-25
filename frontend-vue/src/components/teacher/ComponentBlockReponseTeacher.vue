@@ -72,9 +72,12 @@
 
   div {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    justify-items: center;
+    justify-content: center;
   }
+
 
   input[type='submit'] {
     background-color: #4ac2e8;
