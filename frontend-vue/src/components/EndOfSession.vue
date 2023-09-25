@@ -3,7 +3,7 @@
     <h1>C'est la fin de la session !</h1>
     <div class="actions">
       <btn  @click='handleCreateSession()' nomB="Relancer une session" />
-      <router-link to="/menuenseignant"><btn nomB="Retourner au menu" /></router-link>
+      <router-link to="/teacher-home-page"><btn nomB="Retourner au menu" /></router-link>
     </div>
   </div>
 </template>
@@ -17,7 +17,7 @@
       handleCreateSession() {
         this.$store.dispatch('createSession')
           .then(() => {
-            this.$router.push('/attenteparticipant');
+            this.$router.push('/waiting-participant');
           })
           .catch((error) => {
             console.error('Error while creating session:', error);

@@ -1,17 +1,17 @@
 <template>
   <div class="endof-session">
-    <MenuEnseignant/>
+    <MenuTeacher/>
   </div>
 </template>
 
 <script>
   // @ is an alias to /src
-  import MenuEnseignant from '@/components/MenuEnseignant.vue'
+  import MenuTeacher from '@/components/MenuTeacher.vue'
 
   export default {
-    name: 'MenuEnseignantView',
+    name: 'MenuTeacherView',
     components: {
-      MenuEnseignant
+      MenuTeacher
     }
   }
 </script>

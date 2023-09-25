@@ -99,7 +99,7 @@ export default createStore({
 
         const question = await response.json();
         if (Object.entries(question).length === 0) {
-          getters.getRouter.push('findesession');
+          getters.getRouter.push('end-of-session');
         }
         commit('setQuestion', question);
       } catch (error) {

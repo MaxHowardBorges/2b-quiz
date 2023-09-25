@@ -1,7 +1,7 @@
 <template>
   <div>
     <ReponseCompTeacher
-      v-for="(answer, index) in questionr.answers"
+      v-for="(answer, index) in actualQuestion().answers"
       :key="index"
       :backgroundColor="getColor(index)"
       :answer-content="answer.content" />
@@ -44,9 +44,19 @@
       getColor(index) {
         return this.couleurs[index % this.couleurs.length];
       },
+      ...mapGetters(['actualQuestion']),
+      async getActualQuestion() {
+        await this.actualQuestion;
+      },
+      created() {
+        this.getActualQuestion();
+      },
+      computed: {
+        ...mapGetters(['actualQuestion']),
+
+      },
     },
-    computed: {},
-  };
+  }
 </script>
 
 <style scoped>
@@ -62,9 +72,12 @@
 
   div {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    justify-items: center;
+    justify-content: center;
   }
+
 
   input[type='submit'] {
     background-color: #4ac2e8;

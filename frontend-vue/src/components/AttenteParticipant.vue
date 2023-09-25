@@ -8,7 +8,7 @@
       </div>
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
       <div class="actions">
-        <router-link to="/menuenseignant">
+        <router-link to="/teacher-home-page">
           <BoutonComp nomB="Annuler la session" />
         </router-link>
         <BoutonComp @click="handleLaunch" nomB="Lancer la session" />
