@@ -1,5 +1,10 @@
 <template>
   <form @submit.prevent="handleJoinSession">
+    <ErrorMessageDialog
+      v-if="showErrorDialog"
+      :errorMessage="errorMessage"
+      @close="closeErrorDialog"
+    />
     <label id="id" for="id"></label>
     <input
       id="username"
@@ -20,6 +25,7 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import { ref } from 'vue';
+  import ErrorMessageDialog from '@/components/student/ErrorMessageDialog.vue';
 
   export default {
     methods: {
@@ -32,16 +38,28 @@
           await this.$store.dispatch('joinSession', body);
           console.log(this.getSuccess);
           this.$router.push('/waiting-session');
-        } catch (error) {
-          console.error('Error while joining session');
         }
+        catch (error) {
+          console.error('Error while joining session:', error);
+          this.errorMessage = 'Erreur lors de la session. Veuillez vérifier l\'ID de session.';
+          this.showErrorDialog = true;
+        }
+      },
+      closeErrorDialog() {
+        this.showErrorDialog = false;
       },
     },
     data() {
       return {
         idSession: ref(''),
         username: ref(''),
+        showErrorDialog: false,
+        errorMessage: '',
       };
+    },
+
+    components: {
+      ErrorMessageDialog,
     },
   };
 </script>
@@ -106,4 +124,5 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>
+
 
