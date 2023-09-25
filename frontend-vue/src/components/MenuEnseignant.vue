@@ -17,7 +17,7 @@
       handleCreateSession() {
         this.$store.dispatch('createSession')
           .then(() => {
-            this.$router.push('/attenteparticipant');
+            this.$router.push('/waiting-participant');
           })
           .catch((error) => {
             console.error('Error while creating session:', error);
