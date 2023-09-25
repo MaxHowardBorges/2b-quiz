@@ -11,6 +11,9 @@ import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
+import { BodyEmptyException } from '../exception/bodyEmpty.exception';
+import { Answer } from 'src/question/entity/answer.entity';
+import any = jasmine.any;
 
 @Controller('session')
 export class SessionController {
@@ -24,38 +27,33 @@ export class SessionController {
     return this.sessionService.initializeSession();
   }
 
-  @Post('/start') //TODO review utility
-  startSession(@Body() idSession: { id: string }): boolean {
-    return this.sessionService.startSession(idSession);
-  }
-
   @Post('/nextQuestion')
-  nextQuestion(
-    @Body() idSession: { id: string },
-  ): Question | NonNullable<unknown> {
-    const question = this.sessionService.nextQuestion(idSession);
+  nextQuestion(@Body() body: { id: string }): Question | NonNullable<unknown> {
+    if (body.id == undefined) {
+      throw new BodyEmptyException();
+    }
+    const question = this.sessionService.nextQuestion(body.id);
     if (question) {
       return question;
     }
     return {};
   }
 
-  @Get('/list')
-  getMap() {
-    return this.sessionService.getMap();
-  }
-
   @Post('/join')
   @HttpCode(HttpStatus.NO_CONTENT)
   joinSession(@Body() body: { idSession: string; username: string }) {
+    if (body.idSession == undefined || body.username == undefined) {
+      throw new BodyEmptyException();
+    }
     this.sessionService.join(body.idSession, body.username);
   }
 
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(
-    @Body() idSession: { idSession: string },
-  ): CurrentQuestionDto {
-    const question = this.sessionService.currentQuestion(idSession.idSession);
+  getCurrentQuestion(@Body() body: { idSession: string }): CurrentQuestionDto {
+    if (body.idSession == undefined) {
+      throw new BodyEmptyException();
+    }
+    const question = this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
@@ -64,10 +62,27 @@ export class SessionController {
   async respondQuestion(
     @Body() body: { idSession: string; answer: number; username: string },
   ) {
+    if (
+      body.idSession == undefined ||
+      body.answer == undefined ||
+      body.username == undefined
+    ) {
+      throw new BodyEmptyException();
+    }
     await this.sessionService.saveAnswer(
       body.idSession,
       body.answer,
       body.username,
     );
+  }
+
+  @Get('/getMap')
+  async getMap(@Body() body: { idSession: string }) {
+    const a = this.sessionService.getMapUser(body.idSession);
+    this.sessionService.getMap();
+    return [
+      this.sessionService.getQuestionList(body.idSession),
+      this.sessionMapper.mapUserAnswerDto(a),
+    ];
   }
 }
