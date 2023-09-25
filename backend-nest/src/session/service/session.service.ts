@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Session } from '../session';
 import { QuestionService } from '../../question/service/question.service';
 import { Question } from '../../question/entity/question.entity';
@@ -45,26 +45,34 @@ export class SessionService {
     );
   }
 
-  startSession(@Body() idSession: { id: string }): boolean {
-    return this.sessionMap.has(idSession.id);
+  startSession(idSession: string): boolean {
+    return this.sessionMap.has(idSession);
   }
 
-  nextQuestion(@Body() idSession: { id: string }): Question {
-    const currentSession = this.sessionMap.get(idSession.id);
+  nextQuestion(idSession: string): Question {
+    const currentSession = this.sessionMap.get(idSession);
     if (
       currentSession.questionNumber + 1 <
       currentSession.questionList.length
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession.id);
+      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
       return currentSession.questionList[currentSession.questionNumber];
     }
-    this.eventService.sendEvent(EventEnum.END_SESSION, idSession.id);
+    this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
+    currentSession.endSession = true;
     return null;
   }
 
   getMap() {
     return [...this.sessionMap];
+  }
+
+  getQuestionList(idSession: string) {
+    if (this.sessionMap.has(idSession) == false) {
+      throw new IdSessionNoneException();
+    }
+    return this.sessionMap.get(idSession).questionList;
   }
 
   join(idSession: string, username: string): void {
@@ -85,15 +93,7 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
 
-    if (session.questionNumber == undefined) {
-      throw new QuestionNumberNoneException();
-    }
-    const index = session.questionNumber;
-
-    if (session.questionList[index] == undefined) {
-      throw new QuestionNoneException();
-    }
-    const question = session.questionList[index];
+    const question = session.questionList[session.questionNumber];
 
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
@@ -127,5 +127,9 @@ export class SessionService {
       question,
       question.answers.find((answer) => answer.id === idAnswer),
     );
+  }
+
+  getMapUser(idSession: string) {
+    return this.sessionMap.get(idSession).userAnswers;
   }
 }
