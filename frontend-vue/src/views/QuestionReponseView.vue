@@ -9,7 +9,7 @@
   <btn @click="handleNextQuestion(actualSession)" nomB="Question suivante" />
   <div class="btnD">
     <div class="button-group">
-      <router-link to="/findesession">
+      <router-link to="/end-of-session">
         <btn nomB="Arrêter la session" />
       </router-link>
       <btn nomB="Changer la langue" />

@@ -7,8 +7,8 @@
         <img alt="Qr code" src="../assets/qrcode.png" style="width: 100px" />
       </div>
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
-      <div class="actions">
-        <router-link to="/menuenseignant">
+      <div class="actions">an
+        <router-link to="/menuteacher">
           <BoutonComp nomB="Annuler la session" />
         </router-link>
         <BoutonComp @click="handleLaunch" nomB="Lancer la session" />

@@ -3,7 +3,7 @@
     <h1>C'est la fin de la session !</h1>
     <div class="actions">
       <btn  @click='handleCreateSession()' nomB="Relancer une session" />
-      <router-link to="/menuenseignant"><btn nomB="Retourner au menu" /></router-link>
+      <router-link to="/menuteacher"><btn nomB="Retourner au menu" /></router-link>
     </div>
   </div>
 </template>

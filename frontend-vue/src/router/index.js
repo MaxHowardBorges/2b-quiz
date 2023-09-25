@@ -29,12 +29,12 @@ const routes = [
   },
 
   {
-    path: '/findesession',
-    name: 'findesession',
+    path: '/end-of-session',
+    name: 'end-of-session',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/FinDeSessionView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/EndOfSessionView.vue')
   },
 
   {
@@ -46,12 +46,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AttenteParticipantView.vue')
   },
   {
-    path: '/menuenseignant',
-    name: 'menuenseignant',
+    path: '/menuteacher',
+    name: 'menuteacher',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/MenuEnseignantView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/MenuTeacherView.vue')
   },
   {
     path: '/waiting',

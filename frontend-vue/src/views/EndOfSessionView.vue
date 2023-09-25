@@ -1,17 +1,17 @@
 <template>
   <div class="endof-session">
-    <FinDeSession/>
+    <EndOfSession/>
   </div>
 </template>
 
 <script>
   // @ is an alias to /src
-  import FinDeSession from '@/components/FinDeSession.vue'
+  import EndOfSession from '@/components/EndOfSession.vue'
 
   export default {
     name: 'CreateSessionView',
     components: {
-      FinDeSession
+      EndOfSession
     }
   }
 </script>
