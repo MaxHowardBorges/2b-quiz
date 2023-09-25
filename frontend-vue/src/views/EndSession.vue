@@ -1,7 +1,9 @@
 <template>
   <div class="participant-waiting-page">
     <h1>Fin du Questionnaire <br> Merci d'avoir participé</h1>
+
     <div class="actions">
+      <tableP />
       <button @click="quitSession">Quitter la session</button>
       <button >Se déconnecter</button>
       <button >Paramètres</button>
@@ -10,6 +12,8 @@
 </template>
 
 <script>
+  import tableP from '@/components/QuizzResultsTable.vue';
+
   export default {
     methods: {
       quitSession() {
@@ -17,17 +21,19 @@
         console.log('Session quittée');
       },
     },
+    components: {
+      tableP
+    }
   };
 </script>
 
 <style scoped>
   h1{
-    position: absolute;
+
     top: 150px;
   }
 
   .actions{
-    position: absolute;
     bottom: 300px;
   }
 
@@ -36,10 +42,10 @@
     justify-content: center;
     display: flex;
     align-items: center;
-        height: 100vh;
-        margin: 0;
-        text-align: center;
-    }
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+  }
 
     label {
         font-size: 16px;
@@ -74,5 +80,12 @@
 
   .language-switch button {
     font-size: 14px;
+  }
+
+  *{
+    align-content: center;
+    align-items: center;
+    align-self: center;
+    background-color:white ;
   }
 </style>
