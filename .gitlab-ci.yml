@@ -1,0 +1,30 @@
+stages:
+  - build
+  - test
+
+variables:
+  MYSQL_ROOT_PASSWORD: root
+
+services:
+  - name: mariadb:latest
+    alias: mariadb
+
+build-front:
+  stage: build
+  script:
+    - yarn start-fronted-prod
+
+build-back:
+  stage: build
+  script:
+    - yarn start-backend-prod
+
+test:
+  stage: test
+  script:
+    - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
+#    - yarn test TODO
+    - docker-compose -f /backend-nest/docker-compose.dev.yaml down
+
+
+
