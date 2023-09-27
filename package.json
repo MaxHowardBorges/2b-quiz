@@ -1,0 +1,17 @@
+{
+  "name": "equipe2b",
+  "version": "1.0.0",
+  "description": "Create .env.local file for each app with your environment parameters",
+  "private": true,
+  "workspaces": [
+    "backend-nest",
+    "frontend-vue"
+  ],
+  "scripts": {
+    "start-backend": "cd ./backend-nest/ && docker-compose -f .\\docker-compose.dev.yaml up -d && yarn typeorm:migrate && yarn start",
+    "start-backend-prod": "cd ./backend-nest/ && docker-compose -f .\\docker-compose.dev.yaml up -d && yarn build && yarn typeorm:migration && yarn start:prod",
+    "start-frontend": "cd ./frontend-vue/ && yarn serve",
+    "start-frontend-prod": "cd ./frontend-vue/ && yarn serve",
+    "docker:down": "cd ./backend-nest/ && docker-compose -f .\\docker-compose.dev.yaml down"
+  }
+}
