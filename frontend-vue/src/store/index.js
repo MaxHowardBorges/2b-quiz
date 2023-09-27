@@ -9,6 +9,7 @@ export default createStore({
     idSession: null,
     success: null,
     username: null,
+    tabResult: null,
   },
   getters: {
     actualQuestion: (state) => state.question,
@@ -24,6 +25,9 @@ export default createStore({
     },
     getUsername: (state) => {
       return state.username;
+    },
+    getTabResult: (state) => {
+      return state.tabResult;
     },
   },
   mutations: {
@@ -45,20 +49,11 @@ export default createStore({
     changePage(state, pageLink) {
       state.router.push(pageLink);
     },
+    setTabResult(state, tabResult) {
+      state.tabResult = tabResult;
+    },
   },
   actions: {
-    /*async fetchQuestion({ commit }) {
-      try {
-        const response = await fetch(process.env.VUE_APP_API_URL+"/session/question");
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question');
-        }
-        const question = await response.json();
-        commit('setQuestion', question);
-      } catch (error) {
-        console.error(error);
-      }
-    },*/
 
     async createSession({ commit }) {
       try {
@@ -76,6 +71,7 @@ export default createStore({
         console.error(error);
       }
     },
+
     async nextQuestion({ commit, getters }) {
       const body = { id: getters.actualSession };
       console.log(JSON.stringify(body));
@@ -107,6 +103,32 @@ export default createStore({
         throw error;
       }
     },
+
+    async getResults({ commit, getters }) {
+      console.log(getters.actualSession);
+      const body = { id: getters.actualSession };
+      console.log(body);
+      try {
+        const response = await fetch(
+          process.env.VUE_APP_API_URL + '/session/getMap?idsession='+body.id,
+          { method: 'GET',
+                headers: {
+              'Content-Type': 'application/json',
+            },
+            // body: JSON.stringify(body),
+          },
+        );
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question');
+        }
+        const tabResult = await response.json();
+        commit('setTabResult', tabResult);
+        //console.log(tabResult);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
   },
   modules: { socketModule, fetchAPIModule },
 });

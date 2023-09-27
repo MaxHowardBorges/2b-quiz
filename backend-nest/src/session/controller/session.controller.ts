@@ -5,7 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Post,
+  Post, Query,
 } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
@@ -76,12 +76,12 @@ export class SessionController {
     );
   }
 
-  @Get('/getMap')
-  async getMap(@Body() body: { idSession: string }) {
-    const a = this.sessionService.getMapUser(body.idSession);
+  @Get('/getMap')//?idsession={l'id du session}
+  async getMap(@Query('idsession')idSession: string ) {
+    const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
     return [
-      this.sessionService.getQuestionList(body.idSession),
+      this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ];
   }

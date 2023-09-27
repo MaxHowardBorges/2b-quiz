@@ -4,15 +4,18 @@
     <div class="actions">
       <btn  @click='handleCreateSession()' nomB="Relancer une session" />
       <router-link to="/teacher-home-page"><btn nomB="Retourner au menu" /></router-link>
+
+      <tableP />
     </div>
   </div>
 </template>
 
 <script>
   import btn from '@/components/BoutonComp.vue';
+  import tableP from '@/components/QuizzResultsTable.vue';
 
   export default {
-    components: { btn },
+    components: { tableP, btn },
     methods: {
       handleCreateSession() {
         this.$store.dispatch('createSession')

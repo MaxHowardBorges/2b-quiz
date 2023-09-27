@@ -3,7 +3,6 @@
     <h1>Fin du Questionnaire <br> Merci d'avoir participé</h1>
 
     <div class="actions">
-      <tableP />
       <button @click="quitSession">Quitter la session</button>
       <button >Se déconnecter</button>
       <button >Paramètres</button>
@@ -12,7 +11,6 @@
 </template>
 
 <script>
-  import tableP from '@/components/QuizzResultsTable.vue';
 
   export default {
     methods: {
@@ -21,9 +19,6 @@
         console.log('Session quittée');
       },
     },
-    components: {
-      tableP
-    }
   };
 </script>
 
