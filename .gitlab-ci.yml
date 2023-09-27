@@ -9,6 +9,11 @@ services:
   - name: mariadb:latest
     alias: mariadb
 
+build:
+  stage: build
+  script:
+    - yarn install
+
 build-front:
   stage: build
   script:
