@@ -2,18 +2,15 @@
   <table class="styled-table">
     <div v-if="this.tabresult != null">
     <tr>
-      <th>Nom du Participant</th>
-      <th>Réponse à la Question 1</th>
-      <th>Réponse à la Question 2</th>
-      <th>Réponse à la Question 3</th>
+      <th>Participant</th>
+      <th v-for="(question, index) in this.tabresult[0]" :key="index">{{ question.content }}</th>
     </tr>
 
 
       <tr v-for="(participant, index) in this.tabresult[1]" :key="index">
         <td v-if="participant">{{ participant.username }}</td>
         <td v-else>No participant data available</td>
-        <td v-for="(rep, ind) in participant.tab" :key="ind">{{ this.tabresult[0][rep.idQuestion-1]?.answers.find(answer => answer.id === rep.idAnswer).content || "bonjour, je suis désolé mais il y a une erreur" }}</td>
-
+        <td v-for="(rep, ind) in participant.tab" :key="ind" :style="{'background-color': isAnswerCorrect(rep) ? 'lightgreen' : 'tomato'}">{{ this.tabresult[0][rep.idQuestion-1]?.answers.find(answer => answer.id === rep.idAnswer).content || "bonjour, je suis désolé mais il y a une erreur" }}</td>
       </tr>
     </div>
 
@@ -35,21 +32,21 @@
       async handleCreateTable() {
         try {
           await this.$store.dispatch('getResults');
-          const tabResult = await this.$store.getters.getTabResult;
-          console.log("-----------------------------------------");
-          console.log(tabResult[1][0].username);
-          console.log("-----------------------------------------");
+          // const tabResult = await this.$store.getters.getTabResult;
+          // console.log("-----------------------------------------");
+          // console.log(tabResult[1][0].username);
+          // console.log("-----------------------------------------");
           this.$router.push('/end-of-session');
         } catch (error) {
           console.error('Error while creating session:', error);
         }
       },
       async getTab() {
-        const tab = await this.$store.getters.getTabResult;
-        console.log("aa");
-        console.log(tab);
-        return tab;
-      }
+        return await this.$store.getters.getTabResult;
+      },
+      isAnswerCorrect(rep) {
+        return this.tabresult[0][rep.idQuestion - 1].answers.find(answer => answer.id === rep.idAnswer).isCorrect;
+      },
     },
     async created() {
       await this.handleCreateTable()
