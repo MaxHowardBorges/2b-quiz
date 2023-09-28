@@ -8,6 +8,8 @@ variables:
 services:
   - name: mariadb:latest
     alias: mariadb
+  - name: node:latest
+    alias: node
 
 build:
   stage: build
