@@ -11,7 +11,7 @@ services:
   - name: node:latest
     alias: node
 
-build:
+build: &build
   stage: build
   image: yarnpkg/node-yarn:latest
   script:
@@ -20,14 +20,14 @@ build:
 
 build-front:
   stage: build
+  <<: *build
   script:
-    - build
     - yarn start-fronted-prod
 
 build-back:
   stage: build
+  <<: *build
   script:
-    - build
     - yarn start-backend-prod
 
 test:
