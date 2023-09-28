@@ -22,13 +22,13 @@ build-front:
   stage: build
   <<: *build
   script:
-    - yarn start-fronted-prod
+    - yarn build-frontend-prod
 
 build-back:
   stage: build
   <<: *build
   script:
-    - yarn start-backend-prod
+    - yarn build-backend-prod
 
 test:
   stage: test
