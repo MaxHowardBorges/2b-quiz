@@ -13,6 +13,7 @@ services:
 
 build:
   stage: build
+  image: yarnpkg/node-yarn:latest
   script:
     - npm install yarn
     - yarn install
@@ -20,15 +21,18 @@ build:
 build-front:
   stage: build
   script:
+    - build
     - yarn start-fronted-prod
 
 build-back:
   stage: build
   script:
+    - build
     - yarn start-backend-prod
 
 test:
   stage: test
+  image: yarnpkg/node-yarn:latest
   script:
     - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
 #    - yarn test TODO
