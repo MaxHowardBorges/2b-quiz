@@ -12,6 +12,7 @@ services:
 build:
   stage: build
   script:
+    - npm install yarn
     - yarn install
 
 build-front:
