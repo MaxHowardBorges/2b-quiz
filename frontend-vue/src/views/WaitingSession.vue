@@ -5,25 +5,28 @@
       <p>ID de Session : {{ idSession }}</p>
     </div>
     <div class="actions">
-      <button @click="quitSession">Quitter la session</button>
+      <router-link to="/">
+        <button @click="quitSession">Quitter la session</button>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
   import { ref } from 'vue';
+  import { mapGetters } from 'vuex';
 
   export default {
-    data() {
+    setup() {
       return {
-        idSession: ref(''), // TODO Get idsession from store
+        idSession: ref('data'),
       };
     },
-    methods: {
-      quitSession() {
-        //TODO Logique pour quitter la session
-        console.log('Session quittée');
-      },
+    computed: {
+      ...mapGetters(['getIdSession']),
+    },
+    mounted() {
+      this.idSession = this.getIdSession;
     },
   };
 </script>

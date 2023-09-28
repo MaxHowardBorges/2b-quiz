@@ -49,6 +49,11 @@ export const socketModule = {
       socket.disconnect();
       commit('changePage', '/end');
     },
+    socketDisconnect({ commit, getters }) {
+      const socket = getters.getSocket;
+      socket.disconnect();
+      commit('changePage', '/');
+    },
   },
   getters: {
     getSocket: (state) => state.socket,

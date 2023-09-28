@@ -9,12 +9,19 @@
 
 <script>
   import { ref } from 'vue';
+  import { mapGetters } from 'vuex';
 
   export default {
-    data() {
+    setup() {
       return {
-        idSession: ref(''), // TODO Get idsession from store
+        idSession: ref('data'),
       };
+    },
+    computed: {
+      ...mapGetters(['getIdSession']),
+    },
+    mounted() {
+      this.idSession = this.getIdSession;
     },
   };
 </script>
