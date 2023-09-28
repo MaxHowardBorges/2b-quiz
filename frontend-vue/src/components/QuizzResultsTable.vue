@@ -12,8 +12,8 @@
       <tr v-for="(participant, index) in this.tabresult[1]" :key="index">
         <td v-if="participant">{{ participant.username }}</td>
         <td v-else>No participant data available</td>
-        <!--      <td v-for="(rep, ind) in participant.tab" :key="ind">{{ this.$store.getters.getTabResult[0][rep.idQuestion].answers[rep.idAnswer].content }}</td>-->
-        <td v-for="(rep, ind) in participant.tab" :key="ind">{{ rep.idAnswer }}</td>
+        <td v-for="(rep, ind) in participant.tab" :key="ind">{{ this.tabresult[0][rep.idQuestion-1]?.answers.find(answer => answer.id === rep.idAnswer).content || "bonjour, je suis désolé mais il y a une erreur" }}</td>
+
       </tr>
     </div>
 
@@ -22,6 +22,8 @@
 
 <script>
 
+  import { id } from 'postcss-selector-parser';
+
   export default {
     data() {
       return {
@@ -29,6 +31,7 @@
       }
     },
     methods: {
+      id,
       async handleCreateTable() {
         try {
           await this.$store.dispatch('getResults');
