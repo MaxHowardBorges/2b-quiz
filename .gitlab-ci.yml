@@ -28,8 +28,9 @@ build-front:
 build-back:
   stage: build
   <<: *build
+  services:
+    - nestjs/cli
   script:
-    - yarn global add @nestjs/cli
     - yarn build-backend-prod
 
 test:
