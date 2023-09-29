@@ -15,8 +15,10 @@ build: &build
   stage: build
   image: yarnpkg/node-yarn:latest
   script:
-    - npm install yarn
+    - yarn -v
     - yarn install
+    - npm install -g @vue/cli
+    - npm i -g @nestjs/cli
 
 build-front:
   stage: build
