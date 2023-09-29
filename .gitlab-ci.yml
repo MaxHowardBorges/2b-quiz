@@ -32,6 +32,7 @@ build-back:
   before_script:
     - npm install -g @nestjs/cli
   script:
+    - ls /backend-nest
     - yarn build-backend-prod
 
 test:
