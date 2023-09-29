@@ -16,14 +16,13 @@ build: &build
   image: node:18.18.0-alpine3.18
   script:
     - yarn -v
-    - yarn install
 
 build-front:
   stage: build
   <<: *build
   before_script:
     - yarn global add @vue/cli
-    - cd ./frontend-vue/ && yarn install
+    - yarn install
   script:
     - yarn build-frontend-prod
 
@@ -32,7 +31,7 @@ build-back:
   <<: *build
   before_script:
     - npm install -g @nestjs/cli
-    - cd ./backend-nest/ && yarn install
+    - yarn install
   script:
     - yarn build-backend-prod
 
