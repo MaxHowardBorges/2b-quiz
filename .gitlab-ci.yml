@@ -30,7 +30,7 @@ build-back:
   stage: build
   <<: *build
   before_script:
-    - yarn global add @nestjs/cli
+    - npm install -g @nestjs/cli
   script:
     - yarn build-backend-prod
 
