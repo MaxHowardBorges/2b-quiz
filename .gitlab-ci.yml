@@ -13,7 +13,7 @@ services:
 
 build: &build
   stage: build
-  image: yarnpkg/node-yarn:latest
+  image: node:18.18.0-alpine3.18
   script:
     - yarn -v
     - yarn install
