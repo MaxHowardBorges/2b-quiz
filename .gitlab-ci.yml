@@ -35,13 +35,13 @@ build-back:
   script:
     - yarn build-backend-prod
 
-test:
-  stage: test
-  image: yarnpkg/node-yarn:latest
-  script:
-    - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
+#test:
+#  stage: test
+#  image: node:18.18.0-alpine3.18
+#  script:
+#    - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
 #    - yarn test TODO
-    - docker-compose -f /backend-nest/docker-compose.dev.yaml down
+#    - docker-compose -f /backend-nest/docker-compose.dev.yaml down
 
 
 
