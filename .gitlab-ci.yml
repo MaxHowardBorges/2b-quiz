@@ -17,19 +17,19 @@ build: &build
   script:
     - yarn -v
     - yarn install
-    - npm install -g @vue/cli
-    - npm i -g @nestjs/cli
 
 build-front:
   stage: build
   <<: *build
   script:
+    - npm install -g @vue/cli
     - yarn build-frontend-prod
 
 build-back:
   stage: build
   <<: *build
   script:
+    - npm i -g @nestjs/cli
     - yarn build-backend-prod
 
 test:
