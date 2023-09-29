@@ -21,15 +21,16 @@ build: &build
 build-front:
   stage: build
   <<: *build
+  before_script:
+    - yarn global add @vue/cli
   script:
-    - yarn add @vue/cli
     - yarn build-frontend-prod
 
 build-back:
   stage: build
   <<: *build
-  services:
-    - nestjs/cli
+  before_script:
+    - yarn global add @nestjs/cli
   script:
     - yarn build-backend-prod
 
