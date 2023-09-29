@@ -23,6 +23,7 @@ build-front:
   <<: *build
   before_script:
     - yarn global add @vue/cli
+    - cd ./frontend-vue/ && yarn install
   script:
     - yarn build-frontend-prod
 
@@ -31,8 +32,8 @@ build-back:
   <<: *build
   before_script:
     - npm install -g @nestjs/cli
+    - cd ./backend-nest/ && yarn install
   script:
-    - ls
     - yarn build-backend-prod
 
 test:
