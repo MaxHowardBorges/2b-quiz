@@ -69,6 +69,12 @@ const routes = [
     name: 'end',
     component: () => import(/* webpackChunkName: "about" */ '../views/EndSession.vue')
   },
+  //loginView
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "about" */ '../views/loginView.vue')
+  },
 ];
 
 const router = createRouter({
