@@ -69,6 +69,11 @@ const routes = [
     name: 'end',
     component: () => import(/* webpackChunkName: "about" */ '../views/EndSession.vue')
   },
+  {
+    path: '/teacher-create-quiz',
+    name: 'teacher-create-quiz',
+    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherCreateQuiz.vue')
+  },
 ];
 
 const router = createRouter({
