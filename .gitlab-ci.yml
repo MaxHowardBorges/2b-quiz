@@ -1,0 +1,47 @@
+stages:
+  - build
+  - test
+
+variables:
+  MYSQL_ROOT_PASSWORD: root
+
+services:
+  - name: mariadb:latest
+    alias: mariadb
+  - name: node:latest
+    alias: node
+
+build: &build
+  stage: build
+  image: node:18.18.0-alpine3.18
+  script:
+    - yarn -v
+
+build-front:
+  stage: build
+  <<: *build
+  before_script:
+    - yarn global add @vue/cli
+    - yarn install
+#  script:
+#    - yarn build-frontend-prod
+
+build-back:
+  stage: build
+  <<: *build
+  before_script:
+    - npm install -g @nestjs/cli
+    - yarn install
+  script:
+    - yarn build-backend-prod
+
+#test:
+#  stage: test
+#  image: node:18.18.0-alpine3.18
+#  script:
+#    - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
+#    - yarn test TODO
+#    - docker-compose -f /backend-nest/docker-compose.dev.yaml down
+
+
+
