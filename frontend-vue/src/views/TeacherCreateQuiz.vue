@@ -9,14 +9,24 @@
       v-model="QuizName"
       style="border: 1px solid #000000;margin-bottom: 20px"   />
 
-  <div>
+  <div style='margin-bottom: 40px'>
     <select id="typeInput" name="typeInput" class="input">
       <option>A choix multiples</option>
       <option>Ouverte</option>
       <option>Vrai/Faux</option>
     </select></div>
+<div id='qna'>
+    <input id='Question' type='text' placeholder='Entrez votre question' style="border: 1px solid #000000;margin-bottom: 20px;height:50px;"/>
 
+    <input id='Reponse' type='text' placeholder='Choix 1' style="border: 1px solid #000000;margin-bottom: 10px"/>
+    <input id='Reponse' type='text' placeholder='Choix 2' style="border: 1px solid #000000;margin-bottom: 10px"/>
+</div>
   </div>
+
+
+
+
+
 </template>
 
 <script>
@@ -43,5 +53,17 @@
     color: #FFD700; /* Couleur jaune */
   }
 
+  input::placeholder {
+    color: #5e6567;
+    opacity: 50%;
+    margin-left: 50%;
+  }
+  input:placeholder-shown {
+    border: 1px solid #ffffff;
+  }
+
+  #qna{
+    display: grid;
+  }
 
 </style>
