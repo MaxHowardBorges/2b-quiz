@@ -5,15 +5,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Post, Query,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
 import { BodyEmptyException } from '../exception/bodyEmpty.exception';
-import { Answer } from 'src/question/entity/answer.entity';
-import any = jasmine.any;
 
 @Controller('session')
 export class SessionController {
@@ -76,8 +75,8 @@ export class SessionController {
     );
   }
 
-  @Get('/getMap')//?idsession={l'id du session}
-  async getMap(@Query('idsession')idSession: string ) {
+  @Get('/getMap') //?idsession={l'id du session}
+  async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
     return [
