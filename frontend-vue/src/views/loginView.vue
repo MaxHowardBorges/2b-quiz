@@ -43,21 +43,7 @@
         <label for="password">Mot de passe :</label>
         <input type="password" id="password" v-model="password" required>
       </div>
-      <div class="form-group">
-        <label for="accountType">Type de compte :</label>
-        <div class='btnRadio'>
-          <label>
-            <input type="radio" id="student" value="student" v-model="accountType"> Élève
-          </label>
-          <label>
-            <input type="radio" id="teacher" value="teacher" v-model="accountType"> Enseignant
-          </label>
-          <label>
-            <input type="radio" id="admin" value="admin" v-model="accountType"> Admin
-          </label>
-        </div>
-      </div>
-      <router-link to="/"><p>Créer un compte</p></router-link>
+      <router-link to="/register"><p>Créer un compte</p></router-link>
       <BoutonComp type="submit" nomB="Se connecter"/>
     </form>
   </div>
