@@ -32,6 +32,15 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/EndOfSessionView.vue')//EndOfSessionView//FinDeSessionView
   },
+  {
+    path: '/create-questionary',
+    name: 'create-questionary',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/CreateQuestionaryView.vue')//EndOfSessionView//FinDeSessionView
+  },
+
 
   {
     path: '/waiting-participant',//waiting-participant

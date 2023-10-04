@@ -4,6 +4,9 @@
 
     <btn @click='handleCreateSession' nomB="Créer une session" />
     <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
+    <router-link to="/create-questionary"><btn nomB="Créer un questionnaire" /></router-link>
+
+
 
   </div>
 </template>
