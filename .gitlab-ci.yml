@@ -23,8 +23,8 @@ build-front:
   before_script:
     - yarn global add @vue/cli
     - yarn install
-#  script:
-#    - yarn build-frontend-prod
+  script:
+    - yarn build-frontend-prod
 
 build-back:
   stage: build
