@@ -21,7 +21,6 @@ build-front:
   stage: build
   <<: *build
   before_script:
-    - yarn global add @vue/cli
     - yarn install
   script:
     - yarn build-frontend-prod
@@ -30,7 +29,6 @@ build-back:
   stage: build
   <<: *build
   before_script:
-    - npm install -g @nestjs/cli
     - yarn install
   script:
     - yarn build-backend-prod
