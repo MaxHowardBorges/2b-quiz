@@ -13,8 +13,6 @@ export async function getTypeOrmConfig(
     database: configService.getOrThrow<string>('DB_DATABASE'),
     entities: ['dist/**/*.entity{.ts,.js}'],
     migrations: ['dist/migrations/*{.ts,.js}'],
-    synchronize: !(
-      configService.getOrThrow<string>('APP_ENV') === 'production'
-    ),
+    synchronize: false,
   };
 }
