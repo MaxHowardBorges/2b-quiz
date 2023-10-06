@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionModule } from './question/question.module';
 import { SessionModule } from './session/session.module';
 import { EventModule } from './event/event.module';
+import { QuestionnaryModule } from './questionnary/module/questionnary.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EventModule } from './event/event.module';
     QuestionModule,
     SessionModule,
     EventModule,
+    QuestionnaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
