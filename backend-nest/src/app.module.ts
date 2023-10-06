@@ -8,6 +8,7 @@ import { QuestionModule } from './question/question.module';
 import { SessionModule } from './session/session.module';
 import { EventModule } from './event/event.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     SessionModule,
     EventModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
