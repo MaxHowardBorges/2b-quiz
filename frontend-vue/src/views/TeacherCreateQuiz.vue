@@ -86,13 +86,6 @@ radio_button_unchecked
     display: grid;
   }
 
-  #remove{
-
-  }
-
-  #check{
-
-  }
 
   .validate {
     background-color: #f1dc66;
