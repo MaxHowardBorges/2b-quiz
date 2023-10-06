@@ -80,6 +80,11 @@ const routes = [
     name: 'register',
     component: () => import(/* webpackChunkName: "about" */ '../views/NewAccountView.vue')
   },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import(/* webpackChunkName: "about" */ '../views/AdminView.vue')
+  },
 ];
 
 const router = createRouter({
