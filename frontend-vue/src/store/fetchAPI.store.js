@@ -15,7 +15,7 @@ export const fetchAPIModule = {
   actions: {
     async joinSession({ commit, dispatch }, body) {
       const response = await fetch(
-        process.env.VUE_APP_API_URL + '/session/join',
+        import.meta.env.VITE_API_URL + '/session/join',
         {
           method: 'POST',
           headers: {
@@ -39,7 +39,7 @@ export const fetchAPIModule = {
       console.log(getters.getIdSession);
       try {
         const response = await fetch(
-          process.env.VUE_APP_API_URL + '/session/question/current',
+          import.meta.env.VITE_API_URL + '/session/question/current',
           {
             method: 'POST',
             headers: {
@@ -70,7 +70,7 @@ export const fetchAPIModule = {
       console.log(JSON.stringify(body));
       try {
         const response = await fetch(
-          process.env.VUE_APP_API_URL + '/session/respond',
+          import.meta.env.VITE_API_URL + '/session/respond',
           {
             method: 'POST',
             headers: {
