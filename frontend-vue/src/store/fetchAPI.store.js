@@ -29,8 +29,8 @@ export const fetchAPIModule = {
         throw new Error('Erreur de chargement de la question');
       }
 
-      dispatch('connectToWebSocket');
       commit('setIdSession', body.idSession);
+      dispatch('connectToSSE');
       commit('setUsername', body.username);
     },
     async getQuestions({ commit, getters }) {

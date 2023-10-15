@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { socketModule } from '@/store/socket.store';
+import { eventSourceModule } from '@/store/eventSource.store';
 import { fetchAPIModule } from '@/store/fetchAPI.store';
 
 export default createStore({
@@ -129,5 +129,5 @@ export default createStore({
       }
     },
   },
-  modules: { socketModule, fetchAPIModule },
+  modules: { socketModule: eventSourceModule, fetchAPIModule },
 });
