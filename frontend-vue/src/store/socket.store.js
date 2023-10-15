@@ -12,10 +12,10 @@ export const socketModule = {
   },
   actions: {
     connectToWebSocket({ commit, dispatch }) {
-      console.log('attempt to connect to ' + process.env.VUE_APP_WS_URL);
-      const socket = io(process.env.VUE_APP_WS_URL);
+      console.log('attempt to connect to ' + import.meta.env.VITE_WS_URL);
+      const socket = io(import.meta.env.VITE_WS_URL);
       socket.on('connect', () => {
-        console.log('connected to ' + process.env.VUE_APP_WS_URL);
+        console.log('connected to ' + import.meta.env.VITE_WS_URL);
         commit('setSocket', socket);
         dispatch('listenToEvents');
       });

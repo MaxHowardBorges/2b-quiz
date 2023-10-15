@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "Create .env.local file for each app with your environment parameters",
   "private": true,
-  "workspaces": [
-    "backend-nest",
-    "frontend-vue"
-  ],
+  "workspaces": {
+    "packages": ["backend-nest","frontend-vue"],
+    "nohoist": ["**/vue", "**/vue**", "**/@nestjs/**", "**/@nestjs"]
+    },
   "scripts": {
-    "start-backend": "cd ./backend-nest/ && docker-compose -f .\\docker-compose.dev.yaml up -d && yarn typeorm:migrate && yarn start",
-    "start-backend-prod": "cd ./backend-nest/ && yarn typeorm:migration && yarn start:prod",
+    "setup-bdd" : "cd ./backend-nest/ && docker-compose -f .\\docker-compose.dev.yaml up -d",
+    "start-backend": "cd ./backend-nest/ && yarn typeorm:migrate && yarn start",
+    "start-backend-prod": "cd ./backend-nest/ && yarn start:prod",
     "build-backend-prod": "cd ./backend-nest/ && yarn build",
     "start-frontend": "cd ./frontend-vue/ && yarn serve",
     "build-frontend-prod": "cd ./frontend-vue/ && yarn build",
