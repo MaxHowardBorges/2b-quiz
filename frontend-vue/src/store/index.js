@@ -54,11 +54,10 @@ export default createStore({
     },
   },
   actions: {
-
     async createSession({ commit }) {
       try {
         const response = await fetch(
-          process.env.VUE_APP_API_URL + '/session/create',
+          import.meta.env.VITE_API_URL + '/session/create',
           { method: 'POST' },
         );
         if (!response.ok) {
@@ -78,7 +77,7 @@ export default createStore({
       console.log(getters.actualSession);
       try {
         const response = await fetch(
-          process.env.VUE_APP_API_URL + '/session/nextQuestion',
+          import.meta.env.VITE_API_URL + '/session/nextQuestion',
           {
             method: 'POST',
             headers: {
@@ -110,9 +109,10 @@ export default createStore({
       console.log(body);
       try {
         const response = await fetch(
-          process.env.VUE_APP_API_URL + '/session/getMap?idsession='+body.id,
-          { method: 'GET',
-                headers: {
+          import.meta.env.VITE_API_URL + '/session/getMap?idsession=' + body.id,
+          {
+            method: 'GET',
+            headers: {
               'Content-Type': 'application/json',
             },
             // body: JSON.stringify(body),
@@ -128,7 +128,6 @@ export default createStore({
         console.error(error);
       }
     },
-
   },
   modules: { socketModule, fetchAPIModule },
 });
