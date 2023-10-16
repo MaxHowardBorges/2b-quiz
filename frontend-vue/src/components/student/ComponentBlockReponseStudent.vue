@@ -78,7 +78,9 @@
 
   div {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-items: center;
+    justify-content: center;
     align-items: center;
   }
 
