@@ -4,7 +4,7 @@
       <h1>En attente des participants...</h1>
       <div class="session-info">
         <p>ID de Session : {{ idSession }}</p>
-        <img alt="Qr code" src="../assets/qrcode.png" style="width: 100px" />
+        <img alt="Qr code" src="../assets/QR_CODE.png" style="width: 100px" />
       </div>
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
       <div class="actions">
