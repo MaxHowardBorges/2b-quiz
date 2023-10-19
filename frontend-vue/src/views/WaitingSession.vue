@@ -14,7 +14,8 @@
 
 <script>
   import { ref } from 'vue';
-  import { mapGetters } from 'vuex';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     setup() {
@@ -23,10 +24,10 @@
       };
     },
     computed: {
-      ...mapGetters(['getIdSession']),
+      ...mapStores(mainStore),
     },
     mounted() {
-      this.idSession = this.getIdSession;
+      this.idSession = this.mainStore.getIdSession;
     },
   };
 </script>

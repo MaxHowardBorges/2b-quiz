@@ -1,19 +1,14 @@
-export const fetchAPIModule = {
-  state: {
+import { defineStore } from 'pinia';
+import { socketStore } from '@/stores/socket.store';
+import { mainStore } from '@/stores/main.store';
+
+export const fetchAPIStore = defineStore('fetchAPI', {
+  state: () => ({
     reponseList: null,
-  },
-  getters: {
-    getQuestion: (state) => {
-      return state.reponseList;
-    },
-  },
-  mutations: {
-    setQuestion(state, question) {
-      state.reponseList = question;
-    },
-  },
+  }),
+  getters: {},
   actions: {
-    async joinSession({ commit, dispatch }, body) {
+    async joinSession(body) {
       const response = await fetch(
         import.meta.env.VITE_API_URL + '/session/join',
         {
@@ -28,15 +23,17 @@ export const fetchAPIModule = {
       if (!response.ok || response.status !== 204) {
         throw new Error('Erreur de chargement de la question');
       }
-
-      dispatch('connectToWebSocket');
-      commit('setIdSession', body.idSession);
-      commit('setUsername', body.username);
+      const webSocketStore = socketStore();
+      webSocketStore.connectToWebSocket();
+      const store = mainStore();
+      store.setIdSession(body.idSession);
+      store.setUsername(body.username);
     },
-    async getQuestions({ commit, getters }) {
-      const body = { idSession: getters.getIdSession };
+    async getQuestions() {
+      const store = mainStore();
+      const body = { idSession: store.getIdSession };
       console.log(JSON.stringify(body));
-      console.log(getters.getIdSession);
+      console.log(store.getIdSession);
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/question/current',
@@ -56,16 +53,17 @@ export const fetchAPIModule = {
 
         const question = await response.json();
         console.log(question);
-        commit('setQuestion', question);
+        store.setQuestion(question);
       } catch (error) {
         console.error(error);
       }
     },
-    async sendAnswer({ getters }, idAnswer) {
+    async sendAnswer(idAnswer) {
+      const store = mainStore();
       const body = {
-        idSession: getters.getIdSession,
+        idSession: store.getIdSession,
         answer: idAnswer,
-        username: getters.getUsername,
+        username: store.getUsername,
       };
       console.log(JSON.stringify(body));
       try {
@@ -88,4 +86,4 @@ export const fetchAPIModule = {
       }
     },
   },
-};
+});

@@ -59,14 +59,15 @@
 </style>
 
 <script>
-  import { mapActions, mapGetters, mapMutations } from 'vuex';
   import { ref } from 'vue';
   import BoutonComp from '@/components/BoutonComp.vue';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     components: { BoutonComp },
     computed: {
-      ...mapGetters(['actualSession']), // Use mapGetters to map the getter to a computed property
+      ...mapStores(mainStore),
     },
     setup() {
       return {
@@ -74,14 +75,12 @@
       };
     },
     mounted() {
-      this.idSession = this.actualSession;
+      this.idSession = this.mainStore.getIdSession;
     },
     methods: {
-      ...mapMutations(['setRouter']),
-      ...mapActions(['nextQuestion']),
       async handleLaunch() {
-        await this.nextQuestion();
-        this.setRouter(this.$router);
+        await this.mainStore.nextQuestion();
+        this.mainStore.setRouter(this.$router);
         this.$router.push('/question');
       },
     },

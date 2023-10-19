@@ -1,19 +1,18 @@
-import { createStore } from 'vuex';
-import { socketModule } from '@/store/socket.store';
-import { fetchAPIModule } from '@/store/fetchAPI.store';
+import { defineStore } from 'pinia';
 
-export default createStore({
-  state: {
+export const mainStore = defineStore('main', {
+  state: () => ({
     router: null,
     question: null,
     idSession: null,
     success: null,
     username: null,
     tabResult: null,
-  },
+  }),
   getters: {
-    actualQuestion: (state) => state.question,
-    actualSession: (state) => state.idSession,
+    getQuestion: (state) => {
+      return state.question;
+    },
     getRouter: (state) => {
       return state.router;
     },
@@ -30,31 +29,29 @@ export default createStore({
       return state.tabResult;
     },
   },
-  mutations: {
-    setRouter(state, router) {
-      state.router = router;
-    },
-    setQuestion(state, question) {
-      state.question = question;
-    },
-    setIdSession(state, idSession) {
-      state.idSession = idSession;
-    },
-    setSuccess(state, success) {
-      state.success = success;
-    },
-    setUsername(state, idSession) {
-      state.username = idSession;
-    },
-    changePage(state, pageLink) {
-      state.router.push(pageLink);
-    },
-    setTabResult(state, tabResult) {
-      state.tabResult = tabResult;
-    },
-  },
   actions: {
-    async createSession({ commit }) {
+    setRouter(router) {
+      this.router = router;
+    },
+    setQuestion(question) {
+      this.question = question;
+    },
+    setIdSession(idSession) {
+      this.idSession = idSession;
+    },
+    setSuccess(success) {
+      this.success = success;
+    },
+    setUsername(idSession) {
+      this.username = idSession;
+    },
+    changePage(pageLink) {
+      this.router.push(pageLink);
+    },
+    setTabResult(tabResult) {
+      this.tabResult = tabResult;
+    },
+    async createSession() {
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/create',
@@ -64,17 +61,17 @@ export default createStore({
           throw new Error('Erreur de chargement de la question');
         }
         const idSession = await response.json();
-        commit('setIdSession', idSession.id);
+        this.setIdSession(idSession.id);
         console.log(idSession.id);
       } catch (error) {
         console.error(error);
       }
     },
 
-    async nextQuestion({ commit, getters }) {
-      const body = { id: getters.actualSession };
+    async nextQuestion() {
+      const body = { id: this.getIdSession };
       console.log(JSON.stringify(body));
-      console.log(getters.actualSession);
+      console.log(this.getIdSession);
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/nextQuestion',
@@ -94,18 +91,19 @@ export default createStore({
 
         const question = await response.json();
         if (Object.entries(question).length === 0) {
-          getters.getRouter.push('end-of-session');
+          this.getRouter.push('end-of-session');
         }
-        commit('setQuestion', question);
+        console.log(question);
+        this.setQuestion(question);
       } catch (error) {
         console.error(error);
         throw error;
       }
     },
 
-    async getResults({ commit, getters }) {
-      console.log(getters.actualSession);
-      const body = { id: getters.actualSession };
+    async getResults() {
+      console.log(this.getIdSession);
+      const body = { id: this.getIdSession };
       console.log(body);
       try {
         const response = await fetch(
@@ -122,12 +120,11 @@ export default createStore({
           throw new Error('Erreur de chargement de la question');
         }
         const tabResult = await response.json();
-        commit('setTabResult', tabResult);
+        this.setTabResult(tabResult);
         //console.log(tabResult);
       } catch (error) {
         console.error(error);
       }
     },
   },
-  modules: { socketModule, fetchAPIModule },
 });

@@ -3,8 +3,7 @@
     <ErrorMessageDialog
       v-if="showErrorDialog"
       :errorMessage="errorMessage"
-      @close="closeErrorDialog"
-    />
+      @close="closeErrorDialog" />
     <label id="id" for="id"></label>
     <input
       id="username"
@@ -23,25 +22,28 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex';
   import { ref } from 'vue';
   import ErrorMessageDialog from '@/components/student/ErrorMessageDialog.vue';
+  import { mainStore } from '@/stores/main.store';
+  import { fetchAPIStore } from '@/stores/fetchAPI.store';
+  import { mapStores } from 'pinia';
 
   export default {
+    computed: {
+      ...mapStores(mainStore, fetchAPIStore),
+    },
     methods: {
-      ...mapGetters(['getSuccess']), // Utilisez le nom de votre getter ici
-      ...mapActions(['joinSession']),
       async handleJoinSession() {
         try {
           const body = { idSession: this.idSession, username: this.username };
-          await this.$store.commit('setRouter', this.$router);
-          await this.$store.dispatch('joinSession', body);
+          this.mainStore.setRouter(this.$router);
+          await this.fetchAPIStore.joinSession(body);
           console.log(this.getSuccess);
           this.$router.push('/waiting-session');
-        }
-        catch (error) {
+        } catch (error) {
           console.error('Error while joining session:', error);
-          this.errorMessage = 'Erreur lors de la session. Veuillez vérifier l\'ID de session.';
+          this.errorMessage =
+            "Erreur lors de la session. Veuillez vérifier l'ID de session.";
           this.showErrorDialog = true;
         }
       },
@@ -75,7 +77,9 @@
     padding: 30px;
     border: 1px solid #f1f1f1;
     background: #fff;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    box-shadow:
+      0 0 20px 0 rgba(0, 0, 0, 0.2),
+      0 5px 5px 0 rgba(0, 0, 0, 0.24);
   }
 
   input[type='text'] {
@@ -109,20 +113,24 @@
     font-size: 15px;
     cursor: pointer;
     width: 100%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
   }
 
   input[type='submit']:hover {
     transform: scale(1.06);
     background-position: -60px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    box-shadow:
+      0 3px 6px rgba(0, 0, 0, 0.16),
+      0 3px 6px rgba(0, 0, 0, 0.23);
   }
 
   input[type='submit']:active {
     transform: scale(1);
     background-position: 500px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>
-
-
