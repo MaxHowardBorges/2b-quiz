@@ -19,7 +19,6 @@ export const eventSourceStore = defineStore('eventSource', {
     connectToSSE() {
       const store = mainStore();
       console.log('attempt to connect to ' + import.meta.env.VITE_API_URL);
-      console.log(store.getIdSession);
       const eventSource = new EventSource(
         import.meta.env.VITE_API_URL + '/event/' + store.getIdSession,
       );

@@ -62,7 +62,6 @@ export const mainStore = defineStore('main', {
         }
         const idSession = await response.json();
         this.setIdSession(idSession.id);
-        console.log(idSession.id);
       } catch (error) {
         console.error(error);
       }
@@ -70,8 +69,6 @@ export const mainStore = defineStore('main', {
 
     async nextQuestion() {
       const body = { id: this.getIdSession };
-      console.log(JSON.stringify(body));
-      console.log(this.getIdSession);
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/nextQuestion',
@@ -84,7 +81,6 @@ export const mainStore = defineStore('main', {
           },
         );
 
-        console.log(response);
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question');
         }
@@ -93,7 +89,6 @@ export const mainStore = defineStore('main', {
         if (Object.entries(question).length === 0) {
           this.getRouter.push('end-of-session');
         }
-        console.log(question);
         this.setQuestion(question);
       } catch (error) {
         console.error(error);
@@ -102,9 +97,7 @@ export const mainStore = defineStore('main', {
     },
 
     async getResults() {
-      console.log(this.getIdSession);
       const body = { id: this.getIdSession };
-      console.log(body);
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/getMap?idsession=' + body.id,
@@ -113,7 +106,6 @@ export const mainStore = defineStore('main', {
             headers: {
               'Content-Type': 'application/json',
             },
-            // body: JSON.stringify(body),
           },
         );
         if (!response.ok) {
@@ -121,7 +113,6 @@ export const mainStore = defineStore('main', {
         }
         const tabResult = await response.json();
         this.setTabResult(tabResult);
-        //console.log(tabResult);
       } catch (error) {
         console.error(error);
       }
