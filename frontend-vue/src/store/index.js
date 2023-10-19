@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { socketModule } from '@/store/socket.store';
+import { eventSourceModule } from '@/store/eventSource.store';
 import { fetchAPIModule } from '@/store/fetchAPI.store';
 
 export default createStore({
@@ -72,9 +72,9 @@ export default createStore({
     },
 
     async nextQuestion({ commit, getters }) {
-      const body = { id: getters.actualSession };
+      const body = { id: getters.getIdSession };
       console.log(JSON.stringify(body));
-      console.log(getters.actualSession);
+      console.log(getters.getIdSession);
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/nextQuestion',
@@ -129,5 +129,5 @@ export default createStore({
       }
     },
   },
-  modules: { socketModule, fetchAPIModule },
+  modules: { socketModule: eventSourceModule, fetchAPIModule },
 });
