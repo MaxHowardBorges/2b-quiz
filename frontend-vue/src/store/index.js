@@ -72,9 +72,9 @@ export default createStore({
     },
 
     async nextQuestion({ commit, getters }) {
-      const body = { id: getters.actualSession };
+      const body = { id: getters.getIdSession };
       console.log(JSON.stringify(body));
-      console.log(getters.actualSession);
+      console.log(getters.getIdSession);
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/session/nextQuestion',
