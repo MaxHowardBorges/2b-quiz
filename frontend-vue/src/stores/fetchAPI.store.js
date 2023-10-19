@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { socketStore } from '@/stores/socket.store';
 import { mainStore } from '@/stores/main.store';
+import { eventSourceStore } from '@/stores/eventSource.store';
 
 export const fetchAPIStore = defineStore('fetchAPI', {
   state: () => ({
@@ -23,10 +23,10 @@ export const fetchAPIStore = defineStore('fetchAPI', {
       if (!response.ok || response.status !== 204) {
         throw new Error('Erreur de chargement de la question');
       }
-      const webSocketStore = socketStore();
-      webSocketStore.connectToWebSocket();
+      const eventStore = eventSourceStore();
       const store = mainStore();
       store.setIdSession(body.idSession);
+      eventStore.connectToSSE();
       store.setUsername(body.username);
     },
     async getQuestions() {

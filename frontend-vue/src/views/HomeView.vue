@@ -38,7 +38,6 @@
           const body = { idSession: this.idSession, username: this.username };
           this.mainStore.setRouter(this.$router);
           await this.fetchAPIStore.joinSession(body);
-          console.log(this.getSuccess);
           this.$router.push('/waiting-session');
         } catch (error) {
           console.error('Error while joining session:', error);

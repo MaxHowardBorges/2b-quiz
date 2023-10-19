@@ -1,60 +1,67 @@
-import { Events } from '@/store/events';
+import { Events } from '@/stores/events';
+import { mainStore } from '@/stores/main.store';
+import { fetchAPIStore } from '@/stores/fetchAPI.store';
+import { defineStore } from 'pinia';
 
-export const eventSourceModule = {
-  state: {
+export const eventSourceStore = defineStore('eventSource', {
+  state: () => ({
     eventSource: null,
-  },
-  mutations: {
-    setEventSource(state, eventSource) {
-      state.eventSource = eventSource;
+  }),
+  getters: {
+    getEventSource: (state) => {
+      return state.eventSource;
     },
   },
   actions: {
-    connectToSSE({ commit, getters, dispatch }) {
-      console.log('attempt to connect to ' + import.meta.env.VITE_API_URL);
-      const eventSource = new EventSource(
-        import.meta.env.VITE_API_URL + '/event/' + getters.getIdSession,
-      );
-      commit('setEventSource', eventSource);
-      console.log('connected to ' + import.meta.env.VITE_API_URL);
-      dispatch('listenToEvents');
+    setEventSource(eventSource) {
+      this.eventSource = eventSource;
     },
-    listenToEvents({ getters, dispatch }) {
-      const eventSource = getters.getEventSource;
-      console.log(eventSource);
+    connectToSSE() {
+      const store = mainStore();
+      console.log('attempt to connect to ' + import.meta.env.VITE_API_URL);
+      console.log(store.getIdSession);
+      const eventSource = new EventSource(
+        import.meta.env.VITE_API_URL + '/event/' + store.getIdSession,
+      );
+      console.log('connected to ' + import.meta.env.VITE_API_URL);
+      this.setEventSource(eventSource);
+      this.listenToEvents();
+    },
+    listenToEvents() {
+      const eventSource = this.getEventSource;
       if (eventSource) {
-        eventSource.onmessage = (message) => {
-          console.log(message.data);
+        eventSource.onmessage = async (message) => {
           switch (message.data) {
             case Events.NEXT_QUESTION:
-              dispatch('loadNextQuestion');
+              await this.loadNextQuestion();
               break;
             case Events.END_SESSION:
-              dispatch('loadEnd');
+              this.loadEnd();
               break;
             default:
-              console.log(message.data);
+              console.error('not used data ' + message.data);
               break;
           }
         };
       }
     },
-    async loadNextQuestion({ dispatch, commit }) {
-      await dispatch('getQuestions');
-      commit('changePage', '/answer');
+    async loadNextQuestion() {
+      const storeAPI = fetchAPIStore();
+      const store = mainStore();
+      await storeAPI.getQuestions();
+      store.changePage('/answer');
     },
-    loadEnd({ commit, getters }) {
-      const eventSource = getters.getEventSource;
+    loadEnd() {
+      const store = mainStore();
+      const eventSource = this.getEventSource;
       eventSource.close();
-      commit('changePage', '/end');
+      store.changePage('/end');
     },
-    socketDisconnect({ commit, getters }) {
-      const eventSource = getters.getEventSource;
+    socketDisconnect() {
+      const store = mainStore();
+      const eventSource = this.getEventSource;
       eventSource.close();
-      commit('changePage', '/');
+      store.changePage('/');
     },
   },
-  getters: {
-    getEventSource: (state) => state.eventSource,
-  },
-};
+});
