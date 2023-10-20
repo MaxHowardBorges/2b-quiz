@@ -2,8 +2,10 @@
   <div class="end-session-page">
     <h1>C'est la fin de la session !</h1>
     <div class="actions">
-      <btn  @click='handleCreateSession()' nomB="Relancer une session" />
-      <router-link to="/teacher-home-page"><btn nomB="Retourner au menu" /></router-link>
+      <btn @click="handleCreateSession()" nomB="Relancer une session" />
+      <router-link to="/teacher-home-page">
+        <btn nomB="Retourner au menu" />
+      </router-link>
 
       <tableP />
     </div>
@@ -13,12 +15,18 @@
 <script>
   import btn from '@/components/BoutonComp.vue';
   import tableP from '@/components/QuizzResultsTable.vue';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     components: { tableP, btn },
+    computed: {
+      ...mapStores(mainStore),
+    },
     methods: {
       handleCreateSession() {
-        this.$store.dispatch('createSession')
+        this.mainStore
+          .createSession()
           .then(() => {
             this.$router.push('/waiting-participant');
           })
