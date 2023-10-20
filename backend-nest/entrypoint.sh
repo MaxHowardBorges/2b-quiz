@@ -1,5 +1,5 @@
 #!/bin/sh
 
-yarn migrate-backend-prod &
+yarn typeorm:migrate &
 
 exec "$@"

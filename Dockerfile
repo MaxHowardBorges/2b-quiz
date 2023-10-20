@@ -22,14 +22,12 @@ FROM node:lts-alpine as api-prod-stage
 # Create app directory
 COPY --from=api-build-stage /app /app
 
-WORKDIR /app
-
-RUN chmod +x backend-nest/entrypoint.sh
 
 EXPOSE 3000
 
-
 WORKDIR /app/backend-nest
+
+RUN chmod +x ./entrypoint.sh
 
 # Start the server using the production build
 CMD ["./entrypoint.sh", "node", "dist/src/main" ]

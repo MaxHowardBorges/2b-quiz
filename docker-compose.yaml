@@ -17,7 +17,7 @@ services:
 #      DB_PASSWORD: example
 #      DB_DATABASE: sae5
     env_file:
-      - backend-nest/.env.local
+      - backend-nest/.env.docker
     networks:
       - mynetwork
     depends_on:
