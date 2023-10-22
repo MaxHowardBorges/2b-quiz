@@ -1,6 +1,8 @@
 {
   "name": "frontend-vue",
   "version": "0.1.0",
+  "description": "USer interface of Two Bee Quizz",
+  "author": "equipe2b",
   "private": true,
   "scripts": {
     "serve": "vite --host",

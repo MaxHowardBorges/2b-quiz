@@ -1,8 +1,8 @@
 {
   "name": "backend-nest",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.1.0",
+  "description": "API of Two Bee Quizz",
+  "author": "equipe2b",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

@@ -24,8 +24,6 @@ services:
       - db
   front:
     container_name: front-prod
-    env_file:
-      - frontend-vue/.env
     build:
       context: ./
       dockerfile: Dockerfile
@@ -43,16 +41,6 @@ services:
       MYSQL_ROOT_PASSWORD: example
     volumes:
       - ./db:/var/lib/mysql
-    networks:
-      - mynetwork
-  adminer:
-    image: adminer
-    container_name: adminer_prod
-    restart: always
-    environment:
-      ADMINER_DEFAULT_SERVER: mariadb_prod
-    ports:
-      - 7778:8080
     networks:
       - mynetwork
 networks:
