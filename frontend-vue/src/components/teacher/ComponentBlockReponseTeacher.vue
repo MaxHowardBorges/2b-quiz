@@ -1,7 +1,7 @@
 <template>
   <div>
     <ReponseCompTeacher
-      v-for="(answer, index) in actualQuestion().answers"
+      v-for="(answer, index) in answers"
       :key="index"
       :backgroundColor="getColor(index)"
       :answer-content="answer.content" />
@@ -9,11 +9,15 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
   import ReponseCompTeacher from '@/components/teacher/ReponseCompTeacher.vue';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     name: 'ComponentBlockReponseTeacher',
+    computed: {
+      ...mapStores(mainStore),
+    },
     components: {
       ReponseCompTeacher,
     },
@@ -31,32 +35,18 @@
           'lightpink',
           'lightseagreen',
         ],
-        questionr: this.getQuestion(),
         selectedOption: null,
       };
     },
     props: {
-      question: Object, // Prop pour stocker les données de la question
       answers: Array, // Prop pour stocker les données des réponses
     },
     methods: {
-      ...mapGetters(['getQuestion']),
       getColor(index) {
         return this.couleurs[index % this.couleurs.length];
       },
-      ...mapGetters(['actualQuestion']),
-      async getActualQuestion() {
-        await this.actualQuestion;
-      },
-      created() {
-        this.getActualQuestion();
-      },
-      computed: {
-        ...mapGetters(['actualQuestion']),
-
-      },
     },
-  }
+  };
 </script>
 
 <style scoped>
@@ -78,7 +68,6 @@
     justify-content: center;
   }
 
-
   input[type='submit'] {
     background-color: #4ac2e8;
     border: none;
@@ -90,18 +79,24 @@
     margin: 8px 0;
     font-size: 15px;
     cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
   }
 
   input[type='submit']:hover {
     transform: scale(1.06);
     background-position: -60px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    box-shadow:
+      0 3px 6px rgba(0, 0, 0, 0.16),
+      0 3px 6px rgba(0, 0, 0, 0.23);
   }
 
   input[type='submit']:active {
     transform: scale(1);
     background-position: 500px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>
