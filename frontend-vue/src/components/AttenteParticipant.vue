@@ -4,7 +4,7 @@
       <h1>En attente des participants...</h1>
       <div class="session-info">
         <p>ID de Session : {{ idSession }}</p>
-        <img alt="Qr code" src="../assets/qrcode.png" style="width: 100px" />
+        <img alt="Qr code" src="../assets/QR_CODE.png" style="width: 100px" />
       </div>
       <p>{{ participantsCount }} personnes ont rejoint la session !</p>
       <div class="actions">
@@ -59,14 +59,15 @@
 </style>
 
 <script>
-  import { mapActions, mapGetters, mapMutations } from 'vuex';
   import { ref } from 'vue';
   import BoutonComp from '@/components/BoutonComp.vue';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     components: { BoutonComp },
     computed: {
-      ...mapGetters(['actualSession']), // Use mapGetters to map the getter to a computed property
+      ...mapStores(mainStore),
     },
     setup() {
       return {
@@ -74,14 +75,12 @@
       };
     },
     mounted() {
-      this.idSession = this.actualSession;
+      this.idSession = this.mainStore.getIdSession;
     },
     methods: {
-      ...mapMutations(['setRouter']),
-      ...mapActions(['nextQuestion']),
       async handleLaunch() {
-        await this.nextQuestion();
-        this.setRouter(this.$router);
+        await this.mainStore.nextQuestion();
+        this.mainStore.setRouter(this.$router);
         this.$router.push('/question');
       },
     },
