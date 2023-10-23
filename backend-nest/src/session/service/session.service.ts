@@ -30,6 +30,7 @@ export class SessionService {
     }
 
     this.sessionMap.set(idSession, await this.createSession(idSession));
+    this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
   }
 
@@ -61,6 +62,7 @@ export class SessionService {
     }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
+    this.eventService.closeClientGroup(idSession);
     return null;
   }
 

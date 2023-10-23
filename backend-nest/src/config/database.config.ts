@@ -11,7 +11,7 @@ export async function getTypeOrmConfig(
     username: configService.getOrThrow<string>('DB_USERNAME'),
     password: configService.getOrThrow<string>('DB_PASSWORD'),
     database: configService.getOrThrow<string>('DB_DATABASE'),
-    entities: ['dist/**/*.entity{.ts,.js}'],
+    entities: ['dist/**/**/*.entity{.ts,.js}'],
     migrations: ['dist/migrations/*{.ts,.js}'],
     synchronize: false,
   };
