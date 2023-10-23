@@ -151,7 +151,6 @@ remove
     box-sizing: border-box;
     align-items: center;
     display: inline-block;
-    box-sizing: border-box;
 
   }
   .selectDropdown select {
