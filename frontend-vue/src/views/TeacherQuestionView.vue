@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <h2><b>Question</b></h2>
-    <QuestionComp :quest="actualQuestion.content" />
+    <QuestionComp :quest="getActualQuestion.content" />
   </div>
   <div class="reponseQ">
-    <ComponentBlockReponseTeacher />
+    <ComponentBlockReponseTeacher :answers="getActualQuestion.answers" />
   </div>
-  <btn @click="handleNextQuestion(actualSession)" nomB="Question suivante" />
+  <btn @click="handleNextQuestion(getActualSession)" nomB="Question suivante" />
   <div class="btnD">
     <div class="button-group">
       <router-link to="/end-of-session">
@@ -20,8 +20,9 @@
 <script>
   import QuestionComp from '@/components/QuestionComp.vue';
   import btn from '@/components/BoutonComp.vue';
-  import { mapGetters } from 'vuex';
   import ComponentBlockReponseTeacher from '@/components/teacher/ComponentBlockReponseTeacher.vue';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     name: 'TeacherQuestionPage',
@@ -30,40 +31,28 @@
       ComponentBlockReponseTeacher,
       btn,
     },
-    // data() {
-    //   return {
-    //     question:  null
-    //   };
-    // },
-    methods: {
-      ...mapGetters(['actualQuestion']),
-      async getActualQuestion() {
-        await this.actualQuestion;
+    computed: {
+      ...mapStores(mainStore),
+      getActualQuestion() {
+        return this.mainStore.getQuestion;
       },
-
-      ...mapGetters(['actualSession']),
+    },
+    methods: {
       async getActualSession() {
-        await this.actualSession;
+        await this.mainStore.getIdSession;
       },
 
       handleNextQuestion(id) {
-        this.$store
-          .dispatch('nextQuestion', id)
+        this.mainStore
+          .nextQuestion(id)
           .then(() => {
             //this.$router.push('/question');
-            console.log(this.getActualQuestion());
+            console.log(this.getActualQuestion);
           })
           .catch((error) => {
             console.error('Error while creating session:', error);
           });
       },
-    },
-    created() {
-      this.getActualQuestion();
-    },
-    computed: {
-      ...mapGetters(['actualQuestion']),
-      ...mapGetters(['actualSession']),
     },
   };
 </script>

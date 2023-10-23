@@ -1,37 +1,52 @@
 <template>
   <table class="styled-table">
     <div v-if="this.tabresult != null">
-    <tr>
-      <th>Participant</th>
-      <th v-for="(question, index) in this.tabresult[0]" :key="index">{{ question.content }}</th>
-    </tr>
-
+      <tr>
+        <th>Participant</th>
+        <th v-for="(question, index) in this.tabresult[0]" :key="index">
+          {{ question.content }}
+        </th>
+      </tr>
 
       <tr v-for="(participant, index) in this.tabresult[1]" :key="index">
         <td v-if="participant">{{ participant.username }}</td>
         <td v-else>No participant data available</td>
-        <td v-for="(rep, ind) in participant.tab" :key="ind" :style="{'background-color': isAnswerCorrect(rep) ? 'lightgreen' : 'tomato'}">{{ this.tabresult[0][rep.idQuestion-1]?.answers.find(answer => answer.id === rep.idAnswer).content || "bonjour, je suis désolé mais il y a une erreur" }}</td>
+        <td
+          v-for="(rep, ind) in participant.tab"
+          :key="ind"
+          :style="{
+            'background-color': isAnswerCorrect(rep) ? 'lightgreen' : 'tomato',
+          }">
+          {{
+            this.tabresult[0][rep.idQuestion - 1]?.answers.find(
+              (answer) => answer.id === rep.idAnswer,
+            ).content || 'bonjour, je suis désolé mais il y a une erreur'
+          }}
+        </td>
       </tr>
     </div>
-
   </table>
 </template>
 
 <script>
-
   import { id } from 'postcss-selector-parser';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
+    computed: {
+      ...mapStores(mainStore),
+    },
     data() {
       return {
         tabresult: null,
-      }
+      };
     },
     methods: {
       id,
       async handleCreateTable() {
         try {
-          await this.$store.dispatch('getResults');
+          await this.mainStore.getResults();
           // const tabResult = await this.$store.getters.getTabResult;
           // console.log("-----------------------------------------");
           // console.log(tabResult[1][0].username);
@@ -42,18 +57,19 @@
         }
       },
       async getTab() {
-        return await this.$store.getters.getTabResult;
+        return await this.mainStore.getTabResult;
       },
       isAnswerCorrect(rep) {
-        return this.tabresult[0][rep.idQuestion - 1].answers.find(answer => answer.id === rep.idAnswer).isCorrect;
+        return this.tabresult[0][rep.idQuestion - 1].answers.find(
+          (answer) => answer.id === rep.idAnswer,
+        ).isCorrect;
       },
     },
     async created() {
-      await this.handleCreateTable()
-      this.tabresult = await this.getTab()
+      await this.handleCreateTable();
+      this.tabresult = await this.getTab();
     },
   };
-
 </script>
 
 <style>

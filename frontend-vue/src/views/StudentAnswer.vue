@@ -1,33 +1,37 @@
 <template>
   <div class="home">
     <h2><b>Question</b></h2>
-    <QuestionComp :quest="questionData.content" />
+    <QuestionComp :quest="getActualQuestion.content" />
   </div>
   <div class="reponseQ">
-    <ComponentBlockReponseStudent
-      :question="questionData"
-      :answers="questionData.answers" />
+    <ComponentBlockReponseStudent :answers="getActualQuestion.answers" />
   </div>
   <div class="btnD"></div>
 </template>
 
 <script>
   import QuestionComp from '@/components/QuestionComp.vue';
-  import { mapGetters } from 'vuex';
   import { ref } from 'vue';
   import ComponentBlockReponseStudent from '@/components/student/ComponentBlockReponseStudent.vue';
+  import { mapStores } from 'pinia';
+  import { mainStore } from '@/stores/main.store';
 
   export default {
     name: 'QuestionReponseView',
+    computed: {
+      ...mapStores(mainStore),
+      getActualQuestion() {
+        return this.mainStore.getQuestion;
+      },
+    },
     components: {
       ComponentBlockReponseStudent,
       QuestionComp,
     },
     methods: {
-      ...mapGetters(['getQuestion']), // Utilisez le nom de votre getter ici
       async handleGetQuestion() {
         try {
-          this.questionData = this.getQuestion(); // Supposons que les données sont dans response.data
+          this.questionData = this.mainStore.getQuestion; // Supposons que les données sont dans response.data
           console.log(this.questionData);
         } catch (error) {
           console.error('Error while joining session');

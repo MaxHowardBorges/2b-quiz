@@ -15,6 +15,11 @@ yarn serve
 yarn build
 ```
 
+### Star a production preview
+```
+yarn preview
+```
+
 ### Lints and fixes files
 ```
 yarn lint
