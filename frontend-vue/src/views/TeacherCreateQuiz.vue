@@ -81,15 +81,15 @@ radio_button_unchecked
   function displayq(x){
     var truefalsetype = document.getElementsByClassName('truefalse');
     var multitype = document.getElementsByClassName('multiple');
-    if(x==1){
+    if(x===1){
       truefalsetype.style.display=none;
       multitype.style.display=contents;
     }
-    if(x==2){
+    if(x===2){
       truefalsetype.style.display=none;
       multitype.style.display=none;
     }
-    if(x==3){
+    if(x===3){
       truefalsetype.style.display=contents;
       multitype.style.display=none;
     }
