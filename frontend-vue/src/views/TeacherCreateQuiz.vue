@@ -13,15 +13,18 @@
       style="border: 1px solid #000000;margin-bottom: 20px"   />
 
 
-  <div class='selectDropdown' style='margin-bottom: 40px'>
-    <select id="typeInput" name="typeInput" class="input">
-      <option>Multiple choice question</option>
-      <option>Open question</option>
-      <option>True/False question</option>
+  <div class='selectDropdown' style='margin-bottom: 20px;margin-top: 40px'>
+    <select id="typeInput" name="typeInput" class="input" onchange='displayq(this.value)'>
+      <option value='1'>Multiple choice question</option>
+      <option value='2'>Open question</option>
+      <option value='3'>True/False question</option>
     </select></div>
+
 <div id='qna'>
+
     <input id='Question' type='text' placeholder='Type you question' style="border: 1px solid #000000;margin-bottom: 20px;height:50px;"/>
 
+<div class='multiple' style="display:contents">
   <div id='icons'><button style='border: 0;background-color: transparent;cursor:pointer;'><span class="material-symbols-outlined">
 remove
 </span></button><input id='Reponse' type='text' placeholder='Choice 1' style="border: 1px solid #000000;margin-bottom: 10px"/><button style='border: 0;background-color: transparent;cursor:pointer;'><span class="material-symbols-outlined">
@@ -34,8 +37,22 @@ radio_button_unchecked
 </span></button></div>
   <div id='icons'><button style='border: 0;background-color: transparent;cursor:pointer;'><span class="material-symbols-outlined">
 remove
-</span></button><input id='Reponse' type='text' placeholder='Choice 3' style="border: 1px solid #000000;margin-bottom: 10px"/><button style='border: 0;background-color: transparent;cursor:pointer;'><span id='check' onclick='"radio_button_checked"' class="material-symbols-outlined">
+</span></button><input id='Reponse' type='text' placeholder='Choice 3' style="border: 1px solid #000000;margin-bottom: 10px"/><button style='border: 0;background-color: transparent;cursor:pointer;'><span id='check' class="material-symbols-outlined">
+radio_button_unchecked
 </span></button></div>
+</div>
+
+<div class='truefalse' style="display:contents" >
+
+  <div style='display:flex;margin-bottom: 20px;margin-top: 20px'><button onclick="var buttons = document.getElementsByClassName('validate2');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
+        }this.style['background']='#f1dc66';" class="validate2" type="button">True</button><button onclick="var buttons = document.getElementsByClassName('validate2');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
+        }this.style['background']='#f1dc66';" class="validate2" type="button">False</button></div>
+
+</div>
 
 </div>
 
@@ -50,6 +67,34 @@ remove
 
 <script>
 
+  function changeColor(x) {
+    var buttons = document.getElementsByClassName('validate2');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
+    }
+    buttons[x].style.background = '#f1dc66';
+    this.style['background'] = '#f1dc66'
+  }
+
+
+
+  function displayq(x){
+    var truefalsetype = document.getElementsByClassName('truefalse');
+    var multitype = document.getElementsByClassName('multiple');
+    if(x==1){
+      truefalsetype.style.display=none;
+      multitype.style.display=contents;
+    }
+    if(x==2){
+      truefalsetype.style.display=none;
+      multitype.style.display=none;
+    }
+    if(x==3){
+      truefalsetype.style.display=contents;
+      multitype.style.display=none;
+    }
+  }
+
 </script>
 
 
@@ -58,11 +103,9 @@ remove
 <style scoped>
 
   #check:before {
-    content: "radio_button_unchecked";
   }
 
   #check {
-
   }
 
   .teacher-interface {
@@ -122,6 +165,34 @@ remove
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 
+  .validate2 {
+    background-color: #605E73;
+    border: none;
+    color: white;
+    padding: 14px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 8px;
+    margin: 8px 0;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+
+  .validate2:hover {
+    transform: scale(1.06);
+    background-position: -60px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  .validate2:active {
+    transform: scale(1);
+    background-position: 500px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+
   .material-symbols-outlined{
      font-variation-settings:
        'FILL' 0,
@@ -148,16 +219,11 @@ remove
 
 
   .selectDropdown {
-    box-sizing: border-box;
-    align-items: center;
-    display: inline-block;
 
   }
   .selectDropdown select {
-    border: 3px solid lightgrey;
   }
   .selectDropdown select:active, .selectDropdown select:focus {
-    outline: none;
   }
 
 </style>
