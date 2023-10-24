@@ -5,6 +5,7 @@ import { Question } from '../entity/question.entity';
 import { QuestionModule } from '../question.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Answer } from '../entity/answer.entity';
+import { UserUpdateDto } from '../dto/idSession.dto';
 
 describe('QuestionController', () => {
   let controller: QuestionController;
@@ -13,6 +14,7 @@ describe('QuestionController', () => {
   const mockQuestionService = {
     findAll: jest.fn(),
     findAllWithQuestion: jest.fn(),
+    findOne: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -40,7 +42,7 @@ describe('QuestionController', () => {
               id: 1,
               content: 'Answer 1 to Question 1',
               isCorrect: true,
-              question: null, // Vous pouvez affecter la question ici si nécessaire
+              question: null,
             },
             {
               id: 2,
@@ -65,6 +67,38 @@ describe('QuestionController', () => {
       ];
       mockQuestionService.findAllWithQuestion.mockResolvedValue(result);
       const test = await controller.findAll();
+
+      expect(test).toEqual(result);
+    });
+  });
+
+  describe('nextQuestion', () => {
+    it('should be returned an array of questions', async () => {
+      const result: Question = {
+        id: 1,
+        content: 'Test Question 1?',
+        answers: [
+          {
+            id: 1,
+            content: 'Answer 1 to Question 1',
+            isCorrect: true,
+            question: null,
+          },
+          {
+            id: 2,
+            content: 'Answer 2 to Question 1',
+            isCorrect: false,
+            question: null,
+          },
+        ],
+      };
+      const mockUserUpdateDto = {
+        id: 42,
+      };
+      const userUpdateDto = new UserUpdateDto();
+      userUpdateDto.id = mockUserUpdateDto.id;
+      mockQuestionService.findOne.mockResolvedValue(result);
+      const test = await controller.nextQuestion(userUpdateDto);
 
       expect(test).toEqual(result);
     });
