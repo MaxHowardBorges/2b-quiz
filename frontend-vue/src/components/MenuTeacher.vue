@@ -2,20 +2,24 @@
   <div class="teacher-interface">
     <h1>Menu Enseignant</h1>
 
-    <btn @click='handleCreateSession' nomB="Créer une session" />
+    <btn @click="handleCreateSession" nomB="Créer une session" />
     <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
-
   </div>
 </template>
 
 <script>
   import btn from '@/components/BoutonComp.vue';
-
+  import { mainStore } from '@/stores/main.store';
+  import { mapStores } from 'pinia';
   export default {
+    computed: {
+      ...mapStores(mainStore),
+    },
     components: { btn },
     methods: {
       handleCreateSession() {
-        this.$store.dispatch('createSession')
+        this.mainStore
+          .createSession()
           .then(() => {
             this.$router.push('/waiting-participant');
           })
@@ -26,9 +30,6 @@
     },
   };
 </script>
-
-
-
 
 <style scoped>
   .teacher-interface {
@@ -44,8 +45,6 @@
   .teacher-interface h1 {
     font-size: 24px;
     margin-bottom: 20px;
-    color: #FFD700; /* Couleur jaune */
+    color: #ffd700; /* Couleur jaune */
   }
-
-
 </style>
