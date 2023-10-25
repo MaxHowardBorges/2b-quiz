@@ -23,6 +23,19 @@ export abstract class User {
   @Column()
   surname: string;
 
-  @Column()
+  @Column({ default: false })
   validate: boolean;
+
+  protected constructor(
+    username: string,
+    password: string,
+    name: string,
+    surname: string,
+  ) {
+    this.username = username;
+    this.password = password;
+    this.name = name;
+    this.surname = surname;
+    this.validate = false;
+  }
 }
