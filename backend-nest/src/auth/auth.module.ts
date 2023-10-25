@@ -6,9 +6,17 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { getJwtModuleOptions } from './config/jwt.config';
 import { BcryptModule } from '../bcrypt/bcrypt.module';
+import { AuthGuard } from './guard/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
   controllers: [AuthController],
   imports: [
     BcryptModule,

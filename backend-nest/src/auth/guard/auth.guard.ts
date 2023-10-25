@@ -1,0 +1,71 @@
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { UserService } from '../../user/service/user.service';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserType } from '../../user/constants/userType.constant';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
+    private readonly reflector: Reflector,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    //check public decorator
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
+
+    //check user data from jwt
+    const request = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromHeader(request);
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.getOrThrow('JWT_SECRET'),
+      });
+      request.user = await this.userService.getUserByUsername(payload.username);
+    } catch {
+      throw new UnauthorizedException();
+    }
+
+    //check roles decorator
+    const user = request.user;
+    const roles = this.reflector.get(Roles, context.getHandler());
+    if (!roles) {
+      return true;
+    }
+    const authorised = matchRoles(roles, user.getUserType());
+    if (!authorised) {
+      throw new UnauthorizedException();
+    }
+    return true;
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
+  }
+}
+
+function matchRoles(roles: UserType[], role: UserType) {
+  return roles.includes(role);
+}

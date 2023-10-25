@@ -9,10 +9,13 @@ import {
 import { UserService } from '../service/user.service';
 import { UserRegisterDto } from '../dto/userRegister.dto';
 import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
+import { Public } from '../../decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Public()
   @Post('/register')
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(
