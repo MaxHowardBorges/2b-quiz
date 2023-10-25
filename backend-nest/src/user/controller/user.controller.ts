@@ -1,4 +1,11 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { UserRegisterDto } from '../dto/userRegister.dto';
 import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
@@ -7,6 +14,7 @@ import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.e
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post('/register')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(
     @Body(new ValidationPipe()) userRegisterDto: UserRegisterDto,
   ) {
