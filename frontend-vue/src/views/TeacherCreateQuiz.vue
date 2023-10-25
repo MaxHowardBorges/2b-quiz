@@ -261,13 +261,4 @@ radio_button_unchecked
     margin-left: 50%;
   }
 
-
-  .selectDropdown {
-
-  }
-  .selectDropdown select {
-  }
-  .selectDropdown select:active, .selectDropdown select:focus {
-  }
-
 </style>
