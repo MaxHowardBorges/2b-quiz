@@ -8,6 +8,7 @@ import { getJwtModuleOptions } from './config/jwt.config';
 import { BcryptModule } from '../bcrypt/bcrypt.module';
 import { AuthGuard } from './guard/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { BlacklistService } from './service/blacklist.service';
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { APP_GUARD } from '@nestjs/core';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    BlacklistService,
   ],
   controllers: [AuthController],
   imports: [

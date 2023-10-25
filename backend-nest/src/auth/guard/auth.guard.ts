@@ -12,6 +12,7 @@ import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
+import { BlacklistService } from '../service/blacklist.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -20,6 +21,7 @@ export class AuthGuard implements CanActivate {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly reflector: Reflector,
+    private readonly blacklistService: BlacklistService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -35,7 +37,7 @@ export class AuthGuard implements CanActivate {
     //check user data from jwt
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-    if (!token) {
+    if (!token || this.blacklistService.isTokenBlacklisted(token)) {
       throw new UnauthorizedException();
     }
     try {
