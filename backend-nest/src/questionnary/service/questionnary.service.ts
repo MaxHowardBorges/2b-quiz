@@ -44,4 +44,23 @@ export class QuestionnaryService {
 
     return questionnary;
   }
+
+  async deleteQuestionnary(
+    idQuestionnary: number,
+  ) {
+    const questionnary = await this.questionnaryRepository.findOne({where: {id: idQuestionnary}});
+
+    if (questionnary) {
+      // Supprimer toutes les réponses associées aux questions du questionnaire
+      const questions = await this.questionRepository.find({ where: { questionnary } });
+      for (const question of questions) {
+        await this.answerRepository.delete({ question });
+      }
+      // Supprimer toutes les questions associées au questionnaire
+      await this.questionRepository.delete({ questionnary });
+      // Enfin, supprimer le questionnaire lui-même
+      await this.questionnaryRepository.delete(idQuestionnary);
+    }
+    return !!questionnary;
+  }
 }

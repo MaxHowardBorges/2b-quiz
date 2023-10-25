@@ -16,4 +16,11 @@ export class QuestionnaryController {
       questionnaryDto.author,
     );
   }
+
+  @Post('/delete')
+  deleteQuestionnary(
+    @Body(new ValidationPipe()) body: {idQuestionnary : number}
+  ) {
+    return this.questionnaryService.deleteQuestionnary(body.idQuestionnary);
+  }
 }
