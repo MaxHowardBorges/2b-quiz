@@ -1,5 +1,6 @@
 import { ChildEntity } from 'typeorm';
 import { User } from './user.entity';
+import { UserType } from '../constants/userType.constant';
 
 @ChildEntity()
 export class Teacher extends User {
@@ -10,5 +11,9 @@ export class Teacher extends User {
     surname: string,
   ) {
     super(username, password, name, surname);
+  }
+
+  getUserType() {
+    return UserType.TEACHER;
   }
 }

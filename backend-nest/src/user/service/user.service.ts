@@ -6,14 +6,14 @@ import { Student } from '../entity/student.entity';
 import { UserType } from '../constants/userType.constant';
 import { Admin } from '../entity/admin.entity';
 import { Teacher } from '../entity/teacher.entity';
-import { AuthService } from '../../auth/service/auth.service';
+import { BcryptService } from '../../bcrypt/service/bcrypt.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly authService: AuthService,
+    private readonly bcryptService: BcryptService,
   ) {}
   async createUser(
     username: string,
@@ -22,7 +22,7 @@ export class UserService {
     password: string,
     userType: UserType,
   ) {
-    const passwordHash = await this.authService.hashPassword(password);
+    const passwordHash = await this.bcryptService.hashPassword(password);
     let user: User;
     switch (userType) {
       case UserType.ADMIN:
@@ -38,7 +38,11 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
+  async getUserByUsername(username: string) {
+    return await this.userRepository.findOneBy({ username });
+  }
+
   async usernameNotUsed(username: string) {
-    return !(await this.userRepository.findOneBy({ username }));
+    return !(await this.getUserByUsername(username));
   }
 }

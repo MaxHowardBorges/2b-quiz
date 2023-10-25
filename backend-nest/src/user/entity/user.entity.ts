@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   TableInheritance,
 } from 'typeorm';
+import { UserType } from '../constants/userType.constant';
 
 @Entity()
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
@@ -38,4 +39,6 @@ export abstract class User {
     this.surname = surname;
     this.validate = false;
   }
+
+  abstract getUserType(): UserType;
 }

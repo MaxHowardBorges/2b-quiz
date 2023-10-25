@@ -9,6 +9,7 @@ import { SessionModule } from './session/session.module';
 import { EventModule } from './event/event.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { BcryptModule } from './bcrypt/bcrypt.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
     EventModule,
     UserModule,
     AuthModule,
+    BcryptModule,
   ],
   controllers: [AppController],
   providers: [AppService],

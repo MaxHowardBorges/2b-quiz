@@ -6,14 +6,15 @@ import { Student } from './entity/student.entity';
 import { Admin } from './entity/admin.entity';
 import { UserController } from './controller/user.controller';
 import { UserService } from './service/user.service';
-import { AuthModule } from '../auth/auth.module';
+import { BcryptModule } from '../bcrypt/bcrypt.module';
 
 @Module({
   providers: [UserService],
   imports: [
     TypeOrmModule.forFeature([User, Teacher, Student, Admin]),
-    AuthModule,
+    BcryptModule,
   ],
+  exports: [UserService],
   controllers: [UserController],
 })
 export class UserModule {}
