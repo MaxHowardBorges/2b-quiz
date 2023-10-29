@@ -9,7 +9,9 @@
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
-
+  :root {
+    --v-theme-overlay-multiplier: 1;
+  }
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
