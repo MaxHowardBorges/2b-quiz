@@ -18,4 +18,8 @@
   @import url('https://fonts.googleapis.com/css2?family=Damion&family=Roboto:wght@300&display=swap');
   @import './styles/z-indexes.css';
   @import './styles/global.css';
+
+  main {
+    padding-top: 15px;
+  }
 </style>

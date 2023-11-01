@@ -16,8 +16,9 @@ export const fetchAPIStore = defineStore('fetchAPI', {
         },
       );
 
+      console.log(response.body);
       if (!response.ok || response.status !== 204) {
-        return false;
+        return (await response.json()).message;
       }
       const eventStore = eventSourceStore();
       const store = mainStore();
