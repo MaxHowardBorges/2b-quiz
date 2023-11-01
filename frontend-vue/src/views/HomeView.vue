@@ -1,9 +1,18 @@
 <template>
+
+  <v-snackbar v-model="snackbarError" vertical='' >
+    <div class="text-subtitle-1 pb-2">Erreur lors de la session.</div>
+
+    <p> Veuillez vérifier l'ID de session.</p>
+
+    <template v-slot:actions>
+      <v-btn color="indigo" variant="text" @click="snackbarError = false">
+        Close
+      </v-btn>
+    </template>
+  </v-snackbar>
+
   <form @submit.prevent="handleJoinSession">
-    <ErrorMessageDialog
-      v-if="showErrorDialog"
-      :errorMessage="errorMessage"
-      @close="closeErrorDialog" />
     <label id="id" for="id"></label>
     <input
       id="username"
@@ -19,11 +28,12 @@
       style="border: 1px solid #000000" />
     <input id="submit1" type="submit" value="Join" />
   </form>
+
+
 </template>
 
 <script>
   import { ref } from 'vue';
-  import ErrorMessageDialog from '@/components/student/ErrorMessageDialog.vue';
   import { mainStore } from '@/stores/main.store';
   import { fetchAPIStore } from '@/stores/fetchAPI.store';
   import { mapStores } from 'pinia';
@@ -41,27 +51,18 @@
           this.$router.push('/waiting-session');
         } catch (error) {
           console.error('Error while joining session:', error);
-          this.errorMessage =
-            "Erreur lors de la session. Veuillez vérifier l'ID de session.";
-          this.showErrorDialog = true;
+          this.snackbarError = true;
         }
-      },
-      closeErrorDialog() {
-        this.showErrorDialog = false;
       },
     },
     data() {
       return {
         idSession: ref(''),
         username: ref(''),
-        showErrorDialog: false,
-        errorMessage: '',
+        snackbarError: false,
       };
     },
 
-    components: {
-      ErrorMessageDialog,
-    },
   };
 </script>
 
@@ -71,8 +72,10 @@
   }
 
   form {
-    margin: 15% auto; /* Ajoutez cette ligne pour centrer le formulaire horizontalement */
-    width: 20%;
+    margin: 15% auto;
+    min-width: 150px;
+    max-width: 350px;
+    min-height: 150px;
     padding: 30px;
     border: 1px solid #f1f1f1;
     background: #fff;
