@@ -2,24 +2,28 @@
   <v-app>
     <Header></Header>
     <main>
-      <nav>
-        <router-link to="/">Home</router-link>
-        |
-        <router-link to="/teacher-home-page">Teacher Page</router-link>
-      </nav>
       <router-view />
     </main>
+    <Footer></Footer>
   </v-app>
 </template>
 
 <script setup>
   import Header from '@/components/header.vue';
+  import Footer from '@/components/footer.vue';
 </script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Damion&family=Roboto:wght@300&display=swap');
+  @import './styles/z-indexes.css';
+
   :root {
     --v-theme-overlay-multiplier: 1;
+  }
+
+  main {
+    height: 100%;
   }
 
   #app {
@@ -36,11 +40,6 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     z-index: -1;
     opacity: 0.7;
   }
@@ -56,5 +55,9 @@
 
   nav a.router-link-exact-active {
     color: #42b983;
+  }
+
+  .logo {
+    font-family: 'Damion', cursive;
   }
 </style>

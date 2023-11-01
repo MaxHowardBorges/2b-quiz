@@ -6,9 +6,14 @@
     color="secondary"
     :sroll-behavior="!mdAndUp ? 'collapse' : ''">
     <template v-slot:prepend>
-      <v-btn v-if="!mdAndUp" @click="toggleTabs" icon="menu"></v-btn>
+      <v-btn
+        @click="toggleTabs"
+        :icon="!mdAndUp ? 'menu' : ''"
+        :disabled="mdAndUp"></v-btn>
     </template>
-    <v-toolbar-title>Two Bee Quizz</v-toolbar-title>
+
+    <div class="logo ma-2 pa-2">Two Bee Quizz</div>
+
     <template v-if="mdAndUp" v-slot:extension>
       <v-tabs
         v-if="mdAndUp"
@@ -24,14 +29,20 @@
       <v-btn icon="dark_mode" @click="toggleTheme" class=""></v-btn>
     </template>
   </v-app-bar>
-  <div id="header_space"></div>
-  <div id="header_space_extend" v-if="mdAndUp"></div>
-  <Transition>
+
+  <v-expand-transition>
+    <div id="header_space"></div>
+  </v-expand-transition>
+  <v-expand-transition>
+    <div id="header_space_extend" v-if="mdAndUp"></div>
+  </v-expand-transition>
+
+  <v-scroll-y-transition>
     <v-card
       width="100%"
       height="100%"
       v-if="!mdAndUp && showTabs"
-      class="mt-16"
+      class="mt-16 z-3"
       position="fixed">
       <v-tabs v-if="showTabs" direction="vertical" class="hidden-xs-only">
         <v-tab to="/" @click="toggleTabs" class="text-h5" height="54px">
@@ -46,7 +57,7 @@
         </v-tab>
       </v-tabs>
     </v-card>
-  </Transition>
+  </v-scroll-y-transition>
 </template>
 
 <script>
@@ -81,18 +92,17 @@
 <style scoped>
   #header_space {
     height: 64px;
+    flex: none;
   }
   #header_space_extend {
     height: 48px;
+    flex: none;
   }
 
-  .v-enter-active,
-  .v-leave-active {
-    transition: opacity 0.5s ease;
-  }
-
-  .v-enter-from,
-  .v-leave-to {
-    opacity: 0;
+  .logo {
+    font-size: xx-large;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>
