@@ -1,16 +1,16 @@
 <template>
   <v-app class="custom_background">
-    <Header></Header>
+    <HeaderBlock></HeaderBlock>
     <main>
       <router-view />
     </main>
-    <Footer></Footer>
+    <FooterBlock></FooterBlock>
   </v-app>
 </template>
 
 <script setup>
-  import Header from '@/components/header.vue';
-  import Footer from '@/components/footer.vue';
+  import HeaderBlock from '@/components/layout/HeaderBlock.vue';
+  import FooterBlock from '@/components/layout/FooterBlock.vue';
 </script>
 
 <style>

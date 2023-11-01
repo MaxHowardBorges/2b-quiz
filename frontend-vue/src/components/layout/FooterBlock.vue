@@ -10,7 +10,11 @@
   </v-footer>
 </template>
 
-<script></script>
+<script>
+  export default {
+    name: 'FooterBlock',
+  };
+</script>
 
 <style scoped>
   div {
