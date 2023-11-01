@@ -1,9 +1,8 @@
 <template>
-
-  <v-snackbar v-model="snackbarError" vertical='' >
+  <v-snackbar v-model="snackbarError" vertical="">
     <div class="text-subtitle-1 pb-2">Erreur lors de la session.</div>
 
-    <p> Veuillez vérifier l'ID de session.</p>
+    <p>Veuillez vérifier l'ID de session.</p>
 
     <template v-slot:actions>
       <v-btn color="indigo" variant="text" @click="snackbarError = false">
@@ -11,6 +10,24 @@
       </v-btn>
     </template>
   </v-snackbar>
+
+  <v-dialog v-model="dialogError" width="auto">
+    <!-- TODO make a component-->
+    <v-card class="pa-5" min-width="40vw">
+      <v-card-text>
+        <p class="mb-3 text-h3 text-error text-uppercase">
+          The server is offline
+        </p>
+        <p>The server is offline.</p>
+        <p>Re-try later.</p>
+      </v-card-text>
+      <v-card-actions class="align-self-end">
+        <v-btn variant="elevated" color="info" @click="dialogError = false">
+          Close
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
   <form @submit.prevent="handleJoinSession">
     <label id="id" for="id"></label>
@@ -28,8 +45,6 @@
       style="border: 1px solid #000000" />
     <input id="submit1" type="submit" value="Join" />
   </form>
-
-
 </template>
 
 <script>
@@ -47,22 +62,23 @@
         try {
           const body = { idSession: this.idSession, username: this.username };
           this.mainStore.setRouter(this.$router);
-          await this.fetchAPIStore.joinSession(body);
-          this.$router.push('/waiting-session');
+          if (!(await this.fetchAPIStore.joinSession(body)))
+            this.snackbarError = true;
+          else this.$router.push('/waiting-session');
         } catch (error) {
           console.error('Error while joining session:', error);
-          this.snackbarError = true;
+          this.dialogError = true;
         }
       },
     },
     data() {
       return {
+        dialogError: ref(false),
         idSession: ref(''),
         username: ref(''),
         snackbarError: false,
       };
     },
-
   };
 </script>
 

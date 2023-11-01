@@ -33,8 +33,8 @@ export const vuetify = createVuetify({
     defaultTheme: 'lightTheme',
     variations: {
       colors: ['primary', 'secondary'],
-      lighten: 1,
-      darken: 2,
+      lighten: 3,
+      darken: 3,
     },
     themes: {
       lightTheme,

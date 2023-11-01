@@ -17,13 +17,14 @@ export const fetchAPIStore = defineStore('fetchAPI', {
       );
 
       if (!response.ok || response.status !== 204) {
-        throw new Error('Erreur de chargement de la question');
+        return false;
       }
       const eventStore = eventSourceStore();
       const store = mainStore();
       store.setIdSession(body.idSession);
       eventStore.connectToSSE();
       store.setUsername(body.username);
+      return true;
     },
     async getQuestions() {
       const store = mainStore();
