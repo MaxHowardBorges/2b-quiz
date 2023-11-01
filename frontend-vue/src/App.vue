@@ -1,17 +1,27 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link>
-    |
-    <router-link to="/teacher-home-page">Teacher Page</router-link>
-  </nav>
-  <router-view />
+  <v-app>
+    <Header></Header>
+    <main>
+      <nav>
+        <router-link to="/">Home</router-link>
+        |
+        <router-link to="/teacher-home-page">Teacher Page</router-link>
+      </nav>
+      <router-view />
+    </main>
+  </v-app>
 </template>
+
+<script setup>
+  import Header from '@/components/header.vue';
+</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
   :root {
     --v-theme-overlay-multiplier: 1;
   }
+
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -20,7 +30,7 @@
     font-family: 'Roboto', sans-serif;
   }
 
-  body::before {
+  div.v-application {
     content: '';
     background-image: url('@/assets/hexagons.svg');
     background-repeat: no-repeat;
@@ -48,4 +58,3 @@
     color: #42b983;
   }
 </style>
-<script setup></script>

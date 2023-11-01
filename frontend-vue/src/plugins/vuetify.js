@@ -1,5 +1,7 @@
-import '@mdi/font/css/materialdesignicons.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import 'vuetify/styles';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
 import { createVuetify } from 'vuetify';
 import { md, aliases } from 'vuetify/iconsets/md';
 
@@ -9,12 +11,17 @@ let defaultColors = {
 
 const lightTheme = {
   dark: false,
-  colors: Object.assign({}, {}, defaultColors),
+  colors: Object.assign({}, { secondary: '#212121' }, defaultColors),
 };
 
-const darkTheme = { dark: true, colors: Object.assign({}, {}, defaultColors) };
+const darkTheme = {
+  dark: true,
+  colors: Object.assign({}, { secondary: '#212121' }, defaultColors),
+};
 
 export const vuetify = createVuetify({
+  components,
+  directives,
   icons: {
     defaultSet: 'md',
     aliases,
