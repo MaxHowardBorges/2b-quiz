@@ -1,6 +1,13 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  ParseIntPipe,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
 import { QuestionnaryService } from '../service/questionnary.service';
-import { QuestionDto } from '../../question/dto/question.dto';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
 
 @Controller('questionnary')
@@ -8,7 +15,7 @@ export class QuestionnaryController {
   constructor(private readonly questionnaryService: QuestionnaryService) {}
   @Post('/create')
   createQuestionnary(
-    @Body(new ValidationPipe()) questionnaryDto : QuestionnaryDto
+    @Body(new ValidationPipe()) questionnaryDto: QuestionnaryDto,
   ) {
     return this.questionnaryService.createQuestionnary(
       questionnaryDto.title,
@@ -17,10 +24,8 @@ export class QuestionnaryController {
     );
   }
 
-  @Post('/delete')
-  deleteQuestionnary(
-    @Body(new ValidationPipe()) body: {idQuestionnary : number}
-  ) {
-    return this.questionnaryService.deleteQuestionnary(body.idQuestionnary);
+  @Delete('/:id')
+  async deleteQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
+    return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 }

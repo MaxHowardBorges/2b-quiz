@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionModule } from './question/question.module';
 import { SessionModule } from './session/session.module';
 import { EventModule } from './event/event.module';
-import { QuestionnaryModule } from './questionnary/module/questionnary.module';
+import { QuestionnaryModule } from './questionnary/questionnary.module';
 
 @Module({
   imports: [
