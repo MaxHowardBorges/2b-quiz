@@ -22,8 +22,8 @@
   export default {
     name: 'ErrorDialog',
     props: {
-      title: String,
       content: String,
+      title: String,
     },
     data() {
       return {

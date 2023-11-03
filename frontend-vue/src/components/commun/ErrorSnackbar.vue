@@ -18,8 +18,8 @@
   export default {
     name: 'ErrorSnackbar',
     props: {
-      title: String,
       content: String,
+      title: String,
     },
     data() {
       return {

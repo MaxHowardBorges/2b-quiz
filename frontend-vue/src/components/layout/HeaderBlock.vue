@@ -16,7 +16,7 @@
     <div class="logo ma-2 pa-2">Two Bee Quizz</div>
 
     <template v-if="mdAndUp" v-slot:extension>
-      <PageMenu></PageMenu>
+      <page-menu-block />
     </template>
 
     <template v-slot:append>
@@ -39,22 +39,22 @@
       v-if="!mdAndUp && showTabs"
       class="mt-16 z-3"
       position="fixed">
-      <PageMenu
+      <page-menu-block
         :vertical="true"
         :show-tabs="showTabs"
         :with-toggle-tabs="true"
-        @toggle-tabs="toggleTabs"></PageMenu>
+        @toggle-tabs="toggleTabs" />
     </v-card>
   </v-scroll-y-transition>
 </template>
 
 <script>
-  import PageMenu from '@/components/layout/PageMenu.vue';
   import { ref } from 'vue';
+  import PageMenuBlock from '@/components/layout/PageMenuBlock.vue';
 
   export default {
     name: 'HeaderBlock',
-    components: { PageMenu },
+    components: { PageMenuBlock },
     setup() {
       return {
         mdAndUp: ref(true),

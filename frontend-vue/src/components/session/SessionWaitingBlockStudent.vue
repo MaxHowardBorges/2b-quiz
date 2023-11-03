@@ -17,8 +17,8 @@
   export default {
     name: 'SessionWaitingBlockStudent',
     props: {
-      waitingSessionStart: false,
       idSession: String,
+      waitingSessionStart: false,
     },
   };
 </script>

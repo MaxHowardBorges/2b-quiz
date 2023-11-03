@@ -47,22 +47,22 @@
 
 <script>
   import { ref } from 'vue';
-  import router from '@/router';
   import ResultTable from '@/components/results/ResultTable.vue';
+  import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
   import { ValidationError } from '@/utils/valdiationError';
 
   export default {
-    name: 'SessionEnded',
+    name: 'SessionEndedBlock',
     components: { ResultTable },
     setup() {
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
       return {
+        loading: ref(false),
         sessionStore,
         userStore,
-        loading: ref(false),
       };
     },
     methods: {

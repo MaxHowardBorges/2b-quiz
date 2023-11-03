@@ -43,9 +43,9 @@
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
-  import { ValidationError } from '@/utils/valdiationError';
   import { useUserStore } from '@/stores/userStore';
   import { UserRoles } from '@/utils/userRoles';
+  import { ValidationError } from '@/utils/valdiationError';
 
   export default {
     name: 'JoinForm',
@@ -58,11 +58,11 @@
     components: { ErrorSnackbar, ErrorDialog },
     data() {
       return {
-        loading: false,
-        idSession: ref(''),
-        username: ref(''),
-        snackbarError: ref(false),
         errorSnackbarContent: '',
+        idSession: ref(''),
+        loading: false,
+        snackbarError: ref(false),
+        username: ref(''),
       };
     },
     methods: {

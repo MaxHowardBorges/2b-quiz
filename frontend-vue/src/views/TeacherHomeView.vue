@@ -4,7 +4,7 @@
 
 <script>
   // @ is an alias to /src
-  import MenuTeacher from '@/components/MenuTeacher.vue';
+  import MenuTeacher from '@/components/home/MenuTeacherBlock.vue';
 
   export default {
     name: 'TeacherHomeView',

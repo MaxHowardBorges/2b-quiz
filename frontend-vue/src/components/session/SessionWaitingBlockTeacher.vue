@@ -39,8 +39,8 @@
       const sessionStore = useSessionStore();
       return {
         loading: ref(false),
-        sessionStore,
         participantsCount: ref(''), //TODO get update nb
+        sessionStore,
       };
     },
     emits: ['session-start'],

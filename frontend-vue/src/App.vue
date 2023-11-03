@@ -1,10 +1,10 @@
 <template>
   <v-app class="custom_background">
-    <HeaderBlock></HeaderBlock>
+    <header-block></header-block>
     <main>
       <router-view />
     </main>
-    <FooterBlock></FooterBlock>
+    <footer-block></footer-block>
   </v-app>
 </template>
 

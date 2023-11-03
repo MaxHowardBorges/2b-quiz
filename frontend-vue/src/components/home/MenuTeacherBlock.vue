@@ -46,6 +46,7 @@
   import { UserRoles } from '@/utils/userRoles';
 
   export default {
+    name: 'MenuTeacherBlock',
     components: { ErrorSnackbar, ErrorDialog },
     props: {
       dialogError: false,

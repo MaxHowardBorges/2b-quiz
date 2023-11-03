@@ -21,8 +21,8 @@
   import AnswerGroup from '@/components/question/AnswerGroup.vue';
   import SessionActionsBlock from '@/components/session/SessionActionsBlock.vue';
   import QuestionBlock from '@/components/question/QuestionBlock.vue';
-  import { useUserStore } from '@/stores/userStore';
   import { useSessionStore } from '@/stores/sessionStore';
+  import { useUserStore } from '@/stores/userStore';
 
   export default {
     name: 'SessionQuestionBlock',

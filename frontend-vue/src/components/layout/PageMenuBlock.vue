@@ -19,7 +19,7 @@
   import PageMenuItem from '@/components/layout/PageMenuItem.vue';
 
   export default {
-    name: 'PageMenu',
+    name: 'PageMenuBlock',
     components: { PageMenuItem },
     props: {
       vertical: false,

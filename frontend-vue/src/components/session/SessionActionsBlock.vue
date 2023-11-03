@@ -24,9 +24,9 @@
 
 <script>
   import { ref } from 'vue';
+  import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
-  import router from '@/router';
 
   export default {
     name: 'SessionActionsBlock',
@@ -35,13 +35,20 @@
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
       return {
-        sessionStore,
         selectedValue,
+        sessionStore,
         userStore,
       };
     },
     emits: ['answer-sent'],
     methods: {
+      async handleNextQuestion() {
+        await this.sessionStore.nextQuestion();
+      },
+      async handleStop() {
+        await router.push('/teacher-home-page');
+        //TODO to finish
+      },
       async handleSubmit() {
         try {
           await this.sessionStore.sendAnswer(this.selectedValue);
@@ -49,13 +56,6 @@
         } catch (e) {
           console.error(e); //TODO manage error
         }
-      },
-      async handleStop() {
-        await router.push('/teacher-home-page');
-        //TODO to finish
-      },
-      async handleNextQuestion() {
-        await this.sessionStore.nextQuestion();
       },
     },
   };

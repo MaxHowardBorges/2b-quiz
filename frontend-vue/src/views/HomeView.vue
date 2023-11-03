@@ -1,6 +1,6 @@
 <template>
   <div class="h-100 d-flex align-center justify-center ma-2">
-    <JoinForm></JoinForm>
+    <join-form />
   </div>
 </template>
 

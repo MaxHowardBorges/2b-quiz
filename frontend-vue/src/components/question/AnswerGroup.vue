@@ -21,8 +21,8 @@
 </template>
 
 <script>
-  import AnswerItem from '@/components/question/AnswerItem.vue';
   import { ref } from 'vue';
+  import AnswerItem from '@/components/question/AnswerItem.vue';
 
   export default {
     name: 'AnswerGroup',
@@ -37,24 +37,6 @@
       };
     },
     methods: {
-      getNumberOfRow() {
-        const answersNb = this.answers.length;
-        if (answersNb <= 2) return 1;
-        else if (answersNb <= 6) return 2;
-        else {
-          return 3;
-        }
-      },
-      getNbAnswerInLine(lineNb) {
-        const answersNb = this.answers.length;
-        if (answersNb <= 4) {
-          const nbAnswerRemained = answersNb - lineNb * 2;
-          return nbAnswerRemained < 2 ? nbAnswerRemained : 2;
-        } else {
-          const nbAnswerRemained = answersNb - lineNb * 3;
-          return nbAnswerRemained < 3 ? nbAnswerRemained : 3;
-        }
-      },
       getAnswerId(nAnswer, nLine) {
         if (this.answers.length <= 4) return nAnswer - 1 + (nLine - 1) * 2;
         else return nAnswer - 1 + (nLine - 1) * 3;
@@ -69,6 +51,24 @@
           )
             return 'auto';
         return answersNb <= 4 ? 6 : 4;
+      },
+      getNbAnswerInLine(lineNb) {
+        const answersNb = this.answers.length;
+        if (answersNb <= 4) {
+          const nbAnswerRemained = answersNb - lineNb * 2;
+          return nbAnswerRemained < 2 ? nbAnswerRemained : 2;
+        } else {
+          const nbAnswerRemained = answersNb - lineNb * 3;
+          return nbAnswerRemained < 3 ? nbAnswerRemained : 3;
+        }
+      },
+      getNumberOfRow() {
+        const answersNb = this.answers.length;
+        if (answersNb <= 2) return 1;
+        else if (answersNb <= 6) return 2;
+        else {
+          return 3;
+        }
       },
     },
     watch: {

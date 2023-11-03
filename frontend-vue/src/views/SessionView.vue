@@ -12,33 +12,33 @@
     @answer-sent-relay="waiting = true"
     v-if="!waiting && !ended" />
 
-  <session-ended @reset="reset" v-if="ended" />
+  <session-ended-block @reset="reset" v-if="ended" />
 </template>
 
 <script>
   import { ref } from 'vue';
+  import SessionEndedBlock from '@/components/session/SessionEndedBlock.vue';
+  import SessionQuestionBlock from '@/components/session/SessionQuestionBlock.vue';
+  import SessionWaitingBlockStudent from '@/components/session/SessionWaitingBlockStudent.vue';
+  import SessionWaitingBlockTeacher from '@/components/session/SessionWaitingBlockTeacher.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
-  import SessionWaitingBlockStudent from '@/components/session/SessionWaitingBlockStudent.vue';
-  import SessionQuestionBlock from '@/components/session/SessionQuestionBlock.vue';
-  import SessionEnded from '@/components/session/SessionEnded.vue';
-  import SessionWaitingBlockTeacher from '@/components/session/SessionWaitingBlockTeacher.vue';
   import router from '@/router';
 
   export default {
-    name: 'Session',
+    name: 'SessionView',
     components: {
-      SessionWaitingBlockTeacher,
-      SessionEnded,
+      SessionEndedBlock,
       SessionQuestionBlock,
       SessionWaitingBlockStudent,
+      SessionWaitingBlockTeacher,
     },
     setup() {
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
 
-      let waiting = ref(true);
       let ended = ref(false);
+      let waiting = ref(true);
       let waitingSessionStart = ref(true);
 
       sessionStore.$subscribe((mutation) => {
@@ -53,11 +53,11 @@
         }
       });
       return {
-        userStore,
-        waitingSessionStart,
-        waiting,
-        sessionStore,
         ended,
+        sessionStore,
+        userStore,
+        waiting,
+        waitingSessionStart,
       };
     },
     mounted() {
@@ -65,10 +65,10 @@
     },
     methods: {
       reset() {
-        this.waiting = true;
-        this.waitingSessionStart = true;
         this.ended = false;
         this.sessionStore.setEnded(false);
+        this.waiting = true;
+        this.waitingSessionStart = true;
       },
     },
   };
