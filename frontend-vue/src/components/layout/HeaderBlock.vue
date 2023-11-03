@@ -10,6 +10,7 @@
         @click="toggleTabs"
         :icon="!mdAndUp ? 'menu' : ''"
         :disabled="mdAndUp"></v-btn>
+      <v-btn icon="" disabled=""></v-btn>
     </template>
 
     <div class="logo ma-2 pa-2">Two Bee Quizz</div>
@@ -20,6 +21,7 @@
 
     <template v-slot:append>
       <v-btn icon="dark_mode" @click="toggleTheme" class=""></v-btn>
+      <v-btn icon="translate"></v-btn>
     </template>
   </v-app-bar>
 

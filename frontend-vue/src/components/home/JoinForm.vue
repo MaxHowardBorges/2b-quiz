@@ -1,13 +1,13 @@
 <template>
-  <ErrorDialog
+  <error-dialog
     title="The Server is offline"
     content="Please, try later."
-    ref="dialogError"></ErrorDialog>
+    ref="dialogError"></error-dialog>
 
-  <ErrorSnackbar
+  <error-snackbar
     title="Error while connecting to the session"
     :content="errorSnackbarContent"
-    ref="errorSnackbar"></ErrorSnackbar>
+    ref="errorSnackbar"></error-snackbar>
 
   <v-sheet
     max-width="450px"
@@ -40,16 +40,18 @@
 <script>
   import { ref } from 'vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
-  import { mainStore } from '@/stores/main.store';
-  import { fetchAPIStore } from '@/stores/fetchAPI.store';
-  import { mapStores } from 'pinia';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import router from '@/router';
+  import { useSessionStore } from '@/stores/sessionStore';
+  import { ValidationError } from '@/utils/valdiationError';
 
   export default {
     name: 'JoinForm',
-    computed: {
-      ...mapStores(mainStore, fetchAPIStore),
+    setup() {
+      const sessionStore = useSessionStore();
+      return {
+        sessionStore,
+      };
     },
     components: { ErrorSnackbar, ErrorDialog },
     data() {
@@ -66,16 +68,16 @@
         this.loading = true;
         try {
           const body = { idSession: this.idSession, username: this.username };
-          this.mainStore.setRouter(this.$router);
-          const response = await this.fetchAPIStore.joinSession(body);
-          if (response === true) await router.push('/waiting-session');
-          else {
-            this.errorSnackbarContent = response;
-            this.$refs.errorSnackbar.setSnackbarError(true);
-          }
+          await this.sessionStore.joinSession(body);
+          await router.push('/session');
         } catch (error) {
-          console.error('Error while joining session:', error);
-          this.$refs.dialogError.setDialogError(true);
+          if (error instanceof ValidationError) {
+            this.errorSnackbarContent = error.message;
+            this.$refs.errorSnackbar.setSnackbarError(true);
+          } else {
+            console.error('Error while joining session:', error);
+            this.$refs.dialogError.setDialogError(true);
+          }
         }
         this.loading = false;
       },

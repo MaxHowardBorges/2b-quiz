@@ -1,11 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/HomeView.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/HomeView.vue'),
   },
   {
     path: '/about',
@@ -13,7 +13,8 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
   },
   {
     path: '/question',
@@ -21,7 +22,10 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherQuestionView.vue')
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ '../views/TeacherQuestionView.vue'
+      ),
   },
 
   {
@@ -30,44 +34,59 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/EndOfSessionView.vue')//EndOfSessionView//FinDeSessionView
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/EndOfSessionView.vue'), //EndOfSessionView//FinDeSessionView
   },
 
   {
-    path: '/waiting-participant',//waiting-participant
+    path: '/waiting-participant', //waiting-participant
     name: 'waiting-participant',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingParticipantView.vue')// WaitingParticipantView //AttenteParticipantView
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ '../views/WaitingParticipantView.vue'
+      ), // WaitingParticipantView //AttenteParticipantView
   },
   {
-    path: '/teacher-home-page',//teacher-home-page
+    path: '/teacher-home-page', //teacher-home-page
     name: 'teacher-home-page',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherHomeView.vue')//TeacherHomeView//MenuEnseignantView
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/TeacherHomeView.vue'), //TeacherHomeView//MenuEnseignantView
   },
   {
     path: '/waiting',
     name: 'waiting',
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingQuestion.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/WaitingQuestion.vue'),
   },
   {
     path: '/waiting-session',
     name: 'waiting-session',
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingSession.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/WaitingSession.vue'),
   },
   {
     path: '/answer',
     name: 'answer',
-    component: () => import(/* webpackChunkName: "about" */ '../views/StudentAnswer.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/StudentAnswer.vue'),
   },
   {
     path: '/end',
     name: 'end',
-    component: () => import(/* webpackChunkName: "about" */ '../views/EndSession.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/EndSession.vue'),
+  },
+  {
+    path: '/session',
+    name: 'session',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/Session.vue'),
   },
 ];
 
