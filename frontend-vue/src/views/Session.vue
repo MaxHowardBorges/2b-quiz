@@ -23,8 +23,10 @@
   import SessionQuestionBlock from '@/components/session/SessionQuestionBlock.vue';
   import SessionEnded from '@/components/session/SessionEnded.vue';
   import SessionWaitingBlockTeacher from '@/components/session/SessionWaitingBlockTeacher.vue';
+  import router from '@/router';
 
   export default {
+    name: 'Session',
     components: {
       SessionWaitingBlockTeacher,
       SessionEnded,
@@ -57,6 +59,9 @@
         sessionStore,
         ended,
       };
+    },
+    mounted() {
+      if (!this.sessionStore.idSession) router.replace('/');
     },
     methods: {
       reset() {

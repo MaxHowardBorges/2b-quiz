@@ -8,6 +8,7 @@
   import JoinForm from '@/components/home/JoinForm.vue';
 
   export default {
+    name: 'HomeView',
     components: { JoinForm },
   };
 </script>

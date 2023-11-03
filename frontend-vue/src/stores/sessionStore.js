@@ -13,10 +13,10 @@ import { useUserStore } from '@/stores/userStore';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
-    idSession: String,
-    question: { answers: Array, content: String },
-    ended: Boolean,
-    results: Array,
+    idSession: null,
+    question: { answers: [], content: '' },
+    ended: false,
+    results: [],
   }),
   actions: {
     setQuestion(question) {
