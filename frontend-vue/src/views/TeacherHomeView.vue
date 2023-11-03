@@ -1,17 +1,19 @@
 <template>
-  <div class="endof-session">
-    <MenuTeacher/>
-  </div>
+  <menu-teacher :dialog-error="dialogError" :error-snackbar="errorSnackbar" />
 </template>
 
 <script>
   // @ is an alias to /src
-  import MenuTeacher from '@/components/MenuTeacher.vue'
+  import MenuTeacher from '@/components/MenuTeacher.vue';
 
   export default {
-    name: 'MenuTeacherView',
+    name: 'TeacherHomeView',
     components: {
-      MenuTeacher
-    }
-  }
+      MenuTeacher,
+    },
+    props: {
+      dialogError: false,
+      errorSnackbar: false,
+    },
+  };
 </script>

@@ -1,26 +1,29 @@
 <template>
   <v-card-title>
     <div class="text-h5 text-center" style="white-space: normal">
-      <p>{{ question.content }}</p>
+      <p>{{ sessionStore.question.content }}</p>
     </div>
   </v-card-title>
   <!--    <template v-slot:subtitle>some hint ??</template> TODO check utility -->
   <answer-group
     @new-selected-value="relayEvent"
-    :answers="question.answers"></answer-group>
+    :answers="sessionStore.question.answers"
+    :disabled="disabled" />
 </template>
 
 <script>
   import AnswerGroup from '@/components/question/AnswerGroup.vue';
+  import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
     name: 'QuestionBlock',
     components: { AnswerGroup },
+    setup() {
+      const sessionStore = useSessionStore();
+      return { sessionStore };
+    },
     props: {
-      question: {
-        answers: Array,
-        content: String,
-      },
+      disabled: Boolean,
     },
     methods: {
       relayEvent(value) {

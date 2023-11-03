@@ -1,59 +1,70 @@
 <template>
   <session-waiting-block-student
-    v-if="waiting && !ended"
-    :id-session="idSession"
-    :waiting-session-start="
-      waitingSessionStart
-    "></session-waiting-block-student>
+    v-if="waiting && !ended && userStore.isStudent"
+    :id-session="sessionStore.idSession.toString()"
+    :waiting-session-start="waitingSessionStart" />
 
-  <session-question-block-student
-    @answer-sent="waiting = true"
-    v-if="!waiting && !ended"
-    :question="question"></session-question-block-student>
+  <session-waiting-block-teacher
+    v-if="userStore.isTeacher && waiting"
+    @session-start="waiting = false" />
 
-  <session-ended v-if="ended"></session-ended>
+  <session-question-block
+    @answer-sent-relay="waiting = true"
+    v-if="!waiting && !ended" />
+
+  <session-ended @reset="reset" v-if="ended" />
 </template>
 
 <script>
   import { ref } from 'vue';
   import { useSessionStore } from '@/stores/sessionStore';
+  import { useUserStore } from '@/stores/userStore';
   import SessionWaitingBlockStudent from '@/components/session/SessionWaitingBlockStudent.vue';
-  import SessionQuestionBlockStudent from '@/components/session/SessionQuestionBlockStudent.vue';
+  import SessionQuestionBlock from '@/components/session/SessionQuestionBlock.vue';
   import SessionEnded from '@/components/session/SessionEnded.vue';
+  import SessionWaitingBlockTeacher from '@/components/session/SessionWaitingBlockTeacher.vue';
 
   export default {
     components: {
+      SessionWaitingBlockTeacher,
       SessionEnded,
-      SessionQuestionBlockStudent,
+      SessionQuestionBlock,
       SessionWaitingBlockStudent,
     },
     setup() {
       const sessionStore = useSessionStore();
+      const userStore = useUserStore();
 
-      let question = ref({});
       let waiting = ref(true);
       let ended = ref(false);
       let waitingSessionStart = ref(true);
 
       sessionStore.$subscribe((mutation) => {
-        if (mutation.events.key === 'ended') {
+        if (
+          mutation.events.key === 'ended' &&
+          mutation.events.newValue === true
+        ) {
           ended.value = true;
-        } else if (mutation.events.key === 'question') {
+        } else if (mutation.events.key === 'question' && userStore.isStudent) {
           waitingSessionStart.value = false;
-          question.value = mutation.events.newValue;
           waiting.value = false;
         }
       });
-
-      const idSession = sessionStore.idSession.toString();
       return {
-        idSession,
+        userStore,
         waitingSessionStart,
         waiting,
-        question,
         sessionStore,
         ended,
       };
+    },
+    methods: {
+      reset() {
+        this.waiting = true;
+        this.waitingSessionStart = true;
+        this.ended = false;
+        this.sessionStore.setEnded(false);
+      },
     },
   };
 </script>

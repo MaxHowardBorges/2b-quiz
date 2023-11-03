@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import TeacherHomeView from '@/views/TeacherHomeView.vue';
 
 const routes = [
   {
@@ -50,13 +51,13 @@ const routes = [
       ), // WaitingParticipantView //AttenteParticipantView
   },
   {
-    path: '/teacher-home-page', //teacher-home-page
+    path: '/teacher-home-page',
     name: 'teacher-home-page',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/TeacherHomeView.vue'), //TeacherHomeView//MenuEnseignantView
+    props: (route) => ({
+      errorSnackbar: route.query.errorSnackbar,
+      dialogError: !!route.query.dialogError,
+    }),
+    component: TeacherHomeView,
   },
   {
     path: '/waiting',

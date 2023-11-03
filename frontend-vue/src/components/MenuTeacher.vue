@@ -1,50 +1,93 @@
 <template>
-  <div class="teacher-interface">
-    <h1>Menu Enseignant</h1>
+  <error-dialog
+    title="The Server is offline"
+    content="Please, try later."
+    ref="dialogError"></error-dialog>
 
-    <btn @click="handleCreateSession" nomB="Créer une session" />
-    <router-link to="/"><btn nomB="Historique de sessions" /></router-link>
-  </div>
+  <error-snackbar
+    title="Error while connecting to the session"
+    :content="errorSnackbarContent"
+    ref="errorSnackbar"></error-snackbar>
+
+  <v-sheet
+    min-width="150px"
+    class="pa-7 d-block my-6 mx-auto"
+    elevation="3"
+    rounded="lg"
+    width="70%"
+    position="relative">
+    <h1 class="mb-6">Teacher Menu</h1>
+
+    <div class="">
+      <v-btn
+        @click="handleCreateSession"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Create session</p>
+      </v-btn>
+    </div>
+    <div class="">
+      <v-btn color="primary" class="mx-6 my-3" max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Session history</p>
+      </v-btn>
+    </div>
+  </v-sheet>
 </template>
 
 <script>
-  import btn from '@/components/BoutonComp.vue';
-  import { mainStore } from '@/stores/main.store';
-  import { mapStores } from 'pinia';
+  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
+  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import { useSessionStore } from '@/stores/sessionStore';
+  import router from '@/router';
+  import { ValidationError } from '@/utils/valdiationError';
+  import { ref } from 'vue';
+  import { useUserStore } from '@/stores/userStore';
+  import { UserRoles } from '@/utils/userRoles';
+
   export default {
-    computed: {
-      ...mapStores(mainStore),
+    components: { ErrorSnackbar, ErrorDialog },
+    props: {
+      dialogError: false,
+      errorSnackbar: false,
     },
-    components: { btn },
+    setup() {
+      const sessionStore = useSessionStore();
+      return {
+        sessionStore,
+        errorSnackbarContent: ref(''),
+      };
+    },
+    mounted() {
+      if (this.errorSnackbar) {
+        this.errorSnackbarContent = this.errorSnackbar;
+        this.$refs.errorSnackbar.setSnackbarError(true);
+      }
+      if (this.dialogError) {
+        this.$refs.dialogError.setDialogError(true);
+      }
+    },
     methods: {
-      handleCreateSession() {
-        this.mainStore
-          .createSession()
-          .then(() => {
-            this.$router.push('/waiting-participant');
-          })
-          .catch((error) => {
+      async handleCreateSession() {
+        this.loading = true;
+        try {
+          await this.sessionStore.createSession();
+          const userStore = useUserStore(); //TODO replace
+          userStore.setUserRoles(UserRoles.TEACHER);
+          await router.push('/session');
+        } catch (error) {
+          if (error instanceof ValidationError) {
+            this.errorSnackbarContent = error.message;
+            this.$refs.errorSnackbar.setSnackbarError(true);
+          } else {
             console.error('Error while creating session:', error);
-          });
+            this.$refs.dialogError.setDialogError(true);
+          }
+        }
+        this.loading = false;
       },
     },
   };
 </script>
 
-<style scoped>
-  .teacher-interface {
-    text-align: center;
-    margin: 0 auto; /* Centrer horizontalement */
-    max-width: 400px; /* Largeur maximale pour le contenu */
-    background-color: rgb(255, 255, 255); /* Fond blanc */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .teacher-interface h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #ffd700; /* Couleur jaune */
-  }
-</style>
+<style scoped></style>

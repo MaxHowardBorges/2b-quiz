@@ -11,6 +11,7 @@
           cols="12"
           :md="getMd(nLine)">
           <answer-item
+            :disabled="disabled"
             :content="answers[getAnswerId(nAnswer, nLine)].content"
             :index="getAnswerId(nAnswer, nLine)" />
         </v-col>
@@ -28,6 +29,7 @@
     components: { AnswerItem },
     props: {
       answers: Array,
+      disabled: Boolean,
     },
     data() {
       return {

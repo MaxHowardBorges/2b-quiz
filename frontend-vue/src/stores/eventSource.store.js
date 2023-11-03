@@ -1,4 +1,4 @@
-import { Events } from '@/stores/events';
+import { Events } from '@/utils/events';
 import { mainStore } from '@/stores/main.store';
 import { fetchAPIStore } from '@/stores/fetchAPI.store';
 import { defineStore } from 'pinia';

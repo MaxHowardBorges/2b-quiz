@@ -44,6 +44,8 @@
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { ValidationError } from '@/utils/valdiationError';
+  import { useUserStore } from '@/stores/userStore';
+  import { UserRoles } from '@/utils/userRoles';
 
   export default {
     name: 'JoinForm',
@@ -69,6 +71,8 @@
         try {
           const body = { idSession: this.idSession, username: this.username };
           await this.sessionStore.joinSession(body);
+          const userStore = useUserStore(); //TODO replace
+          userStore.setUserRoles(UserRoles.STUDENT);
           await router.push('/session');
         } catch (error) {
           if (error instanceof ValidationError) {

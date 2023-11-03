@@ -1,14 +1,22 @@
 import { defineStore } from 'pinia';
-import { getCurrentQuestion, joinSession, sendAnswer } from '@/api/session';
+import {
+  createSession,
+  getCurrentQuestion,
+  getNextQuestion,
+  getSessionResults,
+  joinSession,
+  sendAnswer,
+} from '@/api/session';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
+import { useUserStore } from '@/stores/userStore';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: String,
-    question: null,
-    username: String, //TODO move to user
+    question: { answers: Array, content: String },
     ended: Boolean,
+    results: Array,
   }),
   actions: {
     setQuestion(question) {
@@ -17,17 +25,19 @@ export const useSessionStore = defineStore('session', {
     setIdSession(idSession) {
       this.idSession = idSession;
     },
-    setUsername(idSession) {
-      this.username = idSession;
-    },
     setEnded(ended) {
       this.ended = ended;
     },
+    setTabResult(results) {
+      this.results = results;
+    },
     async joinSession(body) {
+      this.setEnded(false);
       const response = await joinSession(body);
       await throwIfNotOK(response, 204);
       this.setIdSession(body.idSession);
-      this.setUsername(body.username);
+      const userStore = useUserStore();
+      userStore.setUsername(body.username);
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSE();
     },
@@ -45,10 +55,11 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async sendAnswer(idAnswer) {
+      const userStore = useUserStore();
       const body = {
         idSession: this.idSession,
         answer: idAnswer,
-        username: this.username,
+        username: userStore.username,
       };
       try {
         const response = await sendAnswer(body);
@@ -56,6 +67,41 @@ export const useSessionStore = defineStore('session', {
         if (!response.ok || response.status !== 204) {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async createSession() {
+      const response = await createSession();
+      await throwIfNotOK(response);
+      const content = await response.json();
+      this.setIdSession(content.id);
+    },
+    async nextQuestion() {
+      const body = { id: this.idSession };
+      try {
+        const response = await getNextQuestion(body);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question'); // TODO manage error
+        }
+        const question = await response.json();
+        if (Object.entries(question).length === 0) {
+          await this.fetchResults();
+          this.setEnded(true);
+        } else this.setQuestion(question);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async fetchResults() {
+      try {
+        const response = await getSessionResults(this.idSession);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question'); // TODO manage error
+        }
+        const tabResult = await response.json();
+        this.setTabResult(tabResult);
       } catch (error) {
         console.error(error);
       }

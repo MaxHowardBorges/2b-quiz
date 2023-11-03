@@ -6,11 +6,12 @@
       "
       class="d-flex align-center pa-5"
       :class="isSelected ? 'selected-item' : ''"
+      :disabled="disabled"
       min-height="20px"
       height="100%"
       @click="toggle">
       <v-scroll-y-transition>
-        <div class="text-body-1 flex-grow-1 text-center">
+        <div class="text-body-1 flex-grow-1 text-center" style="opacity: 1">
           {{ content }}
         </div>
       </v-scroll-y-transition>
@@ -26,6 +27,7 @@
     methods: { getAnswerItemColor },
     props: {
       content: String,
+      disabled: Boolean,
       index: Number,
     },
   };

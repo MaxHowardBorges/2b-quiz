@@ -1,4 +1,4 @@
-import { Events } from '@/stores/events';
+import { Events } from '@/utils/events';
 import { defineStore } from 'pinia';
 import { useSessionStore } from '@/stores/sessionStore';
 
