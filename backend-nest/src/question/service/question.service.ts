@@ -4,6 +4,7 @@ import { Question } from '../entity/question.entity';
 import { Repository } from 'typeorm';
 import { Answer } from '../entity/answer.entity';
 import { QuestionDto } from '../dto/question.dto';
+import { AnswerDto } from '../dto/answer.dto';
 
 @Injectable()
 export class QuestionService {
@@ -57,5 +58,31 @@ export class QuestionService {
       await this.answerRepository.delete({ question });
     }
     await this.questionRepository.delete({ questionnary });
+  }
+
+  async findQuestion(questionnary) {
+    const questions = await this.questionRepository.find({
+      where: { questionnary },
+      relations: ['answers'],
+    });
+
+    const questionDtos: QuestionDto[] = [];
+    for (const question of questions) {
+      const answerDtos = question.answers.map((answerEnt) => {
+        const answerDto = new AnswerDto();
+        answerDto.content = answerEnt.content;
+        answerDto.isCorrect = answerEnt.isCorrect;
+        return answerDto;
+      });
+
+      const questionDto = {
+        content: question.content,
+        answers: answerDtos,
+      };
+
+      questionDtos.push(questionDto);
+    }
+
+    return questionDtos;
   }
 }

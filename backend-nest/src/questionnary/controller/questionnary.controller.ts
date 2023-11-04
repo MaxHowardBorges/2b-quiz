@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Post,
@@ -27,5 +28,10 @@ export class QuestionnaryController {
   @Delete('/:id')
   async deleteQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
+  }
+
+  @Get('/select/:id')
+  selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
+    return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
 }

@@ -1,9 +1,10 @@
-import { Body, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { QuestionService } from '../../question/service/question.service';
+import { QuestionnaryDto } from '../dto/questionnary.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -40,5 +41,22 @@ export class QuestionnaryService {
       await this.questionnaryRepository.delete(idQuestionnary);
     }
     return !!questionnary;
+  }
+
+  async findQuestionnary(idQuestionnary) {
+    const questionnary = await this.questionnaryRepository.findOne({
+      where: { id: idQuestionnary },
+    });
+
+    const questionnaryDto = new QuestionnaryDto();
+    if (questionnary) {
+      questionnaryDto.author = questionnary.author;
+      questionnaryDto.title = questionnary.title;
+      questionnaryDto.questions =
+        await this.questionService.findQuestion(questionnary);
+    }
+    return questionnaryDto.title != null
+      ? questionnaryDto
+      : 'pas de questionnaire trouvé';
   }
 }
