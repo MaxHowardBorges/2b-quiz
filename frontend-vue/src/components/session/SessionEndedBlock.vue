@@ -31,13 +31,6 @@
         color="primary"
         class="pa-2 ma-2 flex-1-1"
         style="flex-basis: 0 !important">
-        <p class="text-white font-weight-bold">Logout</p>
-      </v-btn>
-      <v-btn
-        min-width="190px"
-        color="primary"
-        class="pa-2 ma-2 flex-1-1"
-        style="flex-basis: 0 !important">
         <p class="text-white font-weight-bold">Settings</p>
       </v-btn>
     </div>
