@@ -22,7 +22,7 @@
 
     <template v-slot:append>
       <v-btn icon="dark_mode" @click="toggleTheme" class=""></v-btn>
-      <v-btn icon="translate"></v-btn>
+      <v-btn icon="translate" @click="toggleLocale"></v-btn>
       <v-btn icon="logout" @click="toggleLogout"></v-btn>
     </template>
   </v-app-bar>
@@ -75,11 +75,21 @@
           ? 'lightTheme'
           : 'darkTheme';
       },
-      toggleLogout() {// TODO a lier avec le back
+      toggleLogout() {
+        // TODO a lier avec le back
         router.push('/');
       },
       getVS() {
         this.mdAndUp = this.$vuetify.display.mdAndUp;
+      },
+      toggleLocale() {
+        const id = this.$i18n.availableLocales.findIndex(
+          (locale) => locale === this.$i18n.locale,
+        );
+        this.$i18n.locale =
+          this.$i18n.availableLocales[
+            (id + 1) % this.$i18n.availableLocales.length
+          ];
       },
     },
   };
