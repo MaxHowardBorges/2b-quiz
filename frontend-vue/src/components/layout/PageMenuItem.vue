@@ -4,7 +4,7 @@
     @click="toggleTabs"
     :class="vertical ? 'text-h5' : ''"
     :height="vertical ? '54px' : ''">
-    {{ content }}
+    {{ $t(content) }}
   </v-tab>
 </template>
 

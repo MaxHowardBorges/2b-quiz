@@ -31,11 +31,11 @@
         pageList: [
           {
             link: '/',
-            name: 'Home',
+            name: 'home',
           },
           {
             link: '/teacher-home-page',
-            name: 'Teacher Menu',
+            name: 'menuTeacher',
           },
         ],
       };
