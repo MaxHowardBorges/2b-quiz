@@ -37,7 +37,7 @@ export class QuestionnaryService {
     });
 
     if (questionnary) {
-      await this.questionService.deleteQuestion(questionnary);
+      await this.questionService.deleteQuestions(questionnary);
       await this.questionnaryRepository.delete(idQuestionnary);
     }
     return !!questionnary;
@@ -59,4 +59,51 @@ export class QuestionnaryService {
       ? questionnaryDto
       : 'pas de questionnaire trouvé';
   }
+
+  async addQuestion(idQuestionnary: number, questionDto: QuestionDto) {
+    const questionnary = await this.questionnaryRepository.findOne({
+      where: { id: idQuestionnary },
+    });
+    if (questionnary) {
+      return await this.questionService.createQuestion(
+        questionDto,
+        questionnary,
+      );
+    }
+    return !!questionnary;
+  }
+
+  async deleteQuestion(idQuestionnary: number, idQuestion: number) {
+    const questionnary = await this.questionnaryRepository.findOne({
+      where: { id: idQuestionnary },
+    });
+
+    if (questionnary) {
+      return await this.questionService.deleteQuestion(
+        questionnary,
+        idQuestion,
+      );
+    }
+    return !!questionnary;
+  }
+
+  async modifyQuestion(
+    idQuestionnary: number,
+    idQuestion: number,
+    questionDto: QuestionDto,
+  ) {
+    const questionnary = await this.questionnaryRepository.findOne({
+      where: { id: idQuestionnary },
+    });
+    if (questionnary) {
+      return await this.questionService.modifyQuestion(
+        questionDto,
+        questionnary,
+        idQuestion,
+      );
+    }
+    return !!questionnary;
+  }
+
+  showAnswer(idQuestion: number) {}
 }

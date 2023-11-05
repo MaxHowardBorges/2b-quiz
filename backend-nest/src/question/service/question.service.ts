@@ -48,9 +48,10 @@ export class QuestionService {
       answer.question = question;
       await this.answerRepository.save(answer);
     }
+    return question;
   }
 
-  async deleteQuestion(questionnary) {
+  async deleteQuestions(questionnary) {
     const questions = await this.questionRepository.find({
       where: { questionnary },
     });
@@ -84,5 +85,43 @@ export class QuestionService {
     }
 
     return questionDtos;
+  }
+
+  async deleteQuestion(questionnary, idQuestion: number) {
+    const question = await this.questionRepository.findOne({
+      where: { questionnary, id: idQuestion },
+    });
+    if (question) {
+      await this.answerRepository.delete({ question });
+      await this.questionRepository.delete({ questionnary, id: idQuestion });
+    }
+    return !!question;
+  }
+
+  async modifyQuestion(
+    questionDto: QuestionDto,
+    questionnary,
+    idQuestion: number,
+  ) {
+    const question = await this.questionRepository.findOne({
+      where: { questionnary, id: idQuestion },
+      relations: ['answers'],
+    });
+
+    if (question) {
+      Object.assign(question, questionDto);
+      await this.answerRepository.delete({ question });
+      await this.questionRepository.save(question);
+
+      for (const a of questionDto.answers) {
+        const answer = new Answer();
+        answer.content = a.content;
+        answer.isCorrect = a.isCorrect;
+        answer.question = question;
+        await this.answerRepository.save(answer);
+      }
+    }
+
+    return !!question;
   }
 }
