@@ -2,6 +2,11 @@
   <div class="create-questionnaire-page">
     <h1>Quiz creation</h1>
 
+    <div >
+      <label for="questionnaire-name">Quiz's name : </label>
+      <input type="text" id="questionnaire-name" v-model="questionnaireName">
+    </div>
+
     <!-- Sélection du type de question -->
     <div class="question-type">
       <button @click="selectQuestionType('true-or-false')">True or False</button>
@@ -9,19 +14,13 @@
       <button @click="selectQuestionType('multiple-choice-question')">Multiple Choice Question</button>
     </div>
 
-
-
-    <!-- Nom du questionnaire -->
-    <div v-if='selectedQuestionType==="multiple-choice-question" || this.selectedQuestionType===null'>
-    <div >
-      <label for="questionnaire-name">Quiz's name : </label>
-      <input type="text" id="questionnaire-name" v-model="questionnaireName">
-    </div>
-    <!-- Création de question -->
     <div class="create-question">
       <label for="question">Question : </label>
       <input type="text" id="question" v-model="question">
     </div>
+
+    <!-- Nom du questionnaire -->
+    <div v-if='selectedQuestionType==="multiple-choice-question" || this.selectedQuestionType===null'>
     <!-- Réponses possibles -->
     <div class="answers">
       <div v-for="(answer, index) in answers" :key="index">
@@ -34,33 +33,7 @@
   </div>
 
 
-    <div v-if='this.selectedQuestionType==="open-question"'>
-    <div>
-      <label for="questionnaire-name">Quiz's name : </label>
-      <input type="text" id="questionnaire-name" v-model="questionnaireName">
-    </div>
-
-    <!-- Création de question -->
-    <div class="create-question">
-      <label for="question">Question : </label>
-      <input type="text" id="question" v-model="question">
-    </div>
-
-    </div>
-
-
     <div v-if='this.selectedQuestionType==="true-or-false"'>
-    <div>
-      <label for="questionnaire-name">Quiz's name : </label>
-      <input type="text" id="questionnaire-name" v-model="questionnaireName">
-    </div>
-
-    <!-- Création de question -->
-    <div class="create-question">
-      <label for="question">Question : </label>
-      <input type="text" id="question" v-model="question">
-    </div>
-
     <!-- Réponses possibles -->
     <div class="answers">
       <div>
@@ -77,17 +50,25 @@
 
 
     <!-- Ajouter une réponse -->
-    <button @click="addAnswer">Add an answer</button>
+    <div v-if='this.selectedQuestionType==="multiple-choice-question" || this.selectedQuestionType===null'>
+
+    <button @click="addAnswer" >Add an answer</button>
 
     <button @click="removeAnswer(index)">Delete an answer</button>
 
+    </div>
+    <button @click="previousQuestion"> Previous question </button>
     <!-- Valider et créer -->
     <button @click="createQuestionnaire">Validate</button>
+    <button @click="nextQuestion"> Next question </button>
+
+
   </div>
 </template>
 
 <script >
   export default {
+
     data() {
       return {
         selectedQuestionType: null,
@@ -114,6 +95,17 @@
         // Logique pour créer le questionnaire avec les données saisies
         console.log('Questionnaire créé !');
       },
+
+      nextQuestion() {
+        // TODO avec le back
+        this.$router.push("/questionary");
+        console.log("next question");
+      },
+      previousQuestion(){
+        // TODO avec le back
+        this.$router.push("/questionary");
+        console.log("previous question");
+      }
     },
   };
 </script>
