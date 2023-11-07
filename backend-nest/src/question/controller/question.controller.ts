@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req } from '@nestjs/common';
 import { Question } from '../entity/question.entity';
 import { QuestionService } from '../service/question.service';
 import { UserUpdateDto } from '../dto/idSession.dto';
+import { QuestionDto } from '../dto/question.dto';
+import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 
 @Controller('question')
 export class QuestionController {
