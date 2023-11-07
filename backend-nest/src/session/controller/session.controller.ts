@@ -5,15 +5,18 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Post, Query,
+  Post,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
+import { JoinSessionDto } from '../dto/joinSession.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
 import { BodyEmptyException } from '../exception/bodyEmpty.exception';
-import { Answer } from 'src/question/entity/answer.entity';
-import any = jasmine.any;
+import { RespondQuestionDto } from '../dto/respondQuestion.dto';
+import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 
 @Controller('session')
 export class SessionController {
@@ -28,7 +31,9 @@ export class SessionController {
   }
 
   @Post('/nextQuestion')
-  nextQuestion(@Body() body: { id: string }): Question | NonNullable<unknown> {
+  nextQuestion(
+    @Body(new ValidationPipe()) body: { id: string },
+  ): Question | NonNullable<unknown> {
     if (body.id == undefined) {
       throw new BodyEmptyException();
     }
@@ -41,7 +46,7 @@ export class SessionController {
 
   @Post('/join')
   @HttpCode(HttpStatus.NO_CONTENT)
-  joinSession(@Body() body: { idSession: string; username: string }) {
+  joinSession(@Body(new ValidationPipe()) body: JoinSessionDto) {
     if (body.idSession == undefined || body.username == undefined) {
       throw new BodyEmptyException();
     }
@@ -49,7 +54,9 @@ export class SessionController {
   }
 
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(@Body() body: { idSession: string }): CurrentQuestionDto {
+  getCurrentQuestion(
+    @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
+  ): CurrentQuestionDto {
     if (body.idSession == undefined) {
       throw new BodyEmptyException();
     }
@@ -60,7 +67,8 @@ export class SessionController {
   @Post('/respond')
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
-    @Body() body: { idSession: string; answer: number; username: string },
+    @Body(new ValidationPipe())
+    body: RespondQuestionDto,
   ) {
     if (
       body.idSession == undefined ||
@@ -76,8 +84,8 @@ export class SessionController {
     );
   }
 
-  @Get('/getMap')//?idsession={l'id du session}
-  async getMap(@Query('idsession')idSession: string ) {
+  @Get('/getMap') //?idsession={l'id du session}
+  async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
     return [
