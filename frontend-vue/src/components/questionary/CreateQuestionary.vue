@@ -16,7 +16,7 @@
 
     <div class="create-question">
       <label for="question">Question : </label>
-      <input type="text" id="question" v-model="question">
+      <input type="text" id="question" v-model="question" required>
     </div>
 
     <!-- Nom du questionnaire -->
@@ -25,9 +25,9 @@
     <div class="answers">
       <div v-for="(answer, index) in answers" :key="index">
         <label :for="'answer-' + index">Answer {{ index + 1 }} : </label>
-        <input type="text" :id="'answer-' + index" v-model="answers[index].text">
+        <input type="text" :id="'answer-' + index" v-model="answers[index].text" required>
         <input type="radio" :id="'correct-answer-' + index" v-model="correctAnswer" :value="index">
-        <label :for="'correct-answer-' + index">Correct</label>
+        <label>Correct</label>
       </div>
     </div>
   </div>
@@ -98,8 +98,19 @@
 
       nextQuestion() {
         // TODO avec le back
-        this.$router.push("/questionary");
+        const questionData = this.question;
+        const answersData = this.answers;
+        const correctAnswer = this.correctAnswer;
+        if (correctAnswer!=null && !!answersData && !!questionData){
         console.log("next question");
+        console.log(correctAnswer);
+        answersData[correctAnswer].correct=true;
+        console.log(questionData);
+        console.log(answersData);
+        console.log(correctAnswer);
+        }else {
+          console.log("nop");
+        }
       },
       previousQuestion(){
         // TODO avec le back
