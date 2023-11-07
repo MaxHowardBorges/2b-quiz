@@ -10,15 +10,15 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { QuestionnaryService } from '../service/questionnary.service';
-import { QuestionnaryDto } from '../dto/questionnary.dto';
-import { QuestionDto } from '../../question/dto/question.dto';
+import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
+import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {
   constructor(private readonly questionnaryService: QuestionnaryService) {}
   @Post('/create')
   createQuestionnary(
-    @Body(new ValidationPipe()) questionnaryDto: QuestionnaryDto,
+    @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
     return this.questionnaryService.createQuestionnary(
       questionnaryDto.title,
@@ -40,7 +40,7 @@ export class QuestionnaryController {
   @Post('/:id/add-question')
   addQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Body(new ValidationPipe()) questionDto: QuestionDto,
+    @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
     return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
   }
@@ -57,7 +57,7 @@ export class QuestionnaryController {
   modifyQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Param('idQ', ParseIntPipe) idQuestion: number,
-    @Body(new ValidationPipe()) questionDto: QuestionDto,
+    @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
     return this.questionnaryService.modifyQuestion(
       idQuestionnary,

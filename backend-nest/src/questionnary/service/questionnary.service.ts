@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
-import { QuestionDto } from '../../question/dto/question.dto';
 import { QuestionService } from '../../question/service/question.service';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
+import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -16,7 +16,7 @@ export class QuestionnaryService {
 
   async createQuestionnary(
     title: string,
-    questions: QuestionDto[],
+    questions: QuestionCreateDto[],
     author: string,
   ) {
     const questionnary = new Questionnary();
@@ -43,13 +43,14 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
-  async findQuestionnary(idQuestionnary) {
+  async findQuestionnary(idQuestionnary : number) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
 
     const questionnaryDto = new QuestionnaryDto();
     if (questionnary) {
+      questionnaryDto.id = questionnary.id;
       questionnaryDto.author = questionnary.author;
       questionnaryDto.title = questionnary.title;
       questionnaryDto.questions =
@@ -60,7 +61,7 @@ export class QuestionnaryService {
       : 'pas de questionnaire trouvé';
   }
 
-  async addQuestion(idQuestionnary: number, questionDto: QuestionDto) {
+  async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
@@ -90,7 +91,7 @@ export class QuestionnaryService {
   async modifyQuestion(
     idQuestionnary: number,
     idQuestion: number,
-    questionDto: QuestionDto,
+    questionDto: QuestionCreateDto,
   ) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
