@@ -5,9 +5,21 @@
   "description": "A quizz solution fro the SAE 5.01",
   "private": true,
   "workspaces": {
-    "packages": ["backend-nest","frontend-vue"],
-    "nohoist": ["**/vue", "**/vue**", "**/@nestjs/**", "**/@nestjs"]
-    },
+    "packages": [
+      "backend-nest",
+      "frontend-vue"
+    ],
+    "nohoist": [
+      "**/vue",
+      "**/vue**",
+      "**/@vue",
+      "**/@vue**",
+      "**/vite",
+      "**/vite**",
+      "**/@nestjs/**",
+      "**/@nestjs"
+    ]
+  },
   "scripts": {
     "start-backend": "cd ./backend-nest/ && yarn typeorm:migrate && yarn start",
     "start-backend-prod": "cd ./backend-nest/ && yarn start:prod",
