@@ -6,7 +6,7 @@
 
 <script>
   // @ is an alias to /src
-  import CreateQuestionary from '@/components/CreateQuestionary.vue'
+  import CreateQuestionary from '@/components/questionary/CreateQuestionary.vue'
 
   export default {
     name: 'CreateQuestionaryView',
