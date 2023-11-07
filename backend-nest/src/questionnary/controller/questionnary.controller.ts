@@ -65,9 +65,4 @@ export class QuestionnaryController {
       questionDto,
     );
   }
-
-  @Post('/show-answer') //TODO
-  showAnswer(@Body(new ValidationPipe()) idQuestion: number) {
-    return this.questionnaryService.showAnswer(idQuestion);
-  }
 }
