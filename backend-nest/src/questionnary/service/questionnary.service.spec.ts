@@ -177,11 +177,6 @@ describe('QuestionnaryService', () => {
     author: 'malias',
   };
 
-  /*beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [QuestionnaryService],
-    }).compile();*/
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -206,11 +201,6 @@ describe('QuestionnaryService', () => {
 
   describe('createQuestionnary', () => {
     it('should be returned a questionnary', async () => {
-      //mockQuestionnaryService.createQuestionnary.mockResolvedValue(result);
-      /* for (const q of entry.questions) {
-        mockQuestionService.createQuestion.mockResolvedValue(q);
-        //await this.questionService.createQuestion(q, questionnary);
-      }*/
       let test = await service.createQuestionnary(
         entry.title,
         entry.questions,
@@ -236,27 +226,9 @@ describe('QuestionnaryService', () => {
   describe('findQuestionnary', () => {
     it('should be returned a QuestionnaryDTO', async () => {
       mockQuestionnaryRepository.findOne.mockResolvedValue(result);
-      /* let questionsDTO = {
-        content: 'Quelle est la capitale de la France?',
-        answers: [
-          {
-            content: 'Paris',
-            isCorrect: true,
-          },
-          {
-            content: 'Londres',
-            isCorrect: false,
-          },
-          {
-            content: 'Berlin',
-            isCorrect: false,
-          },
-        ],
-      };*/
       mockQuestionService.findQuestion.mockResolvedValue(result.questions);
 
       let test = await service.findQuestionnary(15);
-      //const resultQuestionnary = { title: 'morocco', author: 'malias' };
       expect(test).toEqual(result);
     });
   });
