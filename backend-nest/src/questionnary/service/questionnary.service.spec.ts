@@ -13,9 +13,13 @@ describe('QuestionnaryService', () => {
 
   const mockQuestionService = {
     createQuestion: jest.fn(),
+    deleteQuestions: jest.fn(),
+    findQuestion: jest.fn(),
   };
   const mockQuestionnaryRepository = {
     save: jest.fn(),
+    findOne: jest.fn(),
+    delete: jest.fn(),
   };
   const result: QuestionnaryDto = {
     id: 15,
@@ -203,20 +207,167 @@ describe('QuestionnaryService', () => {
   describe('createQuestionnary', () => {
     it('should be returned a questionnary', async () => {
       //mockQuestionnaryService.createQuestionnary.mockResolvedValue(result);
-      for (const q of entry.questions) {
+      /* for (const q of entry.questions) {
         mockQuestionService.createQuestion.mockResolvedValue(q);
         //await this.questionService.createQuestion(q, questionnary);
-      }
-      const test = await service.createQuestionnary(
+      }*/
+      let test = await service.createQuestionnary(
         entry.title,
         entry.questions,
         entry.author,
       );
 
-      const result2 = { title: 'morocco', author: 'malias' };
+      const resultQuestionnary = { title: 'morocco', author: 'malias' };
 
       expect(test).not.toEqual(result);
-      expect(test).toEqual(result2);
+      expect(test).toEqual(resultQuestionnary);
     });
   });
+
+  describe('deleyeQuestionnary', () => {
+    it('should be returned a boolean', async () => {
+      mockQuestionnaryRepository.findOne.mockResolvedValue(result);
+      let test = await service.deleteQuestionnary(15);
+
+      expect(test).toEqual(true);
+    });
+  });
+
+  describe('findQuestionnary', () => {
+    it('should be returned a QuestionnaryDTO', async () => {
+      mockQuestionnaryRepository.findOne.mockResolvedValue(result);
+      /* let questionsDTO = {
+        content: 'Quelle est la capitale de la France?',
+        answers: [
+          {
+            content: 'Paris',
+            isCorrect: true,
+          },
+          {
+            content: 'Londres',
+            isCorrect: false,
+          },
+          {
+            content: 'Berlin',
+            isCorrect: false,
+          },
+        ],
+      };*/
+      mockQuestionService.findQuestion.mockResolvedValue(result.questions);
+
+      let test = await service.findQuestionnary(15);
+      //const resultQuestionnary = { title: 'morocco', author: 'malias' };
+      expect(test).toEqual(result);
+    });
+  });
+  /* describe('addQuestion', () => {
+    it('should be returned a boolean', async () => {
+      let questionsDTO = {
+        content: 'Quelle est la capitale de la France?',
+        answers: [
+          {
+            content: 'Paris',
+            isCorrect: true,
+          },
+          {
+            content: 'Londres',
+            isCorrect: false,
+          },
+          {
+            content: 'Berlin',
+            isCorrect: false,
+          },
+        ],
+      };
+      mockQuestionnaryRepository.findOne.mockResolvedValue(result);
+      let test = await service.addQuestion(15, questionsDTO);
+      let result3 = {
+        id: 15,
+        title: 'morocco',
+        author: 'malias',
+        questions: [
+          {
+            id: 36,
+            content: 'Quelle est la capitale du Maroc?',
+            answers: [
+              {
+                id: 104,
+                content: 'Tunis',
+                isCorrect: false,
+              },
+              {
+                id: 105,
+                content: 'Aggrabah',
+                isCorrect: false,
+              },
+              {
+                id: 106,
+                content: 'Rabat',
+                isCorrect: true,
+              },
+            ],
+          },
+          {
+            id: 37,
+            content: 'Qui a écrit "Romeo et Juliette"?',
+            answers: [
+              {
+                id: 107,
+                content: 'William Shakespeare',
+                isCorrect: true,
+              },
+              {
+                id: 108,
+                content: 'Charles Dickens',
+                isCorrect: false,
+              },
+              {
+                id: 109,
+                content: 'Jane Austen',
+                isCorrect: false,
+              },
+              {
+                id: 110,
+                content: 'George Orwell',
+                isCorrect: false,
+              },
+            ],
+          },
+          {
+            id: 38,
+            content: "Quel est le symbole chimique de l'oxygène?",
+            answers: [
+              {
+                id: 111,
+                content: 'O',
+                isCorrect: true,
+              },
+              {
+                id: 112,
+                content: 'H',
+                isCorrect: false,
+              },
+              {
+                id: 113,
+                content: 'C',
+                isCorrect: false,
+              },
+              {
+                id: 114,
+                content: 'N',
+                isCorrect: false,
+              },
+              {
+                id: 115,
+                content: 'S',
+                isCorrect: false,
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(test).toEqual('');
+    });
+  });*/
 });
