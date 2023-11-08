@@ -4,7 +4,8 @@
 
     <div >
       <label for="questionnaire-name">Quiz's name : </label>
-      <input type="text" id="questionnaire-name" v-model="questionnaireName">
+      <input type="text" id="questionnaire-name" v-model="questionnaryName">
+      <!--  TODO fonction pour mettre a jour à la modif    -->
     </div>
 
     <!-- Sélection du type de question -->
@@ -72,10 +73,22 @@
     data() {
       return {
         selectedQuestionType: null,
-        questionnaireName: '',
+        indexD : 0,
+        questionnaryName: '',
         question: '',
         answers: [{ text: '', correct: false }],
         correctAnswer: null,
+        questionnary: {
+          author: null,
+          title: '',
+          questions: [{
+            content: '',
+            answers: [{
+              content: '',
+              isCorrect: false
+            }]
+          }]
+        },
       };
     },
     methods: {
@@ -101,13 +114,20 @@
         const questionData = this.question;
         const answersData = this.answers;
         const correctAnswer = this.correctAnswer;
-        if (correctAnswer!=null && !!answersData && !!questionData){
-        console.log("next question");
-        console.log(correctAnswer);
-        answersData[correctAnswer].correct=true;
-        console.log(questionData);
-        console.log(answersData);
-        console.log(correctAnswer);
+        if (correctAnswer!=null && !!answersData && !!questionData && this.questionnaryName){
+          answersData[correctAnswer].correct=true;
+
+          console.log(!!this.questionnary.author);
+          !this.questionnary.author ? this.questionnary = { author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []} : this.questionnary.title = this.questionnaryName;
+          this.questionnary.questions.push({ content: questionData, answers: [] });
+          answersData.forEach((a , index) =>{
+            this.questionnary.questions[this.questionnary.questions.length-1].answers.push({ content: a.text, isCorrect: a.correct });
+          });
+
+          console.log(this.questionnary);
+          this.question = null;
+          this.answers = [{ text: '', correct: false }];
+          this.indexD++;
         }else {
           console.log("nop");
         }
