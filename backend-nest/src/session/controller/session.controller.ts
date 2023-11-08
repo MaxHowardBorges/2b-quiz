@@ -14,9 +14,9 @@ import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { JoinSessionDto } from '../dto/joinSession.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
-import { BodyEmptyException } from '../exception/bodyEmpty.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
+import { NextQuestionDto } from '../dto/nextQuestion.dto';
 
 @Controller('session')
 export class SessionController {
@@ -30,14 +30,12 @@ export class SessionController {
     return this.sessionService.initializeSession();
   }
 
+  // Attention, id is now idSession
   @Post('/nextQuestion')
   nextQuestion(
-    @Body(new ValidationPipe()) body: { id: string },
+    @Body(new ValidationPipe()) body: NextQuestionDto,
   ): Question | NonNullable<unknown> {
-    if (body.id == undefined) {
-      throw new BodyEmptyException();
-    }
-    const question = this.sessionService.nextQuestion(body.id);
+    const question = this.sessionService.nextQuestion(body.idSession);
     if (question) {
       return question;
     }
@@ -47,9 +45,6 @@ export class SessionController {
   @Post('/join')
   @HttpCode(HttpStatus.NO_CONTENT)
   joinSession(@Body(new ValidationPipe()) body: JoinSessionDto) {
-    if (body.idSession == undefined || body.username == undefined) {
-      throw new BodyEmptyException();
-    }
     this.sessionService.join(body.idSession, body.username);
   }
 
@@ -57,9 +52,6 @@ export class SessionController {
   getCurrentQuestion(
     @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
   ): CurrentQuestionDto {
-    if (body.idSession == undefined) {
-      throw new BodyEmptyException();
-    }
     const question = this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
@@ -70,13 +62,6 @@ export class SessionController {
     @Body(new ValidationPipe())
     body: RespondQuestionDto,
   ) {
-    if (
-      body.idSession == undefined ||
-      body.answer == undefined ||
-      body.username == undefined
-    ) {
-      throw new BodyEmptyException();
-    }
     await this.sessionService.saveAnswer(
       body.idSession,
       body.answer,
@@ -84,7 +69,7 @@ export class SessionController {
     );
   }
 
-  @Get('/getMap') //?idsession={l'id du session}
+  @Get('/getMap')
   async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();

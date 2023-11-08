@@ -6,8 +6,6 @@ import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCur
 import { UserUnknownException } from '../exception/userUnknown.exception';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
-import { QuestionNoneException } from '../exception/questionNone.exception';
-import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
@@ -78,9 +76,6 @@ export class SessionService {
   }
 
   join(idSession: string, username: string): void {
-    if (this.sessionMap.has(idSession) == false) {
-      throw new IdSessionNoneException();
-    }
     const session = this.sessionMap.get(idSession);
     if (session.connectedUser.has(username)) {
       throw new UserAlreadyJoinedException();
@@ -100,7 +95,7 @@ export class SessionService {
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
     ) {
-      throw new AnswersNoneException();
+      throw new AnswersNoneException(); // Need to create a questionary with no answers to the question in order to test if this is useful
     }
 
     return question;
@@ -125,6 +120,7 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
+
     session.userAnswers.get(username).set(
       question,
       question.answers.find((answer) => answer.id === idAnswer),
