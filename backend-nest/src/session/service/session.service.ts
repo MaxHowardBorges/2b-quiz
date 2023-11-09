@@ -95,7 +95,7 @@ export class SessionService {
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
     ) {
-      throw new AnswersNoneException(); // Need to create a questionary with no answers to the question in order to test if this is useful
+      throw new AnswersNoneException();
     }
 
     return question;

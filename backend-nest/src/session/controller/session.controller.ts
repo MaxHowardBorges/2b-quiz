@@ -30,7 +30,6 @@ export class SessionController {
     return this.sessionService.initializeSession();
   }
 
-  // Attention, id is now idSession
   @Post('/nextQuestion')
   nextQuestion(
     @Body(new ValidationPipe()) body: NextQuestionDto,
