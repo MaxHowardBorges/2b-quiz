@@ -22,7 +22,13 @@
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
-    <QuestionnaryListOne v-if=OnList />
+    <div v-if=OnList>
+    <QuestionnaryListOne numberLabel="Numéro 1" typeLabel="Multiple"/>
+    <QuestionnaryListOne numberLabel="Numéro 2" typeLabel="True-False"/>
+    <QuestionnaryListOne numberLabel="Numéro 3" typeLabel="Open-Ended"/>
+    <QuestionnaryListOne numberLabel="Numéro 4" typeLabel="Multiple"/>
+    <QuestionnaryListOne />
+    </div>
 
     <div v-if="!OnList" class="button-container">
     <v-btn icon="done" @click="toggleTypeSelector"></v-btn>
