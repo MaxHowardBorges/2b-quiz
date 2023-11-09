@@ -5,6 +5,7 @@ import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionService } from '../../question/service/question.service';
 import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
+import { Question } from '../../question/entity/question.entity';
 
 describe('QuestionnaryService', () => {
   let service: QuestionnaryService;
@@ -14,7 +15,9 @@ describe('QuestionnaryService', () => {
   const mockQuestionService = {
     createQuestion: jest.fn(),
     deleteQuestions: jest.fn(),
+    deleteQuestion: jest.fn(),
     findQuestion: jest.fn(),
+    modifyQuestion: jest.fn(),
   };
   const mockQuestionnaryRepository = {
     save: jest.fn(),
@@ -214,7 +217,7 @@ describe('QuestionnaryService', () => {
     });
   });
 
-  describe('deleyeQuestionnary', () => {
+  describe('deleteQuestionnary', () => {
     it('should be returned a boolean', async () => {
       mockQuestionnaryRepository.findOne.mockResolvedValue(result);
       let test = await service.deleteQuestionnary(15);
@@ -232,7 +235,7 @@ describe('QuestionnaryService', () => {
       expect(test).toEqual(result);
     });
   });
-  /* describe('addQuestion', () => {
+  describe('addQuestion', () => {
     it('should be returned a boolean', async () => {
       let questionsDTO = {
         content: 'Quelle est la capitale de la France?',
@@ -251,7 +254,19 @@ describe('QuestionnaryService', () => {
           },
         ],
       };
+
+      let question = {
+        id: 8,
+        content: 'Quelle est la capitale de la France?',
+        questionnary: {
+          id: 1,
+          title: 'morocco',
+          author: 'malias',
+        },
+      };
+
       mockQuestionnaryRepository.findOne.mockResolvedValue(result);
+      mockQuestionService.createQuestion.mockResolvedValue(question);
       let test = await service.addQuestion(15, questionsDTO);
       let result3 = {
         id: 15,
@@ -339,7 +354,45 @@ describe('QuestionnaryService', () => {
         ],
       };
 
-      expect(test).toEqual('');
+      expect(test).toEqual(question);
+      expect(test).not.toEqual(questionsDTO);
     });
-  });*/
+  });
+
+  describe('deleteQuestions', () => {
+    it('should be returned a boolean and delete question', async () => {
+      mockQuestionService.deleteQuestion.mockResolvedValue(true);
+      mockQuestionnaryRepository.findOne.mockResolvedValue(result);
+      let test = await service.deleteQuestion(15, 8);
+      expect(test).toBeTruthy();
+      mockQuestionService.deleteQuestion.mockResolvedValue(false);
+      let test2 = await service.deleteQuestion(15, 8);
+      expect(test2).toBeFalsy();
+    });
+  });
+
+  describe('modifyQuestion', () => {
+    it('should be returned a boolean and modify question', async () => {
+      mockQuestionService.modifyQuestion.mockResolvedValue(true);
+      let questionsDTO = {
+        content: 'Quelle est la capitale de la France?',
+        answers: [
+          {
+            content: 'Paris',
+            isCorrect: true,
+          },
+          {
+            content: 'Londres',
+            isCorrect: false,
+          },
+          {
+            content: 'Berlin',
+            isCorrect: false,
+          },
+        ],
+      };
+      let test = await service.modifyQuestion(15, 6, questionsDTO);
+      expect(test).toBeTruthy();
+    });
+  });
 });
