@@ -7,6 +7,7 @@ import { UserType } from '../constants/userType.constant';
 import { Admin } from '../entity/admin.entity';
 import { Teacher } from '../entity/teacher.entity';
 import { BcryptService } from '../../bcrypt/service/bcrypt.service';
+import { InvalidPasswordException } from '../exception/invalidPassword.exception';
 
 @Injectable()
 export class UserService {
@@ -44,5 +45,18 @@ export class UserService {
 
   async usernameNotUsed(username: string) {
     return !(await this.getUserByUsername(username));
+  }
+
+  async updateUser(
+    user: User,
+    name: string,
+    surname: string,
+    password: string,
+  ) {
+    if (!(await this.bcryptService.validatePassword(password, user.password)))
+      throw new InvalidPasswordException();
+    if (user.surname !== surname) user.surname = surname;
+    if (user.name !== name) user.name = name;
+    await this.userRepository.save(user);
   }
 }
