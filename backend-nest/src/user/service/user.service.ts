@@ -9,6 +9,7 @@ import { Teacher } from '../entity/teacher.entity';
 import { BcryptService } from '../../bcrypt/service/bcrypt.service';
 import { InvalidPasswordException } from '../exception/invalidPassword.exception';
 import { NewPasswordNotDifferent } from '../exception/newPasswordNotDifferent.exception';
+import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
 
 @Injectable()
 export class UserService {
@@ -38,6 +39,10 @@ export class UserService {
         break;
     }
     await this.userRepository.save(user);
+  }
+
+  async getUser(id: number) {
+    return await this.userRepository.findOneBy({ id });
   }
 
   async getUserByUsername(username: string) {
@@ -73,6 +78,15 @@ export class UserService {
     if (await this.bcryptService.validatePassword(newPassword, user.password))
       throw new NewPasswordNotDifferent();
     user.password = await this.bcryptService.hashPassword(newPassword);
+    await this.userRepository.save(user);
+  }
+
+  async updateUserUsername(user: User, username: string, password: string) {
+    if (!(await this.bcryptService.validatePassword(password, user.password)))
+      throw new InvalidPasswordException();
+    if (!(await this.usernameNotUsed(username)))
+      throw new UsernameAlreadyUsedException();
+    user.username = username;
     await this.userRepository.save(user);
   }
 }

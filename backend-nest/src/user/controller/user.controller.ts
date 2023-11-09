@@ -15,6 +15,7 @@ import { Public } from '../../decorators/public.decorator';
 import { UserDataModifyDto } from '../dto/userDataModify.dto';
 import { UserRequest } from '../../auth/config/user.request';
 import { UserPasswordModifyDto } from '../dto/userPasswordModify.dto';
+import { UserUsernameModifyDto } from '../dto/userUsernameModify.dto';
 
 @Controller('user')
 export class UserController {
@@ -60,6 +61,18 @@ export class UserController {
       request.user,
       userPasswordModifyDto.oldPassword,
       userPasswordModifyDto.newPassword,
+    );
+  }
+
+  @Patch('/modify/username')
+  async modifyUserUsername(
+    @Req() request: UserRequest,
+    @Body(new ValidationPipe()) userUsernameModifyDto: UserUsernameModifyDto,
+  ) {
+    await this.userService.updateUserUsername(
+      request.user,
+      userUsernameModifyDto.username,
+      userUsernameModifyDto.password,
     );
   }
 }
