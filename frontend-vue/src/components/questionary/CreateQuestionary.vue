@@ -1,19 +1,12 @@
 <template>
   <div class="create-questionnaire-page">
-    <h1>Quiz creation</h1>
-
-    <div >
-      <label for="questionnaire-name">Quiz's name : </label>
-      <input type="text" id="questionnaire-name" v-model="questionnaryName">
-      <!--  TODO fonction pour mettre a jour à la modif    -->
-    </div>
 
     <!-- Sélection du type de question -->
-    <div class="question-type">
-      <button @click="selectQuestionType('true-or-false')">True or False</button>
-      <button @click="selectQuestionType('open-question')">Open question</button>
-      <button @click="selectQuestionType('multiple-choice-question')">Multiple Choice Question</button>
-    </div>
+<!--    <div class="question-type">-->
+<!--      <button @click="selectQuestionType('true-or-false')">True or False</button>-->
+<!--      <button @click="selectQuestionType('open-question')">Open question</button>-->
+<!--      <button @click="selectQuestionType('multiple-choice-question')">Multiple Choice Question</button>-->
+<!--    </div>-->
 
     <div class="create-question">
       <label for="question">Question : </label>
@@ -58,10 +51,10 @@
     <button @click="removeAnswer(index)">Delete an answer</button>
 
     </div>
-    <button @click="previousQuestion"> Previous question </button>
-    <!-- Valider et créer -->
-    <button @click="createQuestionnaire">Validate</button>
-    <button @click="nextQuestion"> Next question </button>
+<!--    <button @click="previousQuestion"> Previous question </button>-->
+<!--    &lt;!&ndash; Valider et créer &ndash;&gt;-->
+<!--    <button @click="createQuestionnaire">Validate</button>-->
+<!--    <button @click="nextQuestion"> Next question </button>-->
 
 
   </div>
