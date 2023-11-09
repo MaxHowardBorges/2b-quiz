@@ -1,4 +1,17 @@
 {
-  "menuTeacher": "Teacher menu",
-  "home": "Home"
+  "menu": {
+    "menuTeacher": "Teacher menu",
+    "home": "Home"
+  },
+
+  "home": {
+    "username": "Username",
+    "SessionID": "Session ID",
+    "join": "Join"
+  },
+
+  "teacher": {
+    "createSess": "Create session",
+    "SessionHist": "Session History"
+  }
 }

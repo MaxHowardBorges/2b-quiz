@@ -1,4 +1,17 @@
 {
-  "menuTeacher": "Tanár menü",
-  "home": "Kezdőlap"
+  "menu": {
+    "menuTeacher": "Tanár menü",
+    "home": "Kezdőlap"
+  },
+
+  "home": {
+    "username": "hongroisUsername",
+    "SessionID": "hongroisSession ID",
+    "join": "hongroisJoin"
+  },
+
+  "teacher": {
+    "createSess": "hongroisCreate Session",
+    "SessionHist": "hongroisSessionHistory"
+  }
 }

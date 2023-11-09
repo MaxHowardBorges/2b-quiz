@@ -1,4 +1,17 @@
 {
-  "menuTeacher": "Menu enseignent",
-  "home": "Home"
+  "menu": {
+    "menuTeacher": "Menu enseignant",
+    "home": "Home"
+  },
+
+  "home": {
+    "username": "Nom d'utilisateur",
+    "SessionID": "ID de la session",
+    "join": "Rejoindre"
+  },
+
+  "teacher": {
+    "createSess": "Créer session",
+    "SessionHist": "Historique des sessions"
+  }
 }
