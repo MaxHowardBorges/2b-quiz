@@ -8,6 +8,7 @@ import { Admin } from '../entity/admin.entity';
 import { Teacher } from '../entity/teacher.entity';
 import { BcryptService } from '../../bcrypt/service/bcrypt.service';
 import { InvalidPasswordException } from '../exception/invalidPassword.exception';
+import { NewPasswordNotDifferent } from '../exception/newPasswordNotDifferent.exception';
 
 @Injectable()
 export class UserService {
@@ -57,6 +58,21 @@ export class UserService {
       throw new InvalidPasswordException();
     if (user.surname !== surname) user.surname = surname;
     if (user.name !== name) user.name = name;
+    await this.userRepository.save(user);
+  }
+
+  async updateUserPassword(
+    user: User,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    if (
+      !(await this.bcryptService.validatePassword(oldPassword, user.password))
+    )
+      throw new InvalidPasswordException();
+    if (await this.bcryptService.validatePassword(newPassword, user.password))
+      throw new NewPasswordNotDifferent();
+    user.password = await this.bcryptService.hashPassword(newPassword);
     await this.userRepository.save(user);
   }
 }

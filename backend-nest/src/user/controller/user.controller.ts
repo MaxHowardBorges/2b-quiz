@@ -14,6 +14,7 @@ import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.e
 import { Public } from '../../decorators/public.decorator';
 import { UserDataModifyDto } from '../dto/userDataModify.dto';
 import { UserRequest } from '../../auth/config/user.request';
+import { UserPasswordModifyDto } from '../dto/userPasswordModify.dto';
 
 @Controller('user')
 export class UserController {
@@ -47,6 +48,18 @@ export class UserController {
       userDataDto.name,
       userDataDto.surname,
       userDataDto.password,
+    );
+  }
+
+  @Patch('/modify/password')
+  async modifyUserPassword(
+    @Req() request: UserRequest,
+    @Body(new ValidationPipe()) userPasswordModifyDto: UserPasswordModifyDto,
+  ) {
+    await this.userService.updateUserPassword(
+      request.user,
+      userPasswordModifyDto.oldPassword,
+      userPasswordModifyDto.newPassword,
     );
   }
 }
