@@ -4,6 +4,7 @@
     <input id='title' type="text" value="Name of questionnary..">
 
     <v-select
+      @change="changeType"
       v-if="showTypeSelector"
       v-model="selectedType"
       :items="typeOptions"
@@ -16,9 +17,11 @@
     <v-btn v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
 
     <CreateQuestionnary
-      v-if=!OnList />
+      v-if=!OnList
+      :selectedQuestionType="selectedType"
+    />
 
-    <div class='blocklist'>
+    <div class='blocklist' v-if=OnList>
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
@@ -81,6 +84,9 @@
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
+      changeType() {
+        this.selectedQuestionType = this.selectedType ;
+      },
       showConfirmationDialog() {
         this.confirmationDialog = true;
       },
@@ -111,11 +117,11 @@
     font-weight: bold !important;
   }
 
-  .v-btn {
+  v-btn {
     margin-bottom: 20px;
   }
 
-  .v-select{
+  v-select{
     width: auto;
   }
 
@@ -130,6 +136,8 @@
 
   .button-container .v-btn {
     margin-right: 10px;
+    margin-top: 10px;
   }
+
 
 </style>

@@ -14,7 +14,7 @@
     </div>
 
     <!-- Nom du questionnaire -->
-    <div v-if='selectedQuestionType==="multiple-choice-question" || this.selectedQuestionType===null'>
+    <div v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
     <!-- Réponses possibles -->
     <div class="answers">
       <div v-for="(answer, index) in answers" :key="index">
@@ -27,7 +27,7 @@
   </div>
 
 
-    <div v-if='this.selectedQuestionType==="true-or-false"'>
+    <div v-if='this.selectedQuestionType==="True-False"'>
     <!-- Réponses possibles -->
     <div class="answers">
       <div>
@@ -44,7 +44,7 @@
 
 
     <!-- Ajouter une réponse -->
-    <div v-if='this.selectedQuestionType==="multiple-choice-question" || this.selectedQuestionType===null'>
+    <div v-if='this.selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
 
     <button @click="addAnswer" >Add an answer</button>
 
@@ -62,10 +62,11 @@
 
 <script >
   export default {
-
+    props: {
+      selectedQuestionType: String, default : "Multiple"
+    },
     data() {
       return {
-        selectedQuestionType: null,
         indexD : 0,
         questionnaryName: '',
         question: '',
