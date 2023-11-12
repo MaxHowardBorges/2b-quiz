@@ -7,6 +7,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { QuestionModule } from './question/question.module';
 import { SessionModule } from './session/session.module';
 import { EventModule } from './event/event.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { BcryptModule } from './bcrypt/bcrypt.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { EventModule } from './event/event.module';
     QuestionModule,
     SessionModule,
     EventModule,
+    UserModule,
+    AuthModule,
+    BcryptModule,
   ],
   controllers: [AppController],
   providers: [AppService],
