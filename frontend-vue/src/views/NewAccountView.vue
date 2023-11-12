@@ -1,48 +1,73 @@
 <template>
-  <div class="register">
-    <h1>Création de compte</h1>
+  <v-sheet
+    max-width="500px"
+    rounded="lg"
+    width="70%"
+    class="mt-5 mb-8 px-6 py-8 mx-auto"
+    elevation="5">
+    <p class="text-lg-h2 text-sm-h3 text-h4 mb-5">Register</p>
     <form @submit.prevent="register">
-      <div class="form-group">
-        <label for="email">Prénom :</label>
-        <input type="text" id="prenom" v-model="prenom" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Nom :</label>
-        <input type="text" id="nom" v-model="nom" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email :</label>
-        <input type="email" id="email" v-model="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" v-model="password" required>
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirmer le mot de passe :</label>
-        <input type="password" id="confirmPassword" v-model="confirmPassword" required>
-      </div>
-      <div class="form-group" >
-        <label for="accountType">Type de compte :</label>
-        <div class="btnRadio" >
-          <label>
-            <input type="radio" id="student" value="student" v-model="accountType" required checked> Élève
-          </label>
-          <label>
-            <input type="radio" id="teacher" value="teacher" v-model="accountType"> Enseignant
-          </label>
-        </div>
-      </div>
-      <BoutonComp type="submit" nomB="Créer un compte"/>
+      <v-text-field
+        v-model="prenom"
+        type="text"
+        id="name"
+        autocomplete="given-name"
+        label="First name"></v-text-field>
+      <v-text-field
+        v-model="nom"
+        type="text"
+        id="surname"
+        autocomplete="family-name"
+        label="Last name"></v-text-field>
+      <v-text-field
+        v-model="username"
+        type="text"
+        id="username"
+        autocomplete="username"
+        label="Username"></v-text-field>
+      <v-text-field
+        v-model="password"
+        :type="passwordVisibility ? 'text' : 'password'"
+        id="password"
+        label="Password"
+        autocomplete="new-password"
+        :append-inner-icon="
+          passwordVisibility ? 'visibility' : 'visibility_off'
+        "
+        @click:append-inner="togglePasswordVisibility"></v-text-field>
+      <v-text-field
+        v-model="confirmPassword"
+        :type="confirmPasswordVisibility ? 'text' : 'password'"
+        id="password-confirmation"
+        label="Password confirmation"
+        autocomplete="new-password"
+        :append-inner-icon="
+          confirmPasswordVisibility ? 'visibility' : 'visibility_off'
+        "
+        @click:append-inner="toggleConfirmPasswordVisibility"></v-text-field>
+      <v-radio-group label="User type" :inline="$vuetify.display.mdAndUp">
+        <v-radio
+          direction="horizontal"
+          v-model="accountType"
+          value="student"
+          label="Student"></v-radio>
+        <v-radio
+          direction="horizontal"
+          v-model="accountType"
+          value="teacher"
+          label="Teacher"></v-radio>
+      </v-radio-group>
+      <v-btn color="primary" type="submit">
+        <p class="text-white font-weight-bold">Register</p>
+      </v-btn>
     </form>
-  </div>
+  </v-sheet>
 </template>
 
 <script>
-  import BoutonComp from '@/components/BoutonComp.vue';
+  import { ref } from 'vue';
 
   export default {
-    components: { BoutonComp },
     data() {
       return {
         username: '',
@@ -52,6 +77,8 @@
         accountType: '',
         nom: '',
         prenom: '',
+        passwordVisibility: ref(false),
+        confirmPasswordVisibility: ref(false),
       };
     },
     methods: {
@@ -59,58 +86,15 @@
         console.log('Registration form submitted');
         this.$router.push('/login');
       },
+      togglePasswordVisibility() {
+        this.passwordVisibility = !this.passwordVisibility;
+      },
+
+      toggleConfirmPasswordVisibility() {
+        this.confirmPasswordVisibility = !this.confirmPasswordVisibility;
+      },
     },
   };
 </script>
 
-<style scoped>
-
-  .btnRadio{
-    display:inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    align-content: center;
-    align-self: center;
-  }
-
-  div{
-    display:block;
-    margin: 15px;
-  }
-
-  .register {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
-    min-height: 75px;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-
-  input {
-    width: 90%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-
-</style>
+<style scoped></style>
