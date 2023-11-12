@@ -4,7 +4,7 @@ import { UserRoles } from '@/utils/userRoles';
 export const useUserStore = defineStore('user', {
   state: () => ({
     userRole: UserRoles,
-    username: String,
+    username: null,
   }),
   getters: {
     isStudent() {
@@ -12,6 +12,9 @@ export const useUserStore = defineStore('user', {
     },
     isTeacher() {
       return this.userRole === UserRoles.TEACHER;
+    },
+    isAuthenticated() {
+      return !!this.username;
     },
   },
   actions: {
