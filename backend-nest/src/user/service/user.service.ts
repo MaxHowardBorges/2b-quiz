@@ -10,6 +10,8 @@ import { BcryptService } from '../../bcrypt/service/bcrypt.service';
 import { InvalidPasswordException } from '../exception/invalidPassword.exception';
 import { NewPasswordNotDifferent } from '../exception/newPasswordNotDifferent.exception';
 import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
+import { InvalidUsernameConfirmationException } from '../exception/invalidUsernameConfirmation.exception';
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class UserService {
@@ -45,8 +47,8 @@ export class UserService {
     return await this.userRepository.findOneBy({ id });
   }
 
-  async getUserByUsername(username: string) {
-    return await this.userRepository.findOneBy({ username });
+  async getUserByUsername(username: string, deleted: boolean = false) {
+    return await this.userRepository.findOneBy({ username, deleted });
   }
 
   async usernameNotUsed(username: string) {
@@ -87,6 +89,22 @@ export class UserService {
     if (!(await this.usernameNotUsed(username)))
       throw new UsernameAlreadyUsedException();
     user.username = username;
+    await this.userRepository.save(user);
+  }
+
+  async deleteUser(user: User, username: string, password: string) {
+    if (!(await this.bcryptService.validatePassword(password, user.password)))
+      throw new InvalidPasswordException();
+    if (username !== user.username)
+      throw new InvalidUsernameConfirmationException();
+    user.password = '';
+    user.name = faker.person.firstName();
+    user.surname = faker.person.lastName();
+    user.username = faker.internet.userName({
+      firstName: user.name,
+      lastName: user.surname,
+    });
+    user.deleted = true;
     await this.userRepository.save(user);
   }
 }

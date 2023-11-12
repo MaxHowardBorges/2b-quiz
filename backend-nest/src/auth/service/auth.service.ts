@@ -14,7 +14,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async signIn(username: string, pass: string) {
-    const user = await this.userService.getUserByUsername(username);
+    const user = await this.userService.getUserByUsername(username, false);
     if (!user) throw new UserNotFoundException();
     if (!(await this.bcryptService.validatePassword(pass, user.password)))
       throw new InvalidPasswordException();

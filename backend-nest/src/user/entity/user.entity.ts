@@ -27,6 +27,9 @@ export abstract class User {
   @Column({ default: false })
   validate: boolean;
 
+  @Column({ default: false })
+  deleted: boolean;
+
   protected constructor(
     username: string,
     password: string,
@@ -38,6 +41,7 @@ export abstract class User {
     this.name = name;
     this.surname = surname;
     this.validate = false;
+    this.deleted = false;
   }
 
   abstract getUserType(): UserType;

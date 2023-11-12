@@ -45,6 +45,7 @@ export class AuthGuard implements CanActivate {
         secret: this.configService.getOrThrow('JWT_SECRET'),
       });
       request.user = await this.userService.getUser(payload.id);
+      if (request.user.deleted) return false;
     } catch {
       throw new UnauthorizedException();
     }

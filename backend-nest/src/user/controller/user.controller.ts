@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   Patch,
@@ -16,6 +17,7 @@ import { UserDataModifyDto } from '../dto/userDataModify.dto';
 import { UserRequest } from '../../auth/config/user.request';
 import { UserPasswordModifyDto } from '../dto/userPasswordModify.dto';
 import { UserUsernameModifyDto } from '../dto/userUsernameModify.dto';
+import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
 
 @Controller('user')
 export class UserController {
@@ -73,6 +75,18 @@ export class UserController {
       request.user,
       userUsernameModifyDto.username,
       userUsernameModifyDto.password,
+    );
+  }
+
+  @Patch('/delete')
+  async deleteUser(
+    @Req() request: UserRequest,
+    @Body(new ValidationPipe()) userSelfDeleteDto: UserSelfDeleteDto,
+  ) {
+    await this.userService.deleteUser(
+      request.user,
+      userSelfDeleteDto.username,
+      userSelfDeleteDto.password,
     );
   }
 }
