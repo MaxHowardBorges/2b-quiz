@@ -113,4 +113,11 @@ export class UserService {
     if (!(await this.getUser(idUser))) throw new UserNotFoundException();
     await this.userRepository.delete({ id: idUser });
   }
+
+  async validateUser(idUser: number) {
+    const user = await this.getUser(idUser);
+    if (!user) throw new UserNotFoundException();
+    user.validate = true;
+    await this.userRepository.save(user);
+  }
 }

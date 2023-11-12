@@ -104,4 +104,11 @@ export class UserController {
   async deleteUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.deleteUser(idUser);
   }
+
+  @Roles([UserType.ADMIN])
+  @Patch('/:id/validate')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async validateUser(@Param('id', ParseIntPipe) idUser: number) {
+    await this.userService.validateUser(idUser);
+  }
 }
