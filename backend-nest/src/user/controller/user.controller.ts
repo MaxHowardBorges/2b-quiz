@@ -2,12 +2,14 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   ValidationPipe,
 } from '@nestjs/common';
@@ -22,10 +24,15 @@ import { UserUsernameModifyDto } from '../dto/userUsernameModify.dto';
 import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
+import { UserFullDataDto } from '../dto/userFullData.dto';
+import { UserMapper } from '../mapper/user.mapper';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userMapper: UserMapper,
+  ) {}
 
   @Public()
   @Post('/register')
@@ -110,5 +117,15 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async validateUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.validateUser(idUser);
+  }
+
+  @Roles([UserType.ADMIN])
+  @Get('')
+  async getUsers(
+    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
+    @Query('nb-item', new ParseIntPipe({ optional: true })) nbItem: number = 50,
+  ): Promise<UserFullDataDto[]> {
+    const userList = await this.userService.getUsersPerPage(page, nbItem);
+    return this.userMapper.userFullDataDtoListMap(userList);
   }
 }

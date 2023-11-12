@@ -44,6 +44,14 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
+  async getUsersPerPage(page: number, itemsPerPage: number) {
+    const skip = (page - 1) * itemsPerPage;
+    return await this.userRepository.find({
+      skip,
+      take: itemsPerPage,
+    });
+  }
+
   async getUser(id: number) {
     return await this.userRepository.findOneBy({ id });
   }

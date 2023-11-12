@@ -7,9 +7,10 @@ import { Admin } from './entity/admin.entity';
 import { UserController } from './controller/user.controller';
 import { UserService } from './service/user.service';
 import { BcryptModule } from '../bcrypt/bcrypt.module';
+import { UserMapper } from './mapper/user.mapper';
 
 @Module({
-  providers: [UserService],
+  providers: [UserService, UserMapper],
   imports: [
     TypeOrmModule.forFeature([User, Teacher, Student, Admin]),
     BcryptModule,
