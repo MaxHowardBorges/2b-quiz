@@ -36,7 +36,7 @@ const routes = [
     name: 'Register',
     meta: { public: true },
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/NewAccountView.vue'),
+      import(/* webpackChunkName: "about" */ '../views/RegisterView.vue'),
   },
   {
     path: '/admin',
