@@ -1,49 +1,25 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link>
-    |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <v-app class="custom_background">
+    <header-block></header-block>
+    <main>
+      <router-view />
+    </main>
+    <footer-block></footer-block>
+  </v-app>
 </template>
+
+<script setup>
+  import HeaderBlock from '@/components/layout/HeaderBlock.vue';
+  import FooterBlock from '@/components/layout/FooterBlock.vue';
+</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Damion&family=Roboto:wght@300&display=swap');
+  @import './styles/z-indexes.css';
+  @import './styles/global.css';
 
-  #app {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    font-family: 'Roboto', sans-serif;
-  }
-
-  body::before {
-    content: '';
-    background-image: url('@/assets/hexagons.svg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 0.7;
-  }
-
-  nav {
-    padding: 30px;
-  }
-
-  nav a {
-    font-weight: bold;
-    color: #2c3e50;
-  }
-
-  nav a.router-link-exact-active {
-    color: #42b983;
+  main {
+    padding-top: 15px;
   }
 </style>
-<script setup></script>

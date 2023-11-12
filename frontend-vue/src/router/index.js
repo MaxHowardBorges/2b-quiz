@@ -1,73 +1,27 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-
+import HomeView from '@/views/HomeView.vue';
+import SessionView from '@/views/SessionView.vue';
+import TeacherHomeView from '@/views/TeacherHomeView.vue';
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/HomeView.vue')
+    component: HomeView,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  },
-  {
-    path: '/question',
-    name: 'question',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherQuestionView.vue')
-  },
-
-  {
-    path: '/end-of-session',
-    name: 'end-of-session',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/EndOfSessionView.vue')//EndOfSessionView//FinDeSessionView
-  },
-
-  {
-    path: '/waiting-participant',//waiting-participant
-    name: 'waiting-participant',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingParticipantView.vue')// WaitingParticipantView //AttenteParticipantView
-  },
-  {
-    path: '/teacher-home-page',//teacher-home-page
+    path: '/teacher-home-page',
     name: 'teacher-home-page',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherHomeView.vue')//TeacherHomeView//MenuEnseignantView
+    props: (route) => ({
+      errorSnackbar: route.query.errorSnackbar,
+      dialogError: !!route.query.dialogError,
+    }),
+    component: TeacherHomeView,
   },
   {
-    path: '/waiting',
-    name: 'waiting',
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingQuestion.vue')
-  },
-  {
-    path: '/waiting-session',
-    name: 'waiting-session',
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingSession.vue')
-  },
-  {
-    path: '/answer',
-    name: 'answer',
-    component: () => import(/* webpackChunkName: "about" */ '../views/StudentAnswer.vue')
-  },
-  {
-    path: '/end',
-    name: 'end',
-    component: () => import(/* webpackChunkName: "about" */ '../views/EndSession.vue')
+    path: '/session',
+    name: 'session',
+    component: SessionView,
   },
   //loginView
   {

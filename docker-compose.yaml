@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+  api:
+    container_name: api-prod
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: api-prod-stage
+    ports:
+      - 3000:3000
+#    environment:
+#      DB_TYPE: mariadb
+#      DB_HOST: mariadb-prod
+#      DB_PORT: 3306
+#      DB_USERNAME: root
+#      DB_PASSWORD: example
+#      DB_DATABASE: sae5
+    env_file:
+      - backend-nest/.env.docker
+    networks:
+      - mynetwork
+    depends_on:
+      - db
+  front:
+    container_name: front-prod
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: front-production-stage
+    ports:
+      - 80:80
+  db:
+    image: mariadb
+    restart: always
+    container_name: mariadb-prod
+    environment:
+      MYSQL_USER: adminer
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: sae5
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+
