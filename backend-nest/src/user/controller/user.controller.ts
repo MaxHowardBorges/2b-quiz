@@ -4,6 +4,8 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -18,6 +20,8 @@ import { UserRequest } from '../../auth/config/user.request';
 import { UserPasswordModifyDto } from '../dto/userPasswordModify.dto';
 import { UserUsernameModifyDto } from '../dto/userUsernameModify.dto';
 import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserType } from '../constants/userType.constant';
 
 @Controller('user')
 export class UserController {
@@ -42,6 +46,7 @@ export class UserController {
   }
 
   @Patch('/modify')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async modifyUserData(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) userDataDto: UserDataModifyDto,
@@ -55,6 +60,7 @@ export class UserController {
   }
 
   @Patch('/modify/password')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async modifyUserPassword(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) userPasswordModifyDto: UserPasswordModifyDto,
@@ -67,6 +73,7 @@ export class UserController {
   }
 
   @Patch('/modify/username')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async modifyUserUsername(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) userUsernameModifyDto: UserUsernameModifyDto,
@@ -79,14 +86,22 @@ export class UserController {
   }
 
   @Patch('/delete')
-  async deleteUser(
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteSelfUser(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) userSelfDeleteDto: UserSelfDeleteDto,
   ) {
-    await this.userService.deleteUser(
+    await this.userService.deleteSelfUser(
       request.user,
       userSelfDeleteDto.username,
       userSelfDeleteDto.password,
     );
+  }
+
+  @Roles([UserType.ADMIN])
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteUser(@Param('id', ParseIntPipe) idUser: number) {
+    await this.userService.deleteUser(idUser);
   }
 }

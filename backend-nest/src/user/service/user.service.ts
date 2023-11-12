@@ -12,6 +12,7 @@ import { NewPasswordNotDifferent } from '../exception/newPasswordNotDifferent.ex
 import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
 import { InvalidUsernameConfirmationException } from '../exception/invalidUsernameConfirmation.exception';
 import { faker } from '@faker-js/faker';
+import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
 
 @Injectable()
 export class UserService {
@@ -92,7 +93,7 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async deleteUser(user: User, username: string, password: string) {
+  async deleteSelfUser(user: User, username: string, password: string) {
     if (!(await this.bcryptService.validatePassword(password, user.password)))
       throw new InvalidPasswordException();
     if (username !== user.username)
@@ -106,5 +107,10 @@ export class UserService {
     });
     user.deleted = true;
     await this.userRepository.save(user);
+  }
+
+  async deleteUser(idUser: number) {
+    if (!(await this.getUser(idUser))) throw new UserNotFoundException();
+    await this.userRepository.delete({ id: idUser });
   }
 }
