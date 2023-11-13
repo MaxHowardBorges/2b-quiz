@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
+import { registerUser } from '@/api/user';
+import { throwIfNotOK } from '@/utils/apiUtils';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -23,6 +25,25 @@ export const useUserStore = defineStore('user', {
     },
     setUsername(username) {
       this.username = username;
+    },
+    async register(
+      name,
+      surname,
+      username,
+      password,
+      passwordConfirm,
+      userType,
+    ) {
+      const body = {
+        name,
+        surname,
+        username,
+        password,
+        passwordConfirm,
+        userType,
+      };
+      const response = await registerUser(body);
+      await throwIfNotOK(response, 204);
     },
   },
 });

@@ -95,6 +95,8 @@
 <script>
   import { ref } from 'vue';
   import { UserRoles } from '@/utils/userRoles';
+  import { useUserStore } from '@/stores/userStore';
+  import router from '@/router';
 
   export default {
     name: 'RegisterForm',
@@ -112,7 +114,9 @@
       },
     },
     setup() {
+      const userStore = useUserStore();
       return {
+        userStore,
         stringRules: [
           (value) => {
             if (value?.length > 0) return true;
@@ -185,8 +189,20 @@
       compareInputs(input1, input2) {
         return input1 === input2;
       },
-      register() {
-        console.log('Registration form submitted');
+      async register() {
+        try {
+          await this.userStore.register(
+            this.name,
+            this.surname,
+            this.username,
+            this.password,
+            this.confirmPassword,
+            this.accountType,
+          );
+          await router.push({ name: 'Login' });
+        } catch (error) {
+          this.$emit('error-register', error);
+        }
       },
       togglePasswordVisibility() {
         this.passwordVisibility = !this.passwordVisibility;
