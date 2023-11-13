@@ -17,9 +17,12 @@ export class UserRegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).{8,}$/, {
-    message: 'password too weak',
-  }) // Password must be at least 8 characters long and must contain 1 uppercase letter, 1 lowercase letter and or 1 number or 1 non-word character
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    {
+      message: 'password too weak',
+    },
+  ) // Password must be at least 8 characters long and must contain 1 uppercase letter, 1 lowercase letter, 1 number and 1 non-word character (@,$,!,%,*,?,&)
   password: string;
 
   @IsString()

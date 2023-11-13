@@ -1,58 +1,92 @@
 <template>
-  <v-form fast-fail @submit.prevent="register">
+  <v-form @submit.prevent="register">
     <v-text-field
+      class="my-2"
+      validate-on="input"
       v-model="name"
       type="text"
       id="name"
+      required
       autocomplete="given-name"
       :rules="stringRules"
       label="First name"></v-text-field>
     <v-text-field
+      class="my-2"
+      validate-on="input"
       v-model="surname"
       type="text"
       id="surname"
+      required
       autocomplete="family-name"
       :rules="stringRules"
       label="Last name"></v-text-field>
     <v-text-field
+      class="my-2"
+      validate-on="input"
       v-model="username"
       type="text"
       id="username"
+      required
       autocomplete="username"
       :rules="stringRules"
       label="Username"></v-text-field>
     <v-text-field
+      class="my-2"
+      validate-on="input"
       v-model="password"
       :type="passwordVisibility ? 'text' : 'password'"
       id="password"
       label="Password"
+      required
       autocomplete="new-password"
       :rules="passwordRules"
       :append-inner-icon="passwordVisibility ? 'visibility' : 'visibility_off'"
       @click:append-inner="togglePasswordVisibility"></v-text-field>
     <v-text-field
+      class="my-2"
+      validate-on="submit"
       v-model="confirmPassword"
       :type="confirmPasswordVisibility ? 'text' : 'password'"
       id="password-confirmation"
       label="Password confirmation"
+      required
       autocomplete="new-password"
       :append-inner-icon="
         confirmPasswordVisibility ? 'visibility' : 'visibility_off'
       "
+      :rules="passwordConfirmRules"
       @click:append-inner="toggleConfirmPasswordVisibility"></v-text-field>
-    <v-radio-group label="User type" :inline="$vuetify.display.mdAndUp">
+    <v-radio-group
+      class="my-2"
+      validate-on="input"
+      label="User type"
+      v-model="accountType"
+      :inline="$vuetify.display.mdAndUp"
+      required>
       <v-radio
         direction="horizontal"
-        v-model="accountType"
         :value="UserRoles.STUDENT"
         label="Student"></v-radio>
       <v-radio
         direction="horizontal"
-        v-model="accountType"
         :value="UserRoles.TEACHER"
         label="Teacher"></v-radio>
     </v-radio-group>
-    <v-btn color="primary" type="submit">
+    <v-checkbox validate-on="submit" :rules="checkConditionsRules" class="my-2">
+      <template v-slot:label>
+        <p class="text-left">
+          I confirm that I read and accept the
+          <a class="text-secondary" target="_blank" href="" @click.stop>
+            Utilisation conditions
+          </a>
+          and the
+          <a class="text-secondary" target="_blank" href="" @click.stop>
+            Privacy policy
+          </a>
+        </p>
+      </template>
+    </v-checkbox>
+    <v-btn color="primary" type="submit" class="my-2">
       <p class="text-white font-weight-bold">Register</p>
     </v-btn>
   </v-form>
@@ -68,6 +102,14 @@
       UserRoles() {
         return UserRoles;
       },
+      passwordConfirmRules() {
+        return [
+          (value) => {
+            if (this.compareInputs(value, this.password)) return true;
+            return 'Password confirmation must match password';
+          },
+        ];
+      },
     },
     setup() {
       return {
@@ -80,8 +122,12 @@
         passwordRules: [
           (value) => {
             const regex =
-              /^((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).{8,}$/;
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             if (value?.match(regex)) return true;
+
+            const regexInvalidChar = /[^A-Za-z\d@$!%*?&]/;
+            if (value && regexInvalidChar.test(value))
+              return 'Special character only can be @, $, !, %, *, ?, &';
 
             let content = 'Password must';
             let containError = [];
@@ -94,9 +140,12 @@
             if (!value?.match(regexLoLetter))
               containError.push('1 lowercase letter');
 
-            const regexNbSp = /^((?=.*\d)|(?=.*\W+)).*$/;
-            if (!value?.match(regexNbSp))
-              containError.push('1 number or 1 non-word character');
+            const regexNbSp = /^(?=.*\d).*$/;
+            if (!value?.match(regexNbSp)) containError.push('1 number');
+
+            const regexSp = /^(?=.*[@$!%*?&]).*$/;
+            if (!value?.match(regexSp))
+              containError.push('1 special character (@,$,!,%,*,?,&)');
 
             const regexLength = /^.{8,}$/;
             if (!value?.match(regexLength)) {
@@ -116,16 +165,16 @@
             return content;
           },
         ],
-        passwordConfirmRules: [
+        checkConditionsRules: [
           (value) => {
-            if (value === this.password) return true;
-            return 'Password confirmation mus match password';
+            if (value) return true;
+            return 'Conditions must read and accepted';
           },
         ],
         username: ref(''),
         password: ref(''),
         confirmPassword: ref(''),
-        accountType: '',
+        accountType: ref('student'),
         surname: ref(''),
         name: ref(''),
         passwordVisibility: ref(false),
@@ -133,6 +182,9 @@
       };
     },
     methods: {
+      compareInputs(input1, input2) {
+        return input1 === input2;
+      },
       register() {
         console.log('Registration form submitted');
       },
