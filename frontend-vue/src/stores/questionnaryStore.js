@@ -7,7 +7,7 @@ import {
 
 export const useQuestionnaryStore = defineStore('questionnary', {
   state: () => ({
-    idQuestionnary : null,
+    idQuestionnary :null,
     questionnary: {
       author: null,
       title: '',
@@ -20,23 +20,24 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }]
     },
 
+
+
   }),
   actions: {
-    setQuestionnary(questionnary) {
-      this.questionnary = questionnary;
+    setIdQuestionnary(idQuestionnary) {
+      this.idQuestionnary = idQuestionnary;
     },
     isCreated(){
-      return this.idQuestionnary != null;
+      return (this.idQuestionnary != null);
     },
     async createQuestionnary(questionnary) {
-      const body = {
-        body: questionnary
-      };
       try {
-        const response = await createQuestionnary(body);
-
-        if (!response.ok || response.status !== 204) {
+        const response = await createQuestionnary(questionnary);
+        if (!response.ok || response.status !== 201) {
           throw new Error('Erreur de réponse'); // TODO manage error
+        }
+        else {
+          return await response.text();
         }
       } catch (error) {
         console.error(error);
@@ -56,13 +57,10 @@ export const useQuestionnaryStore = defineStore('questionnary', {
     },
     async addQuestion(question) {
       if(this.isCreated()){
-        const body = {
-          question: question
-        };
         try {
-          const response = await addQuestion(body, this.idQuestionnary);
+          const response = await addQuestion(question, this.idQuestionnary);
 
-          if (!response.ok || response.status !== 204) {
+          if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
         } catch (error) {

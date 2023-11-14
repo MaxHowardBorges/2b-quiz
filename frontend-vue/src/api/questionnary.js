@@ -1,5 +1,7 @@
 export async function createQuestionnary(body) {
-  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/create', {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/create',
+    {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

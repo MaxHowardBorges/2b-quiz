@@ -1,7 +1,10 @@
 <template>
-  <div class="endof-session">
+  <v-sheet  rounded="lg"
+            width="70%"
+            class="mt-5 px-6 py-8 mx-auto"
+            elevation="5">
 
-    <input id='title' type="text" value="Name of questionnary..">
+    <input id='title' type="text" v-model="questionnaryName" required>
 
     <v-select
       @change="changeType"
@@ -17,15 +20,17 @@
     <v-btn v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
 
     <CreateQuestionnary
+      ref="questionnaryComponent"
+      id='quest'
       v-if=!OnList
       :selectedQuestionType="selectedType"
     />
 
-    <div class='blocklist' v-if=OnList>
+    <div class='blocklist' v-if=!this.useQ.isCreated()>
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
-    <div v-if=OnList>
+    <div v-if=this.OnList&&this.useQ.isCreated()>
     <QuestionnaryListOne numberLabel="Numéro 1" typeLabel="Multiple"/>
     <QuestionnaryListOne numberLabel="Numéro 2" typeLabel="True-False"/>
     <QuestionnaryListOne numberLabel="Numéro 3" typeLabel="Open-Ended"/>
@@ -34,7 +39,7 @@
     </div>
 
     <div v-if="!OnList" class="button-container">
-    <v-btn icon="done" @click="toggleTypeSelector"></v-btn>
+    <v-btn icon="done" @click="validQuestion"></v-btn>
     <v-btn icon="reply" @click="showConfirmationDialog"></v-btn>
     </div>
 
@@ -51,13 +56,14 @@
       </v-card>
     </v-dialog>
 
-  </div>
+  </v-sheet >
 </template>
 
 <script>
   // @ is an alias to /src
   import QuestionnaryListOne from '@/components/questionary/QuestionnaryList.vue';
-  import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue'
+  import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue';
+  import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
 
   export default {
@@ -68,6 +74,13 @@
         selectedType: "Multiple",
         typeOptions: ["Multiple", "Open-Ended", "True-False"],
         confirmationDialog: false,
+        questionnaryName : "[Questionnary name]",
+      };
+    },
+    setup() {
+      const useQ = useQuestionnaryStore();
+      return {
+        useQ
       };
     },
     name: 'QuestionaryView',
@@ -81,6 +94,26 @@
         this.OnList=!this.OnList;
       },
       toggleTypeSelector() {
+
+        this.showTypeSelector = !this.showTypeSelector;
+        this.OnList = !this.OnList;
+      },
+      async validQuestion() {
+
+        const content = this.$refs.questionnaryComponent.question;
+        const answers = this.$refs.questionnaryComponent.getAnswers();
+
+        if (question && answers){
+          if (this.useQ.idQuestionnary == null){
+            const response = JSON.parse(await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []}));
+            this.useQ.setIdQuestionnary(response.id);
+            await this.useQ.addQuestion({content,answers});
+          }
+          else{
+            await this.useQ.addQuestion({content,answers});
+          }
+        }
+
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
@@ -91,6 +124,8 @@
         this.confirmationDialog = true;
       },
       leaveWithoutSaving() {
+
+
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
@@ -98,10 +133,7 @@
     },
   }
 </script>
-
-<style>
-
-  .endof-session {
+<!--  .endof-session {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -109,6 +141,9 @@
     background-color: rgb(255, 255, 255);
 
   }
+-->
+<style>
+
 
   #title {
     margin-bottom: 10px;
@@ -126,7 +161,7 @@
   }
 
   .custom-select {
-    width: 300px; /* ajustez la largeur selon vos besoins */
+    width: 300px;
     margin-bottom: 5px;
   }
 

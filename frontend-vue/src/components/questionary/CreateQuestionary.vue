@@ -1,13 +1,6 @@
 <template>
   <div class="create-questionnaire-page">
 
-    <!-- Sélection du type de question -->
-<!--    <div class="question-type">-->
-<!--      <button @click="selectQuestionType('true-or-false')">True or False</button>-->
-<!--      <button @click="selectQuestionType('open-question')">Open question</button>-->
-<!--      <button @click="selectQuestionType('multiple-choice-question')">Multiple Choice Question</button>-->
-<!--    </div>-->
-
     <div class="create-question">
       <label for="question">Question : </label>
       <input type="text" id="question" v-model="question" required>
@@ -19,7 +12,7 @@
     <div class="answers">
       <div v-for="(answer, index) in answers" :key="index">
         <label :for="'answer-' + index">Answer {{ index + 1 }} : </label>
-        <input type="text" :id="'answer-' + index" v-model="answers[index].text" required>
+        <input type="text" :id="'answer-' + index" v-model="answers[index].content" required>
         <input type="radio" :id="'correct-answer-' + index" v-model="correctAnswer" :value="index">
         <label>Correct</label>
       </div>
@@ -51,12 +44,6 @@
     <button @click="removeAnswer(index)">Delete an answer</button>
 
     </div>
-<!--    <button @click="previousQuestion"> Previous question </button>-->
-<!--    &lt;!&ndash; Valider et créer &ndash;&gt;-->
-<!--    <button @click="createQuestionnaire">Validate</button>-->
-<!--    <button @click="nextQuestion"> Next question </button>-->
-
-
   </div>
 </template>
 
@@ -70,7 +57,7 @@
         indexD : 0,
         questionnaryName: '',
         question: '',
-        answers: [{ text: '', correct: false }],
+        answers: [{ content: '', isCorrect: false }],
         correctAnswer: null,
         questionnary: {
           author: null,
@@ -89,8 +76,12 @@
       selectQuestionType(type) {
         this.selectedQuestionType = type;
       },
+      getAnswers() {
+        this.answers[this.correctAnswer].isCorrect=true
+        return this.answers;
+      },
       addAnswer() {
-        this.answers.push({ text: '', correct: false });
+        this.answers.push({ content: '', isCorrect: false });
       },
 
       removeAnswer(index) {
@@ -103,34 +94,6 @@
         console.log('Questionnaire créé !');
       },
 
-      nextQuestion() {
-        // TODO avec le back
-        const questionData = this.question;
-        const answersData = this.answers;
-        const correctAnswer = this.correctAnswer;
-        if (correctAnswer!=null && !!answersData && !!questionData && this.questionnaryName){
-          answersData[correctAnswer].correct=true;
-
-          console.log(!!this.questionnary.author);
-          !this.questionnary.author ? this.questionnary = { author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []} : this.questionnary.title = this.questionnaryName;
-          this.questionnary.questions.push({ content: questionData, answers: [] });
-          answersData.forEach((a , index) =>{
-            this.questionnary.questions[this.questionnary.questions.length-1].answers.push({ content: a.text, isCorrect: a.correct });
-          });
-
-          console.log(this.questionnary);
-          this.question = null;
-          this.answers = [{ text: '', correct: false }];
-          this.indexD++;
-        }else {
-          console.log("nop");
-        }
-      },
-      previousQuestion(){
-        // TODO avec le back
-        this.$router.push("/questionary");
-        console.log("previous question");
-      }
     },
   };
 </script>
