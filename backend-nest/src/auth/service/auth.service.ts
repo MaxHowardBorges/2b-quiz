@@ -5,6 +5,7 @@ import { UserService } from '../../user/service/user.service';
 import { BcryptService } from '../../bcrypt/service/bcrypt.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserNotValidatedException } from '../exception/userNotValidated.exception';
+import { User } from '../../user/entity/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,20 @@ export class AuthService {
     if (!(await this.bcryptService.validatePassword(pass, user.password)))
       throw new InvalidPasswordException();
     if (!user.validate) throw new UserNotValidatedException();
+    const userPayload = {
+      id: user.id,
+      username: user.username,
+    };
+    return {
+      access_token: await this.jwtService.signAsync(userPayload),
+    };
+  }
+  async renewToken(user: User) {
+    const userTest = await this.userService.getUserByUsername(
+      user.username,
+      false,
+    );
+    if (!userTest) throw new UserNotFoundException();
     const userPayload = {
       id: user.id,
       username: user.username,

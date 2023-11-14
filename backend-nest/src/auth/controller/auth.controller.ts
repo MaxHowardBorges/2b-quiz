@@ -13,6 +13,7 @@ import { AuthService } from '../service/auth.service';
 import { Public } from '../../decorators/public.decorator';
 import { BlacklistService } from '../service/blacklist.service';
 import { Request } from 'express';
+import { UserRequest } from '../config/user.request';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +26,11 @@ export class AuthController {
   @Post('/login')
   async login(@Body(new ValidationPipe()) loginDto: LoginDto) {
     return await this.authService.signIn(loginDto.username, loginDto.password);
+  }
+
+  @Post('/renew')
+  async renewToken(@Req() request: UserRequest) {
+    return await this.authService.renewToken(request.user);
   }
 
   @Get('/logout')
