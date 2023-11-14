@@ -1,8 +1,10 @@
 <template>
-  <v-sheet  rounded="lg"
-            width="70%"
-            class="mt-5 px-6 py-8 mx-auto"
-            elevation="5">
+  <v-sheet
+    rounded="lg"
+    width="70%"
+    class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
+    elevation="5"
+  >
 
     <input id='title' type="text" v-model="questionnaryName" required>
 
@@ -17,7 +19,7 @@
       outlined
     ></v-select>
 
-    <v-btn v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
+    <v-btn class="mb-5" v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
@@ -26,7 +28,7 @@
       :selectedQuestionType="selectedType"
     />
 
-    <div class='blocklist' v-if=!this.useQ.isCreated()>
+    <div class='blocklist' v-if=!this.useQ.isCreated()&&this.OnList>
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
@@ -87,7 +89,6 @@
     components: {
       CreateQuestionnary,
       QuestionnaryListOne,
-
     },
     methods: {
       AddComponent() {

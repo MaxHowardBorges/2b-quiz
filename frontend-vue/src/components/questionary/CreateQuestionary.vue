@@ -1,50 +1,67 @@
 <template>
-  <div class="create-questionnaire-page">
+  <v-sheet class="mt-20px align-center">
 
-    <div class="create-question">
-      <label for="question">Question : </label>
-      <input type="text" id="question" v-model="question" required>
-    </div>
+    <v-text-field  type="text" id="question" v-model="question" required label='Question :'></v-text-field>
+<!--    <v-sheet>-->
+<!--      <label for="question">Question : </label>-->
+<!--      <input type="text" id="question" v-model="question" required>-->
+<!--    </v-sheet>-->
 
     <!-- Nom du questionnaire -->
-    <div v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
+    <v-sheet v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
     <!-- Réponses possibles -->
-    <div class="answers">
-      <div v-for="(answer, index) in answers" :key="index">
-        <label :for="'answer-' + index">Answer {{ index + 1 }} : </label>
-        <input type="text" :id="'answer-' + index" v-model="answers[index].content" required>
-        <input type="radio" :id="'correct-answer-' + index" v-model="correctAnswer" :value="index">
-        <label>Correct</label>
-      </div>
-    </div>
-  </div>
+<!--    <v-sheet class="answers">-->
+<!--      <v-sheet v-for="(answer, index) in answers" :key="index">-->
+<!--        <label :for="'answer-' + index">Answer {{ index + 1 }} : </label>-->
+<!--        <input type="text" :id="'answer-' + index" v-model="answers[index].content" required>-->
+<!--        <input type="radio" :id="'correct-answer-' + index" v-model="correctAnswer" :value="index">-->
+<!--        <label>Correct</label>-->
+<!--      </v-sheet>-->
+<!--    </v-sheet>-->
+      <v-sheet class="answers">
+        <v-sheet v-for="(answer, index) in answers" :key="index">
+          <v-text-field
+            :label="'Answer ' + (index + 1) + ' :'"
+            :id="'answer-' + index"
+            v-model="answers[index].content"
+            required
+          ></v-text-field>
+          <v-radio-group v-model="answers[index].isCorrect">
+            <v-radio
+              :id="'correct-answer-' + (index)"
+              :label="'Correct'"
+            ></v-radio>
+          </v-radio-group>
+        </v-sheet>
+      </v-sheet>
+  </v-sheet>
 
 
-    <div v-if='this.selectedQuestionType==="True-False"'>
+    <v-sheet v-if='this.selectedQuestionType==="True-False"'>
     <!-- Réponses possibles -->
-    <div class="answers">
-      <div>
+    <v-sheet class="answers">
+      <v-sheet>
         <input type="radio" :id="true" v-model="correctAnswer" :value="true">
         <label>True</label>
         <input type="radio" :id="false" v-model="correctAnswer" :value="false">
         <label>False</label>
 
-      </div>
-    </div>
-    </div>
+      </v-sheet>
+    </v-sheet>
+    </v-sheet>
 
 
 
 
     <!-- Ajouter une réponse -->
-    <div v-if='this.selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
+    <v-sheet v-if='this.selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
 
     <button @click="addAnswer" >Add an answer</button>
 
     <button @click="removeAnswer(index)">Delete an answer</button>
 
-    </div>
-  </div>
+    </v-sheet>
+  </v-sheet>
 </template>
 
 <script >
@@ -77,7 +94,6 @@
         this.selectedQuestionType = type;
       },
       getAnswers() {
-        this.answers[this.correctAnswer].isCorrect=true
         return this.answers;
       },
       addAnswer() {
@@ -99,11 +115,6 @@
 </script>
 
 <style scoped>
-  .create-questionnaire-page {
-    text-align: center;
-    margin-top: 20px;
-    background-color: white;
-  }
 
   h1 {
     font-size: 24px;
