@@ -65,12 +65,12 @@ describe('SessionService', () => {
 
   describe('initializeSession', () => {
     it('generate idSession : should be returned an idSession, should be a STRING', async () => {
-      let test = await service.generateIdSession();
+      const test = await service.generateIdSession();
       expect(typeof test).toBe('string');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
       //let sessionMap: Map<string, Session> = new Map<string, Session>();
-      let session = {
+      const session = {
         id: '111111',
 
         questionList: null,
@@ -86,7 +86,7 @@ describe('SessionService', () => {
       //sessionMap.set('111111', session);
       //mockMap.set.mockResolvedValue("111111", session);
       //mockMap.set.mockResolvedValue(null);
-      let testSession = await service.initializeSession();
+      const testSession = await service.initializeSession();
       expect(testSession).not.toEqual(session);
     });
   });
