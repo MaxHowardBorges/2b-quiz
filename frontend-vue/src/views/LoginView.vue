@@ -1,24 +1,49 @@
 <script>
   import { ref } from 'vue';
+  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
+  import { resetPiniaStores } from '@/utils/piniaUtils';
+  import { useUserStore } from '@/stores/userStore';
+  import { ValidationError } from '@/utils/valdiationError';
+  import router from '@/router';
 
   export default {
     name: 'loginView',
-    data() {
+    components: { ErrorDialog, ErrorSnackbar },
+    props: {
+      expiredError: Boolean,
+      serverError: Boolean,
+    },
+    setup() {
+      const userStore = useUserStore();
       return {
-        username: '',
-        password: '',
-        loginError: false,
-        accountType: '',
+        userStore,
+        username: ref(''),
+        password: ref(''),
         passwordVisibility: ref(false),
+        errorSnackbarContent: '',
       };
     },
+    mounted() {
+      if (this.expiredError) this.$refs.dialogExpiredError.setDialogError(true);
+      if (this.serverError) {
+        resetPiniaStores();
+        this.$refs.dialogServerError.setDialogError(true);
+      }
+    },
     methods: {
-      login() {
-        if (this.username === 'ok' && this.password === 'ok') {
-          this.$router.push('/');
-        } else {
-          this.loginError = true;
-          console.error('Échec de la connexion');
+      async login() {
+        try {
+          await this.userStore.login(this.username, this.password);
+          await router.push('/home');
+        } catch (error) {
+          if (error instanceof ValidationError) {
+            this.errorSnackbarContent = error.message;
+            this.$refs.errorSnackbar.setSnackbarError(true);
+          } else {
+            console.error('Error while joining session:', error);
+            this.$refs.dialogError.setDialogError(true);
+          }
         }
       },
       togglePasswordVisibility() {
@@ -29,6 +54,21 @@
 </script>
 
 <template>
+  <error-dialog
+    title="The Server is offline"
+    content="Please, try later."
+    ref="dialogServerError"></error-dialog>
+
+  <error-dialog
+    title="Session expired"
+    content="Please, reconnect yourself."
+    ref="dialogExpiredError"></error-dialog>
+
+  <error-snackbar
+    title="Error while login"
+    :content="errorSnackbarContent"
+    ref="errorSnackbar"></error-snackbar>
+
   <v-sheet
     max-width="500px"
     rounded="lg"

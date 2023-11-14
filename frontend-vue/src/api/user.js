@@ -7,3 +7,33 @@ export async function registerUser(body) {
     body: JSON.stringify(body),
   });
 }
+
+export async function loginUser(body) {
+  return await fetch(import.meta.env.VITE_API_URL + '/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+export async function renewToken(token) {
+  return await fetch(import.meta.env.VITE_API_URL + '/auth/renew', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getUserType(token) {
+  return await fetch(import.meta.env.VITE_API_URL + '/user/role', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

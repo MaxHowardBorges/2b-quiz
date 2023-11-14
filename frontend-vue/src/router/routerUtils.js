@@ -7,3 +7,7 @@ export function getPublicRoutes() {
 export function getAllRoutes() {
   return router.getRoutes().filter((route) => !route.meta.public);
 }
+
+export async function serverError() {
+  await router.push({ name: 'Login', query: { serverError: 'true' } });
+}

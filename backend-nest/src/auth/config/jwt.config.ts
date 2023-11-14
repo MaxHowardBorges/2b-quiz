@@ -9,7 +9,7 @@ export async function getJwtModuleOptions(
     secret: configService.getOrThrow('JWT_SECRET'),
     signOptions: {
       expiresIn:
-        configService.getOrThrow('APP_ENV') == 'production' ? '300s' : '3000s',
+        configService.getOrThrow('APP_ENV') == 'production' ? '1000s' : '3000s',
     },
   };
 }

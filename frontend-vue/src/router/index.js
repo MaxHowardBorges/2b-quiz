@@ -28,6 +28,10 @@ const routes = [
   {
     path: '/',
     name: 'Login',
+    props: (route) => ({
+      expiredError: !!route.query.expiredError,
+      serverError: !!route.query.serverError,
+    }),
     component: LoginView,
     meta: { public: true },
   },
