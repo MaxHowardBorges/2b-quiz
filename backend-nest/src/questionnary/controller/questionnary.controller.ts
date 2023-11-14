@@ -32,7 +32,7 @@ export class QuestionnaryController {
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
-  @Get('/select/:id')
+  @Get('/:id/select')
   selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
     return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
@@ -64,10 +64,5 @@ export class QuestionnaryController {
       idQuestion,
       questionDto,
     );
-  }
-
-  @Post('/show-answer') //TODO
-  showAnswer(@Body(new ValidationPipe()) idQuestion: number) {
-    return this.questionnaryService.showAnswer(idQuestion);
   }
 }
