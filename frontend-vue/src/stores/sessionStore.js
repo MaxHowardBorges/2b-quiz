@@ -78,7 +78,7 @@ export const useSessionStore = defineStore('session', {
       this.setIdSession(content.id);
     },
     async nextQuestion() {
-      const body = { id: this.idSession };
+      const body = { idSession: this.idSession };
       try {
         const response = await getNextQuestion(body);
         if (!response.ok) {
