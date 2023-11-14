@@ -26,6 +26,7 @@ import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
 import { UserFullDataDto } from '../dto/userFullData.dto';
 import { UserMapper } from '../mapper/user.mapper';
+import { UserTypeDto } from '../dto/userType.dto';
 
 @Controller('user')
 export class UserController {
@@ -127,5 +128,10 @@ export class UserController {
   ): Promise<UserFullDataDto[]> {
     const userList = await this.userService.getUsersPerPage(page, nbItem);
     return this.userMapper.userFullDataDtoListMap(userList);
+  }
+
+  @Get('/role')
+  async getRole(@Req() request: UserRequest): Promise<UserTypeDto> {
+    return { userType: request.user.getUserType() };
   }
 }
