@@ -4,8 +4,4 @@ export class UserUsernameModifyDto {
   @IsString()
   @IsNotEmpty()
   username: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 }

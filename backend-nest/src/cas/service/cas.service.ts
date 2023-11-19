@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UnsupportedCasProtocolException } from '../exception/unsupportedCasProtocol.exception';
 import { TicketValidationErrorException } from '../exception/ticketValidationError.exception';
+import { CasServerErrorException } from '../exception/casServerError.exception';
 
 @Injectable()
 export class CasService {
@@ -19,11 +20,11 @@ export class CasService {
 
   async validateTicket(service: string, ticket: string) {
     if (this.casProtocol === '3.0')
-      await this.validateTicketV3(service, ticket);
+      return await this.validateTicketV3(service, ticket);
     else throw new UnsupportedCasProtocolException();
   }
 
-  async validateTicketV3(service: string, ticket: string) {
+  private async validateTicketV3(service: string, ticket: string) {
     const url =
       this.casUrl +
       this.casValidateServiceRoute +
@@ -35,7 +36,7 @@ export class CasService {
     try {
       response = await fetch(url, { method: 'GET' });
     } catch (e) {
-      throw new TicketValidationErrorException();
+      throw new CasServerErrorException();
     }
     const xmlDoc = new DOMParser().parseFromString(
       await response.text(),

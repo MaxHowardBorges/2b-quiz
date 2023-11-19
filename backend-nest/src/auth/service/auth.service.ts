@@ -1,25 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { UserNotFoundException } from '../exception/userNotFound.exception';
-import { InvalidPasswordException } from '../exception/invalidPassword.exception';
+import { InvalidTicketException } from '../exception/invalidTicket.exception';
 import { UserService } from '../../user/service/user.service';
-import { BcryptService } from '../../bcrypt/service/bcrypt.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserNotValidatedException } from '../exception/userNotValidated.exception';
 import { User } from '../../user/entity/user.entity';
+import { CasService } from '../../cas/service/cas.service';
+import { UnsupportedCasProtocolException } from '../../cas/exception/unsupportedCasProtocol.exception';
+import { CasServerErrorException } from '../../cas/exception/casServerError.exception';
+import { CasUnavailableException } from '../exception/casUnavailable.exception';
+import { TicketValidationErrorException } from '../../cas/exception/ticketValidationError.exception';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly casService: CasService,
     private readonly userService: UserService,
-    private readonly bcryptService: BcryptService,
     private readonly jwtService: JwtService,
   ) {}
-  async signIn(username: string, pass: string) {
-    const user = await this.userService.getUserByUsername(username, false);
-    if (!user) throw new UserNotFoundException();
-    if (!(await this.bcryptService.validatePassword(pass, user.password)))
-      throw new InvalidPasswordException();
-    if (!user.validate) throw new UserNotValidatedException();
+  async signIn(ticket: string, service: string) {
+    let username: string;
+    try {
+      username = await this.casService.validateTicket(ticket, service);
+    } catch (err) {
+      if (err instanceof TicketValidationErrorException)
+        throw new InvalidTicketException();
+      else if (
+        err instanceof UnsupportedCasProtocolException ||
+        err instanceof CasServerErrorException
+      )
+        throw new CasUnavailableException();
+      else throw new CasUnavailableException();
+    }
+
+    const user = await this.userService.getUserForLogin(username);
     const userPayload = {
       id: user.id,
       username: user.username,

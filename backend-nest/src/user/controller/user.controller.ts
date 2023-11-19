@@ -19,8 +19,6 @@ import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.e
 import { Public } from '../../decorators/public.decorator';
 import { UserDataModifyDto } from '../dto/userDataModify.dto';
 import { UserRequest } from '../../auth/config/user.request';
-import { UserPasswordModifyDto } from '../dto/userPasswordModify.dto';
-import { UserUsernameModifyDto } from '../dto/userUsernameModify.dto';
 import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
@@ -35,7 +33,7 @@ export class UserController {
     private readonly userMapper: UserMapper,
   ) {}
 
-  @Public()
+  @Public() //TODO to pass for admin only
   @Post('/register')
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(
@@ -48,7 +46,6 @@ export class UserController {
       userRegisterDto.username,
       userRegisterDto.name,
       userRegisterDto.surname,
-      userRegisterDto.password,
       userRegisterDto.userType,
     );
   }
@@ -63,33 +60,6 @@ export class UserController {
       request.user,
       userDataDto.name,
       userDataDto.surname,
-      userDataDto.password,
-    );
-  }
-
-  @Patch('/modify/password')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async modifyUserPassword(
-    @Req() request: UserRequest,
-    @Body(new ValidationPipe()) userPasswordModifyDto: UserPasswordModifyDto,
-  ) {
-    await this.userService.updateUserPassword(
-      request.user,
-      userPasswordModifyDto.oldPassword,
-      userPasswordModifyDto.newPassword,
-    );
-  }
-
-  @Patch('/modify/username')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async modifyUserUsername(
-    @Req() request: UserRequest,
-    @Body(new ValidationPipe()) userUsernameModifyDto: UserUsernameModifyDto,
-  ) {
-    await this.userService.updateUserUsername(
-      request.user,
-      userUsernameModifyDto.username,
-      userUsernameModifyDto.password,
     );
   }
 
@@ -102,7 +72,6 @@ export class UserController {
     await this.userService.deleteSelfUser(
       request.user,
       userSelfDeleteDto.username,
-      userSelfDeleteDto.password,
     );
   }
 

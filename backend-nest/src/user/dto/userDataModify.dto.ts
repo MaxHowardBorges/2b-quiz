@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UserDataModifyDto {
   @IsOptional()
@@ -8,8 +8,4 @@ export class UserDataModifyDto {
   @IsOptional()
   @IsString()
   surname?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 }

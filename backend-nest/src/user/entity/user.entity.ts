@@ -15,13 +15,10 @@ export abstract class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
-  password: string;
-
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   surname: string;
 
   @Column({ default: false })
@@ -30,16 +27,8 @@ export abstract class User {
   @Column({ default: false })
   deleted: boolean;
 
-  protected constructor(
-    username: string,
-    password: string,
-    name: string,
-    surname: string,
-  ) {
+  protected constructor(username: string) {
     this.username = username;
-    this.password = password;
-    this.name = name;
-    this.surname = surname;
     this.validate = false;
     this.deleted = false;
   }

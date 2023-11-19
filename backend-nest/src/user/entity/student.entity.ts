@@ -4,16 +4,12 @@ import { UserType } from '../constants/userType.constant';
 
 @ChildEntity()
 export class Student extends User {
-  constructor(
-    username: string,
-    password: string,
-    name: string,
-    surname: string,
-  ) {
-    super(username, password, name, surname);
+  constructor(username: string) {
+    super(username);
   }
 
   getUserType() {
+    if (!this.validate) return UserType.NOT_CHOOSE;
     return UserType.STUDENT;
   }
 }
