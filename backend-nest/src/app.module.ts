@@ -10,6 +10,7 @@ import { EventModule } from './event/event.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BcryptModule } from './bcrypt/bcrypt.module';
+import { CasModule } from './cas/cas.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { BcryptModule } from './bcrypt/bcrypt.module';
     UserModule,
     AuthModule,
     BcryptModule,
+    CasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

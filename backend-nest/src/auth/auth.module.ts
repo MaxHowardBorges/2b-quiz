@@ -9,6 +9,7 @@ import { BcryptModule } from '../bcrypt/bcrypt.module';
 import { AuthGuard } from './guard/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { BlacklistService } from './service/blacklist.service';
+import { CasModule } from '../cas/cas.module';
 
 @Module({
   providers: [
@@ -22,6 +23,7 @@ import { BlacklistService } from './service/blacklist.service';
   controllers: [AuthController],
   imports: [
     BcryptModule,
+    CasModule,
     UserModule,
     JwtModule.registerAsync({
       useFactory: getJwtModuleOptions,
