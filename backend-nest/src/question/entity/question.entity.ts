@@ -13,6 +13,9 @@ export class Question {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // @Column()
+  // type: string;
+
   @Column()
   content: string;
 

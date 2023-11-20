@@ -4,6 +4,10 @@ import { AnswerCreateDto } from './answerCreate.dto';
 
 export class QuestionCreateDto {
 
+  // @IsString()
+  // @IsNotEmpty()
+  // type: string;
+
   @IsString()
   @IsNotEmpty()
   content: string;

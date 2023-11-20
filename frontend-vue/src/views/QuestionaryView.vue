@@ -104,10 +104,9 @@
         const content = this.$refs.questionnaryComponent.question;
         const answers = this.$refs.questionnaryComponent.getAnswers();
 
-        if (question && answers){
+        if (content && answers){
           if (this.useQ.idQuestionnary == null){
-            const response = JSON.parse(await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []}));
-            this.useQ.setIdQuestionnary(response.id);
+            await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
             await this.useQ.addQuestion({content,answers});
           }
           else{

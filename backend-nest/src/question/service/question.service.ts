@@ -41,6 +41,7 @@ export class QuestionService {
     const question = new Question();
     question.questionnary = questionnary;
     question.content = q.content;
+    //question.type = q.type;
 
     await this.questionRepository.save(question);
     for (const a of q.answers) {
@@ -81,6 +82,7 @@ export class QuestionService {
 
       const questionDto = {
         id: question.id,
+        //type: question.type,
         content: question.content,
         answers: answerDtos,
       };

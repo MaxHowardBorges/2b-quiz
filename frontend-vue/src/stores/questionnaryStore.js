@@ -8,20 +8,7 @@ import {
 export const useQuestionnaryStore = defineStore('questionnary', {
   state: () => ({
     idQuestionnary :null,
-    questionnary: {
-      author: null,
-      title: '',
-      questions: [{
-        content: '',
-        answers: [{
-          content: '',
-          isCorrect: false
-        }]
-      }]
-    },
-
-
-
+    questionnary: null,
   }),
   actions: {
     setIdQuestionnary(idQuestionnary) {
@@ -37,7 +24,9 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
         else {
-          return await response.text();
+          this.questionnary = JSON.parse(await response.text());
+          this.idQuestionnary = this.questionnary.id;
+          console.log(questionnary);
         }
       } catch (error) {
         console.error(error);
@@ -59,7 +48,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       if(this.isCreated()){
         try {
           const response = await addQuestion(question, this.idQuestionnary);
-
+          console.log(response.text());
           if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
