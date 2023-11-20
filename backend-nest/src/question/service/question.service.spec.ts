@@ -153,6 +153,12 @@ describe('QuestionService', () => {
   });
 
   describe('modifyQuestion', () => {
-    it('should modify a question and return a boolean', async () => {});
+    it('should modify a question and return a boolean', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue(QuestionMock);
+      let test = service.modifyQuestion(questionsCreateDTO,questionnary,1);
+      expect(test).toBeTruthy();
+      expect(test).not.toEqual(QuestionMock);
+
+    });
   });
 });
