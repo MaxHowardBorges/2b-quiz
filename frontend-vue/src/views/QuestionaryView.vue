@@ -108,6 +108,7 @@
           if (this.useQ.idQuestionnary == null){
             await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
             await this.useQ.addQuestion({content,answers});
+            await this.useQ.getQuestionnary();
           }
           else{
             await this.useQ.addQuestion({content,answers});

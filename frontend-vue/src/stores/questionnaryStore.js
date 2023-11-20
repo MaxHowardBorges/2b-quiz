@@ -24,9 +24,9 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
         else {
-          this.questionnary = JSON.parse(await response.text());
-          this.idQuestionnary = this.questionnary.id;
-          console.log(questionnary);
+          this.idQuestionnary = JSON.parse(await response.text()).id;
+          console.log("create");
+          console.log(this.idQuestionnary);
         }
       } catch (error) {
         console.error(error);
@@ -36,8 +36,13 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       if(this.isCreated()){
         try {
           const response = await getQuestionnary(this.idQuestionnary);
-          if (!response.ok || response.status !== 204) {
+          if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            this.questionnary = JSON.parse(await response.text());
+            console.log("get");
+            console.log(this.questionnary);
           }
         } catch (error) {
           console.error(error);
@@ -48,7 +53,6 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       if(this.isCreated()){
         try {
           const response = await addQuestion(question, this.idQuestionnary);
-          console.log(response.text());
           if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
