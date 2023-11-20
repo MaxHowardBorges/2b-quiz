@@ -4,6 +4,8 @@ import { Question } from '../entity/question.entity';
 import { QuestionCreateDto } from '../dto/questionCreate.dto';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
+import { Answer } from '../entity/answer.entity';
+import { QuestionDto } from '../dto/question.dto';
 
 describe('QuestionService', () => {
   let service: QuestionService;
@@ -14,10 +16,13 @@ describe('QuestionService', () => {
   const mockQuestionRepository = {
     save: jest.fn(),
     find: jest.fn(),
+    delete: jest.fn(),
+    findOne: jest.fn(),
   };
 
   const mockAnswerRepository = {
     save: jest.fn(),
+    delete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -40,7 +45,7 @@ describe('QuestionService', () => {
     answerRepository = module.get<'AnswerRepository'>('AnswerRepository');
   });
 
-  const questionsDTO: QuestionCreateDto = {
+  const questionsCreateDTO: QuestionCreateDto = {
     content: 'aa',
     answers: [
       {
@@ -50,11 +55,42 @@ describe('QuestionService', () => {
     ],
   };
 
+  const questionsDTO: QuestionDto = {
+    id: 1,
+    content: 'Exemple de contenu',
+    answers: [
+      {
+        id: 1,
+        content: 'Exemple de réponse',
+        isCorrect: false,
+      },
+    ],
+  };
+
+  const QuestionMock: Question = {
+    id: 1,
+    content: 'Exemple de contenu',
+    answers: [
+      {
+        id: 1,
+        content: 'Exemple de réponse',
+        isCorrect: false,
+        question: null,
+      },
+    ],
+    questionnary: {
+      id: 1,
+      title: 'testQuestionnary',
+      author: 'authorTest',
+      questions: null,
+    },
+  };
+
   const questionnary: Questionnary = {
     id: 1,
     title: 'testQuestionnary',
     author: 'authorTest',
-    questions: null,
+    questions: [],
   };
 
   const questionnaryDTO: QuestionnaryDto = {
@@ -79,7 +115,7 @@ describe('QuestionService', () => {
   describe('createQuestion', () => {
     it('should be created a question and returned it', async () => {
       mockQuestionRepository.find;
-      let test = await service.createQuestion(questionsDTO, questionnary);
+      let test = await service.createQuestion(questionsCreateDTO, questionnary);
       expect(test).toBeInstanceOf(Question);
     });
   });
@@ -92,8 +128,31 @@ describe('QuestionService', () => {
         answers: [],
       };
       //mockQuestionRepository.find.mockResolvedValue(questionnaryDTO.questions{where: { questionnary, id: 1 }})
-      let test = await service.findQuestion(questionnary);
-      expect(test).toBeInstanceOf(Question);
+      questionnary.questions[0] = QuestionMock;
+      let qTab: Question[] = [];
+      qTab[0] = QuestionMock;
+      mockQuestionRepository.find.mockResolvedValue(qTab);
+      let test: QuestionDto[] = await service.findQuestion(questionnary);
+      expect(test).not.toBeNull();
+      expect(test).toBeInstanceOf(Array);
+      let tabTest: QuestionDto[] = [];
+      tabTest[0] = questionsDTO;
+      expect(test).toEqual(tabTest);
+      expect(test).not.toEqual(questionsDTO);
     });
+  });
+
+  describe('deleteQuestion', () => {
+    it('should delete question and return a bool', async () => {
+      let qTest = questionnary;
+      qTest.questions[0] = QuestionMock;
+      expect(qTest.questions[0]).toEqual(QuestionMock);
+      let test = service.deleteQuestion(qTest, 1);
+      expect(test).toBeTruthy();
+    });
+  });
+
+  describe('modifyQuestion', () => {
+    it('should modify a question and return a boolean', async () => {});
   });
 });
