@@ -32,13 +32,18 @@
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
-    <div v-if=this.OnList&&this.useQ.isCreated()>
-    <QuestionnaryListOne numberLabel="Numéro 1" typeLabel="Multiple"/>
-    <QuestionnaryListOne numberLabel="Numéro 2" typeLabel="True-False"/>
-    <QuestionnaryListOne numberLabel="Numéro 3" typeLabel="Open-Ended"/>
-    <QuestionnaryListOne numberLabel="Numéro 4" typeLabel="Multiple"/>
-    <QuestionnaryListOne />
-    </div>
+<!--    <div v-if=this.OnList&&this.useQ.isCreated()>-->
+<!--    <QuestionnaryListOne numberLabel="Numéro 1" typeLabel="Multiple"/>-->
+<!--    <QuestionnaryListOne numberLabel="Numéro 2" typeLabel="True-False"/>-->
+<!--    <QuestionnaryListOne numberLabel="Numéro 3" typeLabel="Open-Ended"/>-->
+<!--    <QuestionnaryListOne numberLabel="Numéro 4" typeLabel="Multiple"/>-->
+<!--    <QuestionnaryListOne />-->
+<!--    </div>-->
+    <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated() @mouseover='updateUseQ'>
+      <v-sheet v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
+        <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id />
+      </v-sheet>
+    </v-sheet>
 
     <div v-if="!OnList" class="button-container">
     <v-btn icon="done" @click="validQuestion"></v-btn>
@@ -99,6 +104,10 @@
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
+      updateUseQ(){
+        this.useQ = useQuestionnaryStore();
+        console.log(this.useQ);
+      },
       async validQuestion() {
 
         const content = this.$refs.questionnaryComponent.question;
@@ -112,6 +121,7 @@
           }
           else{
             await this.useQ.addQuestion({content,answers});
+            await this.useQ.getQuestionnary();
           }
         }
 

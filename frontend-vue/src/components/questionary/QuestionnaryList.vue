@@ -1,9 +1,27 @@
 <script>
+  import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+
   export default {
+    setup() {
+      const useQ = useQuestionnaryStore();
+      return {
+        useQ
+      };
+    },
     props: {
       numberLabel: { type: String, default: 'N°' },
-      typeLabel: { type: String, default: 'type' }
+      typeLabel: { type: String, default: 'type' },
+      idQuestion: { type: String, default: null },
     },
+    methods: {
+      deleteQuest() {
+        this.useQ.deleteQuestion(this.idQuestion);
+
+      },
+      modifyQuest() {
+        console.log("axel guy ? où ?");
+      },
+    }
   }
 </script>
 
@@ -13,7 +31,8 @@
     <span class="spacer"></span>
     <b>{{ typeLabel }}</b>
     <span class="spacer"></span>
-    <v-btn icon="edit"></v-btn>
+    <v-btn icon="edit" @click='modifyQuest'></v-btn>
+    <v-btn icon="delete" @click='deleteQuest'></v-btn>
   </div>
 </template>
 

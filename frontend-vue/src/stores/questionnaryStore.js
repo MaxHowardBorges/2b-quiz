@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import {
   createQuestionnary,
   getQuestionnary,
-  addQuestion
+  addQuestion, modifyQuestion, deleteQuestion,
 } from '@/api/questionnary';
 
 export const useQuestionnaryStore = defineStore('questionnary', {
@@ -55,6 +55,41 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           const response = await addQuestion(question, this.idQuestionnary);
           if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    },
+    async modifyQuestion(idQuestion, question) {
+      if(this.isCreated()){
+        try {
+          const response = await modifyQuestion(this.idQuestionnary, idQuestion, question);
+          console.log(response.status);
+          if (!response.ok || response.status !== 201) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            console.log("modify");
+            console.log(response.text());
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    },
+    async deleteQuestion(idQuestion) {
+      if(this.isCreated()){
+        try {
+          console.log(this.idQuestionnary + " <|°_°|> " + idQuestion);
+          const response = await deleteQuestion(this.idQuestionnary, idQuestion);
+          console.log(response.status);
+          if (!response.ok || response.status !== 200) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            console.log("delete");
+            console.log(response.text());
           }
         } catch (error) {
           console.error(error);
