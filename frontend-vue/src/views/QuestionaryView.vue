@@ -28,7 +28,7 @@
       :selectedQuestionType="selectedType"
     />
 
-    <div class='blocklist' v-if=!this.useQ.isCreated()&&this.OnList>
+    <div class='blocklist' v-if=!this.useQ.isCreated&&this.OnList>
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
@@ -39,7 +39,7 @@
 <!--    <QuestionnaryListOne numberLabel="Numéro 4" typeLabel="Multiple"/>-->
 <!--    <QuestionnaryListOne />-->
 <!--    </div>-->
-    <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated() @mouseover='updateUseQ'>
+    <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated>
       <v-sheet v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
         <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id />
       </v-sheet>
@@ -106,7 +106,6 @@
       },
       updateUseQ(){
         this.useQ = useQuestionnaryStore();
-        console.log(this.useQ);
       },
       async validQuestion() {
 
@@ -117,11 +116,9 @@
           if (this.useQ.idQuestionnary == null){
             await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
             await this.useQ.addQuestion({content,answers});
-            await this.useQ.getQuestionnary();
           }
           else{
             await this.useQ.addQuestion({content,answers});
-            await this.useQ.getQuestionnary();
           }
         }
 

@@ -11,7 +11,7 @@
     props: {
       numberLabel: { type: String, default: 'N°' },
       typeLabel: { type: String, default: 'type' },
-      idQuestion: { type: String, default: null },
+      idQuestion: { type: Number, default: null },
     },
     methods: {
       deleteQuest() {

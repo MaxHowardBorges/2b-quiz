@@ -10,12 +10,14 @@ export const useQuestionnaryStore = defineStore('questionnary', {
     idQuestionnary :null,
     questionnary: null,
   }),
+  getters:{
+    isCreated(){
+      return (this.idQuestionnary != null);
+    },
+  },
   actions: {
     setIdQuestionnary(idQuestionnary) {
       this.idQuestionnary = idQuestionnary;
-    },
-    isCreated(){
-      return (this.idQuestionnary != null);
     },
     async createQuestionnary(questionnary) {
       try {
@@ -25,15 +27,13 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         }
         else {
           this.idQuestionnary = JSON.parse(await response.text()).id;
-          console.log("create");
-          console.log(this.idQuestionnary);
         }
       } catch (error) {
         console.error(error);
       }
     },
     async getQuestionnary() {
-      if(this.isCreated()){
+      if(this.isCreated){
         try {
           const response = await getQuestionnary(this.idQuestionnary);
           if (!response.ok || response.status !== 200) {
@@ -41,8 +41,6 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           }
           else {
             this.questionnary = JSON.parse(await response.text());
-            console.log("get");
-            console.log(this.questionnary);
           }
         } catch (error) {
           console.error(error);
@@ -50,11 +48,14 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async addQuestion(question) {
-      if(this.isCreated()){
+      if(this.isCreated){
         try {
           const response = await addQuestion(question, this.idQuestionnary);
           if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            await this.getQuestionnary();
           }
         } catch (error) {
           console.error(error);
@@ -62,16 +63,14 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async modifyQuestion(idQuestion, question) {
-      if(this.isCreated()){
+      if(this.isCreated){
         try {
           const response = await modifyQuestion(this.idQuestionnary, idQuestion, question);
-          console.log(response.status);
           if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
           else {
-            console.log("modify");
-            console.log(response.text());
+            await this.getQuestionnary();
           }
         } catch (error) {
           console.error(error);
@@ -79,17 +78,14 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async deleteQuestion(idQuestion) {
-      if(this.isCreated()){
+      if(this.isCreated){
         try {
-          console.log(this.idQuestionnary + " <|°_°|> " + idQuestion);
           const response = await deleteQuestion(this.idQuestionnary, idQuestion);
-          console.log(response.status);
           if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
           else {
-            console.log("delete");
-            console.log(response.text());
+            await this.getQuestionnary();
           }
         } catch (error) {
           console.error(error);
