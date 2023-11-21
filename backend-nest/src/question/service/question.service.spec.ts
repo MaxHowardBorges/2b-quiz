@@ -127,7 +127,7 @@ describe('QuestionService', () => {
         content: 'returned question',
         answers: [],
       };
-      //mockQuestionRepository.find.mockResolvedValue(questionnaryDTO.questions{where: { questionnary, id: 1 }})
+
       questionnary.questions[0] = QuestionMock;
       let qTab: Question[] = [];
       qTab[0] = QuestionMock;
