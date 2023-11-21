@@ -19,7 +19,7 @@
 
       },
       modifyQuest() {
-        console.log("axel guy ? où ?");
+        this.$emit('ChangeStatuss', this.idQuestion);
       },
     }
   }

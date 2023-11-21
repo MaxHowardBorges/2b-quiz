@@ -32,16 +32,10 @@
       <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
     </div>
 
-<!--    <div v-if=this.OnList&&this.useQ.isCreated()>-->
-<!--    <QuestionnaryListOne numberLabel="Numéro 1" typeLabel="Multiple"/>-->
-<!--    <QuestionnaryListOne numberLabel="Numéro 2" typeLabel="True-False"/>-->
-<!--    <QuestionnaryListOne numberLabel="Numéro 3" typeLabel="Open-Ended"/>-->
-<!--    <QuestionnaryListOne numberLabel="Numéro 4" typeLabel="Multiple"/>-->
-<!--    <QuestionnaryListOne />-->
-<!--    </div>-->
+
     <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated>
       <v-sheet v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
-        <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id />
+        <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id @ChangeStatuss="ChangeStatus"/>
       </v-sheet>
     </v-sheet>
 
@@ -82,6 +76,8 @@
         typeOptions: ["Multiple", "Open-Ended", "True-False"],
         confirmationDialog: false,
         questionnaryName : "[Questionnary name]",
+        statusQ: "add",
+        idQuestion: null,
       };
     },
     setup() {
@@ -104,6 +100,12 @@
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
+      ChangeStatus(idQuestion) {
+        this.showTypeSelector = !this.showTypeSelector;
+        this.OnList = !this.OnList;
+        this.statusQ = "modify";
+        this.idQuestion = idQuestion;
+      },
       updateUseQ(){
         this.useQ = useQuestionnaryStore();
       },
@@ -116,6 +118,11 @@
           if (this.useQ.idQuestionnary == null){
             await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
             await this.useQ.addQuestion({content,answers});
+          }
+
+          else if (this.statusQ === "modify"){//TODO pré remplir les champs
+            await this.useQ.modifyQuestion(this.idQuestion,{content,answers});
+            this.statusQ="add";
           }
           else{
             await this.useQ.addQuestion({content,answers});
