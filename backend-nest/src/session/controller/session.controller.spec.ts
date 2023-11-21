@@ -138,7 +138,7 @@ describe('SessionController', () => {
 
   describe('nextQuestion', () => {
     it('should return the next question', async () => {
-      expect(await sessionController.createSession()).toEqual(undefined);
+      expect(await sessionController.createSession()).not.toEqual(undefined);
     });
   });
 
