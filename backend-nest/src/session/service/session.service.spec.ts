@@ -5,7 +5,6 @@ import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { EventService } from '../../event/service/event.service';
 import { Session } from '../session';
 import { Question } from '../../question/entity/question.entity';
-import { Answer } from '../../question/entity/answer.entity';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -32,6 +31,41 @@ describe('SessionService', () => {
 
   const mockEventService = {
     createClientGroup: jest.fn(),
+    sendEvent: jest.fn(),
+    closeClientGroup: jest.fn(),
+  };
+
+  const session: Session = {
+    id: '111111',
+
+    questionList: [
+      {
+        id: 1,
+        content: 'Exemple de contenu',
+        answers: [
+          {
+            id: 1,
+            content: 'Exemple de réponse',
+            isCorrect: false,
+            question: null,
+          },
+        ],
+        questionnary: {
+          id: 1,
+          title: 'testQuestionnary',
+          author: 'authorTest',
+          questions: null,
+        },
+      },
+    ],
+
+    questionNumber: 1,
+
+    connectedUser: null,
+
+    userAnswers: null,
+
+    endSession: false,
   };
 
   beforeEach(async () => {
@@ -51,7 +85,7 @@ describe('SessionService', () => {
           useValue: mockEventService,
         },
         {
-          provide: Map,
+          provide: Map<string, Session>,
           useValue: mockMap,
         },
       ],
@@ -73,38 +107,7 @@ describe('SessionService', () => {
     });
     it('initializeSession : should be not equal to the empty session', async () => {
       //let sessionMap: Map<string, Session> = new Map<string, Session>();
-      const session: Session = {
-        id: '111111',
 
-        questionList: [
-          {
-            id: 1,
-            content: 'Exemple de contenu',
-            answers: [
-              {
-                id: 1,
-                content: 'Exemple de réponse',
-                isCorrect: false,
-                question: null,
-              },
-            ],
-            questionnary: {
-              id: 1,
-              title: 'testQuestionnary',
-              author: 'authorTest',
-              questions: null,
-            },
-          },
-        ],
-
-        questionNumber: 5,
-
-        connectedUser: null,
-
-        userAnswers: null,
-
-        endSession: false,
-      };
       //sessionMap.set('111111', session);
       //mockMap.set.mockResolvedValue("111111", session);
       //mockMap.set.mockResolvedValue(null);
@@ -120,14 +123,54 @@ describe('SessionService', () => {
     it('should create a session and return a Session', async () => {
       let test = await service.createSession(service.generateIdSession());
       expect(test).toBeInstanceOf(Session);
-      expect(typeof test.id).toBe('String');
+      expect(typeof test.id).toBe('string');
     });
   });
 
   describe('nextQuestion', () => {
     it('should create a session and return a Session', async () => {
-      //mockMap.get
+      mockMap.get.mockReturnValue(session);
+      //const mockSessionMap = new Map<string, Session>();
+      // Remplace sessionMap par le mock
+      const mockSessionMap = new Map<string, Session>();
+      mockSessionMap.set('111111', session);
+      (service as any).sessionMap = mockSessionMap;
+      /*jest
+        .spyOn(service, 'sessionMap' as keyof SessionService)
+        .mockReturnValue(mockSessionMap);*/
+      // jest.spyOn(service, 'sessionMap', 'get').mockReturnValue(mockSessionMap);
       let test = service.nextQuestion('111111');
+      expect(test).toBeNull();
+      expect(test).not.toEqual(session);
+      let session2: Session = session;
+      let quest = new Question();
+      quest.answers = [];
+      session2.questionList[1] = quest;
+      // {
+      //   id: 2,
+      //   content: 'Exemple de contenu',
+      //   answers: [
+      //     {
+      //       id: 2,
+      //       content: 'Exemple de réponse',
+      //       isCorrect: false,
+      //       question: null,
+      //     },
+      //   ],
+      //   questionnary: {
+      //     id: 1,
+      //     title: 'testQuestionnary',
+      //     author: 'authorTest',
+      //     questions: null,
+      //   },
+      // };
+
+      session2.questionNumber = 0;
+      mockSessionMap.set('111111', session2);
+      (service as any).sessionMap = mockSessionMap;
+      let test2 = service.nextQuestion('111111');
+      console.log(test2);
+      expect(test2).toBeInstanceOf(Question);
     });
   });
 });
