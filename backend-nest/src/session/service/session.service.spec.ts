@@ -25,6 +25,7 @@ describe('SessionService', () => {
 
   const mockMap = {
     set: jest.fn(),
+    get: jest.fn(),
   };
 
   const mockAnswerMapper = {};
@@ -67,13 +68,34 @@ describe('SessionService', () => {
     it('generate idSession : should be returned an idSession, should be a STRING', async () => {
       const test = await service.generateIdSession();
       expect(typeof test).toBe('string');
+      expect(test.length).toEqual(6);
+      expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
       //let sessionMap: Map<string, Session> = new Map<string, Session>();
-      const session = {
+      const session: Session = {
         id: '111111',
 
-        questionList: null,
+        questionList: [
+          {
+            id: 1,
+            content: 'Exemple de contenu',
+            answers: [
+              {
+                id: 1,
+                content: 'Exemple de réponse',
+                isCorrect: false,
+                question: null,
+              },
+            ],
+            questionnary: {
+              id: 1,
+              title: 'testQuestionnary',
+              author: 'authorTest',
+              questions: null,
+            },
+          },
+        ],
 
         questionNumber: 5,
 
@@ -88,6 +110,24 @@ describe('SessionService', () => {
       //mockMap.set.mockResolvedValue(null);
       const testSession = await service.initializeSession();
       expect(testSession).not.toEqual(session);
+      expect(testSession).toBeInstanceOf(Session);
+      expect(testSession.id).not.toBeNull();
+      expect(testSession.id).not.toMatch(/[a-zA-ZÀ-ÿ]/);
+    });
+  });
+
+  describe('CreateSession', () => {
+    it('should create a session and return a Session', async () => {
+      let test = await service.createSession(service.generateIdSession());
+      expect(test).toBeInstanceOf(Session);
+      expect(typeof test.id).toBe('String');
+    });
+  });
+
+  describe('nextQuestion', () => {
+    it('should create a session and return a Session', async () => {
+      //mockMap.get
+      let test = service.nextQuestion('111111');
     });
   });
 });
