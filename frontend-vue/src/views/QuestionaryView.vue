@@ -114,10 +114,14 @@
       },
       async validQuestion() {
 
+        const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
-        console.log(content);
-        console.log(answers);
+
+        for (let i = 0; i < answers.length; i++) {
+          answers[i].isCorrect = i === index;
+        }
+
 
         if (content && answers){
           if (this.useQ.idQuestionnary == null){

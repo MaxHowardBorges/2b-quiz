@@ -69,7 +69,6 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       if(this.isCreated){
         try {
           console.log("modify");
-          console.log(question);
           const response = await modifyQuestion(this.idQuestionnary, idQuestion, question);
           if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error

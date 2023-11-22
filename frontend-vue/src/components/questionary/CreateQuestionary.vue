@@ -14,10 +14,11 @@
             v-model="question.answers[index].content"
             required
           ></v-text-field>
-          <v-radio-group v-model="question.answers[index].isCorrect">
+          <v-radio-group v-model="correct">
             <v-radio
               :id="'correct-answer-' + (index)"
               :label="'Correct'"
+              :value=index
             ></v-radio>
           </v-radio-group>
         </v-sheet>
@@ -80,6 +81,7 @@
       return {
         question,
         indexD : 0,
+        correct: 0,
         questionContent: ref(''),
         questionnaryName: '',
         answers: [{ content: '', isCorrect: false }],
@@ -101,7 +103,6 @@
       getQuestion() {
         if(!!this.idQuestion){
           return this.questionnaryStore.getQuestion(this.idQuestion);
-          console.log(this.questionnaryStore.getQuestion(this.idQuestion));
         }
         return null;
       },
