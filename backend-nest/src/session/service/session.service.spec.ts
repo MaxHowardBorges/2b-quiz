@@ -6,6 +6,7 @@ import { EventService } from '../../event/service/event.service';
 import { Session } from '../session';
 import { Question } from '../../question/entity/question.entity';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
+import { AnswersNoneException } from '../exception/answersNone.exception';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -28,7 +29,9 @@ describe('SessionService', () => {
     get: jest.fn(),
   };
 
-  const mockAnswerMapper = {};
+  const mockAnswerMapper = {
+    mapAnswersStudentDtos: jest.fn(),
+  };
 
   const mockEventService = {
     createClientGroup: jest.fn(),
@@ -129,7 +132,7 @@ describe('SessionService', () => {
   });
 
   describe('nextQuestion', () => {
-    it('should create a session and return a Session', async () => {
+    it('should return the next question', async () => {
       mockMap.get.mockReturnValue(session);
       //const mockSessionMap = new Map<string, Session>();
       // Remplace sessionMap par le mock
@@ -180,6 +183,33 @@ describe('SessionService', () => {
       );
 
       //expect(service.nextQuestion('111112')).toThrow(IdSessionNoneException);
+    });
+  });
+  describe('currentQuestion', () => {
+    it('should return the current question', async () => {
+      const mockSessionMap = new Map<string, Session>();
+      mockSessionMap.set('111111', session);
+      (service as any).sessionMap = mockSessionMap;
+      /*jest
+        .spyOn(service, 'sessionMap' as keyof SessionService)
+        .mockReturnValue(mockSessionMap);*/
+      // jest.spyOn(service, 'sessionMap', 'get').mockReturnValue(mockSessionMap);
+
+      let session2: Session = session;
+      let quest = new Question();
+      quest.answers = [];
+      session2.questionList[1] = quest;
+      //let test = service.currentQuestion('111111');
+      //mockAnswerMapper.
+      expect(() => service.currentQuestion('111111')).toThrow(
+        AnswersNoneException,
+      );
+
+      mockAnswerMapper.mapAnswersStudentDtos.mockResolvedValue(
+        new AnswerMapper(),
+      );
+      let test = service.currentQuestion('111111');
+      expect(test).toBeInstanceOf(Question);
     });
   });
 });
