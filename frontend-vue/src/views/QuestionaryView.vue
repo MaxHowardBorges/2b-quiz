@@ -116,20 +116,25 @@
 
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
+        console.log(content);
+        console.log(answers);
 
         if (content && answers){
           if (this.useQ.idQuestionnary == null){
             await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
             await this.useQ.addQuestion({content,answers});
+            console.log("#1#");
           }
 
           else if (this.statusQ === "modify"){//TODO pré remplir les champs
             await this.useQ.modifyQuestion(this.idQuestion,{content,answers});
             this.statusQ="add";
             this.idQuestion=null;
+            console.log("#2#");
           }
           else{
             await this.useQ.addQuestion({content,answers});
+            console.log("#3#");
           }
         }
 

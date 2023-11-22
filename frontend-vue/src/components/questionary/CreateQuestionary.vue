@@ -6,14 +6,15 @@
     <v-sheet v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
 
       <v-sheet class="answers">
-        <v-sheet v-for="(answer, index) in answers" :key="index">
+        <v-sheet v-for="(answer, index) in question.answers" :key="index">
           <v-text-field
             :label="'Answer ' + (index + 1) + ' :'"
             :id="'answer-' + index"
-            v-model="answers[index].content"
+            :value="question.answers[index].content"
+            v-model="question.answers[index].content"
             required
           ></v-text-field>
-          <v-radio-group v-model="answers[index].isCorrect">
+          <v-radio-group v-model="question.answers[index].isCorrect">
             <v-radio
               :id="'correct-answer-' + (index)"
               :label="'Correct'"
@@ -100,6 +101,7 @@
       getQuestion() {
         if(!!this.idQuestion){
           return this.questionnaryStore.getQuestion(this.idQuestion);
+          console.log(this.questionnaryStore.getQuestion(this.idQuestion));
         }
         return null;
       },
@@ -107,15 +109,15 @@
         this.selectedQuestionType = type;
       },
       getAnswers() {
-        return this.answers;
+        return this.question.answers;
       },
       addAnswer() {
-        this.answers.push({ content: '', isCorrect: false });
+        this.question.answers.push({ content: '', isCorrect: false });
       },
 
       removeAnswer(index) {
         // Utilisez splice pour supprimer la réponse de la liste des réponses
-        this.answers.splice(index, 1);
+        this.question.answers.splice(index, 1);
       },
 
       createQuestionnaire() {
