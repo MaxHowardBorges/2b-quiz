@@ -25,7 +25,7 @@ export class AuthController {
   @Public()
   @Post('/login')
   async login(@Body(new ValidationPipe()) loginDto: LoginDto) {
-    return await this.authService.signIn(loginDto.username, loginDto.password);
+    return await this.authService.signIn(loginDto.ticket, loginDto.service);
   }
 
   @Post('/renew')

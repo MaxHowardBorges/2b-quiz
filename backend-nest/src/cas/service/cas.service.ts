@@ -3,19 +3,36 @@ import { ConfigService } from '@nestjs/config';
 import { UnsupportedCasProtocolException } from '../exception/unsupportedCasProtocol.exception';
 import { TicketValidationErrorException } from '../exception/ticketValidationError.exception';
 import { CasServerErrorException } from '../exception/casServerError.exception';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom, map } from 'rxjs';
+import { AxiosError } from 'axios';
+import { parseString } from 'xml2js';
 
 @Injectable()
 export class CasService {
   private readonly casProtocol: string;
   private readonly casUrl: string;
   private readonly casValidateServiceRoute: string;
+  private readonly casMainXmlTag: string;
+  private readonly casSuccessXmlTag: string;
+  private readonly casUsernameXmlTag: string;
 
-  constructor(private readonly configService: ConfigService) {
-    this.casProtocol = configService.getOrThrow('CAS_PROTOCOL');
-    this.casUrl = configService.getOrThrow('CAS_URL');
-    this.casValidateServiceRoute = configService.getOrThrow(
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
+  ) {
+    this.casProtocol = this.configService.getOrThrow('CAS_PROTOCOL');
+    this.casUrl = this.configService.getOrThrow('CAS_URL');
+    this.casValidateServiceRoute = this.configService.getOrThrow(
       'CAS_VALIDATE_SERVICE_ROUTE',
     );
+    this.casSuccessXmlTag = this.configService.getOrThrow(
+      'CAS_SUCCESS_XML_TAG',
+    );
+    this.casUsernameXmlTag = this.configService.getOrThrow(
+      'CAS_USERNAME_XML_TAG',
+    );
+    this.casMainXmlTag = this.configService.getOrThrow('CAS_MAIN_XML_TAG');
   }
 
   async validateTicket(service: string, ticket: string) {
@@ -32,21 +49,30 @@ export class CasService {
       encodeURIComponent(service) +
       '&ticket=' +
       ticket;
-    let response: Response;
-    try {
-      response = await fetch(url, { method: 'GET' });
-    } catch (e) {
-      throw new CasServerErrorException();
-    }
-    const xmlDoc = new DOMParser().parseFromString(
-      await response.text(),
-      'text/xml',
+    const response = await firstValueFrom(
+      this.httpService.get<string>(url).pipe(
+        map((response) => response.data),
+        catchError((error: AxiosError) => {
+          console.log(error);
+          throw new CasServerErrorException();
+        }),
+      ),
     );
+    let xml: any;
+    parseString(response, function (err, result) {
+      if (err) throw new TicketValidationErrorException();
+      xml = result;
+    });
     if (
-      !xmlDoc.documentElement.getElementsByTagName('cas:authenticationSuccess')
+      !xml[this.casMainXmlTag][this.casSuccessXmlTag] ||
+      !xml[this.casMainXmlTag][this.casSuccessXmlTag][0][
+        this.casUsernameXmlTag
+      ][0]
     )
       throw new TicketValidationErrorException();
-    return xmlDoc.documentElement.getElementsByTagName('cas:user')[0]
-      .textContent;
+
+    return xml[this.casMainXmlTag][this.casSuccessXmlTag][0][
+      this.casUsernameXmlTag
+    ][0];
   }
 }

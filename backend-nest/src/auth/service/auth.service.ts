@@ -20,7 +20,7 @@ export class AuthService {
   async signIn(ticket: string, service: string) {
     let username: string;
     try {
-      username = await this.casService.validateTicket(ticket, service);
+      username = await this.casService.validateTicket(service, ticket);
     } catch (err) {
       if (err instanceof TicketValidationErrorException)
         throw new InvalidTicketException();

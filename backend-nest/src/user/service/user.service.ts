@@ -62,7 +62,9 @@ export class UserService {
   async getUserForLogin(username: string) {
     const user = await this.getUserByUsername(username, false);
     if (user) return user;
-    return new Student(username);
+    const newUser = new Student(username);
+    await this.userRepository.save(newUser);
+    return newUser;
   }
 
   async updateUser(user: User, name: string, surname: string) {

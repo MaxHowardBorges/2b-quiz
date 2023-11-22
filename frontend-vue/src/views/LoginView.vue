@@ -13,6 +13,7 @@
     props: {
       expiredError: Boolean,
       serverError: Boolean,
+      ticket: null,
     },
     setup() {
       const userStore = useUserStore();
@@ -24,17 +25,30 @@
         errorSnackbarContent: '',
       };
     },
-    mounted() {
+    async mounted() {
       if (this.expiredError) this.$refs.dialogExpiredError.setDialogError(true);
       if (this.serverError) {
         resetPiniaStores();
         this.$refs.dialogServerError.setDialogError(true);
       }
+      if (this.ticket) {
+        await this.checkTicket();
+      }
     },
     methods: {
-      async login() {
+      getServiceURL() {
+        return window.location.origin + this.$route.path;
+      },
+      login() {
+        window.location.href =
+          import.meta.env.VITE_CAS_URL +
+          import.meta.env.VITE_CAS_LOGIN_ROUTE +
+          '?service=' +
+          encodeURI(this.getServiceURL());
+      },
+      async checkTicket() {
         try {
-          await this.userStore.login(this.username, this.password);
+          await this.userStore.login(this.ticket, this.getServiceURL());
           await router.push('/home');
         } catch (error) {
           if (error instanceof ValidationError) {
@@ -77,27 +91,10 @@
     elevation="5">
     <h1>Login</h1>
     <v-form @submit.prevent="login" class="ma-2" max-width="500px">
-      <v-text-field
-        v-model="username"
-        type="text"
-        id="username"
-        autocomplete="username"
-        label="Username"></v-text-field>
-      <v-text-field
-        v-model="password"
-        :type="passwordVisibility ? 'text' : 'password'"
-        id="password"
-        label="Password"
-        autocomplete="current-password"
-        :append-inner-icon="
-          passwordVisibility ? 'visibility' : 'visibility_off'
-        "
-        @click:append-inner="togglePasswordVisibility"></v-text-field>
       <v-btn color="primary" type="submit">
         <p class="text-white font-weight-bold">Login</p>
       </v-btn>
     </v-form>
-    <v-btn color="secondary" to="/register"><p>Créer un compte</p></v-btn>
   </v-sheet>
 </template>
 

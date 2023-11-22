@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import SessionView from '@/views/SessionView.vue';
 import TeacherHomeView from '@/views/TeacherHomeView.vue';
@@ -31,6 +31,7 @@ const routes = [
     props: (route) => ({
       expiredError: !!route.query.expiredError,
       serverError: !!route.query.serverError,
+      ticket: route.query.ticket,
     }),
     component: LoginView,
     meta: { public: true },
@@ -38,7 +39,7 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    meta: { public: true },
+    meta: { public: true, disabled: true },
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/RegisterView.vue'),
   },
@@ -51,12 +52,16 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });
 
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
+  if (to.meta.disabled) {
+    from();
+    return;
+  }
   if (to.meta.public) {
     next();
     return;

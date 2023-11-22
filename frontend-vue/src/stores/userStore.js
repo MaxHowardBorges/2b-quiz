@@ -53,13 +53,13 @@ export const useUserStore = defineStore('user', {
       const response = await registerUser(body);
       await throwIfNotOK(response, 204);
     },
-    async login(username, password) {
-      const body = { username, password };
+    async login(ticket, service) {
+      const body = { ticket, service };
       const response = await loginUser(body);
       await throwIfNotOK(response, 201);
       const token = (await response.json()).access_token;
       this.setToken(token);
-      this.setUsername(username);
+      //this.setUsername(username);
       this.setUserRoles(await this.fetchUserType());
       await this.intervalChecker();
     },
