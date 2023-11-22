@@ -1,23 +1,10 @@
 <template>
   <v-sheet class="mt-20px align-center">
 
-    <v-text-field  type="text" id="question" v-model="question" required label='Question :'></v-text-field>
-<!--    <v-sheet>-->
-<!--      <label for="question">Question : </label>-->
-<!--      <input type="text" id="question" v-model="question" required>-->
-<!--    </v-sheet>-->
+    <v-text-field  type="text" id="question" v-model="question.content" required label='Question :' :value="question.content" ></v-text-field>
 
-    <!-- Nom du questionnaire -->
     <v-sheet v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
-    <!-- Réponses possibles -->
-<!--    <v-sheet class="answers">-->
-<!--      <v-sheet v-for="(answer, index) in answers" :key="index">-->
-<!--        <label :for="'answer-' + index">Answer {{ index + 1 }} : </label>-->
-<!--        <input type="text" :id="'answer-' + index" v-model="answers[index].content" required>-->
-<!--        <input type="radio" :id="'correct-answer-' + index" v-model="correctAnswer" :value="index">-->
-<!--        <label>Correct</label>-->
-<!--      </v-sheet>-->
-<!--    </v-sheet>-->
+
       <v-sheet class="answers">
         <v-sheet v-for="(answer, index) in answers" :key="index">
           <v-text-field
@@ -41,7 +28,7 @@
     <!-- Réponses possibles -->
     <v-sheet class="answers">
       <v-sheet>
-        <input type="radio" :id="true" v-model="correctAnswer" :value="true">
+        <input type="radio" :id="true" v-model="correctAnswer" :value="true" >
         <label>True</label>
         <input type="radio" :id="false" v-model="correctAnswer" :value="false">
         <label>False</label>
@@ -65,15 +52,35 @@
 </template>
 
 <script >
+  import { ref } from 'vue';
+  import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+
   export default {
     props: {
-      selectedQuestionType: String, default : "Multiple"
+      selectedQuestionType: {String, default : "Multiple"},
+      idQuestion: {Number, default: null},
+    },
+    setup() {
+      const questionnaryStore = useQuestionnaryStore();
+      return {
+        questionnaryStore
+      };
+    },
+    computed() {
     },
     data() {
+      let question = this.getQuestion();
+      if(!question){
+        question = {
+          content: "",
+          answers: []
+        };
+      }
       return {
+        question,
         indexD : 0,
+        questionContent: ref(''),
         questionnaryName: '',
-        question: '',
         answers: [{ content: '', isCorrect: false }],
         correctAnswer: null,
         questionnary: {
@@ -90,6 +97,12 @@
       };
     },
     methods: {
+      getQuestion() {
+        if(!!this.idQuestion){
+          return this.questionnaryStore.getQuestion(this.idQuestion);
+        }
+        return null;
+      },
       selectQuestionType(type) {
         this.selectedQuestionType = type;
       },

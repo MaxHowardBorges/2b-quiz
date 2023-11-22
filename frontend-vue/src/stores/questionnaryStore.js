@@ -14,6 +14,9 @@ export const useQuestionnaryStore = defineStore('questionnary', {
     isCreated(){
       return (this.idQuestionnary != null);
     },
+    getQuestion(state){
+      return (id) => this.questionnary.questions.find((question) => question.id === id)
+    }
   },
   actions: {
     setIdQuestionnary(idQuestionnary) {

@@ -21,11 +21,13 @@
 
     <v-btn class="mb-5" v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
 
+
     <CreateQuestionnary
       ref="questionnaryComponent"
       id='quest'
       v-if=!OnList
       :selectedQuestionType="selectedType"
+      :idQuestion='idQuestion'
     />
 
     <div class='blocklist' v-if=!this.useQ.isCreated&&this.OnList>
@@ -105,13 +107,14 @@
         this.OnList = !this.OnList;
         this.statusQ = "modify";
         this.idQuestion = idQuestion;
+        this.question = this.useQ.getQuestion(this.idQuestion);
       },
       updateUseQ(){
         this.useQ = useQuestionnaryStore();
       },
       async validQuestion() {
 
-        const content = this.$refs.questionnaryComponent.question;
+        const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
 
         if (content && answers){
@@ -123,6 +126,7 @@
           else if (this.statusQ === "modify"){//TODO pré remplir les champs
             await this.useQ.modifyQuestion(this.idQuestion,{content,answers});
             this.statusQ="add";
+            this.idQuestion=null;
           }
           else{
             await this.useQ.addQuestion({content,answers});
