@@ -5,6 +5,7 @@ import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { EventService } from '../../event/service/event.service';
 import { Session } from '../session';
 import { Question } from '../../question/entity/question.entity';
+import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -169,8 +170,16 @@ describe('SessionService', () => {
       mockSessionMap.set('111111', session2);
       (service as any).sessionMap = mockSessionMap;
       let test2 = service.nextQuestion('111111');
-      console.log(test2);
+      //console.log(test2);
       expect(test2).toBeInstanceOf(Question);
+      expect(test2).toEqual(quest);
+
+      //test2 = service.nextQuestion('111112');
+      expect(() => service.nextQuestion('111112')).toThrow(
+        IdSessionNoneException,
+      );
+
+      //expect(service.nextQuestion('111112')).toThrow(IdSessionNoneException);
     });
   });
 });

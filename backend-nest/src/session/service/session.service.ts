@@ -49,19 +49,28 @@ export class SessionService {
   }
 
   nextQuestion(idSession: string): Question {
-    const currentSession = this.sessionMap.get(idSession);
-    if (
-      currentSession.questionNumber + 1 <
-      currentSession.questionList.length
-    ) {
-      currentSession.questionNumber = currentSession.questionNumber + 1;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return currentSession.questionList[currentSession.questionNumber];
+    try {
+      const currentSession = this.sessionMap.get(idSession);
+
+      if (currentSession.id == idSession) {
+        if (
+          currentSession.questionNumber + 1 <
+          currentSession.questionList.length
+        ) {
+          currentSession.questionNumber = currentSession.questionNumber + 1;
+          this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+          return currentSession.questionList[currentSession.questionNumber];
+        }
+        this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
+        currentSession.endSession = true;
+        this.eventService.closeClientGroup(idSession);
+        return null;
+      }
+    } catch (error) {
+      // Handle the error, log it, or perform necessary actions
+      throw new IdSessionNoneException();
+      // Optionally, return a default value or handle the error gracefully
     }
-    this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
-    currentSession.endSession = true;
-    this.eventService.closeClientGroup(idSession);
-    return null;
   }
 
   getMap() {
