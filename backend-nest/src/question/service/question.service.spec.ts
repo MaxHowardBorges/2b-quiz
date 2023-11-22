@@ -11,7 +11,6 @@ describe('QuestionService', () => {
   let service: QuestionService;
   let questionRepository: 'QuestionRepository';
   let answerRepository: 'AnswerRepository';
-  //let questionnaryService
 
   const mockQuestionRepository = {
     save: jest.fn(),
@@ -155,10 +154,9 @@ describe('QuestionService', () => {
   describe('modifyQuestion', () => {
     it('should modify a question and return a boolean', async () => {
       mockQuestionRepository.findOne.mockResolvedValue(QuestionMock);
-      let test = service.modifyQuestion(questionsCreateDTO,questionnary,1);
+      let test = service.modifyQuestion(questionsCreateDTO, questionnary, 1);
       expect(test).toBeTruthy();
       expect(test).not.toEqual(QuestionMock);
-
     });
   });
 });

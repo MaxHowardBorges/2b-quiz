@@ -110,11 +110,6 @@ describe('SessionService', () => {
       expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
-      //let sessionMap: Map<string, Session> = new Map<string, Session>();
-
-      //sessionMap.set('111111', session);
-      //mockMap.set.mockResolvedValue("111111", session);
-      //mockMap.set.mockResolvedValue(null);
       const testSession = await service.initializeSession();
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(Session);
@@ -134,15 +129,11 @@ describe('SessionService', () => {
   describe('nextQuestion', () => {
     it('should return the next question', async () => {
       mockMap.get.mockReturnValue(session);
-      //const mockSessionMap = new Map<string, Session>();
-      // Remplace sessionMap par le mock
+
       const mockSessionMap = new Map<string, Session>();
       mockSessionMap.set('111111', session);
       (service as any).sessionMap = mockSessionMap;
-      /*jest
-        .spyOn(service, 'sessionMap' as keyof SessionService)
-        .mockReturnValue(mockSessionMap);*/
-      // jest.spyOn(service, 'sessionMap', 'get').mockReturnValue(mockSessionMap);
+
       let test = service.nextQuestion('111111');
       expect(test).toBeNull();
       expect(test).not.toEqual(session);
@@ -150,39 +141,18 @@ describe('SessionService', () => {
       let quest = new Question();
       quest.answers = [];
       session2.questionList[1] = quest;
-      // {
-      //   id: 2,
-      //   content: 'Exemple de contenu',
-      //   answers: [
-      //     {
-      //       id: 2,
-      //       content: 'Exemple de réponse',
-      //       isCorrect: false,
-      //       question: null,
-      //     },
-      //   ],
-      //   questionnary: {
-      //     id: 1,
-      //     title: 'testQuestionnary',
-      //     author: 'authorTest',
-      //     questions: null,
-      //   },
-      // };
 
       session2.questionNumber = 0;
       mockSessionMap.set('111111', session2);
       (service as any).sessionMap = mockSessionMap;
       let test2 = service.nextQuestion('111111');
-      //console.log(test2);
+
       expect(test2).toBeInstanceOf(Question);
       expect(test2).toEqual(quest);
 
-      //test2 = service.nextQuestion('111112');
       expect(() => service.nextQuestion('111112')).toThrow(
         IdSessionNoneException,
       );
-
-      //expect(service.nextQuestion('111112')).toThrow(IdSessionNoneException);
     });
   });
   describe('currentQuestion', () => {
@@ -190,17 +160,12 @@ describe('SessionService', () => {
       const mockSessionMap = new Map<string, Session>();
       mockSessionMap.set('111111', session);
       (service as any).sessionMap = mockSessionMap;
-      /*jest
-        .spyOn(service, 'sessionMap' as keyof SessionService)
-        .mockReturnValue(mockSessionMap);*/
-      // jest.spyOn(service, 'sessionMap', 'get').mockReturnValue(mockSessionMap);
 
       let session2: Session = session;
       let quest = new Question();
       quest.answers = [];
       session2.questionList[1] = quest;
-      //let test = service.currentQuestion('111111');
-      //mockAnswerMapper.
+
       expect(() => service.currentQuestion('111111')).toThrow(
         AnswersNoneException,
       );

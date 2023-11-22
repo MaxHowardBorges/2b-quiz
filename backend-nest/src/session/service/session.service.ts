@@ -67,9 +67,7 @@ export class SessionService {
         return null;
       }
     } catch (error) {
-      // Handle the error, log it, or perform necessary actions
       throw new IdSessionNoneException();
-      // Optionally, return a default value or handle the error gracefully
     }
   }
 

@@ -167,51 +167,7 @@ describe('SessionController', () => {
       let q = new Question();
       let a = new Answer();
 
-      //q = { id: 1, content: 'Paris' };
-
-      // const questionnary: Session = {
-      //   id: '308783',
-      //   questionList: [
-      //     {
-      //       id: 1,
-      //       content: 'Quelle est la capitale de la France?',
-      //       answers: [
-      //         { id: 1, content: 'Paris', isCorrect: true },
-      //         { id: 2, content: 'Londres', isCorrect: false },
-      //         { id: 3, content: 'Berlin', isCorrect: false },
-      //       ],
-      //     },
-      //     {
-      //       id: 2,
-      //       content: 'Qui a écrit "Romeo et Juliette"?',
-      //       answers: [
-      //         { id: 4, content: 'William Shakespeare', isCorrect: true },
-      //         { id: 5, content: 'Charles Dickens', isCorrect: false },
-      //         { id: 6, content: 'Jane Austen', isCorrect: false },
-      //         { id: 7, content: 'George Orwell', isCorrect: false },
-      //       ],
-      //     },
-      //     {
-      //       id: 3,
-      //       content: "Quel est le symbole chimique de l'oxygène?",
-      //       answers: [
-      //         { id: 8, content: 'O', isCorrect: true },
-      //         { id: 9, content: 'H', isCorrect: false },
-      //         { id: 10, content: 'C', isCorrect: false },
-      //         { id: 11, content: 'N', isCorrect: false },
-      //         { id: 12, content: 'S', isCorrect: false },
-      //       ],
-      //     },
-      //   ],
-      //   questionNumber: -1,
-      //   connectedUser: {},
-      //   userAnswers: {},
-      //   endSession: false,
-      // };
-
       expect(await sessionController.getCurrentQuestion(r)).toEqual(undefined);
     });
   });
-
-  // Add similar test cases for other methods like joinSession, getCurrentQuestion, respondQuestion, and getMap
 });
