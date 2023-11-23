@@ -46,13 +46,15 @@ describe('QuestionService', () => {
 
   const questionsCreateDTO: QuestionCreateDto = {
     content: 'aa',
-    answers: [
-      {
-        content: '455',
-        isCorrect: false,
-      },
-    ],
+    answers: [],
   };
+
+  const answerCreateDTO = {
+    content: '455',
+    isCorrect: false,
+  };
+
+  questionsCreateDTO.answers[0] = answerCreateDTO;
 
   const questionsDTO: QuestionDto = {
     id: 1,
@@ -85,12 +87,18 @@ describe('QuestionService', () => {
     },
   };
 
-  const questionnary: Questionnary = {
+  const questionnary = new Questionnary();
+
+  questionnary.id = 1;
+  questionnary.title = 'testQuestionnary';
+  questionnary.author = 'authorTest';
+  questionnary.questions = [];
+  /*questionnary = {
     id: 1,
     title: 'testQuestionnary',
     author: 'authorTest',
     questions: [],
-  };
+  };*/
 
   const questionnaryDTO: QuestionnaryDto = {
     id: 1,
@@ -116,6 +124,8 @@ describe('QuestionService', () => {
       mockQuestionRepository.find;
       let test = await service.createQuestion(questionsCreateDTO, questionnary);
       expect(test).toBeInstanceOf(Question);
+      //console.log(questionsCreateDTO.answers);
+      //expect(test.answers.length).toEqual(1);
     });
   });
 
