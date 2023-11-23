@@ -21,6 +21,10 @@
       return {
         useQ
       };
+
+    },
+    mounted() {
+      this.useQ.idQuestionnary=null;
     },
     name: 'QuestionaryView',
     components: {

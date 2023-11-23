@@ -36,7 +36,8 @@
 
 
     <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated>
-      <v-sheet v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
+      {{console.log("test3",this.useQ.questionnary)}}
+      <v-sheet v-if='this.useQ.questionnary' v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
         <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id @ChangeStatuss="ChangeStatus"/>
       </v-sheet>
     </v-sheet>
@@ -161,6 +162,7 @@
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
+        this.useQ.idQuestionnary=null;
         this.$emit('GoList');
       },
     },

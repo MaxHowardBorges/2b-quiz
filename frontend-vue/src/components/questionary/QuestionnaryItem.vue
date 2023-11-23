@@ -1,7 +1,7 @@
 <template>
 
   <div class='blocklist'>
-    <b>{{ questionnaryName }}</b>
+    <b>{{ questionnaryName.title }}</b>
     <span class="spacer"></span>
     <span class="spacer"></span>
     <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>
@@ -29,7 +29,7 @@
     },
     props: {
       questionnaryId: { type: Number, default: null },
-      questionnaryName: { type: String, default: 'Questionnary name' },
+      questionnaryName: {},
     },
     methods: {
       deleteQuestionnary() {
@@ -37,7 +37,11 @@
       },
       modifyQuestionnary() {
         //this.$emit('ChangeStatuss', this.idQuestion);
-        alert("axel doit faire une redirection sur la page de modification du questionnaire");
+        this.useQ.idQuestionnary= this.questionnaryName.id;
+        this.useQ.getQuestionnary();
+        console.log(this.useQ.questionnaryList);
+        this.$emit("nextQuestionE")
+        //alert("axel doit faire une redirection sur la page de modification du questionnaire");
       },
       startQuestionnary(){
         const list = ["je te vois","tu travail moins que mathieu","tu as fait tes rolls ?","je sais pas"];
