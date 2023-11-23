@@ -2,13 +2,14 @@ import { defineStore } from 'pinia';
 import {
   createQuestionnary,
   getQuestionnary,
-  addQuestion, modifyQuestion, deleteQuestion,
+  addQuestion, modifyQuestion, deleteQuestion, getQuestionnaryFromUser, deleteQuestionnary,
 } from '@/api/questionnary';
 
 export const useQuestionnaryStore = defineStore('questionnary', {
   state: () => ({
     idQuestionnary :null,
     questionnary: null,
+    questionnaryList: []
   }),
   getters:{
     isCreated(){
@@ -49,6 +50,22 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           console.error(error);
         }
       }
+    },
+    async getQuestionnaryFromUser(idUser = 0) {//TODO get user id
+        try {
+          const response = await getQuestionnaryFromUser(idUser);
+          if (!response.ok || response.status !== 200) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            const questionnaryJson = JSON.parse(await response.text());
+            for(const q of questionnaryJson){
+              this.questionnaryList.push(q);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
     },
     async addQuestion(question) {
       if(this.isCreated){
@@ -95,6 +112,20 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           console.error(error);
         }
       }
+    },
+    async deleteQuestionnary(idQuestionnary) {
+        try {
+          const response = await deleteQuestionnary(idQuestionnary);
+          if (!response.ok || response.status !== 200) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            this.questionnaryList = [];
+            await this.getQuestionnaryFromUser();//TODO get user id
+          }
+        } catch (error) {
+          console.error(error);
+        }
     },
   },
 });

@@ -32,6 +32,18 @@ export async function getQuestionnary(id) {
   );
 }
 
+export async function getQuestionnaryFromUser(id) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/select/user/'+id,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}
+
 export async function modifyQuestion(idQuestionnary,idQuestion,body) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/modify-question/'+idQuestion,
@@ -48,6 +60,18 @@ export async function modifyQuestion(idQuestionnary,idQuestion,body) {
 export async function deleteQuestion(idQuestionnary,idQuestion) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/remove-question/'+idQuestion,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}
+
+export async function deleteQuestionnary(idQuestionnary) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary,
     {
       method: 'DELETE',
       headers: {

@@ -1,12 +1,12 @@
 <template>
 
   <div class='blocklist'>
-    <b>Questionnaire 1</b>
+    <b>{{ questionnaryName }}</b>
     <span class="spacer"></span>
     <span class="spacer"></span>
-    <v-btn icon="play_arrow" ></v-btn>
-    <v-btn icon="edit" ></v-btn>
-    <v-btn icon="delete" ></v-btn>
+    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>
+    <v-btn icon="edit" @click='modifyQuestionnary'></v-btn>
+    <v-btn icon="delete" @click='deleteQuestionnary'></v-btn>
   </div>
 
 </template>
@@ -27,8 +27,24 @@
         useQ
       };
     },
+    props: {
+      questionnaryId: { type: Number, default: null },
+      questionnaryName: { type: String, default: 'Questionnary name' },
+    },
+    methods: {
+      deleteQuestionnary() {
+        this.useQ.deleteQuestionnary(this.questionnaryId);
+      },
+      modifyQuestionnary() {
+        //this.$emit('ChangeStatuss', this.idQuestion);
+        alert("axel doit faire une redirection sur la page de modification du questionnaire");
+      },
+      startQuestionnary(){
+        const list = ["je te vois","tu travail moins que mathieu","tu as fait tes rolls ?","je sais pas"];
+        alert(list[Math.floor(Math.random() * list.length)]);
+      }
+    },
     name: 'QuestionnaryItem',
-
   }
 
 </script>
