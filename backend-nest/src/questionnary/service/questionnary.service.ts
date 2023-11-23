@@ -61,6 +61,26 @@ export class QuestionnaryService {
       : 'pas de questionnaire trouvé';
   }
 
+  async findQuestionnaryFromUser(idUser : number) {//TODO get from user questionnary bank
+    const questionnary = await this.questionnaryRepository.find();
+
+    const questionnaryDtos: QuestionnaryDto[] = [];
+    if (questionnary) {
+      for (const q of questionnary) {
+        const index = questionnary.indexOf(q);
+        const questionnaryDto = new QuestionnaryDto();
+        questionnaryDto.id = questionnary[index].id;
+        questionnaryDto.author = questionnary[index].author;
+        questionnaryDto.title = questionnary[index].title;
+        questionnaryDto.questions = await this.questionService.findQuestion(questionnary[index]);
+        questionnaryDtos.push(questionnaryDto);
+      }
+    }
+    return questionnaryDtos.length > 0
+      ? questionnaryDtos
+      : 'pas de questionnaires trouvés';
+  }
+
   async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
@@ -105,6 +125,4 @@ export class QuestionnaryService {
     }
     return !!questionnary;
   }
-
-  showAnswer(idQuestion: number) {}
 }
