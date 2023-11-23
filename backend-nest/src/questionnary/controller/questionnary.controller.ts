@@ -37,6 +37,11 @@ export class QuestionnaryController {
     return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
 
+  @Get('/select/user/:id')
+  selectQuestionnaryFromUser(@Param('id', ParseIntPipe) idUser: number) {
+    return this.questionnaryService.findQuestionnaryFromUser(idUser);
+  }
+
   @Post('/:id/add-question')
   addQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
