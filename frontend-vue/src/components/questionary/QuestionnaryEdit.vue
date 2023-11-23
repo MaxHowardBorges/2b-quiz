@@ -59,6 +59,8 @@
       </v-card>
     </v-dialog>
 
+    <v-btn text="done" class='mt-5' @click="EmitGoList"></v-btn>
+
   </v-sheet >
 </template>
 
@@ -157,6 +159,9 @@
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
+      },
+      EmitGoList() {
+        this.$emit('GoList');
       },
     },
   }

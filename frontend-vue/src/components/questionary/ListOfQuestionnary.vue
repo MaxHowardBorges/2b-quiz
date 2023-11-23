@@ -16,8 +16,8 @@
 
     <v-card
     class='mt-25'>
-      <v-btn >Back to home</v-btn>
-      <v-btn >New Questionnary</v-btn>
+      <v-btn @click='backHome'>Back to home</v-btn>
+      <v-btn @click='emitNextQuestion'>New Questionnary</v-btn>
     </v-card>
 
 
@@ -31,11 +31,13 @@
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
   import QuestionnaryItem from '@/components/questionary/QuestionnaryItem.vue';
   import QuestionnaryListOne from '@/components/questionary/QuestionnaryList.vue';
+  import router from '@/router';
 
   export default {
+    //TODO Pas de questionnaire
     data() {
       return {
-        iflist: true,
+        autre: true,
       };
     },
     setup() {
@@ -44,6 +46,16 @@
       return {
         useQ
       };
+    },
+    methods: {
+      emitNextQuestion() {
+        this.$emit('nextQuestion');
+      },
+
+      backHome(){
+        router.push('/')
+      }
+
     },
     name: 'ListOfQuestionnary',
     components: {

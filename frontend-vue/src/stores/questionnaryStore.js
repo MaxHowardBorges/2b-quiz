@@ -52,6 +52,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async getQuestionnaryFromUser(idUser = 0) {//TODO get user id
+      this.questionnaryList = [];
         try {
           const response = await getQuestionnaryFromUser(idUser);
           if (!response.ok || response.status !== 200) {

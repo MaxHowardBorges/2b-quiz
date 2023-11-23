@@ -1,6 +1,6 @@
 <template>
-  <ListOfQuestionnary v-if='iflist'></ListOfQuestionnary>
-  <QuestionnaryEdit v-if='!iflist'></QuestionnaryEdit>
+  <ListOfQuestionnary v-if='iflist'  @nextQuestion="iflist = false"></ListOfQuestionnary>
+  <QuestionnaryEdit v-if='!iflist' @GoList="iflist = true"></QuestionnaryEdit>
 </template>
 
 <script>
