@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="mt-20px align-center">
 
-    <v-text-field  type="text" id="question" v-model="question.content" required label='Question :' :value="question.content" @update:modelValue='changeName'></v-text-field>
+    <v-text-field  type="text" id="question" v-model="question.content" required label='Question :' :value="question.content" ></v-text-field>
 
     <v-sheet v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
 
@@ -92,11 +92,6 @@
           return this.questionnaryStore.getQuestion(this.idQuestion);
         }
         return null;
-      },
-      changeName(){
-        if(this.questionnaryStore.isCreated){
-          //TODO
-        }
       },
       getAnswers() {
         return this.question.answers;

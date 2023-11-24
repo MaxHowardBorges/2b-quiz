@@ -6,7 +6,7 @@
     elevation="5"
   >
 
-    <input id='title' type="text" v-model="questionnaryName" required>
+    <input id='title' type="text" v-model="questionnaryName" @change='changeName' required>
 
     <v-select
       @change="changeType"
@@ -89,6 +89,13 @@
       return {
         useQ
       };
+
+    },
+    async mounted() {
+      if (this.useQ.isCreated) {
+        await this.useQ.getQuestionnary();
+        this.questionnaryName = this.useQ.questionnary.title;
+      }
     },
     name: 'QuestionnaryEdit',
     components: {
@@ -155,6 +162,11 @@
         this.useQ.idQuestionnary=null;
         this.$emit('GoList');
       },
+      changeName(){
+        if(this.useQ.isCreated){
+          this.useQ.modifyQuestionnary(this.questionnaryName);
+        }
+      },
     },
   }
 </script>
@@ -167,6 +179,8 @@
     padding: 8px;
     font-size: 40px !important;
     font-weight: bold !important;
+    text-align: center;
+    border: 1px solid black;
   }
 
   v-btn {

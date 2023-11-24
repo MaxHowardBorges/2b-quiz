@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import {
   createQuestionnary,
   getQuestionnary,
-  addQuestion, modifyQuestion, deleteQuestion, getQuestionnaryFromUser, deleteQuestionnary,
+  addQuestion, modifyQuestion, deleteQuestion, getQuestionnaryFromUser, deleteQuestionnary, modifyQuestionnary,
 } from '@/api/questionnary';
 
 export const useQuestionnaryStore = defineStore('questionnary', {
@@ -86,8 +86,22 @@ export const useQuestionnaryStore = defineStore('questionnary', {
     async modifyQuestion(idQuestion,question) {
       if(this.isCreated){
         try {
-          console.log("modify");
           const response = await modifyQuestion(this.idQuestionnary, idQuestion, question);
+          if (!response.ok || response.status !== 200) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          }
+          else {
+            await this.getQuestionnary();
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    },
+    async modifyQuestionnary(questionnaryName) {
+      if(this.isCreated){
+        try {
+          const response = await modifyQuestionnary(this.idQuestionnary, questionnaryName);
           if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error
           }

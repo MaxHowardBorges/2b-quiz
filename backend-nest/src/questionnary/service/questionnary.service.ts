@@ -5,7 +5,6 @@ import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionService } from '../../question/service/question.service';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
-import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -127,12 +126,13 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
-  async modifyQuestionnary(idQuestionnary: number, questionnaryDTO: QuestionnaryCreateDto) {
+  async modifyQuestionnary(idQuestionnary: number, questionnaryName: string) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
     if (questionnary) {
-      Object.assign(questionnary, questionnaryDTO);
+      questionnary.title = questionnaryName;
+      await this.questionnaryRepository.save(questionnary);
     }
     return !!questionnary;
   }

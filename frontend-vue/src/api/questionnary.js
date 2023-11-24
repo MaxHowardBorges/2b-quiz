@@ -57,6 +57,19 @@ export async function modifyQuestion(idQuestionnary,idQuestion,body) {
   );
 }
 
+export async function modifyQuestionnary(idQuestionnary,name) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/modify-questionnary/',
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ questionnaryName: name }),
+    },
+  );
+}
+
 export async function deleteQuestion(idQuestionnary,idQuestion) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/remove-question/'+idQuestion,

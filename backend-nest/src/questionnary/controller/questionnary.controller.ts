@@ -75,11 +75,11 @@ export class QuestionnaryController {
   @Patch('/:id/modify-questionnary/')
   modifyQuestionnary(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Body(new ValidationPipe()) questionnaryDTO: QuestionnaryCreateDto,
+    @Body() body: { questionnaryName: string },
   ) {
     return this.questionnaryService.modifyQuestionnary(
       idQuestionnary,
-      questionnaryDTO,
+      body.questionnaryName,
     );
   }
 }
