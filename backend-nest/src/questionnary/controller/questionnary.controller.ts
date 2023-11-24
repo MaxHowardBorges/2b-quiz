@@ -70,4 +70,16 @@ export class QuestionnaryController {
       questionDto,
     );
   }
+
+
+  @Patch('/:id/modify-questionnary/')
+  modifyQuestionnary(
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+    @Body(new ValidationPipe()) questionnaryDTO: QuestionnaryCreateDto,
+  ) {
+    return this.questionnaryService.modifyQuestionnary(
+      idQuestionnary,
+      questionnaryDTO,
+    );
+  }
 }
