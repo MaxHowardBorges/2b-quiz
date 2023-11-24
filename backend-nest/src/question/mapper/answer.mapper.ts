@@ -1,13 +1,13 @@
-import { Answer } from '../entity/answer.entity';
 import { AnswerStudentDto } from '../dto/answerStudent.dto';
 import { Injectable } from '@nestjs/common';
+import { AnswerDto } from '../dto/answer.dto';
 
 @Injectable()
 export class AnswerMapper {
-  mapAnswersStudentDtos(answers: Answer[]): AnswerStudentDto[] {
+  mapAnswersStudentDtos(answers: AnswerDto[]): AnswerStudentDto[] {
     return answers.map((answer) => this.mapAnswerStudentDto(answer));
   }
-  mapAnswerStudentDto(answer: Answer): AnswerStudentDto {
+  mapAnswerStudentDto(answer: AnswerDto): AnswerStudentDto {
     return {
       content: answer.content,
       id: answer.id,

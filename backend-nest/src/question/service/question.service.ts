@@ -25,7 +25,7 @@ export class QuestionService {
     return this.questionRepository.find({ relations: ['answers'] });
   }
 
-  async checkQuestionContainingAnswer(question: Question, idAnswer: number) {
+  async checkQuestionContainingAnswer(question: QuestionDto, idAnswer: number) {
     const answer = await this.answerRepository.findOne({
       where: { id: idAnswer },
       relations: ['question'],

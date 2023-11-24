@@ -46,7 +46,7 @@
           this.sessionStore.question.answers[value].id;
       },
       relayEvent() {
-        this.$emit('answer-sent-relay');
+        this.$emit('answer-sent-relay');//TODO find source
       },
     },
   };

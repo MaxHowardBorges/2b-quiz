@@ -6,15 +6,15 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query,
+  Query, ValidationPipe,
 } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
 import { BodyEmptyException } from '../exception/bodyEmpty.exception';
-import { Answer } from 'src/question/entity/answer.entity';
 import any = jasmine.any;
+import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 
 @Controller('session')
 export class SessionController {
@@ -24,8 +24,8 @@ export class SessionController {
   ) {}
 
   @Post('/create')
-  async createSession(): Promise<Session> {
-    return this.sessionService.initializeSession();
+  async createSession(@Body(new ValidationPipe()) questionnary : QuestionnaryDto[]): Promise<Session> {
+    return this.sessionService.initializeSession(questionnary);
   }
 
   @Post('/nextQuestion')

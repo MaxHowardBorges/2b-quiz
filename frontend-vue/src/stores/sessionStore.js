@@ -14,7 +14,77 @@ import { useUserStore } from '@/stores/userStore';
 export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
-    question: { answers: [], content: '' },
+    questionnary : [{ //TODO initialize empty
+      "questions": [
+        {
+          "content": "Quelle est la capitale du Maroc?",
+          "answers": [
+            {
+              "content": "Tunis",
+              "isCorrect": false
+            },
+            {
+              "content": "Aggrabah",
+              "isCorrect": false
+            },
+            {
+              "content": "Rabat",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "content": "Qui a écrit \"Romeo et Juliette\"?",
+          "answers": [
+            {
+              "content": "William Shakespeare",
+              "isCorrect": true
+            },
+            {
+              "content": "Charles Dickens",
+              "isCorrect": false
+            },
+            {
+              "content": "Jane Austen",
+              "isCorrect": false
+            },
+            {
+              "content": "George Orwell",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "content": "Quel est le symbole chimique de l'oxygène?",
+          "answers": [
+            {
+              "content": "O",
+              "isCorrect": true
+            },
+            {
+              "content": "H",
+              "isCorrect": false
+            },
+            {
+              "content": "C",
+              "isCorrect": false
+            },
+            {
+              "content": "N",
+              "isCorrect": false
+            },
+            {
+              "content": "S",
+              "isCorrect": false
+            }
+          ]
+        }
+
+      ],
+      "title": "morocco",
+      "author": "malias"
+    }],
+    question : {content : '', answers: []},
     ended: false,
     results: [],
   }),
@@ -72,7 +142,7 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
-      const response = await createSession();
+      const response = await createSession(this.questionnary);
       await throwIfNotOK(response);
       const content = await response.json();
       this.setIdSession(content.id);
