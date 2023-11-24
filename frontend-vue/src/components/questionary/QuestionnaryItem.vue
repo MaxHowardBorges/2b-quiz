@@ -36,15 +36,13 @@
         this.useQ.deleteQuestionnary(this.questionnaryId);
       },
       modifyQuestionnary() {
-        //this.$emit('ChangeStatuss', this.idQuestion);
         this.useQ.idQuestionnary= this.questionnaryName.id;
         this.useQ.getQuestionnary();
         console.log(this.useQ.questionnaryList);
         this.$emit("nextQuestionE")
-        //alert("axel doit faire une redirection sur la page de modification du questionnaire");
       },
       startQuestionnary(){
-        const list = ["je te vois","tu travail moins que mathieu","tu as fait tes rolls ?","je sais pas"];
+        const list = ["En attente","Mise à jour bientôt"];
         alert(list[Math.floor(Math.random() * list.length)]);
       }
     },

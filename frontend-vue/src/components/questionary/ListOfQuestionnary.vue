@@ -9,9 +9,7 @@
     <h1>Consulter les questionnaires</h1>
 
     <v-sheet class="list">
-      {{console.log("test",this.useQ.questionnaryList)}}
       <v-sheet v-for="(questionnary, index) in this.useQ.questionnaryList" :key="index">
-        {{console.log("test2",questionnary.id)}}
         <QuestionnaryItem :questionnaryName=questionnary :questionnaryId=questionnary.id @nextQuestionE = emitNextQuestion></QuestionnaryItem>
       </v-sheet>
     </v-sheet>
@@ -39,7 +37,6 @@
     //TODO Pas de questionnaire
     data() {
       return {
-        autre: true,
       };
     },
     setup() {

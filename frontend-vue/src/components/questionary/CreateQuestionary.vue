@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="mt-20px align-center">
 
-    <v-text-field  type="text" id="question" v-model="question.content" required label='Question :' :value="question.content" ></v-text-field>
+    <v-text-field  type="text" id="question" v-model="question.content" required label='Question :' :value="question.content" @update:modelValue='changeName'></v-text-field>
 
     <v-sheet v-if='selectedQuestionType==="Multiple" || this.selectedQuestionType===null'>
 
@@ -54,7 +54,6 @@
 </template>
 
 <script >
-  import { ref } from 'vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
@@ -82,21 +81,9 @@
         question,
         indexD : 0,
         correct: 0,
-        questionContent: ref(''),
         questionnaryName: '',
         answers: [{ content: '', isCorrect: false }],
         correctAnswer: null,
-        questionnary: {
-          author: null,
-          title: '',
-          questions: [{
-            content: '',
-            answers: [{
-              content: '',
-              isCorrect: false
-            }]
-          }]
-        },
       };
     },
     methods: {
@@ -106,8 +93,10 @@
         }
         return null;
       },
-      selectQuestionType(type) {
-        this.selectedQuestionType = type;
+      changeName(){
+        if(this.questionnaryStore.isCreated){
+          //TODO
+        }
       },
       getAnswers() {
         return this.question.answers;
@@ -120,12 +109,6 @@
         // Utilisez splice pour supprimer la réponse de la liste des réponses
         this.question.answers.splice(index, 1);
       },
-
-      createQuestionnaire() {
-        // Logique pour créer le questionnaire avec les données saisies
-        console.log('Questionnaire créé !');
-      },
-
     },
   };
 </script>
@@ -136,7 +119,6 @@
     font-size: 24px;
     margin-bottom: 20px;
   }
-
   button {
     background-color: #FFD700; /* Jaune */
     color: #fff; /* Texte blanc */
@@ -147,12 +129,10 @@
     margin: 10px;
     cursor: pointer;
   }
-
   label {
     font-size: 16px;
     color: #333; /* Couleur de texte normale */
   }
-
   input[type="text"] {
 
     padding: 5px;
@@ -161,7 +141,6 @@
     border-radius: 4px;
     font-size: 14px;
   }
-
   input[type="radio"] {
     margin-left: 10px;
   }

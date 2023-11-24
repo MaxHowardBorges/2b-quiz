@@ -36,7 +36,6 @@
 
 
     <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated>
-      {{console.log("test3",this.useQ.questionnary)}}
       <v-sheet v-if='this.useQ.questionnary' v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
         <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id @ChangeStatuss="ChangeStatus"/>
       </v-sheet>
@@ -97,11 +96,7 @@
       QuestionnaryListOne,
     },
     methods: {
-      AddComponent() {
-        this.OnList=!this.OnList;
-      },
       toggleTypeSelector() {
-
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
@@ -112,11 +107,7 @@
         this.idQuestion = idQuestion;
         this.question = this.useQ.getQuestion(this.idQuestion);
       },
-      updateUseQ(){
-        this.useQ = useQuestionnaryStore();
-      },
       async validQuestion() {
-
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
@@ -156,7 +147,6 @@
       },
       leaveWithoutSaving() {
 
-
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
@@ -195,8 +185,5 @@
   .button-container {
     display: flex;
   }
-
-
-
 
 </style>
