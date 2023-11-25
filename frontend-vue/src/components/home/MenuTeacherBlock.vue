@@ -97,7 +97,7 @@
       async handleCreateSession() {
         this.loading = true;
         if(this.selectedQuestionnary.length > 0){
-          this.sessionStore.questionnary = this.selectedQuestionnary;
+          this.sessionStore.questionnary = this.selectedQuestionnary; //TODO order questionnary
           try {
             await this.sessionStore.createSession();
             const userStore = useUserStore(); //TODO replace
