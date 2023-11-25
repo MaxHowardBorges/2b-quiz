@@ -22,6 +22,8 @@
       @change="changeType"
       v-model="selectedQuestionnary"
       :items="ChoiseQuestionnary"
+      return-object
+      multiple=''
       label="Select Questionnary"
       dense
       outlined
@@ -81,40 +83,37 @@
       if (this.dialogError) {
         this.$refs.dialogError.setDialogError(true);
       }
-      await this.questionnaryStore.getQuestionnaryFromUser()
-      this.ChoiseQuestionnary = this.questionnaryStore.questionnaryList
-      console.log(this.ChoiseQuestionnary);
+      await this.questionnaryStore.getQuestionnaryFromUser();
+      this.ChoiseQuestionnary = this.questionnaryStore.questionnaryList;
 
     },
     data() {
       return {
         ChoiseQuestionnary: [],
-        selectedQuestionnary: this.questionnaryStore.questionnaryList[0],
+        selectedQuestionnary: [],
       }
     },
     methods: {
       async handleCreateSession() {
         this.loading = true;
-        console.log("###########");
-        console.log(this.selectedQuestionnary.author);
-        console.log("###########");
-        this.questionnaryStore.setIdQuestionnary(11)
-        //this.questionnaryStore.setIdQuestionnary(this.selectedQuestionnary.id)
-        try {
-          await this.sessionStore.createSession();
-          const userStore = useUserStore(); //TODO replace
-          userStore.setUserRoles(UserRoles.TEACHER);
-          await router.push('/session');
-        } catch (error) {
-          if (error instanceof ValidationError) {
-            this.errorSnackbarContent = error.message;
-            this.$refs.errorSnackbar.setSnackbarError(true);
-          } else {
-            console.error('Error while creating session:', error);
-            this.$refs.dialogError.setDialogError(true);
+        if(this.selectedQuestionnary.length > 0){
+          this.sessionStore.questionnary = this.selectedQuestionnary;
+          try {
+            await this.sessionStore.createSession();
+            const userStore = useUserStore(); //TODO replace
+            userStore.setUserRoles(UserRoles.TEACHER);
+            await router.push('/session');
+          } catch (error) {
+            if (error instanceof ValidationError) {
+              this.errorSnackbarContent = error.message;
+              this.$refs.errorSnackbar.setSnackbarError(true);
+            } else {
+              console.error('Error while creating session:', error);
+              this.$refs.dialogError.setDialogError(true);
+            }
           }
-        }
-        this.loading = false;
+          this.loading = false;
+        } else alert("Selectionnez au moins 1 questionnaire");
       },
       changeType() {
         //this.selectedQuestionType = this.selectedQuestionnary ;

@@ -10,71 +10,11 @@ import {
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
 import { useUserStore } from '@/stores/userStore';
-import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
-    questionnary : [{//TODO initialize empty
-      "id": 8,
-      "title": "el quizz",
-      "author": "vanilla",
-      "questions": [
-        {
-          "id": 18,
-          "content": "Comment devrait s'écrire le prénom 'Rayan' ?",
-          "answers": [
-            {
-              "id": 41,
-              "content": "Rayan",
-              "isCorrect": true
-            },
-            {
-              "id": 42,
-              "content": "Ryan",
-              "isCorrect": false
-            }
-          ]
-        },
-        {
-          "id": 19,
-          "content": "J'adore le JSON",
-          "answers": [
-            {
-              "id": 43,
-              "content": "vrai",
-              "isCorrect": false
-            },
-            {
-              "id": 44,
-              "content": "faux",
-              "isCorrect": true
-            }
-          ]
-        },
-        {
-          "id": 23,
-          "content": "J'aime me beurrer la biscotte ?",
-          "answers": [
-            {
-              "id": 62,
-              "content": "oui",
-              "isCorrect": true
-            },
-            {
-              "id": 63,
-              "content": "non",
-              "isCorrect": false
-            },
-            {
-              "id": 64,
-              "content": "c rigolo",
-              "isCorrect": false
-            }
-          ]
-        }
-      ]
-    }],
+    questionnary : [],
     question : {content : '', answers: []},
     ended: false,
     results: [],
@@ -133,14 +73,6 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
-      const questionnaryStore = useQuestionnaryStore()
-      //questionnaryStore.setIdQuestionnary(11);
-      await questionnaryStore.getQuestionnary();
-      if (questionnaryStore.isCreated){
-        console.log("test");
-        this.questionnary[0]=questionnaryStore.questionnary
-        console.log(this.questionnary[0]);
-      }
       const response = await createSession(this.questionnary);
       await throwIfNotOK(response);
       const content = await response.json();
