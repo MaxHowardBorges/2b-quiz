@@ -10,6 +10,7 @@ import {
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
 import { useUserStore } from '@/stores/userStore';
+import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
@@ -142,6 +143,14 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
+      const questionnaryStore = useQuestionnaryStore()
+      //questionnaryStore.setIdQuestionnary(11);
+      await questionnaryStore.getQuestionnary();
+      if (questionnaryStore.isCreated){
+        console.log("test");
+        this.questionnary[0]=questionnaryStore.questionnary
+        console.log(this.questionnary[0]);
+      }
       const response = await createSession(this.questionnary);
       await throwIfNotOK(response);
       const content = await response.json();

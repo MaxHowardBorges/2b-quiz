@@ -18,6 +18,15 @@
     position="relative">
     <h1 class="mb-6">Teacher Menu</h1>
 
+    <v-select
+      @change="changeType"
+      v-model="selectedQuestionnary"
+      :items="ChoiseQuestionnary"
+      label="Select Questionnary"
+      dense
+      outlined
+    ></v-select>
+
     <div class="">
       <v-btn
         @click="handleCreateSession"
@@ -44,6 +53,7 @@
   import { ref } from 'vue';
   import { useUserStore } from '@/stores/userStore';
   import { UserRoles } from '@/utils/userRoles';
+  import { useQuestionnaryStore} from '@/stores/questionnaryStore';
 
   export default {
     name: 'MenuTeacherBlock',
@@ -54,12 +64,16 @@
     },
     setup() {
       const sessionStore = useSessionStore();
+      const questionnaryStore = useQuestionnaryStore();
       return {
         sessionStore,
+        questionnaryStore,
         errorSnackbarContent: ref(''),
-      };
-    },
-    mounted() {
+
+      }
+      },
+
+    async mounted() {
       if (this.errorSnackbar) {
         this.errorSnackbarContent = this.errorSnackbar;
         this.$refs.errorSnackbar.setSnackbarError(true);
@@ -67,10 +81,25 @@
       if (this.dialogError) {
         this.$refs.dialogError.setDialogError(true);
       }
+      await this.questionnaryStore.getQuestionnaryFromUser()
+      this.ChoiseQuestionnary = this.questionnaryStore.questionnaryList
+      console.log(this.ChoiseQuestionnary);
+
+    },
+    data() {
+      return {
+        ChoiseQuestionnary: [],
+        selectedQuestionnary: this.questionnaryStore.questionnaryList[0],
+      }
     },
     methods: {
       async handleCreateSession() {
         this.loading = true;
+        console.log("###########");
+        console.log(this.selectedQuestionnary.author);
+        console.log("###########");
+        this.questionnaryStore.setIdQuestionnary(11)
+        //this.questionnaryStore.setIdQuestionnary(this.selectedQuestionnary.id)
         try {
           await this.sessionStore.createSession();
           const userStore = useUserStore(); //TODO replace
@@ -87,8 +116,23 @@
         }
         this.loading = false;
       },
+      changeType() {
+        //this.selectedQuestionType = this.selectedQuestionnary ;
+      },
     },
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+  v-select{
+    width: auto;
+  }
+
+  *{
+    align-items: center;
+    align-content: center;
+    align-self: center;
+  }
+
+</style>
