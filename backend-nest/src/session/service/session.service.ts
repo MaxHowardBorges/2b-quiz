@@ -80,7 +80,7 @@ export class SessionService {
     if (this.sessionMap.has(idSession) == false) {
       throw new IdSessionNoneException();
     }
-    return this.sessionMap.get(idSession).questionnaryList.flatMap(questionnary => questionnary.questions);
+    return this.sessionMap.get(idSession).questionnaryList;
   }
 
   join(idSession: string, username: string): void {
