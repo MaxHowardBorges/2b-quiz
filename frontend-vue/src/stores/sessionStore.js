@@ -15,75 +15,65 @@ import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
-    questionnary : [{ //TODO initialize empty
+    questionnary : [{//TODO initialize empty
+      "id": 8,
+      "title": "el quizz",
+      "author": "vanilla",
       "questions": [
         {
-          "content": "Quelle est la capitale du Maroc?",
+          "id": 18,
+          "content": "Comment devrait s'écrire le prénom 'Rayan' ?",
           "answers": [
             {
-              "content": "Tunis",
-              "isCorrect": false
-            },
-            {
-              "content": "Aggrabah",
-              "isCorrect": false
-            },
-            {
-              "content": "Rabat",
-              "isCorrect": true
-            }
-          ]
-        },
-        {
-          "content": "Qui a écrit \"Romeo et Juliette\"?",
-          "answers": [
-            {
-              "content": "William Shakespeare",
+              "id": 41,
+              "content": "Rayan",
               "isCorrect": true
             },
             {
-              "content": "Charles Dickens",
-              "isCorrect": false
-            },
-            {
-              "content": "Jane Austen",
-              "isCorrect": false
-            },
-            {
-              "content": "George Orwell",
+              "id": 42,
+              "content": "Ryan",
               "isCorrect": false
             }
           ]
         },
         {
-          "content": "Quel est le symbole chimique de l'oxygène?",
+          "id": 19,
+          "content": "J'adore le JSON",
           "answers": [
             {
-              "content": "O",
+              "id": 43,
+              "content": "vrai",
+              "isCorrect": false
+            },
+            {
+              "id": 44,
+              "content": "faux",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "content": "J'aime me beurrer la biscotte ?",
+          "answers": [
+            {
+              "id": 62,
+              "content": "oui",
               "isCorrect": true
             },
             {
-              "content": "H",
+              "id": 63,
+              "content": "non",
               "isCorrect": false
             },
             {
-              "content": "C",
-              "isCorrect": false
-            },
-            {
-              "content": "N",
-              "isCorrect": false
-            },
-            {
-              "content": "S",
+              "id": 64,
+              "content": "c rigolo",
               "isCorrect": false
             }
           ]
         }
-
-      ],
-      "title": "morocco",
-      "author": "malias"
+      ]
     }],
     question : {content : '', answers: []},
     ended: false,
