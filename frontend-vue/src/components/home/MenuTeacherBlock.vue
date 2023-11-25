@@ -19,9 +19,8 @@
     <h1 class="mb-6">Teacher Menu</h1>
 
     <v-select
-      @change="changeType"
       v-model="selectedQuestionnary"
-      :items="ChoiseQuestionnary"
+      :items="choosedQuestionnary"
       return-object
       multiple=''
       label="Select Questionnary"
@@ -84,12 +83,12 @@
         this.$refs.dialogError.setDialogError(true);
       }
       await this.questionnaryStore.getQuestionnaryFromUser();
-      this.ChoiseQuestionnary = this.questionnaryStore.questionnaryList;
+      this.choosedQuestionnary = this.questionnaryStore.questionnaryList;
 
     },
     data() {
       return {
-        ChoiseQuestionnary: [],
+        choosedQuestionnary: [],
         selectedQuestionnary: [],
       }
     },
@@ -114,9 +113,6 @@
           }
           this.loading = false;
         } else alert("Selectionnez au moins 1 questionnaire");
-      },
-      changeType() {
-        //this.selectedQuestionType = this.selectedQuestionnary ;
       },
     },
   };
