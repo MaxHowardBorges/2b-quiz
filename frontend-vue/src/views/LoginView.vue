@@ -63,6 +63,8 @@
       togglePasswordVisibility() {
         this.passwordVisibility = !this.passwordVisibility;
       },
+
+
     },
   };
 </script>
@@ -89,13 +91,32 @@
     width="70%"
     class="mt-5 px-6 py-8 mx-auto"
     elevation="5">
-    <h1>Login</h1>
+    <div class="logo ma-2 pa-2">Two Bee Quizz</div>
+
+    <div class="errrmes ma-5 pa-2"><b>Votre session est échue. Veuillez vous reconnecter.</b></div>
+
+    <h2><b>Login with your account : </b></h2>
     <v-form @submit.prevent="login" class="ma-2" max-width="500px">
-      <v-btn color="primary" type="submit">
+      <v-btn width='100%' color="primary" type="submit">
         <p class="text-white font-weight-bold">Login</p>
       </v-btn>
     </v-form>
   </v-sheet>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+  .logo {
+    font-size: xx-large;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .errrmes{
+    background-color: rgba(255, 0, 0, 0.2); ;
+    color: brown;
+    border-radius: 5px;
+  }
+
+</style>
