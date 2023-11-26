@@ -19,11 +19,13 @@
     <h1 class="mb-6">Teacher Menu</h1>
 
     <v-select
-      v-model="selectedQuestionnary"
-      :items="choosedQuestionnary"
+      v-model='selectedQuestionnary'
+      :items='choosedQuestionnary'
+      item-title='title'
+      item-value='id'
       return-object
       multiple=''
-      label="Select Questionnary"
+      label='Select Questionnary'
       dense
       outlined
     ></v-select>

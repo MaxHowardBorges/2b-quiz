@@ -7,7 +7,7 @@
   >
 
     <input v-if=OnList id='title' type="text" v-model="questionnaryName" @change='changeName' required>
-    <div v-else id='title' >{{this.questionnaryName}}<br>Question N°{{this.idQuestion ? (this.useQ.questionnary.questions.findIndex(question => question.id === this.idQuestion))+1 : this.useQ.questionnary.questions.length +1}}</div>
+    <div v-else id='title' >{{this.questionnaryName}}<br>Question N°{{this.idQuestion ? (this.useQ.questionnary.questions.findIndex(question => question.id === this.idQuestion))+1 : !!this.useQ.questionnary ? this.useQ.questionnary.questions.length +1 : 1}}</div>
 
     <v-select
       @change="changeType"
