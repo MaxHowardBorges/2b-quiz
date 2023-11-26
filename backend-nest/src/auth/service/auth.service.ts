@@ -55,4 +55,15 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(userPayload),
     };
   }
+
+  async signInDev(username: string) {
+    const user = await this.userService.getUserForLogin(username);
+    const userPayload = {
+      id: user.id,
+      username: user.username,
+    };
+    return {
+      access_token: await this.jwtService.signAsync(userPayload),
+    };
+  }
 }

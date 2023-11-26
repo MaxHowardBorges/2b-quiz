@@ -63,6 +63,7 @@ export class UserService {
     const user = await this.getUserByUsername(username, false);
     if (user) return user;
     const newUser = new Student(username);
+    console.log(newUser);
     await this.userRepository.save(newUser);
     return newUser;
   }
@@ -95,6 +96,25 @@ export class UserService {
     const user = await this.getUser(idUser);
     if (!user) throw new UserNotFoundException();
     user.validate = true;
+    await this.userRepository.save(user);
+  }
+
+  async selfValidate(
+    user: User,
+    name: string,
+    surname: string,
+    userType: UserType.STUDENT | UserType.TEACHER,
+  ) {
+    const ancientId = user.id;
+    await this.userRepository.delete(user.id);
+    if (userType === UserType.STUDENT) {
+      user.validate = true;
+    } else {
+      user = new Teacher(user.username);
+    }
+    user.id = ancientId;
+    user.name = name;
+    user.surname = surname;
     await this.userRepository.save(user);
   }
 }

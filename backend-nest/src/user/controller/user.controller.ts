@@ -25,6 +25,7 @@ import { UserType } from '../constants/userType.constant';
 import { UserFullDataDto } from '../dto/userFullData.dto';
 import { UserMapper } from '../mapper/user.mapper';
 import { UserTypeDto } from '../dto/userType.dto';
+import { UserSelfValidateDto } from '../dto/userSelfValidate.dto';
 
 @Controller('user')
 export class UserController {
@@ -102,5 +103,20 @@ export class UserController {
   @Get('/role')
   async getRole(@Req() request: UserRequest): Promise<UserTypeDto> {
     return { userType: request.user.getUserType() };
+  }
+
+  @Post('/validate')
+  @Roles([UserType.NOT_CHOOSE])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async selfValidateUser(
+    @Req() request: UserRequest,
+    @Body(new ValidationPipe()) userSelfValidateDto: UserSelfValidateDto,
+  ) {
+    await this.userService.selfValidate(
+      request.user,
+      userSelfValidateDto.name,
+      userSelfValidateDto.surname,
+      userSelfValidateDto.userType,
+    );
   }
 }
