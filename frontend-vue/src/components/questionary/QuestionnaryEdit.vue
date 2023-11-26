@@ -6,7 +6,8 @@
     elevation="5"
   >
 
-    <input id='title' type="text" v-model="questionnaryName" @change='changeName' required>
+    <input v-if=OnList id='title' type="text" v-model="questionnaryName" @change='changeName' required>
+    <div v-else id='title' >{{this.questionnaryName}}<br>Question N°{{this.idQuestion ? (this.useQ.questionnary.questions.findIndex(question => question.id === this.idQuestion))+1 : this.useQ.questionnary.questions.length +1}}</div>
 
     <v-select
       @change="changeType"
@@ -17,6 +18,7 @@
       class="custom-select"
       dense
       outlined
+      readonly=''
     ></v-select>
 
     <v-btn class="mb-5" v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
@@ -79,7 +81,8 @@
         selectedType: "Multiple",
         typeOptions: ["Multiple", "Open-Ended", "True-False"],
         confirmationDialog: false,
-        questionnaryName : "[Questionnary name]",
+        baseQuestionnaryName : "[Questionnary name]",
+        questionnaryName : "",
         statusQ: "add",
         idQuestion: null,
       };
@@ -89,13 +92,13 @@
       return {
         useQ
       };
-
     },
     async mounted() {
       if (this.useQ.isCreated) {
         await this.useQ.getQuestionnary();
         this.questionnaryName = this.useQ.questionnary.title;
       }
+      else this.questionnaryName = this.baseQuestionnaryName;
     },
     name: 'QuestionnaryEdit',
     components: {
@@ -104,6 +107,7 @@
     },
     methods: {
       toggleTypeSelector() {
+        this.statusQ="add";
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
@@ -123,28 +127,25 @@
           answers[i].isCorrect = i === index;
         }
 
-
         if (content && answers){
           if (this.useQ.idQuestionnary == null){
             await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
             await this.useQ.addQuestion({content,answers});
-            console.log("#1#");
           }
 
-          else if (this.statusQ === "modify"){//TODO pré remplir les champs
+          else if (this.statusQ === "modify"){
             await this.useQ.modifyQuestion(this.idQuestion,{content,answers});
-            this.statusQ="add";
             this.idQuestion=null;
-            console.log("#2#");
           }
           else{
             await this.useQ.addQuestion({content,answers});
-            console.log("#3#");
           }
+          this.showTypeSelector = !this.showTypeSelector;
+          this.OnList = !this.OnList;
         }
+        else alert("Remplissez les champs vide avant de valider");
 
-        this.showTypeSelector = !this.showTypeSelector;
-        this.OnList = !this.OnList;
+
       },
       changeType() {
         this.selectedQuestionType = this.selectedType ;
@@ -153,14 +154,18 @@
         this.confirmationDialog = true;
       },
       leaveWithoutSaving() {
-
+        this.idQuestion = null;
+        this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
-        this.useQ.idQuestionnary=null;
-        this.$emit('GoList');
+        if(!this.useQ.isCreated || (this.useQ.isCreated  && this.questionnaryName !== this.baseQuestionnaryName)){
+          this.useQ.idQuestionnary=null;
+          this.$emit('GoList');
+        }
+        else alert("Veuillez changer le nom du questionnaire");
       },
       changeName(){
         if(this.useQ.isCreated){

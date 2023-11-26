@@ -4,7 +4,7 @@
     <b>{{ questionnaryName.title }}</b>
     <span class="spacer"></span>
     <span class="spacer"></span>
-    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>
+<!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
     <v-btn icon="edit" @click='modifyQuestionnary'></v-btn>
     <v-btn icon="delete" @click='deleteQuestionnary'></v-btn>
   </div>
@@ -38,7 +38,6 @@
       modifyQuestionnary() {
         this.useQ.idQuestionnary= this.questionnaryName.id;
         this.useQ.getQuestionnary();
-        console.log(this.useQ.questionnaryList);
         this.$emit("nextQuestionE")
       },
       startQuestionnary(){
