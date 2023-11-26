@@ -28,6 +28,12 @@
       outlined
     ></v-select>
 
+    <div class="text-truncate">
+      <v-btn @click='handleCreateQuestionnary' color="primary" class="mx-6 my-3" max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Create new Questionnary</p>
+      </v-btn>
+    </div>
+
     <div class="">
       <v-btn
         @click="handleCreateSession"
@@ -96,7 +102,7 @@
       async handleCreateSession() {
         this.loading = true;
         if(this.selectedQuestionnary.length > 0){
-          this.sessionStore.questionnary = this.selectedQuestionnary; //TODO order questionnary
+          this.sessionStore.questionnary = this.selectedQuestionnary;
           try {
             await this.sessionStore.createSession();
             const userStore = useUserStore(); //TODO replace
@@ -114,6 +120,9 @@
           this.loading = false;
         } else alert("Selectionnez au moins 1 questionnaire");
       },
+      handleCreateQuestionnary(){
+        router.push('/questionary');
+      }
     },
   };
 </script>
