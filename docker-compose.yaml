@@ -33,7 +33,7 @@ services:
   db-prod:
     image: mariadb
     restart: always
-    command: --max_allowed_packet=32505856
+    command: --max_allowed_packet=32505856 --max-connections=10000
     container_name: mariadb-prod
     environment:
       MYSQL_USER: adminer
