@@ -8,3 +8,4 @@ dist
 backend-nest/.env.local
 */db
 db
+*/scenarios

@@ -21,7 +21,7 @@ services:
     networks:
       - mynetwork
     depends_on:
-      - db
+      - db-prod
   front:
     container_name: front-prod
     build:
@@ -30,9 +30,10 @@ services:
       target: front-production-stage
     ports:
       - 80:80
-  db:
+  db-prod:
     image: mariadb
     restart: always
+    command: --max_allowed_packet=32505856
     container_name: mariadb-prod
     environment:
       MYSQL_USER: adminer
@@ -40,7 +41,7 @@ services:
       MYSQL_DATABASE: sae5
       MYSQL_ROOT_PASSWORD: example
     volumes:
-      - ./db:/var/lib/mysql
+      - ./db_prod:/var/lib/mysql
     networks:
       - mynetwork
 networks:

@@ -7,6 +7,7 @@ services:
     image: mariadb
     restart: always
     container_name: mariadb
+    command: --max_allowed_packet=32505856
     environment:
       MYSQL_USER: adminer
       MYSQL_PASSWORD: test
