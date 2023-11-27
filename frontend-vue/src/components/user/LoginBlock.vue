@@ -20,9 +20,19 @@
     width="70%"
     class="mt-5 px-6 py-8 mx-auto"
     elevation="5">
-    <h1>Login</h1>
+    <div class="logo ma-2 pa-2">Two Bee Quizz</div>
+
+    <v-alert
+      class="ma-5 pa-2 text-left"
+      color="error"
+      type="error"
+      variant="tonal">
+      <b>Votre session est échue. Veuillez vous reconnecter.</b>
+    </v-alert>
+
+    <h2><b>Login with your account :</b></h2>
     <v-form @submit.prevent="login" class="ma-2" max-width="500px">
-      <v-btn color="primary" type="submit">
+      <v-btn width="100%" color="primary" type="submit">
         <p class="text-white font-weight-bold">Login</p>
       </v-btn>
     </v-form>
@@ -98,4 +108,11 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .logo {
+    font-size: xx-large;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
