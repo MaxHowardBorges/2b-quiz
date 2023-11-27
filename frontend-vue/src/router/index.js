@@ -2,15 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import SessionView from '@/views/SessionView.vue';
 import TeacherHomeView from '@/views/TeacherHomeView.vue';
-import LoginView from '@/views/LoginView.vue';
 import { useUserStore } from '@/stores/userStore';
 
 const routes = [
-  {
-    path: '/home',
-    name: 'Home',
-    component: HomeView,
-  },
   {
     path: '/teacher-home-page',
     name: 'Teacher home',
@@ -27,13 +21,13 @@ const routes = [
   },
   {
     path: '/',
-    name: 'Login',
+    name: 'Home',
     props: (route) => ({
       expiredError: !!route.query.expiredError,
       serverError: !!route.query.serverError,
       ticket: route.query.ticket,
     }),
-    component: LoginView,
+    component: HomeView,
     meta: { public: true },
   },
   {

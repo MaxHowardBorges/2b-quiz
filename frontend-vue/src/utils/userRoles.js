@@ -1,6 +1,6 @@
 export const UserRoles = {
   ADMIN: 'admin',
-  NOT_CHOOSE: 'not_choose',
+  NOT_CHOOSE: 'notChoose',
   STUDENT: 'student',
   TEACHER: 'teacher',
 };

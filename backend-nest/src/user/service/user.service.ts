@@ -9,6 +9,7 @@ import { Teacher } from '../entity/teacher.entity';
 import { InvalidUsernameConfirmationException } from '../exception/invalidUsernameConfirmation.exception';
 import { faker } from '@faker-js/faker';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
+import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 
 @Injectable()
 export class UserService {
@@ -61,7 +62,10 @@ export class UserService {
 
   async getUserForLogin(username: string) {
     const user = await this.getUserByUsername(username, false);
-    if (user) return user;
+    if (user) {
+      if (!user.validate) throw new NotValidatedUserException();
+      return user;
+    }
     const newUser = new Student(username);
     console.log(newUser);
     await this.userRepository.save(newUser);

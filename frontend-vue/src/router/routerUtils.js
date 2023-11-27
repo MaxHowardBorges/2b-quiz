@@ -9,7 +9,7 @@ export function getPublicRoutes() {
 }
 
 export function getAllRoutes() {
-  return getRoutes().filter((route) => !route.meta.public);
+  return getRoutes();
 }
 
 export async function serverError() {

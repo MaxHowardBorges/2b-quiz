@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
-import { getUserType, loginUser, registerUser, renewToken } from '@/api/user';
+import {
+  getUserType,
+  loginUser,
+  registerUser,
+  renewToken,
+  validateSelf,
+} from '@/api/user';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useActivityStore } from '@/stores/activityStore';
 import router from '@/router';
@@ -20,8 +26,11 @@ export const useUserStore = defineStore('user', {
     isTeacher() {
       return this.userRole === UserRoles.TEACHER;
     },
+    isNotChoose() {
+      return this.userRole === UserRoles.NOT_CHOOSE;
+    },
     isAuthenticated() {
-      return !!this.username && !!this.token;
+      return !!this.token;
     },
   },
   actions: {
@@ -66,7 +75,7 @@ export const useUserStore = defineStore('user', {
     async fetchUserType() {
       try {
         const response = await getUserType(this.token);
-        if (!response.ok) await this.expiredToken();
+        if (!response.ok) await this.logoutUser();
         else {
           return (await response.json()).userType;
         }
@@ -77,7 +86,7 @@ export const useUserStore = defineStore('user', {
     async renewToken() {
       try {
         const response = await renewToken(this.token);
-        if (!response.ok) await this.expiredToken();
+        if (!response.ok) await this.logoutUser();
         else {
           const token = (await response.json()).access_token;
           this.setToken(token);
@@ -98,16 +107,25 @@ export const useUserStore = defineStore('user', {
         }
         if (activityStore.isInactiveAndClosed) {
           console.log('expiredToken');
-          this.expiredToken();
+          this.logoutUser();
         }
       }, 30 * 1000);
     },
-    async expiredToken() {
+    async logoutUser() {
       clearInterval(this.interval);
       this.setToken(null);
       this.setUserRoles(null);
       this.setUsername(null);
       await router.push({ name: 'Login', query: { expiredError: 'true' } });
+    },
+    async validateSelf(name, surname, userType) {
+      const response = await validateSelf(
+        { name, surname, userType },
+        this.token,
+      );
+      await throwIfNotOK(response, 204);
+      this.setUserRoles(await this.fetchUserType());
+      if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
     },
   },
   persist: true,

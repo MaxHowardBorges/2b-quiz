@@ -3,10 +3,10 @@
     :selected-class="!vertical ? 'text-primary' : ''"
     grow=""
     :direction="vertical ? 'vertical' : 'horizontal'"
-    :bg-color="!vertical ? 'secondary' : ''"
+    :bg-color="!vertical ? 'dark-color' : ''"
     :class="!vertical ? 'align-self-center' : ''">
     <page-menu-item
-      v-if="userStore.isAuthenticated"
+      v-if="userStore.isAuthenticated && !userStore.isNotChoose"
       v-for="page in getAllRoutes()"
       :show-tabs="showTabs"
       :vertical="vertical"
@@ -14,7 +14,7 @@
       :to="page.path"
       @toggle-tabs="toggleTabs"></page-menu-item>
     <page-menu-item
-      v-if="!userStore.isAuthenticated"
+      v-if="!userStore.isAuthenticated || userStore.isNotChoose"
       v-for="page in getPublicRoutes()"
       :show-tabs="showTabs"
       :vertical="vertical"

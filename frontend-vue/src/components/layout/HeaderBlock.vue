@@ -3,7 +3,7 @@
     prominent
     v-resize="getVS"
     :elevation="8"
-    color="secondary"
+    color="dark-color"
     :sroll-behavior="!mdAndUp ? 'collapse' : ''">
     <template v-slot:prepend>
       <v-btn

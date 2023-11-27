@@ -37,3 +37,14 @@ export async function getUserType(token) {
     },
   });
 }
+
+export async function validateSelf(body, token) {
+  return await fetch(import.meta.env.VITE_API_URL + '/user/validate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+}
