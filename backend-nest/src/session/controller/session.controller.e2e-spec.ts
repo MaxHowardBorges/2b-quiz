@@ -62,5 +62,46 @@ describe('AppController (e2e)', () => {
       expect(currentQ.body.id).not.toBeNull();
       expect(typeof currentQ.body.content).toBe('string');
     });
+
+    it('join', async () => {
+      let session = await request('http://localhost:3000/session').post(
+        '/create',
+      );
+
+      let user = await request('http://localhost:3000/session')
+        .post('/join')
+        .send({ idSession: session.body.id, username: 'UserTest' });
+
+      expect(user.status).toBe(204);
+      expect(user.body.username).toBeUndefined();
+    });
+
+    it('respond', async () => {
+      let session = await request('http://localhost:3000/session').post(
+        '/create',
+      );
+
+      let user = await request('http://localhost:3000/session')
+        .post('/join')
+        .send({ idSession: session.body.id, username: 'UserTest' });
+
+      await request('http://localhost:3000/session')
+        .post('/nextQuestion')
+        .send({ idSession: session.body.id });
+
+      await request('http://localhost:3000/session')
+        .post('/question/current')
+        .send({ idSession: session.body.id });
+
+      let response = await request('http://localhost:3000/session')
+        .post('/respond')
+        .send({
+          idSession: session.body.id,
+          answer: 1,
+          username: 'UserTest',
+        });
+
+      expect(response.status).toBe(204);
+    });
   });
 });
