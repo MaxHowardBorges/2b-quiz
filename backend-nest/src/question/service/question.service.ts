@@ -17,24 +17,12 @@ export class QuestionService {
     private readonly answerRepository: Repository<Answer>,
   ) {}
 
-  async findAll(): Promise<Question[]> {
-    return this.questionRepository.find();
-  }
-
-  async findAllWithQuestion(): Promise<Question[]> {
-    return this.questionRepository.find({ relations: ['answers'] });
-  }
-
   async checkQuestionContainingAnswer(question: QuestionDto, idAnswer: number) {
     const answer = await this.answerRepository.findOne({
       where: { id: idAnswer },
       relations: ['question'],
     });
     return answer.question.id === question.id;
-  }
-
-  async findOne(idQuestion: number): Promise<Question> {
-    return this.questionRepository.findOne({ where: { id: idQuestion } });
   }
 
   async createQuestion(q: QuestionCreateDto, questionnary : Questionnary) {

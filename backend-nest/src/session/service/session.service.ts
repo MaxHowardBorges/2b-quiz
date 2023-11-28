@@ -6,8 +6,6 @@ import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCur
 import { UserUnknownException } from '../exception/userUnknown.exception';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
-import { QuestionNoneException } from '../exception/questionNone.exception';
-import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
@@ -45,10 +43,6 @@ export class SessionService {
       idSession,
       questionnaryTab,
     );
-  }
-
-  startSession(idSession: string): boolean {
-    return this.sessionMap.has(idSession);
   }
 
   nextQuestion(idSession: string) {
