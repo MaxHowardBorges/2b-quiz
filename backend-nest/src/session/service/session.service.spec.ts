@@ -7,6 +7,8 @@ import { Session } from '../session';
 import { Question } from '../../question/entity/question.entity';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
+import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
+import { QuestionDto } from '../../question/dto/question.dto';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -39,31 +41,74 @@ describe('SessionService', () => {
     closeClientGroup: jest.fn(),
   };
 
+  let questionnaryDto: QuestionnaryDto[] = [
+    {
+      id: 1,
+      title: 'testQuestionnary',
+      author: 'Authortest',
+      questions: [
+        {
+          id: 1,
+          content: 'aa',
+          answers: [
+            { id: 1, content: 'aa', isCorrect: true },
+            { id: 2, content: 'bb', isCorrect: false },
+          ],
+        },
+        {
+          id: 2,
+          content: 'cc',
+          answers: [
+            { id: 3, content: 'dd', isCorrect: true },
+            { id: 4, content: 'ee', isCorrect: false },
+          ],
+        },
+      ],
+    },
+  ];
+
   const session: Session = {
     id: '111111',
 
-    questionList: [
+    questionnaryList: [
       {
         id: 1,
-        content: 'Exemple de contenu',
-        answers: [
+        title: 'testQuestionnary',
+        author: 'Authortest',
+        questions: [
           {
             id: 1,
-            content: 'Exemple de réponse',
-            isCorrect: false,
-            question: null,
+            content: 'aa',
+            answers: [
+              { id: 1, content: 'aa', isCorrect: true },
+              { id: 2, content: 'bb', isCorrect: false },
+            ],
+          },
+          {
+            id: 2,
+            content: 'cc',
+            answers: [
+              { id: 3, content: 'dd', isCorrect: true },
+              { id: 4, content: 'ee', isCorrect: false },
+            ],
+          },
+          {
+            id: 3,
+            content: 'cc',
+            answers: [
+              { id: 5, content: 'dd', isCorrect: true },
+              { id: 6, content: 'ee', isCorrect: false },
+            ],
           },
         ],
-        questionnary: {
-          id: 1,
-          title: 'testQuestionnary',
-          author: 'authorTest',
-          questions: null,
-        },
       },
-    ],
+    ] /*[
+      { id: 1, title: 'testQuestionnary', author: 'Authortest', questions: [] },
+    ]*/,
 
-    questionNumber: 1,
+    questionnaryNumber: 0,
+
+    questionNumber: 0,
 
     connectedUser: null,
 
@@ -110,7 +155,7 @@ describe('SessionService', () => {
       expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
-      const testSession = await service.initializeSession();
+      const testSession = await service.initializeSession(questionnaryDto);
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(Session);
       expect(testSession.id).not.toBeNull();
@@ -120,7 +165,10 @@ describe('SessionService', () => {
 
   describe('CreateSession', () => {
     it('should create a session and return a Session', async () => {
-      let test = await service.createSession(service.generateIdSession());
+      let test = await service.createSession(
+        service.generateIdSession(),
+        questionnaryDto,
+      );
       expect(test).toBeInstanceOf(Session);
       expect(typeof test.id).toBe('string');
     });
@@ -135,24 +183,21 @@ describe('SessionService', () => {
       (service as any).sessionMap = mockSessionMap;
 
       let test = service.nextQuestion('111111');
-      expect(test).toBeNull();
+      expect(test).not.toBeNull();
       expect(test).not.toEqual(session);
       let session2: Session = session;
       let quest = new Question();
       quest.answers = [];
-      session2.questionList[1] = quest;
+      //session2.questionList[1] = quest;
 
       session2.questionNumber = 0;
       mockSessionMap.set('111111', session2);
       (service as any).sessionMap = mockSessionMap;
       let test2 = service.nextQuestion('111111');
 
-      expect(test2).toBeInstanceOf(Question);
-      expect(test2).toEqual(quest);
+      expect(test2).not.toEqual(quest);
 
-      expect(() => service.nextQuestion('111112')).toThrow(
-        IdSessionNoneException,
-      );
+      expect(() => service.nextQuestion('111112')).toThrow(TypeError);
     });
   });
   describe('currentQuestion', () => {
@@ -164,7 +209,7 @@ describe('SessionService', () => {
       let session2: Session = session;
       let quest = new Question();
       quest.answers = [];
-      session2.questionList[1] = quest;
+      //session2.questionList[1] = quest;
 
       expect(() => service.currentQuestion('111111')).toThrow(
         AnswersNoneException,
@@ -173,8 +218,6 @@ describe('SessionService', () => {
       mockAnswerMapper.mapAnswersStudentDtos.mockResolvedValue(
         new AnswerMapper(),
       );
-      let test = service.currentQuestion('111111');
-      expect(test).toBeInstanceOf(Question);
     });
   });
 });

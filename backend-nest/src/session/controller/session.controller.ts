@@ -6,7 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query, ValidationPipe,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
@@ -24,7 +25,9 @@ export class SessionController {
   ) {}
 
   @Post('/create')
-  async createSession(@Body(new ValidationPipe()) questionnary : QuestionnaryDto[]): Promise<Session> {
+  async createSession(
+    @Body(new ValidationPipe()) questionnary: QuestionnaryDto[],
+  ): Promise<Session> {
     return this.sessionService.initializeSession(questionnary);
   }
 
