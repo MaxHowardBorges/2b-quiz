@@ -8,6 +8,10 @@ export class QuestionDto {
   @IsNotEmpty()
   id: number;
 
+  // @IsString()
+  // @IsNotEmpty()
+  // type: string;
+
   @IsString()
   @IsNotEmpty()
   content: string;

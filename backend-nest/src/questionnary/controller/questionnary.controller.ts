@@ -32,9 +32,14 @@ export class QuestionnaryController {
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
-  @Get('/select/:id')
+  @Get('/:id/select')
   selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
     return this.questionnaryService.findQuestionnary(idQuestionnary);
+  }
+
+  @Get('/select/user/:id')
+  selectQuestionnaryFromUser(@Param('id', ParseIntPipe) idUser: number) {
+    return this.questionnaryService.findQuestionnaryFromUser(idUser);
   }
 
   @Post('/:id/add-question')
@@ -63,6 +68,18 @@ export class QuestionnaryController {
       idQuestionnary,
       idQuestion,
       questionDto,
+    );
+  }
+
+
+  @Patch('/:id/modify-questionnary/')
+  modifyQuestionnary(
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+    @Body() body: { questionnaryName: string },
+  ) {
+    return this.questionnaryService.modifyQuestionnary(
+      idQuestionnary,
+      body.questionnaryName,
     );
   }
 }

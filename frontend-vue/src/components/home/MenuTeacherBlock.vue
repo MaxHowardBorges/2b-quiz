@@ -18,6 +18,17 @@
     position="relative">
     <h1 class="mb-6">Teacher Menu</h1>
 
+    <v-select
+      v-model="selectedQuestionnary"
+      :items="choosedQuestionnary"
+      item-title="title"
+      item-value="id"
+      return-object
+      multiple=""
+      label="Select Questionnary"
+      dense
+      outlined></v-select>
+
     <div class="">
       <v-btn
         @click="handleCreateSession"
@@ -25,6 +36,16 @@
         class="mx-6 my-3"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Create session</p>
+      </v-btn>
+    </div>
+
+    <div class="text-truncate">
+      <v-btn
+        @click="handleCreateQuestionnary"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Create new Questionnary</p>
       </v-btn>
     </div>
     <div class="">
@@ -44,6 +65,7 @@
   import { ref } from 'vue';
   import { useUserStore } from '@/stores/userStore';
   import { UserRoles } from '@/utils/userRoles';
+  import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
     name: 'MenuTeacherBlock',
@@ -54,12 +76,15 @@
     },
     setup() {
       const sessionStore = useSessionStore();
+      const questionnaryStore = useQuestionnaryStore();
       return {
         sessionStore,
+        questionnaryStore,
         errorSnackbarContent: ref(''),
       };
     },
-    mounted() {
+
+    async mounted() {
       if (this.errorSnackbar) {
         this.errorSnackbarContent = this.errorSnackbar;
         this.$refs.errorSnackbar.setSnackbarError(true);
@@ -67,28 +92,52 @@
       if (this.dialogError) {
         this.$refs.dialogError.setDialogError(true);
       }
+      await this.questionnaryStore.getQuestionnaryFromUser();
+      this.choosedQuestionnary = this.questionnaryStore.questionnaryList;
+    },
+    data() {
+      return {
+        choosedQuestionnary: [],
+        selectedQuestionnary: [],
+      };
     },
     methods: {
       async handleCreateSession() {
         this.loading = true;
-        try {
-          await this.sessionStore.createSession();
-          const userStore = useUserStore(); //TODO replace
-          userStore.setUserRoles(UserRoles.TEACHER);
-          await router.push('/session');
-        } catch (error) {
-          if (error instanceof ValidationError) {
-            this.errorSnackbarContent = error.message;
-            this.$refs.errorSnackbar.setSnackbarError(true);
-          } else {
-            console.error('Error while creating session:', error);
-            this.$refs.dialogError.setDialogError(true);
+        if (this.selectedQuestionnary.length > 0) {
+          this.sessionStore.questionnary = this.selectedQuestionnary;
+          try {
+            await this.sessionStore.createSession();
+            const userStore = useUserStore(); //TODO replace
+            userStore.setUserRoles(UserRoles.TEACHER);
+            await router.push('/session');
+          } catch (error) {
+            if (error instanceof ValidationError) {
+              this.errorSnackbarContent = error.message;
+              this.$refs.errorSnackbar.setSnackbarError(true);
+            } else {
+              console.error('Error while creating session:', error);
+              this.$refs.dialogError.setDialogError(true);
+            }
           }
-        }
-        this.loading = false;
+          this.loading = false;
+        } else alert('Selectionnez au moins 1 questionnaire');
+      },
+      handleCreateQuestionnary() {
+        router.push('/questionary');
       },
     },
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  v-select {
+    width: auto;
+  }
+
+  * {
+    align-items: center;
+    align-content: center;
+    align-self: center;
+  }
+</style>
