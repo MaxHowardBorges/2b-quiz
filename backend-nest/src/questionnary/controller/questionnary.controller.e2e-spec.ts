@@ -16,13 +16,22 @@ describe('AppController (e2e)', () => {
   });
 
   describe('Questionnary (e2e)', () => {
-    it('createSession', async () => {
-      let session = await request('http://localhost:3000/session').post(
-        '/create',
-      );
+    it('createSession with questionnary', async () => {
+      let questionnary = await request('http://localhost:3000/questionnary')
+        .post('/create')
+        .send({
+          title: 'testQuestionnary',
+          author: 'AuthorTest',
+          questions: [{ content: 'aa', answers: [] }],
+        });
+
+      expect(questionnary.status).toBe(201);
+
+      let session = await request('http://localhost:3000/session')
+        .post('/create')
+        .send(questionnary.body);
       expect(session.status).toBe(201);
       expect(session.noContent).toBeFalsy();
-
       expect(typeof session.body.id).toBe('string');
     });
   });
