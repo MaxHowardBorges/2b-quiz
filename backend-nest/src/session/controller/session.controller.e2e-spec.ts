@@ -39,5 +39,28 @@ describe('AppController (e2e)', () => {
       expect(nextQ.body.id).not.toBeNull();
       expect(typeof nextQ.body.content).toBe('string');
     });
+    it('getCurrentQuestion', async () => {
+      let session = await request('http://localhost:3000/session').post(
+        '/create',
+      );
+      let currentQ = await request('http://localhost:3000/session')
+        .post('/question/current')
+        .send({ idSession: session.body.id });
+
+      expect(currentQ.status).toBe(500);
+      expect(currentQ.noContent).toBeFalsy();
+      await request('http://localhost:3000/session')
+        .post('/nextQuestion')
+        .send({ idSession: session.body.id });
+
+      currentQ = await request('http://localhost:3000/session')
+        .post('/question/current')
+        .send({ idSession: session.body.id });
+
+      expect(currentQ.status).toBe(201);
+      expect(currentQ.body.answers.length).toBeGreaterThanOrEqual(2);
+      expect(currentQ.body.id).not.toBeNull();
+      expect(typeof currentQ.body.content).toBe('string');
+    });
   });
 });
