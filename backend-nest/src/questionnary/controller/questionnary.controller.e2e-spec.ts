@@ -16,7 +16,7 @@ describe('AppController (e2e)', () => {
   });
 
   describe('Questionnary (e2e)', () => {
-    it('createSession with questionnary', async () => {
+    it('createQuestionnary', async () => {
       let questionnary = await request('http://localhost:3000/questionnary')
         .post('/create')
         .send({
@@ -27,12 +27,17 @@ describe('AppController (e2e)', () => {
 
       expect(questionnary.status).toBe(201);
 
-      let session = await request('http://localhost:3000/session')
-        .post('/create')
-        .send(questionnary.body);
-      expect(session.status).toBe(201);
-      expect(session.noContent).toBeFalsy();
-      expect(typeof session.body.id).toBe('string');
+      console.log(questionnary.body.id);
+      await request('http://localhost:3000/questionnary')
+        .post('/' + questionnary.body.id + '/add-question')
+        .send({
+          content: 'ab',
+          answers: [
+            { content: 'ba', isCorrect: true },
+            { content: 'ea', isCorrect: false },
+          ],
+        })
+        .expect(201);
     });
   });
 });
