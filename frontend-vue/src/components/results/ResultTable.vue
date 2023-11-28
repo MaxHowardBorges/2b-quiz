@@ -1,14 +1,14 @@
 <template>
-  <v-table class="mt-7" hover="">
+  <v-table class="table mt-7 text-center" hover="">
     <thead>
     <tr>
-      <th rowspan='2' class='text-center'>Participant</th>
-      <th v-for="(questionnary, index) in sessionStore.results[0]" :key="index" :colspan="questionnary.questions.length" class='text-left'>
+      <th rowspan='2' class='thclass text-center'>Participant</th>
+      <th v-for="(questionnary, index) in sessionStore.results[0]" :key="index" :colspan="questionnary.questions.length" class='thclass text-center'>
         {{ questionnary.title }}
       </th>
     </tr>
-    <th id='questions' v-for="(question, index) in this.sessionStore.results[0].flatMap(questionnary => questionnary.questions)" :key="index">
-      <th class='text-left text-truncate'>{{ question.content }}</th>
+    <th class='thclass' id='questions' v-for="(question, index) in this.sessionStore.results[0].flatMap(questionnary => questionnary.questions)" :key="index">
+      <th class='text-center pa-2'>{{ question.content }}</th>
     </th>
     </thead>
     <tbody>
@@ -79,4 +79,11 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+  td, .thclass{
+    border: black solid 1px;
+    text-align: center;
+  }
+
+</style>
