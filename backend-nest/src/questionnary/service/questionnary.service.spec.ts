@@ -1,14 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaryService } from './questionnary.service';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
-import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionService } from '../../question/service/question.service';
-import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
 import { Question } from '../../question/entity/question.entity';
+import { QuestionnaryController } from '../controller/questionnary.controller';
+import { Answer } from '../../question/entity/answer.entity';
 
 describe('QuestionnaryService', () => {
   let service: QuestionnaryService;
+  let controller: QuestionnaryController;
   let questionnaryRepository: 'QuestionnaryRepository';
   let questionService: QuestionService;
 
@@ -110,80 +111,123 @@ describe('QuestionnaryService', () => {
     ],
   };
 
-  const entry: QuestionnaryCreateDto = {
-    questions: [
-      {
-        content: 'Quelle est la capitale du Maroc?',
-        answers: [
-          {
-            content: 'Tunis',
-            isCorrect: false,
-          },
-          {
-            content: 'Aggrabah',
-            isCorrect: false,
-          },
-          {
-            content: 'Rabat',
-            isCorrect: true,
-          },
-        ],
-      },
-      {
-        content: 'Qui a écrit "Romeo et Juliette"?',
-        answers: [
-          {
-            content: 'William Shakespeare',
-            isCorrect: true,
-          },
-          {
-            content: 'Charles Dickens',
-            isCorrect: false,
-          },
-          {
-            content: 'Jane Austen',
-            isCorrect: false,
-          },
-          {
-            content: 'George Orwell',
-            isCorrect: false,
-          },
-        ],
-      },
-      {
-        content: "Quel est le symbole chimique de l'oxygène?",
-        answers: [
-          {
-            content: 'O',
-            isCorrect: true,
-          },
-          {
-            content: 'H',
-            isCorrect: false,
-          },
-          {
-            content: 'C',
-            isCorrect: false,
-          },
-          {
-            content: 'N',
-            isCorrect: false,
-          },
-          {
-            content: 'S',
-            isCorrect: false,
-          },
-        ],
-      },
-    ],
+  const questionnary: Questionnary = {
+    id: 15,
     title: 'morocco',
     author: 'malias',
-  };
+    questions: []
+  }
+  const questions: Question[] = [
+      {
+        id: 36,
+        content: 'Quelle est la capitale du Maroc?',
+        questionnary: questionnary,
+        answers: []
+      },
+      {
+        id: 37,
+        content: 'Qui a écrit "Romeo et Juliette"?',
+        questionnary: questionnary,
+        answers: []
+      },
+      {
+        id: 38,
+        content: "Quel est le symbole chimique de l'oxygène?",
+        questionnary: questionnary,
+        answers: []
+      }
+    ]
+
+  const answers1: Answer[] = [
+    {
+      id: 104,
+      content: 'Tunis',
+      isCorrect: false,
+      question: questions[0]
+    },
+    {
+      id: 105,
+      content: 'Aggrabah',
+      isCorrect: false,
+      question: questions[0]
+    },
+    {
+      id: 106,
+      content: 'Rabat',
+      isCorrect: true,
+      question: questions[0]
+    }
+  ]
+  const answers2: Answer[] = [
+    {
+      id: 107,
+      content: 'William Shakespeare',
+      isCorrect: true,
+      question: questions[1]
+    },
+    {
+      id: 108,
+      content: 'Charles Dickens',
+      isCorrect: false,
+      question: questions[1]
+    },
+    {
+      id: 109,
+      content: 'Jane Austen',
+      isCorrect: false,
+      question: questions[1]
+    },
+    {
+      id: 110,
+      content: 'George Orwell',
+      isCorrect: false,
+      question: questions[1]
+    },
+  ]
+  const answers3: Answer[] = [
+    {
+      id: 111,
+      content: 'O',
+      isCorrect: true,
+      question: questions[2]
+    },
+    {
+      id: 112,
+      content: 'H',
+      isCorrect: false,
+      question: questions[2]
+    },
+    {
+      id: 113,
+      content: 'C',
+      isCorrect: false,
+      question: questions[2]
+    },
+    {
+      id: 114,
+      content: 'N',
+      isCorrect: false,
+      question: questions[2]
+    },
+    {
+      id: 115,
+      content: 'S',
+      isCorrect: false,
+      question: questions[2]
+    },
+  ]
+
+  questions[0].answers = answers1;
+  questions[1].answers = answers2;
+  questions[2].answers = answers3;
+
+  questionnary.questions = questions;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         QuestionnaryService,
+        QuestionnaryController,
         {
           provide: QuestionService,
           useValue: mockQuestionService,
@@ -196,6 +240,7 @@ describe('QuestionnaryService', () => {
     }).compile();
 
     service = module.get<QuestionnaryService>(QuestionnaryService);
+    controller = module.get<QuestionnaryController>(QuestionnaryController);
     questionService = module.get<QuestionService>(QuestionService);
     questionnaryRepository = module.get<'QuestionnaryRepository'>(
       'QuestionnaryRepository',
@@ -205,15 +250,11 @@ describe('QuestionnaryService', () => {
   describe('createQuestionnary', () => {
     it('should be returned a questionnary', async () => {
       let test = await service.createQuestionnary(
-        entry.title,
-        entry.questions,
-        entry.author,
+        controller.DtoToQuestionnary(result)
       );
 
-      const resultQuestionnary = { title: 'morocco', author: 'malias' };
-
       expect(test).not.toEqual(result);
-      expect(test).toEqual(resultQuestionnary);
+      expect(test).toEqual(controller.DtoToQuestionnary(result));
     });
   });
 
@@ -227,7 +268,7 @@ describe('QuestionnaryService', () => {
   });
 
   describe('findQuestionnary', () => {
-    it('should be returned a QuestionnaryDTO', async () => {
+    it('should be returned a Questionnary', async () => {
       mockQuestionnaryRepository.findOne.mockResolvedValue(result);
       mockQuestionService.findQuestion.mockResolvedValue(result.questions);
 
@@ -235,127 +276,16 @@ describe('QuestionnaryService', () => {
       expect(test).toEqual(result);
     });
   });
+
   describe('addQuestion', () => {
-    it('should be returned a boolean', async () => {
-      let questionsDTO = {
-        content: 'Quelle est la capitale de la France?',
-        answers: [
-          {
-            content: 'Paris',
-            isCorrect: true,
-          },
-          {
-            content: 'Londres',
-            isCorrect: false,
-          },
-          {
-            content: 'Berlin',
-            isCorrect: false,
-          },
-        ],
-      };
-
-      let question = {
-        id: 8,
-        content: 'Quelle est la capitale de la France?',
-        questionnary: {
-          id: 1,
-          title: 'morocco',
-          author: 'malias',
-        },
-      };
-
+    it('should be returned a question', async () => {
       mockQuestionnaryRepository.findOne.mockResolvedValue(result);
-      mockQuestionService.createQuestion.mockResolvedValue(question);
-      let test = await service.addQuestion(15, questionsDTO);
-      let result3 = {
-        id: 15,
-        title: 'morocco',
-        author: 'malias',
-        questions: [
-          {
-            id: 36,
-            content: 'Quelle est la capitale du Maroc?',
-            answers: [
-              {
-                id: 104,
-                content: 'Tunis',
-                isCorrect: false,
-              },
-              {
-                id: 105,
-                content: 'Aggrabah',
-                isCorrect: false,
-              },
-              {
-                id: 106,
-                content: 'Rabat',
-                isCorrect: true,
-              },
-            ],
-          },
-          {
-            id: 37,
-            content: 'Qui a écrit "Romeo et Juliette"?',
-            answers: [
-              {
-                id: 107,
-                content: 'William Shakespeare',
-                isCorrect: true,
-              },
-              {
-                id: 108,
-                content: 'Charles Dickens',
-                isCorrect: false,
-              },
-              {
-                id: 109,
-                content: 'Jane Austen',
-                isCorrect: false,
-              },
-              {
-                id: 110,
-                content: 'George Orwell',
-                isCorrect: false,
-              },
-            ],
-          },
-          {
-            id: 38,
-            content: "Quel est le symbole chimique de l'oxygène?",
-            answers: [
-              {
-                id: 111,
-                content: 'O',
-                isCorrect: true,
-              },
-              {
-                id: 112,
-                content: 'H',
-                isCorrect: false,
-              },
-              {
-                id: 113,
-                content: 'C',
-                isCorrect: false,
-              },
-              {
-                id: 114,
-                content: 'N',
-                isCorrect: false,
-              },
-              {
-                id: 115,
-                content: 'S',
-                isCorrect: false,
-              },
-            ],
-          },
-        ],
-      };
-
-      expect(test).toEqual(question);
-      expect(test).not.toEqual(questionsDTO);
+      mockQuestionService.createQuestion.mockResolvedValue(questions[0]);
+      let test = await service.addQuestion(15, controller.DtoToQuestion(result.questions[0], await controller.selectQuestionnary(15)));
+      let resultQuestion = questions[0];
+      resultQuestion.id = 39;
+      expect(test).toEqual(resultQuestion);
+      expect(test).not.toEqual(result.questions[0]);
     });
   });
 
@@ -374,25 +304,9 @@ describe('QuestionnaryService', () => {
   describe('modifyQuestion', () => {
     it('should be returned a boolean and modify question', async () => {
       mockQuestionService.modifyQuestion.mockResolvedValue(true);
-      let questionsDTO = {
-        content: 'Quelle est la capitale de la France?',
-        answers: [
-          {
-            content: 'Paris',
-            isCorrect: true,
-          },
-          {
-            content: 'Londres',
-            isCorrect: false,
-          },
-          {
-            content: 'Berlin',
-            isCorrect: false,
-          },
-        ],
-      };
-      let test = await service.modifyQuestion(15, 6, questionsDTO);
+      let test = await service.modifyQuestion(questionnary.id, questionnary.questions[0].id, questionnary.questions[0]);
       expect(test).toBeTruthy();
     });
   });
 });
+

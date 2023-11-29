@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaryController } from './questionnary.controller';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
 import { QuestionnaryService } from '../service/questionnary.service';
-import { QuestionDto } from '../../question/dto/question.dto';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 
 describe('QuestionnaryController', () => {
@@ -182,21 +181,21 @@ describe('QuestionnaryController', () => {
   });
 
   describe('createQuestionnary', () => {
-    it('should be returned a questionnaryDTO', async () => {
+    it('should be returned a questionnary', async () => {
 
-      mockQuestionnaryService.createQuestionnary.mockResolvedValue(result);
+      mockQuestionnaryService.createQuestionnary.mockResolvedValue(controller.DtoToQuestionnary(result));
       const test = await controller.createQuestionnary(entry);
-      expect(test).toEqual(result);
+      expect(test).toEqual(controller.DtoToQuestionnary(result));
 
     });
   });
 
   describe('selectQuestionnary', () => {
-    it('should be returned a questionnaryDTO', async () => {
+    it('should be returned a questionnary', async () => {
       const idQuestionnary : number = 15;
-      mockQuestionnaryService.findQuestionnary.mockResolvedValue(result);
+      mockQuestionnaryService.findQuestionnary.mockResolvedValue(controller.DtoToQuestionnary(result));
       const test = await controller.selectQuestionnary(idQuestionnary);
-      expect(test).toEqual(result);
+      expect(test).toEqual(controller.DtoToQuestionnary(result));
 
     });
   });
