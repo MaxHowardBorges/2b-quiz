@@ -3,9 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entity/question.entity';
 import { Repository } from 'typeorm';
 import { Answer } from '../entity/answer.entity';
-import { QuestionDto } from '../dto/question.dto';
-import { QuestionCreateDto } from '../dto/questionCreate.dto';
-import { AnswerDto } from '../dto/answer.dto';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 
 @Injectable()
@@ -17,7 +14,7 @@ export class QuestionService {
     private readonly answerRepository: Repository<Answer>,
   ) {}
 
-  async checkQuestionContainingAnswer(question: QuestionDto, idAnswer: number) {
+  async checkQuestionContainingAnswer(question: Question, idAnswer: number) {
     const answer = await this.answerRepository.findOne({
       where: { id: idAnswer },
       relations: ['question'],
@@ -25,7 +22,7 @@ export class QuestionService {
     return answer.question.id === question.id;
   }
 
-  async createQuestion(q: QuestionCreateDto, questionnary : Questionnary) {
+  async createQuestion(q: Question, questionnary : Questionnary) {
     const question = new Question();
     question.questionnary = questionnary;
     question.content = q.content;
@@ -53,32 +50,34 @@ export class QuestionService {
   }
 
   async findQuestion(questionnary : Questionnary) {
-    const questions = await this.questionRepository.find({
+    const questionsDB = await this.questionRepository.find({
       where: { questionnary },
       relations: ['answers'],
     });
 
-    const questionDtos: QuestionDto[] = [];
-    for (const question of questions) {
-      const answerDtos = question.answers.map((answerEnt) => {
-        const answerDto = new AnswerDto();
-        answerDto.id = answerEnt.id;
-        answerDto.content = answerEnt.content;
-        answerDto.isCorrect = answerEnt.isCorrect;
-        return answerDto;
+    const questions: Question[] = [];
+    for (const q of questionsDB) {
+      const answers = q.answers.map((answerEnt) => {
+        const answer = new Answer();
+        answer.id = answerEnt.id;
+        answer.content = answerEnt.content;
+        answer.isCorrect = answerEnt.isCorrect;
+        answer.question = q;
+        return answer;
       });
 
-      const questionDto = {
-        id: question.id,
-        //type: question.type,
-        content: question.content,
-        answers: answerDtos,
+      const question = {
+        id: q.id,
+        //type: q.type,
+        content: q.content,
+        answers: answers,
+        questionnary: null
       };
 
-      questionDtos.push(questionDto);
+      questions.push(question);
     }
 
-    return questionDtos;
+    return questions;
   }
 
   async deleteQuestion(questionnary : Questionnary, idQuestion: number) {
@@ -93,29 +92,30 @@ export class QuestionService {
   }
 
   async modifyQuestion(
-    questionDto: QuestionCreateDto,
+    question: Question,
     questionnary : Questionnary,
     idQuestion: number,
   ) {
-    const question = await this.questionRepository.findOne({
+    const questionDB = await this.questionRepository.findOne({
       where: { questionnary, id: idQuestion },
       relations: ['answers'],
     });
 
-    if (question) {
-      Object.assign(question, questionDto);
-      await this.answerRepository.delete({ question });
-      await this.questionRepository.save(question);
+    if (questionDB) {
+      let { id, ...questionWithoutId } = question;
+      const newQuestion : Question = Object.assign({}, questionDB, questionWithoutId);
+      await this.answerRepository.delete({question : questionDB});
+      await this.questionRepository.save(newQuestion);
 
-      for (const a of questionDto.answers) {
+      for (const a of question.answers) {
         const answer = new Answer();
         answer.content = a.content;
         answer.isCorrect = a.isCorrect;
-        answer.question = question;
+        answer.question = newQuestion;
         await this.answerRepository.save(answer);
       }
     }
 
-    return !!question;
+    return !!questionDB;
   }
 }

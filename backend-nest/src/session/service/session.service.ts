@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Session } from '../session';
 import { QuestionService } from '../../question/service/question.service';
+import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { Question } from '../../question/entity/question.entity';
 import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCurrentQuestion.exception';
 import { UserUnknownException } from '../exception/userUnknown.exception';
@@ -11,24 +12,28 @@ import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.excep
 import { Answer } from '../../question/entity/answer.entity';
 import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
-import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
+import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 
 @Injectable()
 export class SessionService {
   private sessionMap: Map<string, Session> = new Map<string, Session>();
   constructor(
     private questionService: QuestionService,
+    private questionnaryService : QuestionnaryService,
     private answerMapper: AnswerMapper,
     private eventService: EventService,
   ) {}
 
-  async initializeSession(questionnary : QuestionnaryDto[]): Promise<Session> {
+  async initializeSession(ids : number[]): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
-
-    this.sessionMap.set(idSession, await this.createSession(idSession, questionnary));
+    const questionnaries: Questionnary[] = [];
+    for(const id of ids){
+      questionnaries.push(await this.questionnaryService.findQuestionnary(id));
+    }
+    this.sessionMap.set(idSession, await this.createSession(idSession, questionnaries));
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
   }
@@ -38,7 +43,7 @@ export class SessionService {
     return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
   }
 
-  async createSession(idSession: string, questionnaryTab : QuestionnaryDto[] ): Promise<Session> {//TODO get questionnary by id
+  async createSession(idSession: string, questionnaryTab : Questionnary[] ): Promise<Session> {
     return new Session(
       idSession,
       questionnaryTab,

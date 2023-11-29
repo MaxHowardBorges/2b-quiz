@@ -12,6 +12,10 @@ import {
 import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
+import { Questionnary } from '../entity/questionnary.entity';
+import { Question } from '../../question/entity/question.entity';
+import { Answer } from '../../question/entity/answer.entity';
+import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {
@@ -20,11 +24,7 @@ export class QuestionnaryController {
   createQuestionnary(
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
-    return this.questionnaryService.createQuestionnary(
-      questionnaryDto.title,
-      questionnaryDto.questions,
-      questionnaryDto.author,
-    );
+    return this.questionnaryService.createQuestionnary(this.DtoToQuestionnary(questionnaryDto));
   }
 
   @Delete('/:id')
@@ -43,11 +43,11 @@ export class QuestionnaryController {
   }
 
   @Post('/:id/add-question')
-  addQuestion(
+  async addQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
-    return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
+    return this.questionnaryService.addQuestion(idQuestionnary, this.DtoToQuestion(questionDto, await this.selectQuestionnary(idQuestionnary)));
   }
 
   @Delete('/:id/remove-question/:idQ')
@@ -59,7 +59,7 @@ export class QuestionnaryController {
   }
 
   @Patch('/:id/modify-question/:idQ')
-  modifyQuestion(
+  async modifyQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Param('idQ', ParseIntPipe) idQuestion: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
@@ -67,7 +67,7 @@ export class QuestionnaryController {
     return this.questionnaryService.modifyQuestion(
       idQuestionnary,
       idQuestion,
-      questionDto,
+      this.DtoToQuestion(questionDto, await this.selectQuestionnary(idQuestionnary)),
     );
   }
 
@@ -80,5 +80,36 @@ export class QuestionnaryController {
       idQuestionnary,
       body.questionnaryName,
     );
+  }
+
+  DtoToQuestionnary(questionnaryDto : QuestionnaryCreateDto){
+    const questionnary = new Questionnary();
+    questionnary.id = null;
+    questionnary.title = questionnaryDto.title;
+    questionnary.author = questionnaryDto.author;
+    questionnary.questions = [];
+    for(const questionDto of questionnaryDto.questions){
+      questionnary.questions.push(this.DtoToQuestion(questionDto, questionnary));
+    }
+    return questionnary;
+  }
+  DtoToQuestion(questionDto : QuestionCreateDto, questionnaryRef : Questionnary){
+    const question = new Question();
+    question.id = null;
+    question.content = questionDto.content;
+    question.answers = [];
+    question.questionnary = questionnaryRef;
+    for(const answerDto of questionDto.answers){
+      question.answers.push(this.DtoToAnswer(answerDto, question));
+    }
+    return question;
+  }
+  DtoToAnswer(answerDto : AnswerCreateDto, questionRef : Question){
+    const answer = new Answer();
+    answer.id = null;
+    answer.content = answerDto.content;
+    answer.isCorrect = answerDto.isCorrect;
+    answer.question = questionRef
+    return answer;
   }
 }
