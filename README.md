@@ -18,7 +18,7 @@ Detailed commands of each app is in their README.md
 * Optional: setup custom (or exposed) IP address:
   * Create a `.env.production.local` file from a copy of `.env`.
   * Replace `localhost` in the line `VITE_API_URL` with the IP address.
-* Execute `docker-compose up -d`.
+* Execute `docker-compose up -d --build` (on linux `docker compose up -d --build`).
 
 <span style="color: #E40306">**ATTENTION**: Port 3000 and 80 must not be in use.</span>
 
