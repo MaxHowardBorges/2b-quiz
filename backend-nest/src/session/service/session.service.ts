@@ -6,8 +6,6 @@ import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCur
 import { UserUnknownException } from '../exception/userUnknown.exception';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
-import { QuestionNoneException } from '../exception/questionNone.exception';
-import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
@@ -24,13 +22,16 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(questionnary : QuestionnaryDto[]): Promise<Session> {
+  async initializeSession(questionnary: QuestionnaryDto[]): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
 
-    this.sessionMap.set(idSession, await this.createSession(idSession, questionnary));
+    this.sessionMap.set(
+      idSession,
+      await this.createSession(idSession, questionnary),
+    );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
   }
@@ -40,27 +41,34 @@ export class SessionService {
     return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
   }
 
-  async createSession(idSession: string, questionnaryTab : QuestionnaryDto[] ): Promise<Session> {//TODO get questionnary by id
-    return new Session(
-      idSession,
-      questionnaryTab,
-    );
+  async createSession(
+    idSession: string,
+    questionnaryTab: QuestionnaryDto[],
+  ): Promise<Session> {
+    //TODO get questionnary by id
+    return new Session(idSession, questionnaryTab);
   }
 
   nextQuestion(idSession: string) {
     const currentSession = this.sessionMap.get(idSession);
     if (
       currentSession.questionNumber + 1 <
-      currentSession.questionnaryList[currentSession.questionnaryNumber].questions.length
+      currentSession.questionnaryList[currentSession.questionnaryNumber]
+        .questions.length
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return currentSession.questionnaryList[currentSession.questionnaryNumber].questions[currentSession.questionNumber];
-    } else if (currentSession.questionnaryNumber+1 < currentSession.questionnaryList.length){
+      return currentSession.questionnaryList[currentSession.questionnaryNumber]
+        .questions[currentSession.questionNumber];
+    } else if (
+      currentSession.questionnaryNumber + 1 <
+      currentSession.questionnaryList.length
+    ) {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return currentSession.questionnaryList[currentSession.questionnaryNumber].questions[currentSession.questionNumber];
+      return currentSession.questionnaryList[currentSession.questionnaryNumber]
+        .questions[currentSession.questionNumber];
     }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
@@ -97,7 +105,10 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
 
-    const question = session.questionnaryList[session.questionnaryNumber].questions[session.questionNumber];
+    const question =
+      session.questionnaryList[session.questionnaryNumber].questions[
+        session.questionNumber
+      ];
 
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
@@ -114,7 +125,10 @@ export class SessionService {
     }
 
     const session = this.sessionMap.get(idSession);
-    const question = session.questionnaryList[session.questionnaryNumber].questions[session.questionNumber];
+    const question =
+      session.questionnaryList[session.questionnaryNumber].questions[
+        session.questionNumber
+      ];
 
     if (!session.connectedUser.has(username)) {
       throw new UserUnknownException();

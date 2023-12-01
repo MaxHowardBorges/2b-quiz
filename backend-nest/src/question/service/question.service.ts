@@ -25,11 +25,10 @@ export class QuestionService {
     return answer.question.id === question.id;
   }
 
-  async createQuestion(q: QuestionCreateDto, questionnary : Questionnary) {
+  async createQuestion(q: QuestionCreateDto, questionnary: Questionnary) {
     const question = new Question();
     question.questionnary = questionnary;
     question.content = q.content;
-    //question.type = q.type;
 
     await this.questionRepository.save(question);
     for (const a of q.answers) {
@@ -42,7 +41,7 @@ export class QuestionService {
     return question;
   }
 
-  async deleteQuestions(questionnary : Questionnary) {
+  async deleteQuestions(questionnary: Questionnary) {
     const questions = await this.questionRepository.find({
       where: { questionnary },
     });
@@ -52,7 +51,7 @@ export class QuestionService {
     await this.questionRepository.delete({ questionnary });
   }
 
-  async findQuestion(questionnary : Questionnary) {
+  async findQuestion(questionnary: Questionnary) {
     const questions = await this.questionRepository.find({
       where: { questionnary },
       relations: ['answers'],
@@ -70,7 +69,6 @@ export class QuestionService {
 
       const questionDto = {
         id: question.id,
-        //type: question.type,
         content: question.content,
         answers: answerDtos,
       };
@@ -81,7 +79,7 @@ export class QuestionService {
     return questionDtos;
   }
 
-  async deleteQuestion(questionnary : Questionnary, idQuestion: number) {
+  async deleteQuestion(questionnary: Questionnary, idQuestion: number) {
     const question = await this.questionRepository.findOne({
       where: { questionnary, id: idQuestion },
     });
@@ -94,7 +92,7 @@ export class QuestionService {
 
   async modifyQuestion(
     questionDto: QuestionCreateDto,
-    questionnary : Questionnary,
+    questionnary: Questionnary,
     idQuestion: number,
   ) {
     const question = await this.questionRepository.findOne({
