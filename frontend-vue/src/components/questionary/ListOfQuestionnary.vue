@@ -6,7 +6,7 @@
     elevation="5"
   >
 
-    <h1>Consulter les questionnaires</h1>
+    <h1>View questionnary</h1>
 
     <v-sheet class="list">
       <v-sheet v-for="(questionnary, index) in this.useQ.questionnaryList" :key="index">

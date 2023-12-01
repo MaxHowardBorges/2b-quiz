@@ -47,10 +47,6 @@ export class SessionService {
     );
   }
 
-  startSession(idSession: string): boolean {
-    return this.sessionMap.has(idSession);
-  }
-
   nextQuestion(idSession: string) {
     const currentSession = this.sessionMap.get(idSession);
     if (

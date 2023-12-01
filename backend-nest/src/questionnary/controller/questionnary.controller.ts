@@ -71,7 +71,6 @@ export class QuestionnaryController {
     );
   }
 
-
   @Patch('/:id/modify-questionnary/')
   modifyQuestionnary(
     @Param('id', ParseIntPipe) idQuestionnary: number,
