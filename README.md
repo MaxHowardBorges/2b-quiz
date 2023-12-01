@@ -66,6 +66,11 @@ Past connection information in `.env.local` files in `backend-nest`
 * Execute `build-frontend-prod`.
 * Execute `start-frontend-prod`.
 
+## Start tests (unit tests and end to end tests)
+1. Run back end with `Start backend locally in a production mode` steps
+2. Start test with `yarn test`.
+
+
 
 ## Contributors
 * BENIZRI Sam 
