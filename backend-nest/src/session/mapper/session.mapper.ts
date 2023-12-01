@@ -1,16 +1,16 @@
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
-import { Question } from '../../question/entity/question.entity';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { Injectable } from '@nestjs/common';
-import { Answer } from '../../question/entity/answer.entity';
 import { UserAnswerDto } from '../dto/userAnswer.dto';
 import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
+import { QuestionDto } from '../../question/dto/question.dto';
+import { AnswerDto } from '../../question/dto/answer.dto';
 
 @Injectable()
 export class SessionMapper {
   constructor(private readonly answerMapper: AnswerMapper) {}
 
-  mapCurrentQuestionDto(question: Question): CurrentQuestionDto {
+  mapCurrentQuestionDto(question: QuestionDto): CurrentQuestionDto {
     return {
       id: question.id,
       content: question.content,
@@ -19,7 +19,7 @@ export class SessionMapper {
   }
 
   mapUserAnswerDto(
-    userAnswers: Map<string, Map<Question, Answer>>,
+    userAnswers: Map<string, Map<QuestionDto, AnswerDto>>,
   ): UserAnswerDto[] {
     const userAnswerDtos = [];
     for (const [username, innerMap] of userAnswers.entries()) {
