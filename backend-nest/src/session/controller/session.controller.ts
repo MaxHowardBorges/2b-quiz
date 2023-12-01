@@ -10,8 +10,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Session } from '../session';
-import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { JoinSessionDto } from '../dto/joinSession.dto';
+import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
@@ -27,7 +27,9 @@ export class SessionController {
   ) {}
 
   @Post('/create')
-  async createSession(@Body(new ValidationPipe()) questionnary : QuestionnaryDto[]): Promise<Session> {
+  async createSession(
+    @Body(new ValidationPipe()) questionnary: QuestionnaryDto[],
+  ): Promise<Session> {
     return this.sessionService.initializeSession(questionnary);
   }
 

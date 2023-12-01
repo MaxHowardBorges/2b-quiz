@@ -233,6 +233,12 @@ describe('QuestionnaryService', () => {
 
       let test = await service.findQuestionnary(15);
       expect(test).toEqual(result);
+      expect(test).toBeInstanceOf(QuestionnaryDto);
+      expect(test).not.toBeFalsy();
+      mockQuestionnaryRepository.findOne.mockResolvedValue(null);
+      test = await service.findQuestionnary(0);
+      expect(typeof test).toBe('string');
+      expect(test).not.toBeInstanceOf(QuestionnaryDto);
     });
   });
   describe('addQuestion', () => {
