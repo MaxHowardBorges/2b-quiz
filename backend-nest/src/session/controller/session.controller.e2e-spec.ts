@@ -52,13 +52,10 @@ describe('AppController (e2e)', () => {
       let questionanryDto = await request('http://localhost:3000/questionnary')
         .get('/' + questionnary.body.id + '/select')
         .expect(200);
-      //console.log(questionnary.body);
       let session = await request('http://localhost:3000/session')
         .post('/create')
         .send([questionanryDto.body])
         .expect(201);
-      //console.log(session.body.id);
-      //console.log(session.body);
       let nextQ = await request('http://localhost:3000/session')
         .post('/nextQuestion')
         .send({ idSession: session.body.id })

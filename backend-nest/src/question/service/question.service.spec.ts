@@ -4,13 +4,10 @@ import { Question } from '../entity/question.entity';
 import { QuestionCreateDto } from '../dto/questionCreate.dto';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
-import { Answer } from '../entity/answer.entity';
 import { QuestionDto } from '../dto/question.dto';
 
 describe('QuestionService', () => {
   let service: QuestionService;
-  let questionRepository: 'QuestionRepository';
-  let answerRepository: 'AnswerRepository';
 
   const mockQuestionRepository = {
     save: jest.fn(),
@@ -40,8 +37,6 @@ describe('QuestionService', () => {
     }).compile();
 
     service = module.get<QuestionService>(QuestionService);
-    questionRepository = module.get<'QuestionRepository'>('QuestionRepository');
-    answerRepository = module.get<'AnswerRepository'>('AnswerRepository');
   });
 
   const questionsCreateDTO: QuestionCreateDto = {
@@ -93,12 +88,6 @@ describe('QuestionService', () => {
   questionnary.title = 'testQuestionnary';
   questionnary.author = 'authorTest';
   questionnary.questions = [];
-  /*questionnary = {
-    id: 1,
-    title: 'testQuestionnary',
-    author: 'authorTest',
-    questions: [],
-  };*/
 
   const questionnaryDTO: QuestionnaryDto = {
     id: 1,
@@ -124,8 +113,6 @@ describe('QuestionService', () => {
       mockQuestionRepository.find;
       let test = await service.createQuestion(questionsCreateDTO, questionnary);
       expect(test).toBeInstanceOf(Question);
-      //console.log(questionsCreateDTO.answers);
-      //expect(test.answers.length).toEqual(1);
     });
   });
 

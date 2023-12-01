@@ -5,10 +5,8 @@ import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { EventService } from '../../event/service/event.service';
 import { Session } from '../session';
 import { Question } from '../../question/entity/question.entity';
-import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
-import { QuestionDto } from '../../question/dto/question.dto';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -102,9 +100,7 @@ describe('SessionService', () => {
           },
         ],
       },
-    ] /*[
-      { id: 1, title: 'testQuestionnary', author: 'Authortest', questions: [] },
-    ]*/,
+    ],
 
     questionnaryNumber: 0,
 
@@ -188,7 +184,6 @@ describe('SessionService', () => {
       let session2: Session = session;
       let quest = new Question();
       quest.answers = [];
-      //session2.questionList[1] = quest;
 
       session2.questionNumber = 0;
       mockSessionMap.set('111111', session2);
@@ -209,7 +204,6 @@ describe('SessionService', () => {
       let session2: Session = session;
       let quest = new Question();
       quest.answers = [];
-      //session2.questionList[1] = quest;
 
       expect(() => service.currentQuestion('111111')).toThrow(
         AnswersNoneException,
