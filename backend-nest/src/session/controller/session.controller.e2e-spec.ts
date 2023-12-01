@@ -61,7 +61,7 @@ describe('AppController (e2e)', () => {
       //console.log(session.body);
       let nextQ = await request('http://localhost:3000/session')
         .post('/nextQuestion')
-        .send({ id: session.body.id })
+        .send({ idSession: session.body.id })
         .expect(201);
 
       console.log(questionnary.body.questions);
@@ -104,7 +104,7 @@ describe('AppController (e2e)', () => {
       expect(currentQ.noContent).toBeFalsy();
       await request('http://localhost:3000/session')
         .post('/nextQuestion')
-        .send({ id: session.body.id });
+        .send({ idSession: session.body.id });
 
       currentQ = await request('http://localhost:3000/session')
         .post('/question/current')

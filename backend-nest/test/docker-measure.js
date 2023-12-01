@@ -1,8 +1,8 @@
 const Docker = require('dockerode');
 const fs = require('fs');
 const docker = new Docker();
-const numberOfRuns = 300;
-const numberOfStudents = 500;
+const numberOfRuns = 10;
+const numberOfStudents = 10;
 
 const runParallelScripts = require('./../scenarios/multiple_scenario.js');
 async function measureContainerPerformance(containerId) {

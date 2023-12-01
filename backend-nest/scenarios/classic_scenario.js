@@ -1,8 +1,39 @@
 const API_URL = 'http://localhost:3000';
+const questionnary = {
+  title: 'testQuestionnary',
+  author: 'AuthorTest',
+  questions: [
+    {
+      content: 'aa',
+      answers: [
+        { content: 'bb', isCorrect: true },
+        { content: 'bb', isCorrect: false },
+      ],
+    },
+    {
+      content: 'aa',
+      answers: [
+        { content: 'bb', isCorrect: true },
+        { content: 'bb', isCorrect: false },
+      ],
+    },
+    {
+      content: 'aa',
+      answers: [
+        { content: 'bb', isCorrect: true },
+        { content: 'bb', isCorrect: false },
+      ],
+    },
+  ],
+};
 
 async function createSession() {
   const response = await fetch(API_URL + '/session/create', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify([questionnary]),
   });
   const content = await response.json();
   return content.id;
