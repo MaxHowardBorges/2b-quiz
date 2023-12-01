@@ -1,18 +1,15 @@
 <template>
-
-  <div class='blocklist'>
+  <div class="blocklist">
     <b>{{ questionnaryName.title }}</b>
     <span class="spacer"></span>
     <span class="spacer"></span>
-<!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
-    <v-btn icon="edit" @click='modifyQuestionnary'></v-btn>
-    <v-btn icon="delete" @click='deleteQuestionnary'></v-btn>
+    <!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
+    <v-btn icon="edit" @click="modifyQuestionnary"></v-btn>
+    <v-btn icon="delete" @click="deleteQuestionnary"></v-btn>
   </div>
-
 </template>
 
 <script>
-
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
@@ -24,7 +21,7 @@
     setup() {
       const useQ = useQuestionnaryStore();
       return {
-        useQ
+        useQ,
       };
     },
     props: {
@@ -36,22 +33,20 @@
         this.useQ.deleteQuestionnary(this.questionnaryId);
       },
       modifyQuestionnary() {
-        this.useQ.idQuestionnary= this.questionnaryName.id;
+        this.useQ.idQuestionnary = this.questionnaryName.id;
         this.useQ.getQuestionnary();
-        this.$emit("nextQuestionE")
+        this.$emit('nextQuestionE');
       },
-      startQuestionnary(){
-        const list = ["En attente","Mise à jour bientôt"];
+      startQuestionnary() {
+        const list = ['En attente', 'Mise à jour bientôt'];
         alert(list[Math.floor(Math.random() * list.length)]);
-      }
+      },
     },
     name: 'QuestionnaryItem',
-  }
-
+  };
 </script>
 
 <style scoped>
-
   .blocklist {
     display: flex;
     align-items: center;
@@ -71,5 +66,4 @@
   .blocklist v-btn {
     margin-left: 20px;
   }
-
 </style>

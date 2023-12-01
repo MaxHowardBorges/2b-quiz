@@ -5,7 +5,7 @@
     setup() {
       const useQ = useQuestionnaryStore();
       return {
-        useQ
+        useQ,
       };
     },
     props: {
@@ -16,23 +16,22 @@
     methods: {
       deleteQuest() {
         this.useQ.deleteQuestion(this.idQuestion);
-
       },
       modifyQuest() {
         this.$emit('ChangeStatuss', this.idQuestion);
       },
-    }
-  }
+    },
+  };
 </script>
 
 <template>
-  <div class='blocklist'>
+  <div class="blocklist">
     <b>{{ numberLabel }}</b>
     <span class="spacer"></span>
     <b>{{ typeLabel }}</b>
     <span class="spacer"></span>
-    <v-btn icon="edit" @click='modifyQuest'></v-btn>
-    <v-btn icon="delete" @click='deleteQuest'></v-btn>
+    <v-btn icon="edit" @click="modifyQuest"></v-btn>
+    <v-btn icon="delete" @click="deleteQuest"></v-btn>
   </div>
 </template>
 

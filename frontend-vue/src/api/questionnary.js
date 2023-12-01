@@ -1,7 +1,5 @@
 export async function createQuestionnary(body) {
-  return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/create',
-    {
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -10,19 +8,22 @@ export async function createQuestionnary(body) {
   });
 }
 
-export async function addQuestion(body,id) {
-  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/'+id+'/add-question', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+export async function addQuestion(body, id) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/add-question',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     },
-    body: JSON.stringify(body),
-  });
+  );
 }
 
 export async function getQuestionnary(id) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/'+id+'/select/',
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/select/',
     {
       method: 'GET',
       headers: {
@@ -34,7 +35,7 @@ export async function getQuestionnary(id) {
 
 export async function getQuestionnaryFromUser(id) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/select/user/'+id,
+    import.meta.env.VITE_API_URL + '/questionnary/select/user/' + id,
     {
       method: 'GET',
       headers: {
@@ -44,9 +45,13 @@ export async function getQuestionnaryFromUser(id) {
   );
 }
 
-export async function modifyQuestion(idQuestionnary,idQuestion,body) {
+export async function modifyQuestion(idQuestionnary, idQuestion, body) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/modify-question/'+idQuestion,
+    import.meta.env.VITE_API_URL +
+      '/questionnary/' +
+      idQuestionnary +
+      '/modify-question/' +
+      idQuestion,
     {
       method: 'PATCH',
       headers: {
@@ -57,9 +62,12 @@ export async function modifyQuestion(idQuestionnary,idQuestion,body) {
   );
 }
 
-export async function modifyQuestionnary(idQuestionnary,name) {
+export async function modifyQuestionnary(idQuestionnary, name) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/modify-questionnary/',
+    import.meta.env.VITE_API_URL +
+      '/questionnary/' +
+      idQuestionnary +
+      '/modify-questionnary/',
     {
       method: 'PATCH',
       headers: {
@@ -70,9 +78,13 @@ export async function modifyQuestionnary(idQuestionnary,name) {
   );
 }
 
-export async function deleteQuestion(idQuestionnary,idQuestion) {
+export async function deleteQuestion(idQuestionnary, idQuestion) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary+'/remove-question/'+idQuestion,
+    import.meta.env.VITE_API_URL +
+      '/questionnary/' +
+      idQuestionnary +
+      '/remove-question/' +
+      idQuestion,
     {
       method: 'DELETE',
       headers: {
@@ -84,7 +96,7 @@ export async function deleteQuestion(idQuestionnary,idQuestion) {
 
 export async function deleteQuestionnary(idQuestionnary) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/'+idQuestionnary,
+    import.meta.env.VITE_API_URL + '/questionnary/' + idQuestionnary,
     {
       method: 'DELETE',
       headers: {

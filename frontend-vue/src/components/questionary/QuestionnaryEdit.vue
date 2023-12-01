@@ -3,11 +3,27 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
-    elevation="5"
-  >
-
-    <input v-if=OnList id='title' type="text" v-model="questionnaryName" @change='changeName' required>
-    <div v-else id='title' >{{this.questionnaryName}}<br>Question N°{{this.idQuestion ? (this.useQ.questionnary.questions.findIndex(question => question.id === this.idQuestion))+1 : !!this.useQ.questionnary ? this.useQ.questionnary.questions.length +1 : 1}}</div>
+    elevation="5">
+    <input
+      v-if="OnList"
+      id="title"
+      type="text"
+      v-model="questionnaryName"
+      @change="changeName"
+      required />
+    <div v-else id="title">
+      {{ this.questionnaryName }}
+      <br />
+      Question N°{{
+        this.idQuestion
+          ? this.useQ.questionnary.questions.findIndex(
+              (question) => question.id === this.idQuestion,
+            ) + 1
+          : !!this.useQ.questionnary
+          ? this.useQ.questionnary.questions.length + 1
+          : 1
+      }}
+    </div>
 
     <v-select
       @change="changeType"
@@ -18,28 +34,37 @@
       class="custom-select"
       dense
       outlined
-      readonly=''
-    ></v-select>
+      readonly=""></v-select>
 
-    <v-btn class="mb-5" v-if=OnList icon="add" @click="toggleTypeSelector"></v-btn>
-
+    <v-btn
+      class="mb-5"
+      v-if="OnList"
+      icon="add"
+      @click="toggleTypeSelector"></v-btn>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
-      id='quest'
-      v-if=!OnList
+      id="quest"
+      v-if="!OnList"
       :selectedQuestionType="selectedType"
-      :idQuestion='idQuestion'
-    />
+      :idQuestion="idQuestion" />
 
-    <div class='blocklist' v-if=!this.useQ.isCreated&&this.OnList>
-      <b>Pas encore de questions.. Cliquez sur le + pour ajouter une question </b>
+    <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
+      <b>
+        Pas encore de questions.. Cliquez sur le + pour ajouter une question
+      </b>
     </div>
 
-
-    <v-sheet class="questions" v-if=this.OnList&&this.useQ.isCreated>
-      <v-sheet v-if='this.useQ.questionnary' v-for="(question, index) in this.useQ.questionnary.questions" :key="index">
-        <QuestionnaryListOne :numberLabel=question.content typeLabel="Multiple" :idQuestion=question.id @ChangeStatuss="ChangeStatus"/>
+    <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
+      <v-sheet
+        v-if="this.useQ.questionnary"
+        v-for="(question, index) in this.useQ.questionnary.questions"
+        :key="index">
+        <QuestionnaryListOne
+          :numberLabel="question.content"
+          typeLabel="Multiple"
+          :idQuestion="question.id"
+          @ChangeStatuss="ChangeStatus" />
       </v-sheet>
     </v-sheet>
 
@@ -61,9 +86,8 @@
       </v-card>
     </v-dialog>
 
-    <v-btn text="done" class='mt-5' @click="EmitGoList"></v-btn>
-
-  </v-sheet >
+    <v-btn text="done" class="mt-5" @click="EmitGoList"></v-btn>
+  </v-sheet>
 </template>
 
 <script>
@@ -72,33 +96,31 @@
   import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
-
   export default {
     data() {
       return {
         OnList: true,
         showTypeSelector: false,
-        selectedType: "Multiple",
-        typeOptions: ["Multiple", "Open-Ended", "True-False"],
+        selectedType: 'Multiple',
+        typeOptions: ['Multiple', 'Open-Ended', 'True-False'],
         confirmationDialog: false,
-        baseQuestionnaryName : "[Questionnary name]",
-        questionnaryName : "",
-        statusQ: "add",
+        baseQuestionnaryName: '[Questionnary name]',
+        questionnaryName: '',
+        statusQ: 'add',
         idQuestion: null,
       };
     },
     setup() {
       const useQ = useQuestionnaryStore();
       return {
-        useQ
+        useQ,
       };
     },
     async mounted() {
       if (this.useQ.isCreated) {
         await this.useQ.getQuestionnary();
         this.questionnaryName = this.useQ.questionnary.title;
-      }
-      else this.questionnaryName = this.baseQuestionnaryName;
+      } else this.questionnaryName = this.baseQuestionnaryName;
     },
     name: 'QuestionnaryEdit',
     components: {
@@ -107,14 +129,14 @@
     },
     methods: {
       toggleTypeSelector() {
-        this.statusQ="add";
+        this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
       ChangeStatus(idQuestion) {
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
-        this.statusQ = "modify";
+        this.statusQ = 'modify';
         this.idQuestion = idQuestion;
         this.question = this.useQ.getQuestion(this.idQuestion);
       },
@@ -127,28 +149,29 @@
           answers[i].isCorrect = i === index;
         }
 
-        if (content && answers){
-          if (this.useQ.idQuestionnary == null){
-            await this.useQ.createQuestionnary({ author: 'Tamas Pâle aux tâches', title: this.questionnaryName, questions: []});//TODO get author
-            await this.useQ.addQuestion({content,answers});
-          }
-
-          else if (this.statusQ === "modify"){
-            await this.useQ.modifyQuestion(this.idQuestion,{content,answers});
-            this.idQuestion=null;
-          }
-          else{
-            await this.useQ.addQuestion({content,answers});
+        if (content && answers) {
+          if (this.useQ.idQuestionnary == null) {
+            await this.useQ.createQuestionnary({
+              author: 'author_default',
+              title: this.questionnaryName,
+              questions: [],
+            }); //TODO get author
+            await this.useQ.addQuestion({ content, answers });
+          } else if (this.statusQ === 'modify') {
+            await this.useQ.modifyQuestion(this.idQuestion, {
+              content,
+              answers,
+            });
+            this.idQuestion = null;
+          } else {
+            await this.useQ.addQuestion({ content, answers });
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
-        }
-        else alert("Remplissez les champs vide avant de valider");
-
-
+        } else alert('Remplissez les champs vide avant de valider');
       },
       changeType() {
-        this.selectedQuestionType = this.selectedType ;
+        this.selectedQuestionType = this.selectedType;
       },
       showConfirmationDialog() {
         this.confirmationDialog = true;
@@ -161,24 +184,25 @@
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
-        if(!this.useQ.isCreated || (this.useQ.isCreated  && this.questionnaryName !== this.baseQuestionnaryName)){
-          this.useQ.idQuestionnary=null;
+        if (
+          !this.useQ.isCreated ||
+          (this.useQ.isCreated &&
+            this.questionnaryName !== this.baseQuestionnaryName)
+        ) {
+          this.useQ.idQuestionnary = null;
           this.$emit('GoList');
-        }
-        else alert("Veuillez changer le nom du questionnaire");
+        } else alert('Veuillez changer le nom du questionnaire');
       },
-      changeName(){
-        if(this.useQ.isCreated){
+      changeName() {
+        if (this.useQ.isCreated) {
           this.useQ.modifyQuestionnary(this.questionnaryName);
         }
       },
     },
-  }
+  };
 </script>
 
 <style>
-
-
   #title {
     margin-bottom: 10px;
     padding: 8px;
@@ -192,7 +216,7 @@
     margin-bottom: 20px;
   }
 
-  v-select{
+  v-select {
     width: auto;
   }
 
@@ -204,5 +228,4 @@
   .button-container {
     display: flex;
   }
-
 </style>

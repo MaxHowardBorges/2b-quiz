@@ -75,7 +75,8 @@
           ? 'lightTheme'
           : 'darkTheme';
       },
-      toggleLogout() {// TODO a lier avec le back
+      toggleLogout() {
+        // TODO a lier avec le back
         router.push('/');
       },
       getVS() {

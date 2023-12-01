@@ -32,7 +32,8 @@ export async function sendAnswer(body) {
   });
 }
 
-export async function createSession(body) {//TODO add questionnary[]
+export async function createSession(body) {
+  //TODO add questionnary[]
   return await fetch(import.meta.env.VITE_API_URL + '/session/create', {
     method: 'POST',
     headers: {
