@@ -35,7 +35,7 @@
           },
           {
             link: '/questionary',
-            name: 'Questionary',
+            name: 'Questionnary',
           },
           {
             link: '/teacher-home-page',
