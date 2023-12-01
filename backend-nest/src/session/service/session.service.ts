@@ -78,9 +78,6 @@ export class SessionService {
   }
 
   join(idSession: string, username: string): void {
-    if (this.sessionMap.has(idSession) == false) {
-      throw new IdSessionNoneException();
-    }
     const session = this.sessionMap.get(idSession);
     if (session.connectedUser.has(username)) {
       throw new UserAlreadyJoinedException();
@@ -125,6 +122,7 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
+
     session.userAnswers.get(username).set(
       question,
       question.answers.find((answer) => answer.id === idAnswer),
