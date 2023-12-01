@@ -73,6 +73,7 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
+      this.setEnded(false);
       const response = await createSession(this.questionnary);
       await throwIfNotOK(response);
       const content = await response.json();
