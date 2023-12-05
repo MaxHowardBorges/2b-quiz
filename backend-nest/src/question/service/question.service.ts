@@ -68,10 +68,10 @@ export class QuestionService {
 
       const question = {
         id: q.id,
-        //type: q.type,
+        type: q.type,
         content: q.content,
         answers: answers,
-        questionnary: null
+        questionnary: questionnary
       };
 
       questions.push(question);
