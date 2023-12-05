@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
 import {
+  getAllUsers,
   getUserType,
   loginUser,
   registerUser,
@@ -11,6 +12,7 @@ import { throwIfNotOK } from '@/utils/apiUtils';
 import { useActivityStore } from '@/stores/activityStore';
 import router from '@/router';
 import { serverError } from '@/router/routerUtils';
+import { getCurrentQuestion } from '@/api/session';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -18,6 +20,7 @@ export const useUserStore = defineStore('user', {
     username: null,
     token: null,
     interval: null,
+    users: []
   }),
   getters: {
     isStudent() {
@@ -45,6 +48,9 @@ export const useUserStore = defineStore('user', {
     },
     setToken(token) {
       this.token = token;
+    },
+    setUsers(user){
+      this.user = user;
     },
     async register(
       name,
@@ -136,6 +142,20 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 204);
       this.setUserRoles(await this.fetchUserType());
       if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
+    },
+
+    async getUsers(page, nbItem) {
+      try {
+        const response = await getAllUsers(page, nbItem, this.token);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la liste des utilisateur'); // TODO manage error
+        }
+        const users = await response.json();
+        this.setUsers(users);
+        console.log(users);
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
   persist: true,

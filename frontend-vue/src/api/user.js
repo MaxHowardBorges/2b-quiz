@@ -48,3 +48,16 @@ export async function validateSelf(body, token) {
     body: JSON.stringify(body),
   });
 }
+
+export async function getAllUsers(page, nbItem, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/user?page=${page}&nb-item=${nbItem}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}

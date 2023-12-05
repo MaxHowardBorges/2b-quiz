@@ -21,54 +21,76 @@
         userStore,
       };
     },
+    methods: {
+      async fetchUsers(page, nbItem) {
+        try {
+          const response = await this.userStore.getUsers(page, nbItem);
+          if (!response.ok) {
+            throw new Error('Erreur de chargement des utilisateurs');
+          }
+          const users = await response.json();
+          this.userStore.commit('userStore/setUsers', users);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+
+      async loadUser() {
+        const response = await this.userStore.getUsers(1, 50);
+        console.log(this.userStore.users);
+      }
+
+
+    },
   }
 
 </script>
 
 <template>
 
-  <div id="app" v-if="userStore.isAuthenticated && userStore.isAdmin">
+  <div id="app" v-if="userStore.isAuthenticated && userStore.isAdmin" @click='loadUser'>
     <h1>Page d'Administration</h1>
     <h2>Professeurs Validés</h2>
     <table>
-
       <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Type</th>
-      </tr>
-      </thead>
+    <tr>
+      <th>ID</th>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Type</th>
+    </tr>
+    </thead>
       <tbody>
-      <tr class='professeurs-valides' v-for="professeur in professeursValides" :key="professeur.id">
-        <td>{{ professeur.id }}</td>
-        <td>{{ professeur.nom }}</td>
-        <td>{{ professeur.prenom }}</td>
-        <td>{{ professeur.type }}</td>
+<!--    <v-sheet v-for="(user, index) in userStore.getUsers(1, 50)" :key="index">-->
+      <tr class='professeurs-valides'  v-for="user in userStore.users" :key="user.id" v-if='userStore.users.length > 0'>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.surname }}</td>
+        <td>{{ user.userType }}</td>
       </tr>
+<!--    </v-sheet>-->
       </tbody>
     </table>
 
-    <h2>Professeurs en Attente de Validation</h2>
-    <table>
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Type</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class='professeurs-attente' v-for="professeur in professeursEnAttente" :key="professeur.id">
-        <td>{{ professeur.id }}</td>
-        <td>{{ professeur.nom }}</td>
-        <td>{{ professeur.prenom }}</td>
-        <td>{{ professeur.type }}</td>
-      </tr>
-      </tbody>
-    </table>
+<!--    <h2>Professeurs en Attente de Validation</h2>-->
+<!--    <table>-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Nom</th>-->
+<!--        <th>Prénom</th>-->
+<!--        <th>Type</th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--      <tr class='professeurs-attente' v-for="professeur in professeursEnAttente" :key="professeur.id">-->
+<!--        <td>{{ professeur.id }}</td>-->
+<!--        <td>{{ professeur.nom }}</td>-->
+<!--        <td>{{ professeur.prenom }}</td>-->
+<!--        <td>{{ professeur.type }}</td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
   </div>
 </template>
 
