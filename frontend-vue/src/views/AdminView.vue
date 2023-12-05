@@ -27,7 +27,7 @@
 
 <template>
 
-  <div id="app">
+  <div id="app" v-if="userStore.isAuthenticated && userStore.isAdmin">
     <h1>Page d'Administration</h1>
     <h2>Professeurs Validés</h2>
     <table>
