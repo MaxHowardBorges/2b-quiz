@@ -48,7 +48,7 @@
 
 <template>
 
-  <div id="app" v-if="userStore.isAuthenticated && userStore.isAdmin" @click='loadUser'>
+  <v-sheet id="app" v-if="userStore.isAuthenticated && userStore.isAdmin">
     <h1>Page d'Administration</h1>
     <h2>Professeurs Validés</h2>
     <table>
@@ -62,7 +62,7 @@
     </thead>
       <tbody>
 <!--    <v-sheet v-for="(user, index) in userStore.getUsers(1, 50)" :key="index">-->
-      <tr class='professeurs-valides'  v-for="user in userStore.users" :key="user.id" v-if='userStore.users.length > 0'>
+      <tr class='professeurs-valides'  v-for="user in userStore.users" :key="user.id" v-if='userStore.users !== null'>
         <td>{{ user.id }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.surname }}</td>
@@ -91,7 +91,7 @@
 <!--      </tr>-->
 <!--      </tbody>-->
 <!--    </table>-->
-  </div>
+  </v-sheet>
 </template>
 
 <style scoped>

@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
       this.token = token;
     },
     setUsers(user){
-      this.user = user;
+      this.users = user;
     },
     async register(
       name,
