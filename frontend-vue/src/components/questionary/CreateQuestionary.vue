@@ -10,8 +10,7 @@
 
     <v-sheet
       v-if="
-        selectedQuestionType === 'Multiple' ||
-        this.selectedQuestionType === null
+        selectedQuestionType === 'Unique' || this.selectedQuestionType === null
       ">
       <v-sheet class="answers">
         <v-sheet v-for="(answer, index) in question.answers" :key="index">
@@ -54,7 +53,7 @@
     <!-- Ajouter une réponse -->
     <v-sheet
       v-if="
-        this.selectedQuestionType === 'Multiple' ||
+        this.selectedQuestionType === 'Unique' ||
         this.selectedQuestionType === null
       ">
       <button @click="addAnswer">Add an answer</button>
@@ -69,7 +68,7 @@
 
   export default {
     props: {
-      selectedQuestionType: { String, default: 'Multiple' },
+      selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
     },
     setup() {
