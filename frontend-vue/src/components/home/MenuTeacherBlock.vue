@@ -23,7 +23,6 @@
       :items="choosedQuestionnary"
       item-title="title"
       item-value="id"
-      return-object
       multiple=""
       label="Select Questionnary"
       dense
@@ -103,6 +102,7 @@
     },
     methods: {
       async handleCreateSession() {
+        console.log(this.selectedQuestionnary);
         this.loading = true;
         if (this.selectedQuestionnary.length > 0) {
           this.sessionStore.questionnary = this.selectedQuestionnary;

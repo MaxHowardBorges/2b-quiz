@@ -14,6 +14,7 @@ import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
+import { BodyEmptyException } from '../exception/bodyEmpty.exception';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
@@ -27,10 +28,8 @@ export class SessionController {
   ) {}
 
   @Post('/create')
-  async createSession(
-    @Body(new ValidationPipe()) questionnary: QuestionnaryDto[],
-  ): Promise<Session> {
-    return this.sessionService.initializeSession(questionnary);
+  async createSession(@Body(new ValidationPipe()) ids : number[]): Promise<Session> {
+    return this.sessionService.initializeSession(ids);
   }
 
   @Post('/nextQuestion')
