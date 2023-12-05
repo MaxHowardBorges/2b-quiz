@@ -10,8 +10,7 @@
 
     <v-sheet
       v-if="
-        selectedQuestionType === 'Multiple' ||
-        this.selectedQuestionType === null
+        selectedQuestionType === 'Unique' || this.selectedQuestionType === null
       ">
       <v-sheet class="answers">
         <v-sheet v-for="(answer, index) in question.answers" :key="index">
@@ -27,6 +26,25 @@
               :label="'Correct'"
               :value="index"></v-radio>
           </v-radio-group>
+        </v-sheet>
+      </v-sheet>
+    </v-sheet>
+
+    <v-sheet v-if="selectedQuestionType === 'Multiple'">
+      <v-sheet class="answers">
+        <v-sheet v-for="(answer, index) in question.answers" :key="index">
+          <v-text-field
+            :label="'Answer ' + (index + 1) + ' :'"
+            :id="'answer-' + index"
+            :value="question.answers[index].content"
+            v-model="question.answers[index].content"
+            required></v-text-field>
+
+          <v-checkbox
+            v-model="correctMultiple"
+            :id="'correct-answer-' + index"
+            :label="'Correct'"
+            :value="index"></v-checkbox>
         </v-sheet>
       </v-sheet>
     </v-sheet>
@@ -54,8 +72,8 @@
     <!-- Ajouter une réponse -->
     <v-sheet
       v-if="
-        this.selectedQuestionType === 'Multiple' ||
-        this.selectedQuestionType === null
+        this.selectedQuestionType === 'Unique' ||
+        this.selectedQuestionType === 'Multiple'
       ">
       <button @click="addAnswer">Add an answer</button>
 
@@ -69,7 +87,7 @@
 
   export default {
     props: {
-      selectedQuestionType: { String, default: 'Multiple' },
+      selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
     },
     setup() {
@@ -90,6 +108,7 @@
       return {
         question,
         indexD: 0,
+        correctMultiple: [],
         correct: 0,
         questionnaryName: '',
         answers: [{ content: '', isCorrect: false }],

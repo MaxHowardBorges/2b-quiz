@@ -120,7 +120,11 @@ export class SessionService {
     return question;
   }
 
-  async saveAnswer(idSession: string, idAnswer: number, username: string) {
+  async saveAnswer(
+    idSession: string,
+    idAnswer: number | string,
+    username: string,
+  ) {
     if (this.sessionMap.get(idSession) == undefined) {
       throw new IdSessionNoneException();
     }
@@ -135,6 +139,7 @@ export class SessionService {
       throw new UserUnknownException();
     }
     if (
+      typeof idAnswer == 'number' &&
       !(await this.questionService.checkQuestionContainingAnswer(
         question,
         idAnswer,

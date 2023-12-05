@@ -33,8 +33,7 @@
       label="Select Question Type"
       class="custom-select"
       dense
-      outlined
-      readonly=""></v-select>
+      outlined></v-select>
 
     <v-btn
       class="mb-5"
@@ -62,7 +61,7 @@
         :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
-          typeLabel="Multiple"
+          typeLabel="Unique"
           :idQuestion="question.id"
           @ChangeStatuss="ChangeStatus" />
       </v-sheet>
@@ -101,8 +100,8 @@
       return {
         OnList: true,
         showTypeSelector: false,
-        selectedType: 'Multiple',
-        typeOptions: ['Multiple', 'Open-Ended', 'True-False'],
+        selectedType: 'Unique',
+        typeOptions: ['Unique', 'Multiple', 'Open-Ended', 'True-False'],
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
