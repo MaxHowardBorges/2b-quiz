@@ -6,7 +6,7 @@
     data() {
       return {
         indexpage: 1,
-        indexLigne: 50,
+        indexLigne: 7,
       };
     },
     setup() {
@@ -17,7 +17,15 @@
       };
     },
     async mounted() {
-      await this.userStore.getUsers(1, 50);
+      await this.userStore.getUsers(1, 7);
+    },
+    computed: {
+      pageOptions() {
+        return Array.from({ length: 25 }, (_, index) => index + 1);
+      },
+      lineOptions() {
+        return Array.from({ length: 50 }, (_, index) => index + 1);
+      },
     },
     methods: {
 
@@ -32,9 +40,14 @@
         }
       },
 
-      async loadUserW(index, ligne) {
-        await this.userStore.getUsers(index, ligne);
+      async loadUserW() {
+        await this.userStore.getUsers(this.indexpage, this.indexLigne);
+        console.log("test",this.indexpage, this.indexLigne);
       }
+    },
+    watch: {
+      indexpage: 'loadUserW',
+      indexLigne: 'loadUserW',
     },
   }
 
@@ -48,19 +61,27 @@
 
 
     <v-sheet class='ma-2'>
-    <label for="pageSelector">Select page:</label>
-    <select id="pageSelector" v-model="indexpage" @change='loadUserW(indexpage,indexLigne)'>
-      <option v-for="page in 50" :key="page" :value="page">{{ page }}</option>
-    </select>
+      <v-select
+        id="pageSelector"
+        v-model="indexpage"
+        @change='loadUserW'
+        :items="pageOptions"
+        label="Select page:"
+        dense
+        outlined
+      ></v-select>
+    </v-sheet>
 
-      </v-sheet >
-        <v-sheet class='ma-2'>
-
-    <label for="pageSelector">Select the number of lines:</label>
-    <select id="pageSelector" v-model="indexLigne" @change='loadUserW(indexpage,indexLigne)'>
-      <option v-for="page in 50" :key="page" :value="page">{{ page }}</option>
-    </select>
-        </v-sheet>
+    <v-sheet class="ma-2">
+      <v-select
+        id="lineSelector"
+        v-model="indexLigne"
+        @change="loadUserW"
+        :items="lineOptions"
+        label="Select the number of lines:"
+        dense
+        outlined
+      ></v-select></v-sheet>
     <table>
       <thead>
     <tr>
