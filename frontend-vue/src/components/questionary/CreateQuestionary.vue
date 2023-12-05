@@ -30,6 +30,25 @@
       </v-sheet>
     </v-sheet>
 
+    <v-sheet v-if="selectedQuestionType === 'Multiple'">
+      <v-sheet class="answers">
+        <v-sheet v-for="(answer, index) in question.answers" :key="index">
+          <v-text-field
+            :label="'Answer ' + (index + 1) + ' :'"
+            :id="'answer-' + index"
+            :value="question.answers[index].content"
+            v-model="question.answers[index].content"
+            required></v-text-field>
+
+          <v-checkbox
+            v-model="correctMultiple"
+            :id="'correct-answer-' + index"
+            :label="'Correct'"
+            :value="index"></v-checkbox>
+        </v-sheet>
+      </v-sheet>
+    </v-sheet>
+
     <v-sheet v-if="this.selectedQuestionType === 'True-False'">
       <!-- Réponses possibles -->
       <v-sheet class="answers">
@@ -54,7 +73,7 @@
     <v-sheet
       v-if="
         this.selectedQuestionType === 'Unique' ||
-        this.selectedQuestionType === null
+        this.selectedQuestionType === 'Multiple'
       ">
       <button @click="addAnswer">Add an answer</button>
 
@@ -89,6 +108,7 @@
       return {
         question,
         indexD: 0,
+        correctMultiple: [],
         correct: 0,
         questionnaryName: '',
         answers: [{ content: '', isCorrect: false }],

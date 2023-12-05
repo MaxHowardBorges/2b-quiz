@@ -101,7 +101,7 @@
         OnList: true,
         showTypeSelector: false,
         selectedType: 'Unique',
-        typeOptions: ['Unique', 'Open-Ended', 'True-False'],
+        typeOptions: ['Unique', 'Multiple', 'Open-Ended', 'True-False'],
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
