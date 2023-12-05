@@ -23,6 +23,9 @@ export const useUserStore = defineStore('user', {
     isStudent() {
       return this.userRole === UserRoles.STUDENT;
     },
+    isAdmin() {
+      return this.userRole === UserRoles.ADMIN;
+    },
     isTeacher() {
       return this.userRole === UserRoles.TEACHER;
     },
@@ -116,7 +119,14 @@ export const useUserStore = defineStore('user', {
       this.setToken(null);
       this.setUserRoles(null);
       this.setUsername(null);
-      await router.push({ name: 'Login', query: { expiredError: 'true' } });
+      const urlEncoded = encodeURIComponent((window.location.origin) + "")
+      console.log(urlEncoded);
+      window.location.href =(
+        import.meta.env.VITE_CAS_URL +
+        import.meta.env.VITE_CAS_LOGOUT_ROUTE +
+        '?service=' +urlEncoded
+        );
+      //await router.push({ name: 'Login', query: { expiredError: 'true' } });
     },
     async validateSelf(name, surname, userType) {
       const response = await validateSelf(

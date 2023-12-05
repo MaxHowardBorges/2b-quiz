@@ -1,5 +1,7 @@
 <script>
 
+  import { useUserStore } from '@/stores/userStore';
+
   export default {
     data() {
       return {
@@ -13,11 +15,18 @@
         ],
       };
     },
+    setup() {
+      const userStore = useUserStore();
+      return {
+        userStore,
+      };
+    },
   }
 
 </script>
 
 <template>
+
   <div id="app">
     <h1>Page d'Administration</h1>
     <h2>Professeurs Validés</h2>

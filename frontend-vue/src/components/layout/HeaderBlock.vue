@@ -84,7 +84,9 @@
       },
       toggleLogout() {
         // TODO a lier avec le back
-        router.push('/');
+        this.userStore.logoutUser()
+        console.log("logout")
+        //router.push("/register")
       },
       getVS() {
         this.showTabs = false;
