@@ -1,95 +1,70 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '@/views/HomeView.vue';
+import SessionView from '@/views/SessionView.vue';
+import TeacherHomeView from '@/views/TeacherHomeView.vue';
+import { useUserStore } from '@/stores/userStore';
 
 const routes = [
   {
+    path: '/teacher-home-page',
+    name: 'Teacher home',
+    props: (route) => ({
+      errorSnackbar: route.query.errorSnackbar,
+      dialogError: !!route.query.dialogError,
+    }),
+    component: TeacherHomeView,
+  },
+  {
+    path: '/session',
+    name: 'Session',
+    component: SessionView,
+  },
+  {
     path: '/',
-    name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/HomeView.vue')
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  },
-  {
-    path: '/question',
-    name: 'question',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherQuestionView.vue')
-  },
-
-  {
-    path: '/end-of-session',
-    name: 'end-of-session',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/EndOfSessionView.vue')//EndOfSessionView//FinDeSessionView
-  },
-
-  {
-    path: '/waiting-participant',//waiting-participant
-    name: 'waiting-participant',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingParticipantView.vue')// WaitingParticipantView //AttenteParticipantView
-  },
-  {
-    path: '/teacher-home-page',//teacher-home-page
-    name: 'teacher-home-page',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/TeacherHomeView.vue')//TeacherHomeView//MenuEnseignantView
-  },
-  {
-    path: '/waiting',
-    name: 'waiting',
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingQuestion.vue')
-  },
-  {
-    path: '/waiting-session',
-    name: 'waiting-session',
-    component: () => import(/* webpackChunkName: "about" */ '../views/WaitingSession.vue')
-  },
-  {
-    path: '/answer',
-    name: 'answer',
-    component: () => import(/* webpackChunkName: "about" */ '../views/StudentAnswer.vue')
-  },
-  {
-    path: '/end',
-    name: 'end',
-    component: () => import(/* webpackChunkName: "about" */ '../views/EndSession.vue')
-  },
-  //loginView
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import(/* webpackChunkName: "about" */ '../views/loginView.vue')
+    name: 'Home',
+    props: (route) => ({
+      expiredError: !!route.query.expiredError,
+      serverError: !!route.query.serverError,
+      ticket: route.query.ticket,
+    }),
+    component: HomeView,
+    meta: { public: true },
   },
   {
     path: '/register',
-    name: 'register',
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewAccountView.vue')
+    name: 'Register',
+    meta: { public: true, disabled: true },
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/RegisterView.vue'),
   },
   {
     path: '/admin',
-    name: 'admin',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AdminView.vue')
+    name: 'Admin',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/AdminView.vue'),
   },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+  if (to.meta.disabled) {
+    from();
+    return;
+  }
+  if (to.meta.public) {
+    next();
+    return;
+  }
+  if (!userStore.isAuthenticated) {
+    next({ name: 'Login' });
+    return;
+  }
+  next();
 });
 
 export default router;

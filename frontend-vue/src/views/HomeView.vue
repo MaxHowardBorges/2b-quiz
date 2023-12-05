@@ -1,135 +1,38 @@
 <template>
-  <form @submit.prevent="handleJoinSession">
-    <ErrorMessageDialog
-      v-if="showErrorDialog"
-      :errorMessage="errorMessage"
-      @close="closeErrorDialog" />
-    <label id="id" for="id"></label>
-    <input
-      id="username"
-      type="text"
-      placeholder="Votre nom"
-      v-model="username"
-      style="border: 1px solid #000000" />
-    <input
-      id="id-Session"
-      type="text"
-      placeholder="ID de la Session"
-      v-model="idSession"
-      style="border: 1px solid #000000" />
-    <input id="submit1" type="submit" value="Join" />
-  </form>
+  <login-block
+    v-if="!userStore.isAuthenticated"
+    :expiredError="expiredError"
+    :serverError="serverError"
+    :ticket="ticket" />
+  <div
+    v-if="userStore.isAuthenticated"
+    class="h-100 d-flex align-center justify-center ma-2">
+    <join-form v-if="userStore.isStudent" />
+    <new-user-block v-if="userStore.isNotChoose" />
+  </div>
 </template>
 
 <script>
-  import { ref } from 'vue';
-  import ErrorMessageDialog from '@/components/student/ErrorMessageDialog.vue';
-  import { mainStore } from '@/stores/main.store';
-  import { fetchAPIStore } from '@/stores/fetchAPI.store';
-  import { mapStores } from 'pinia';
+  import JoinForm from '@/components/home/JoinForm.vue';
+  import { useUserStore } from '@/stores/userStore';
+  import NewUserBlock from '@/components/user/NewUserBlock.vue';
+  import LoginBlock from '@/components/user/LoginBlock.vue';
 
   export default {
-    computed: {
-      ...mapStores(mainStore, fetchAPIStore),
+    name: 'HomeView',
+    components: { LoginBlock, NewUserBlock, JoinForm },
+    props: {
+      expiredError: Boolean,
+      serverError: Boolean,
+      ticket: null,
     },
-    methods: {
-      async handleJoinSession() {
-        try {
-          const body = { idSession: this.idSession, username: this.username };
-          this.mainStore.setRouter(this.$router);
-          await this.fetchAPIStore.joinSession(body);
-          this.$router.push('/waiting-session');
-        } catch (error) {
-          console.error('Error while joining session:', error);
-          this.errorMessage =
-            "Erreur lors de la session. Veuillez vérifier l'ID de session.";
-          this.showErrorDialog = true;
-        }
-      },
-      closeErrorDialog() {
-        this.showErrorDialog = false;
-      },
-    },
-    data() {
+    setup() {
+      const userStore = useUserStore();
       return {
-        idSession: ref(''),
-        username: ref(''),
-        showErrorDialog: false,
-        errorMessage: '',
+        userStore,
       };
-    },
-
-    components: {
-      ErrorMessageDialog,
     },
   };
 </script>
 
-<style scoped>
-  body {
-    font-family: 'Roboto Light', serif;
-  }
-
-  form {
-    margin: 15% auto; /* Ajoutez cette ligne pour centrer le formulaire horizontalement */
-    width: 20%;
-    padding: 30px;
-    border: 1px solid #f1f1f1;
-    background: #fff;
-    box-shadow:
-      0 0 20px 0 rgba(0, 0, 0, 0.2),
-      0 5px 5px 0 rgba(0, 0, 0, 0.24);
-  }
-
-  input[type='text'] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #5e6567;
-    box-sizing: border-box;
-  }
-
-  input::placeholder {
-    color: #5e6567;
-    opacity: 50%;
-    margin-left: 50%;
-  }
-  input:placeholder-shown {
-    border: 1px solid #ffffff;
-  }
-
-  input[type='submit'] {
-    background-color: #f1dc66;
-    border: none;
-    color: white;
-    padding: 14px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 8px;
-    margin: 8px 0;
-    font-size: 15px;
-    cursor: pointer;
-    width: 100%;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.12),
-      0 1px 2px rgba(0, 0, 0, 0.24);
-  }
-
-  input[type='submit']:hover {
-    transform: scale(1.06);
-    background-position: -60px;
-    box-shadow:
-      0 3px 6px rgba(0, 0, 0, 0.16),
-      0 3px 6px rgba(0, 0, 0, 0.23);
-  }
-
-  input[type='submit']:active {
-    transform: scale(1);
-    background-position: 500px;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.12),
-      0 1px 2px rgba(0, 0, 0, 0.24);
-  }
-</style>
+<style scoped></style>
