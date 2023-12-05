@@ -5,42 +5,36 @@
   export default {
     data() {
       return {
-        professeursValides: [
-          { id: 1, nom: 'GUILLOU', prenom: 'Axel', type: 'Validé' },
-          { id: 2, nom: 'BENIZRI', prenom: 'Sam', type: 'Validé' },
-        ],
-        professeursEnAttente: [
-          { id: 3, nom: 'BORGES', prenom: 'Maxime', type: 'En attente' },
-          { id: 4, nom: 'PALOTAS', prenom: 'Tamas', type: 'En attente' },
-        ],
+        indexpage: 1,
+        indexLigne: 50,
       };
     },
     setup() {
       const userStore = useUserStore();
+
       return {
         userStore,
       };
     },
+    async mounted() {
+      await this.userStore.getUsers(1, 50);
+    },
     methods: {
-      async fetchUsers(page, nbItem) {
-        try {
-          const response = await this.userStore.getUsers(page, nbItem);
-          if (!response.ok) {
-            throw new Error('Erreur de chargement des utilisateurs');
-          }
-          const users = await response.json();
-          this.userStore.commit('userStore/setUsers', users);
-        } catch (error) {
-          console.error(error);
+
+      async loadUser() {
+        let response = await this.userStore.getUsers(this.indexpage+1, this.indexLigne);
+        if(this.userStore.users.length===0){
+          this.indexpage=1;
+          response = await this.userStore.getUsers(this.indexpage, this.indexLigne);
+        }
+        else{
+          this.indexpage++;
         }
       },
 
-      async loadUser() {
-        const response = await this.userStore.getUsers(1, 50);
-        console.log(this.userStore.users);
+      async loadUserW(index, ligne) {
+        await this.userStore.getUsers(index, ligne);
       }
-
-
     },
   }
 
@@ -49,48 +43,48 @@
 <template>
 
   <v-sheet id="app" v-if="userStore.isAuthenticated && userStore.isAdmin">
-    <h1>Page d'Administration</h1>
-    <h2>Professeurs Validés</h2>
+    <h1>Admin Page</h1>
+    <h2>List of Users</h2>
+
+
+    <v-sheet class='ma-2'>
+    <label for="pageSelector">Select page:</label>
+    <select id="pageSelector" v-model="indexpage" @change='loadUserW(indexpage,indexLigne)'>
+      <option v-for="page in 50" :key="page" :value="page">{{ page }}</option>
+    </select>
+
+      </v-sheet >
+        <v-sheet class='ma-2'>
+
+    <label for="pageSelector">Select the number of lines:</label>
+    <select id="pageSelector" v-model="indexLigne" @change='loadUserW(indexpage,indexLigne)'>
+      <option v-for="page in 50" :key="page" :value="page">{{ page }}</option>
+    </select>
+        </v-sheet>
     <table>
       <thead>
     <tr>
       <th>ID</th>
-      <th>Nom</th>
-      <th>Prénom</th>
+      <th>Name</th>
+      <th>Surname</th>
       <th>Type</th>
     </tr>
     </thead>
       <tbody>
-<!--    <v-sheet v-for="(user, index) in userStore.getUsers(1, 50)" :key="index">-->
+
       <tr class='professeurs-valides'  v-for="user in userStore.users" :key="user.id" v-if='userStore.users !== null'>
         <td>{{ user.id }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.surname }}</td>
         <td>{{ user.userType }}</td>
       </tr>
-<!--    </v-sheet>-->
       </tbody>
     </table>
 
-<!--    <h2>Professeurs en Attente de Validation</h2>-->
-<!--    <table>-->
-<!--      <thead>-->
-<!--      <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Nom</th>-->
-<!--        <th>Prénom</th>-->
-<!--        <th>Type</th>-->
-<!--      </tr>-->
-<!--      </thead>-->
-<!--      <tbody>-->
-<!--      <tr class='professeurs-attente' v-for="professeur in professeursEnAttente" :key="professeur.id">-->
-<!--        <td>{{ professeur.id }}</td>-->
-<!--        <td>{{ professeur.nom }}</td>-->
-<!--        <td>{{ professeur.prenom }}</td>-->
-<!--        <td>{{ professeur.type }}</td>-->
-<!--      </tr>-->
-<!--      </tbody>-->
-<!--    </table>-->
+    <v-sheet class='ma-5'>
+      <v-btn text="Next Page" @click="loadUser">    </v-btn>
+    </v-sheet>
+
   </v-sheet>
 </template>
 
@@ -99,7 +93,6 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
   }
 
   h1 {

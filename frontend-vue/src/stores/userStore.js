@@ -152,7 +152,6 @@ export const useUserStore = defineStore('user', {
         }
         const users = await response.json();
         this.setUsers(users);
-        console.log(users);
       } catch (error) {
         console.error(error);
       }
