@@ -30,6 +30,12 @@
       </v-sheet>
     </v-sheet>
 
+    <v-sheet
+      v-if="
+        selectedQuestionType === 'Open-Ended' || this.selectedQuestionType === null
+      ">
+    </v-sheet>
+
     <v-sheet v-if="selectedQuestionType === 'Multiple'">
       <v-sheet class="answers">
         <v-sheet v-for="(answer, index) in question.answers" :key="index">

@@ -26,7 +26,10 @@ export class QuestionService {
     const question = new Question();
     question.questionnary = questionnary;
     question.content = q.content;
-    //question.type = q.type;
+    question.type = q.type;
+    if (q.type == "ouv"){
+      q.answers = [];
+    }
 
     await this.questionRepository.save(question);
     for (const a of q.answers) {
