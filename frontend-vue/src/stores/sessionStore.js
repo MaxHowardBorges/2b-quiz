@@ -15,13 +15,14 @@ export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
     questionnary: [],
-    question: { content: '', answers: [] },
+    question: { content: '', answers: [], type: '' },
     ended: false,
     results: [],
   }),
   actions: {
     setQuestion(question) {
       this.question = question;
+      console.log('TYPE : ' + this.question.type);
     },
     setIdSession(idSession) {
       this.idSession = idSession;
