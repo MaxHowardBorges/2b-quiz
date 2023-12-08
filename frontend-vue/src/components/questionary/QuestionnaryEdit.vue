@@ -53,7 +53,7 @@
       <v-card>
         <v-card-title class="headline">Confirmation</v-card-title>
         <v-card-text>
-          Please note that your questionnaire has no questions if you leave it will not be saved.
+          Please note that your questionnary has no questions if you leave it will not be saved.
         </v-card-text>
         <v-card-actions>
           <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
