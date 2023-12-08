@@ -27,6 +27,7 @@
     props: {
       questionnaryId: { type: Number, default: null },
       questionnaryName: {},
+      author: {},
     },
     methods: {
       deleteQuestionnary() {
@@ -35,6 +36,7 @@
       modifyQuestionnary() {
         this.useQ.idQuestionnary = this.questionnaryName.id;
         this.useQ.getQuestionnary();
+        this.useQ.getQuestions();
         this.$emit('nextQuestionE');
       },
       startQuestionnary() {

@@ -22,6 +22,7 @@ export async function addQuestion(body, id) {
 }
 
 export async function getQuestionnary(id) {
+  // return questionnary without questions
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + id + '/select/',
     {
@@ -33,9 +34,23 @@ export async function getQuestionnary(id) {
   );
 }
 
-export async function getQuestionnaryFromUser(id) {
+export async function getQuestionnariesFromUser(id) {
+  // return questionnaries without questions
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/select/user/' + id,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}
+
+export async function getQuestionsFromQuestionnary(id) {
+  // return questions without answers
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/select-questions/',
     {
       method: 'GET',
       headers: {

@@ -5,29 +5,42 @@ import {
   addQuestion,
   modifyQuestion,
   deleteQuestion,
-  getQuestionnaryFromUser,
   deleteQuestionnary,
   modifyQuestionnary,
+  getQuestionnariesFromUser,
+  getQuestionsFromQuestionnary,
 } from '@/api/questionnary';
+import { getAnswersFromQuestion } from '@/api/question';
 
 export const useQuestionnaryStore = defineStore('questionnary', {
   state: () => ({
     idQuestionnary: null,
     questionnary: null,
     questionnaryList: [],
+    questions: [],
+    answers: [],
   }),
   getters: {
     isCreated() {
       return this.idQuestionnary != null;
     },
-    getQuestion(state) {
-      return (id) =>
-        this.questionnary.questions.find((question) => question.id === id);
-    },
   },
   actions: {
-    setIdQuestionnary(idQuestionnary) {
-      this.idQuestionnary = idQuestionnary;
+    async getQuestionnariesFromUser(idUser = 0) {
+      //TODO get user id
+      this.questionnaryList = [];
+      try {
+        const response = await getQuestionnariesFromUser(idUser);
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          for (const q of JSON.parse(await response.text())) {
+            this.questionnaryList.push(q);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
     async createQuestionnary(questionnary) {
       try {
@@ -55,21 +68,40 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         }
       }
     },
-    async getQuestionnaryFromUser(idUser = 0) {
-      //TODO get user id
-      this.questionnaryList = [];
-      try {
-        const response = await getQuestionnaryFromUser(idUser);
-        if (!response.ok || response.status !== 200) {
-          throw new Error('Erreur de réponse'); // TODO manage error
-        } else {
-          const questionnaryJson = JSON.parse(await response.text());
-          for (const q of questionnaryJson) {
-            this.questionnaryList.push(q);
+    async getQuestions() {
+      if (this.isCreated) {
+        this.questions = [];
+        try {
+          const response = await getQuestionsFromQuestionnary(
+            this.idQuestionnary,
+          );
+          if (!response.ok || response.status !== 200) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          } else {
+            for (const q of JSON.parse(await response.text())) {
+              this.questions.push(q);
+            }
           }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
+      }
+    },
+    async getAnswers(idQuestion) {
+      if (this.isCreated) {
+        this.answers = [];
+        try {
+          const response = await getAnswersFromQuestion(idQuestion);
+          if (!response.ok || response.status !== 200) {
+            throw new Error('Erreur de réponse'); // TODO manage error
+          } else {
+            for (const a of JSON.parse(await response.text())) {
+              this.answers.push(a);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
     async addQuestion(question) {
@@ -97,7 +129,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error
           } else {
-            await this.getQuestionnary();
+            await this.getQuestions();
           }
         } catch (error) {
           console.error(error);
@@ -110,6 +142,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           const response = await modifyQuestionnary(
             this.idQuestionnary,
             questionnaryName,
+            //author,
           );
           if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error
@@ -131,7 +164,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           if (!response.ok || response.status !== 200) {
             throw new Error('Erreur de réponse'); // TODO manage error
           } else {
-            await this.getQuestionnary();
+            await this.getQuestions();
           }
         } catch (error) {
           console.error(error);
@@ -145,7 +178,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
           this.questionnaryList = [];
-          await this.getQuestionnaryFromUser(); //TODO get user id
+          await this.getQuestionnariesFromUser(); //TODO get user id
         }
       } catch (error) {
         console.error(error);

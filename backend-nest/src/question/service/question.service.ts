@@ -22,12 +22,12 @@ export class QuestionService {
     return answer.question.id === question.id;
   }
 
-  async createQuestion(q: Question, questionnary : Questionnary) {
+  async createQuestion(q: Question, questionnary: Questionnary) {
     const question = new Question();
     question.questionnary = questionnary;
     question.content = q.content;
     question.type = q.type;
-    if (q.type == "ouv"){
+    if (q.type == 'ouv') {
       q.answers = [];
     }
 
@@ -42,7 +42,7 @@ export class QuestionService {
     return question;
   }
 
-  async deleteQuestions(questionnary : Questionnary) {
+  async deleteQuestions(questionnary: Questionnary) {
     const questions = await this.questionRepository.find({
       where: { questionnary },
     });
@@ -52,38 +52,35 @@ export class QuestionService {
     await this.questionRepository.delete({ questionnary });
   }
 
-  async findQuestion(questionnary : Questionnary) {
-    const questionsDB = await this.questionRepository.find({
-      where: { questionnary },
+  async findQuestion(idQuestion: number) {
+    return await this.questionRepository.findOne({
+      where: { id: idQuestion },
       relations: ['answers'],
     });
-
-    const questions: Question[] = [];
-    for (const q of questionsDB) {
-      const answers = q.answers.map((answerEnt) => {
-        const answer = new Answer();
-        answer.id = answerEnt.id;
-        answer.content = answerEnt.content;
-        answer.isCorrect = answerEnt.isCorrect;
-        answer.question = q;
-        return answer;
-      });
-
-      const question = {
-        id: q.id,
-        type: q.type,
-        content: q.content,
-        answers: answers,
-        questionnary: questionnary
-      };
-
-      questions.push(question);
-    }
-
-    return questions;
   }
 
-  async deleteQuestion(questionnary : Questionnary, idQuestion: number) {
+  async findQuestions(questionnary: Questionnary) {
+    return await this.questionRepository.find({
+      where: { questionnary },
+    });
+  }
+
+  async findAnswers(idQuestion: number) {
+    const questionsDB = await this.questionRepository.findOne({
+      where: { id: idQuestion },
+      relations: ['answers'],
+    });
+    return questionsDB.answers.map((answerEnt) => {
+      const answer = new Answer();
+      answer.id = answerEnt.id;
+      answer.content = answerEnt.content;
+      answer.isCorrect = answerEnt.isCorrect;
+      answer.question = null;
+      return answer;
+    });
+  }
+
+  async deleteQuestion(questionnary: Questionnary, idQuestion: number) {
     const question = await this.questionRepository.findOne({
       where: { questionnary, id: idQuestion },
     });
@@ -96,7 +93,7 @@ export class QuestionService {
 
   async modifyQuestion(
     question: Question,
-    questionnary : Questionnary,
+    questionnary: Questionnary,
     idQuestion: number,
   ) {
     const questionDB = await this.questionRepository.findOne({
@@ -106,8 +103,12 @@ export class QuestionService {
 
     if (questionDB) {
       let { id, ...questionWithoutId } = question;
-      const newQuestion : Question = Object.assign({}, questionDB, questionWithoutId);
-      await this.answerRepository.delete({question : questionDB});
+      const newQuestion: Question = Object.assign(
+        {},
+        questionDB,
+        questionWithoutId,
+      );
+      await this.answerRepository.delete({ question: questionDB });
       await this.questionRepository.save(newQuestion);
 
       for (const a of question.answers) {

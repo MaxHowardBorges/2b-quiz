@@ -16,11 +16,11 @@
       <br />
       Question N°{{
         this.idQuestion
-          ? this.useQ.questionnary.questions.findIndex(
+          ? this.useQ.questions.findIndex(
               (question) => question.id === this.idQuestion,
             ) + 1
           : !!this.useQ.questionnary
-          ? this.useQ.questionnary.questions.length + 1
+          ? this.useQ.questions.length + 1
           : 1
       }}
     </div>
@@ -57,7 +57,7 @@
     <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
       <v-sheet
         v-if="this.useQ.questionnary"
-        v-for="(question, index) in this.useQ.questionnary.questions"
+        v-for="(question, index) in this.useQ.questions"
         :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
@@ -137,7 +137,7 @@
         this.OnList = !this.OnList;
         this.statusQ = 'modify';
         this.idQuestion = idQuestion;
-        this.question = this.useQ.getQuestion(this.idQuestion);
+        this.useQ.getAnswers(idQuestion);
       },
       async validQuestion() {
         const index = this.$refs.questionnaryComponent.correct;
@@ -177,7 +177,6 @@
       },
       leaveWithoutSaving() {
         this.idQuestion = null;
-        this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;

@@ -14,8 +14,6 @@ import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
-import { BodyEmptyException } from '../exception/bodyEmpty.exception';
-import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
@@ -28,7 +26,9 @@ export class SessionController {
   ) {}
 
   @Post('/create')
-  async createSession(@Body(new ValidationPipe()) ids : number[]): Promise<Session> {
+  async createSession(
+    @Body(new ValidationPipe()) ids: number[],
+  ): Promise<Session> {
     return this.sessionService.initializeSession(ids);
   }
 
@@ -50,10 +50,10 @@ export class SessionController {
   }
 
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(
+  async getCurrentQuestion(
     @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
-  ): CurrentQuestionDto {
-    const question = this.sessionService.currentQuestion(body.idSession);
+  ): Promise<CurrentQuestionDto> {
+    const question = await this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 

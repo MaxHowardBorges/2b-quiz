@@ -19,21 +19,24 @@ export class SessionService {
   private sessionMap: Map<string, Session> = new Map<string, Session>();
   constructor(
     private questionService: QuestionService,
-    private questionnaryService : QuestionnaryService,
+    private questionnaryService: QuestionnaryService,
     private answerMapper: AnswerMapper,
     private eventService: EventService,
   ) {}
 
-  async initializeSession(ids : number[]): Promise<Session> {
+  async initializeSession(ids: number[]): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
     const questionnaries: Questionnary[] = [];
-    for(const id of ids){
+    for (const id of ids) {
       questionnaries.push(await this.questionnaryService.findQuestionnary(id));
     }
-    this.sessionMap.set(idSession, await this.createSession(idSession, questionnaries));
+    this.sessionMap.set(
+      idSession,
+      await this.createSession(idSession, questionnaries),
+    );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
   }
@@ -43,11 +46,11 @@ export class SessionService {
     return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
   }
 
-  async createSession(idSession: string, questionnaryTab : Questionnary[] ): Promise<Session> {
-    return new Session(
-      idSession,
-      questionnaryTab,
-    );
+  async createSession(
+    idSession: string,
+    questionnaryTab: Questionnary[],
+  ): Promise<Session> {
+    return new Session(idSession, questionnaryTab);
   }
 
   nextQuestion(idSession: string) {
@@ -59,8 +62,11 @@ export class SessionService {
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return currentSession.questionnaryList[currentSession.questionnaryNumber]
-        .questions[currentSession.questionNumber];
+      return this.questionService.findQuestion(
+        this.questionnaryService.findQuestionsFromIdQuestionnary(
+          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+        )[currentSession.questionNumber],
+      );
     } else if (
       currentSession.questionnaryNumber + 1 <
       currentSession.questionnaryList.length
@@ -68,8 +74,11 @@ export class SessionService {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return currentSession.questionnaryList[currentSession.questionnaryNumber]
-        .questions[currentSession.questionNumber];
+      return this.questionService.findQuestion(
+        this.questionnaryService.findQuestionsFromIdQuestionnary(
+          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+        )[currentSession.questionNumber],
+      );
     }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
@@ -100,16 +109,17 @@ export class SessionService {
     session.userAnswers.set(username, new Map<Question, Answer>());
   }
 
-  currentQuestion(idSession: string) {
+  async currentQuestion(idSession: string) {
     if (this.sessionMap.get(idSession) == undefined) {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
 
-    const question =
-      session.questionnaryList[session.questionnaryNumber].questions[
-        session.questionNumber
-      ];
+    const question = await this.questionService.findQuestion(
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        session.questionnaryList[session.questionnaryNumber].id,
+      )[session.questionNumber],
+    );
 
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
@@ -130,10 +140,11 @@ export class SessionService {
     }
 
     const session = this.sessionMap.get(idSession);
-    const question =
-      session.questionnaryList[session.questionnaryNumber].questions[
-        session.questionNumber
-      ];
+    const question = await this.questionService.findQuestion(
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        session.questionnaryList[session.questionnaryNumber].id,
+      )[session.questionNumber],
+    );
 
     if (!session.connectedUser.has(username)) {
       throw new UserUnknownException();

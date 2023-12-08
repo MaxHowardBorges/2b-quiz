@@ -17,8 +17,8 @@
           <v-text-field
             :label="'Answer ' + (index + 1) + ' :'"
             :id="'answer-' + index"
-            :value="question.answers[index].content"
-            v-model="question.answers[index].content"
+            :value="answer.content"
+            v-model="answer.content"
             required></v-text-field>
           <v-radio-group v-model="correct">
             <v-radio
@@ -32,9 +32,9 @@
 
     <v-sheet
       v-if="
-        selectedQuestionType === 'Open-Ended' || this.selectedQuestionType === null
-      ">
-    </v-sheet>
+        selectedQuestionType === 'Open-Ended' ||
+        this.selectedQuestionType === null
+      "></v-sheet>
 
     <v-sheet v-if="selectedQuestionType === 'Multiple'">
       <v-sheet class="answers">
@@ -42,8 +42,8 @@
           <v-text-field
             :label="'Answer ' + (index + 1) + ' :'"
             :id="'answer-' + index"
-            :value="question.answers[index].content"
-            v-model="question.answers[index].content"
+            :value="answer.content"
+            v-model="answer.content"
             required></v-text-field>
 
           <v-checkbox
@@ -83,7 +83,7 @@
       ">
       <button @click="addAnswer">Add an answer</button>
 
-      <button @click="removeAnswer(index)">Delete an answer</button>
+      <button @click="removeAnswer()">Delete an answer</button>
     </v-sheet>
   </v-sheet>
 </template>
@@ -124,7 +124,11 @@
     methods: {
       getQuestion() {
         if (!!this.idQuestion) {
-          return this.questionnaryStore.getQuestion(this.idQuestion);
+          let question = this.questionnaryStore.questions.find(
+            (question) => question.id === this.idQuestion,
+          );
+          question.answers = this.questionnaryStore.answers;
+          return question;
         }
         return null;
       },

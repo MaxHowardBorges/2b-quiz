@@ -13,7 +13,7 @@ export class QuestionnaryService {
     private questionService: QuestionService,
   ) {}
 
-  async createQuestionnary(questionnary : Questionnary) {
+  async createQuestionnary(questionnary: Questionnary) {
     await this.questionnaryRepository.save(questionnary);
     for (const q of questionnary.questions) {
       await this.questionService.createQuestion(q, questionnary);
@@ -34,38 +34,31 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
-  async findQuestionnary(idQuestionnary : number) {
-    const questionnaryDB = await this.questionnaryRepository.findOne({
+  async findQuestionnary(idQuestionnary: number) {
+    //questionnary without questions
+    return await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
-
-    const questionnary = new Questionnary();
-    if (questionnaryDB) {
-      questionnary.id = questionnaryDB.id;
-      questionnary.author = questionnaryDB.author;
-      questionnary.title = questionnaryDB.title;
-      questionnary.questions =
-        await this.questionService.findQuestion(questionnaryDB);
-    }
-    return questionnary
   }
 
-  async findQuestionnaryFromUser(idUser : number) {//TODO get from user questionnary bank
-    const questionnaryDB = await this.questionnaryRepository.find();
+  async findQuestionnariesFromIdUser(idUser: number) {
+    // questionnaries without questions
+    //TODO get from user questionnary bank
+    /*return await this.questionnaryRepository.find({
+      where: {
+        id: idUser,
+      },
+    });*/
+    return await this.questionnaryRepository.find();
+  }
 
-    const questionnaries: Questionnary[] = [];
-    if (questionnaryDB) {
-      for (const q of questionnaryDB) {
-        const index = questionnaryDB.indexOf(q);
-        const questionnary = new Questionnary();
-        questionnary.id = questionnaryDB[index].id;
-        questionnary.author = questionnaryDB[index].author;
-        questionnary.title = questionnaryDB[index].title;
-        questionnary.questions = await this.questionService.findQuestion(questionnaryDB[index]);
-        questionnaries.push(questionnary);
-      }
-    }
-    return questionnaries
+  async findQuestionsFromIdQuestionnary(idQuestionnary: number) {
+    // questions without answers
+    return this.questionService.findQuestions(
+      await this.questionnaryRepository.findOne({
+        where: { id: idQuestionnary },
+      }),
+    );
   }
 
   async addQuestion(idQuestionnary: number, question: Question) {
@@ -73,10 +66,7 @@ export class QuestionnaryService {
       where: { id: idQuestionnary },
     });
     if (questionnary) {
-      return await this.questionService.createQuestion(
-        question,
-        questionnary,
-      );
+      return await this.questionService.createQuestion(question, questionnary);
     }
     return !!questionnary;
   }
@@ -113,12 +103,17 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
-  async modifyQuestionnary(idQuestionnary: number, questionnaryName: string) {
+  async modifyQuestionnary(
+    idQuestionnary: number,
+    questionnaryName: string,
+    author: string = 'default_author',
+  ) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
     if (questionnary) {
       questionnary.title = questionnaryName;
+      questionnary.author = author;
       await this.questionnaryRepository.save(questionnary);
     }
     return !!questionnary;
