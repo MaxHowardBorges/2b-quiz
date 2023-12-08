@@ -49,6 +49,19 @@
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
 
+    <v-dialog v-model="alertQuestionnaryNull" max-width="600">
+      <v-card>
+        <v-card-title class="headline">Confirmation</v-card-title>
+        <v-card-text>
+          Please note that your questionnaire has no questions if you leave it will not be saved.
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
+          <v-btn @click="EmitGoList">confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
       <b>
         Pas encore de questions.. Cliquez sur le + pour ajouter une question
@@ -108,6 +121,7 @@
         questionnaryName: '',
         statusQ: 'add',
         idQuestion: null,
+        alertQuestionnaryNull: false
       };
     },
     setup() {
@@ -184,14 +198,19 @@
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
-        if (
-          !this.useQ.isCreated ||
-          (this.useQ.isCreated &&
-            this.questionnaryName !== this.baseQuestionnaryName)
-        ) {
-          this.useQ.idQuestionnary = null;
-          this.$emit('GoList');
-        } else alert('Veuillez changer le nom du questionnaire');
+        if (this.useQ.questionnary === null && this.alertQuestionnaryNull===false){
+          this.alertQuestionnaryNull = true;
+        } else {
+          this.alertQuestionnaryNull = false;
+          if (
+            !this.useQ.isCreated ||
+            (this.useQ.isCreated &&
+              this.questionnaryName !== this.baseQuestionnaryName)
+          ) {
+            this.useQ.idQuestionnary = null;
+            this.$emit('GoList');
+          } else alert('Veuillez changer le nom du questionnaire');
+        }
       },
       changeName() {
         if (this.useQ.isCreated) {
@@ -228,4 +247,11 @@
   .button-container {
     display: flex;
   }
+
+  .errrmes{
+    background-color: rgba(255, 0, 0, 0.2); ;
+    color: brown;
+    border-radius: 5px;
+  }
+
 </style>
