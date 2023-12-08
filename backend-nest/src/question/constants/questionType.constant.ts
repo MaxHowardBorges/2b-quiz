@@ -3,4 +3,5 @@ export enum QuestionType {
   QCU = 'qcu',
   NDM = 'ndm',
   OUV = 'ouv',
+  TOF = 'tof',
 }
