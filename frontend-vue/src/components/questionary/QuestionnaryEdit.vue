@@ -62,9 +62,6 @@
         <QuestionnaryListOne
           :numberLabel="question.content"
           :typeLabel="question.type"
-          {{TODO
-          question
-          type}}
           :idQuestion="question.id"
           @ChangeStatuss="ChangeStatus" />
       </v-sheet>
