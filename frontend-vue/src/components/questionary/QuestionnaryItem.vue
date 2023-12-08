@@ -12,7 +12,7 @@
     <v-card>
       <v-card-title class="headline">Confirmation</v-card-title>
       <v-card-text>
-        Are you sure to delete the questionnary.
+        Are you sure to delete the questionnary : <b> " {{questionnaryName.title}} " </b> ?
       </v-card-text>
       <v-card-actions>
         <v-btn @click="alertQuestionnaryDelete = false">Cancel</v-btn>
