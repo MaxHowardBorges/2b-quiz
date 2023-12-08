@@ -53,17 +53,37 @@ export class SessionService {
     return new Session(idSession, questionnaryTab);
   }
 
-  nextQuestion(idSession: string) {
+  async nextQuestion(idSession: string) {
     const currentSession = this.sessionMap.get(idSession);
     if (
       currentSession.questionNumber + 1 <
-      currentSession.questionnaryList[currentSession.questionnaryNumber]
-        .questions.length
+      (
+        await this.questionnaryService.findQuestionsFromIdQuestionnary(
+          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+        )
+      ).length
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return this.questionService.findQuestion(
-        this.questionnaryService.findQuestionsFromIdQuestionnary(
+      console.log('session');
+      console.log(currentSession);
+      console.log('questions');
+      console.log(
+        await this.questionnaryService.findQuestionsFromIdQuestionnary(
+          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+        )[currentSession.questionNumber], // /!\ return null
+      );
+      console.log('current question');
+      console.log(
+        await this.questionService.findQuestion(
+          await this.questionnaryService.findQuestionsFromIdQuestionnary(
+            currentSession.questionnaryList[currentSession.questionnaryNumber]
+              .id,
+          )[currentSession.questionNumber],
+        ),
+      );
+      return await this.questionService.findQuestion(
+        await this.questionnaryService.findQuestionsFromIdQuestionnary(
           currentSession.questionnaryList[currentSession.questionnaryNumber].id,
         )[currentSession.questionNumber],
       );
@@ -74,8 +94,8 @@ export class SessionService {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return this.questionService.findQuestion(
-        this.questionnaryService.findQuestionsFromIdQuestionnary(
+      return await this.questionService.findQuestion(
+        await this.questionnaryService.findQuestionsFromIdQuestionnary(
           currentSession.questionnaryList[currentSession.questionnaryNumber].id,
         )[currentSession.questionNumber],
       );
