@@ -55,6 +55,7 @@ export class SessionService {
 
   async nextQuestion(idSession: string) {
     const currentSession = this.sessionMap.get(idSession);
+    // check for next question in the current questionnary
     if (
       currentSession.questionNumber + 1 <
       (
@@ -65,28 +66,14 @@ export class SessionService {
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      console.log('session');
-      console.log(currentSession);
-      console.log('questions');
-      console.log(
+      let questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
           currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        )[currentSession.questionNumber], // /!\ return null
-      );
-      console.log('current question');
-      console.log(
-        await this.questionService.findQuestion(
-          await this.questionnaryService.findQuestionsFromIdQuestionnary(
-            currentSession.questionnaryList[currentSession.questionnaryNumber]
-              .id,
-          )[currentSession.questionNumber],
-        ),
-      );
+        );
       return await this.questionService.findQuestion(
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        )[currentSession.questionNumber],
+        questionTab[currentSession.questionNumber].id,
       );
+      // else check for next questionnary in the current session
     } else if (
       currentSession.questionnaryNumber + 1 <
       currentSession.questionnaryList.length
@@ -94,10 +81,12 @@ export class SessionService {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      return await this.questionService.findQuestion(
+      let questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
           currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        )[currentSession.questionNumber],
+        );
+      return await this.questionService.findQuestion(
+        questionTab[currentSession.questionNumber].id,
       );
     }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
@@ -110,11 +99,25 @@ export class SessionService {
     return [...this.sessionMap];
   }
 
-  getQuestionList(idSession: string) {
+  async getQuestionList(idSession: string) {
     if (this.sessionMap.has(idSession) == false) {
       throw new IdSessionNoneException();
     }
-    return this.sessionMap.get(idSession).questionnaryList;
+    const currentSession = this.sessionMap.get(idSession);
+    const questionnaries = currentSession.questionnaryList;
+    for (let questionnary of questionnaries) {
+      let questionTab =
+        await this.questionnaryService.findQuestionsFromIdQuestionnary(
+          questionnary.id,
+        );
+      questionnary.questions = [];
+      for (let question of questionTab) {
+        questionnary.questions.push(
+          await this.questionService.findQuestion(question.id),
+        );
+      }
+    }
+    return questionnaries;
   }
 
   join(idSession: string, username: string): void {
@@ -135,10 +138,12 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
 
-    const question = await this.questionService.findQuestion(
+    const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
         session.questionnaryList[session.questionnaryNumber].id,
-      )[session.questionNumber],
+      );
+    const question = await this.questionService.findQuestion(
+      questionTab[session.questionNumber].id,
     );
 
     if (
@@ -160,10 +165,12 @@ export class SessionService {
     }
 
     const session = this.sessionMap.get(idSession);
-    const question = await this.questionService.findQuestion(
+    const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
         session.questionnaryList[session.questionnaryNumber].id,
-      )[session.questionNumber],
+      );
+    const question = await this.questionService.findQuestion(
+      questionTab[session.questionNumber].id,
     );
 
     if (!session.connectedUser.has(username)) {
