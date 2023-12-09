@@ -111,7 +111,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           if (!response.ok || response.status !== 201) {
             throw new Error('Erreur de réponse'); // TODO manage error
           } else {
-            await this.getQuestionnary();
+            await this.getQuestions();
           }
         } catch (error) {
           console.error(error);

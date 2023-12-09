@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionService } from '../../question/service/question.service';
 import { Question } from '../../question/entity/question.entity';
+import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
+import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
+import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
+import { Answer } from '../../question/entity/answer.entity';
 
 @Injectable()
 export class QuestionnaryService {
@@ -13,7 +17,8 @@ export class QuestionnaryService {
     private questionService: QuestionService,
   ) {}
 
-  async createQuestionnary(questionnary: Questionnary) {
+  async createQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
+    const questionnary = this.dtoToQuestionnary(questionnaryDto);
     await this.questionnaryRepository.save(questionnary);
     for (const q of questionnary.questions) {
       await this.questionService.createQuestion(q, questionnary);
@@ -61,7 +66,11 @@ export class QuestionnaryService {
     );
   }
 
-  async addQuestion(idQuestionnary: number, question: Question) {
+  async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
+    const question = this.dtoToQuestion(
+      questionDto,
+      await this.findQuestionnary(idQuestionnary),
+    );
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
@@ -88,12 +97,16 @@ export class QuestionnaryService {
   async modifyQuestion(
     idQuestionnary: number,
     idQuestion: number,
-    question: Question,
+    questionDto: QuestionCreateDto,
   ) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
     if (questionnary) {
+      const question = this.dtoToQuestion(
+        questionDto,
+        await this.findQuestionnary(idQuestionnary),
+      );
       return await this.questionService.modifyQuestion(
         question,
         questionnary,
@@ -117,5 +130,38 @@ export class QuestionnaryService {
       await this.questionnaryRepository.save(questionnary);
     }
     return !!questionnary;
+  }
+
+  dtoToQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
+    const questionnary = new Questionnary();
+    questionnary.id = null;
+    questionnary.title = questionnaryDto.title;
+    questionnary.author = questionnaryDto.author;
+    questionnary.questions = [];
+    for (const questionDto of questionnaryDto.questions) {
+      questionnary.questions.push(
+        this.dtoToQuestion(questionDto, questionnary),
+      );
+    }
+    return questionnary;
+  }
+  dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
+    const question = new Question();
+    question.id = null;
+    question.content = questionDto.content;
+    question.answers = [];
+    question.questionnary = questionnaryRef;
+    for (const answerDto of questionDto.answers) {
+      question.answers.push(this.dtoToAnswer(answerDto, question));
+    }
+    return question;
+  }
+  dtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
+    const answer = new Answer();
+    answer.id = null;
+    answer.content = answerDto.content;
+    answer.isCorrect = answerDto.isCorrect;
+    answer.question = questionRef;
+    return answer;
   }
 }
