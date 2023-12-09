@@ -24,7 +24,6 @@ export class QuestionService {
 
   async createQuestion(q: Question, questionnary: Questionnary) {
     const question = new Question();
-    console.log('TYPE CREATE : ' + q.content);
     question.questionnary = questionnary;
     question.content = q.content;
     question.type = q.type;

@@ -24,7 +24,9 @@ export class QuestionnaryController {
   createQuestionnary(
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
-    return this.questionnaryService.createQuestionnary(this.DtoToQuestionnary(questionnaryDto));
+    return this.questionnaryService.createQuestionnary(
+      this.DtoToQuestionnary(questionnaryDto),
+    );
   }
 
   @Delete('/:id')
@@ -47,7 +49,13 @@ export class QuestionnaryController {
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
-    return this.questionnaryService.addQuestion(idQuestionnary, this.DtoToQuestion(questionDto, await this.selectQuestionnary(idQuestionnary)));
+    return this.questionnaryService.addQuestion(
+      idQuestionnary,
+      this.DtoToQuestion(
+        questionDto,
+        await this.selectQuestionnary(idQuestionnary),
+      ),
+    );
   }
 
   @Delete('/:id/remove-question/:idQ')
@@ -67,7 +75,10 @@ export class QuestionnaryController {
     return this.questionnaryService.modifyQuestion(
       idQuestionnary,
       idQuestion,
-      this.DtoToQuestion(questionDto, await this.selectQuestionnary(idQuestionnary)),
+      this.DtoToQuestion(
+        questionDto,
+        await this.selectQuestionnary(idQuestionnary),
+      ),
     );
   }
 
@@ -82,34 +93,37 @@ export class QuestionnaryController {
     );
   }
 
-  DtoToQuestionnary(questionnaryDto : QuestionnaryCreateDto){
+  DtoToQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
     const questionnary = new Questionnary();
     questionnary.id = null;
     questionnary.title = questionnaryDto.title;
     questionnary.author = questionnaryDto.author;
     questionnary.questions = [];
-    for(const questionDto of questionnaryDto.questions){
-      questionnary.questions.push(this.DtoToQuestion(questionDto, questionnary));
+    for (const questionDto of questionnaryDto.questions) {
+      questionnary.questions.push(
+        this.DtoToQuestion(questionDto, questionnary),
+      );
     }
     return questionnary;
   }
-  DtoToQuestion(questionDto : QuestionCreateDto, questionnaryRef : Questionnary){
+  DtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
     const question = new Question();
     question.id = null;
     question.content = questionDto.content;
+    question.type = questionDto.type;
     question.answers = [];
     question.questionnary = questionnaryRef;
-    for(const answerDto of questionDto.answers){
+    for (const answerDto of questionDto.answers) {
       question.answers.push(this.DtoToAnswer(answerDto, question));
     }
     return question;
   }
-  DtoToAnswer(answerDto : AnswerCreateDto, questionRef : Question){
+  DtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
     const answer = new Answer();
     answer.id = null;
     answer.content = answerDto.content;
     answer.isCorrect = answerDto.isCorrect;
-    answer.question = questionRef
+    answer.question = questionRef;
     return answer;
   }
 }
