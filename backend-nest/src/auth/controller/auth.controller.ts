@@ -38,12 +38,6 @@ export class AuthController {
       throw new ForbiddenException();
     return await this.authService.signInDev(dto.username);
   }
-
-  @Post('/renew')
-  async renewToken(@Req() request: UserRequest) {
-    return await this.authService.renewToken(request.user);
-  }
-
   @Get('/logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Req() request: Request) {

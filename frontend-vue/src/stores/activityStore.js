@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useActivityStore = defineStore({
   id: 'activity',
   state: () => ({
-    lastActivityTime: Date.now(),
+    lastActivityTime: null,
   }),
   getters: {
     isInactiveAndClosed() {
@@ -27,4 +27,5 @@ export const useActivityStore = defineStore({
       this.lastActivityTime = Date.now();
     },
   },
+  persist: true,
 });

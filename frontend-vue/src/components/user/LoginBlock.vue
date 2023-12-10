@@ -90,13 +90,13 @@
       async checkTicket() {
         try {
           await this.userStore.login(this.ticket, this.getServiceURL());
-          await router.push('/home');
+          await router.push('/');
         } catch (error) {
           if (error instanceof ValidationError) {
             this.errorSnackbarContent = error.message;
             this.$refs.errorSnackbar.setSnackbarError(true);
           } else {
-            console.error('Error while joining session:', error);
+            console.error('Error while validating ticket:', error);
             this.$refs.dialogError.setDialogError(true);
           }
         }

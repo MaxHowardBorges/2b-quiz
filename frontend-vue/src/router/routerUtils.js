@@ -13,5 +13,5 @@ export function getAllRoutes() {
 }
 
 export async function serverError() {
-  await router.push({ name: 'Login', query: { serverError: 'true' } });
+  await router.push({ name: 'Home', query: { serverError: 'true' } });
 }

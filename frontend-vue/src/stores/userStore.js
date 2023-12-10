@@ -1,12 +1,6 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
-import {
-  getUserType,
-  loginUser,
-  registerUser,
-  renewToken,
-  validateSelf,
-} from '@/api/user';
+import { getUserType, loginUser, registerUser, validateSelf } from '@/api/user';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useActivityStore } from '@/stores/activityStore';
 import router from '@/router';
@@ -68,55 +62,48 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 201);
       const token = (await response.json()).access_token;
       this.setToken(token);
+      await this.updateUserType();
       //this.setUsername(username);
-      this.setUserRoles(await this.fetchUserType());
-      await this.intervalChecker();
+      this.intervalChecker();
+    },
+    updateToken(token) {
+      token = token.replace('Bearer ', '');
+      this.setToken(token);
+    },
+    async updateUserType() {
+      const userType = await this.fetchUserType();
+      this.setUserRoles(userType);
     },
     async fetchUserType() {
       try {
         const response = await getUserType(this.token);
         if (!response.ok) await this.logoutUser();
         else {
-          return (await response.json()).userType;
+          this.updateToken(response.headers.get('Authorization'));
+          const body = await response.json();
+          return body.userType;
         }
       } catch (e) {
         await serverError();
       }
     },
-    async renewToken() {
-      try {
-        const response = await renewToken(this.token);
-        if (!response.ok) await this.logoutUser();
-        else {
-          const token = (await response.json()).access_token;
-          this.setToken(token);
-        }
-      } catch (e) {
-        await serverError();
-      }
-    },
-    async intervalChecker() {
+    intervalChecker() {
       const activityStore = useActivityStore();
       this.interval = setInterval(() => {
-        if (activityStore.wasActive) {
-          console.log('renew token');
-          this.renewToken();
-        }
         if (activityStore.isInactive) {
           //TODO show inactivity message
         }
         if (activityStore.isInactiveAndClosed) {
-          console.log('expiredToken');
-          this.logoutUser();
+          this.logoutUser().then();
         }
-      }, 30 * 1000);
+      }, 2 * 1000);
     },
     async logoutUser() {
       clearInterval(this.interval);
       this.setToken(null);
       this.setUserRoles(null);
       this.setUsername(null);
-      await router.push({ name: 'Login', query: { expiredError: 'true' } });
+      await router.push({ name: 'Home', query: { expiredError: 'true' } });
     },
     async validateSelf(name, surname, userType) {
       const response = await validateSelf(
@@ -124,6 +111,7 @@ export const useUserStore = defineStore('user', {
         this.token,
       );
       await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
       this.setUserRoles(await this.fetchUserType());
       if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
     },

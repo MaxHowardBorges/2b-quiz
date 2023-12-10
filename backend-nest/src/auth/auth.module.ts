@@ -7,9 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { getJwtModuleOptions } from './config/jwt.config';
 import { BcryptModule } from '../bcrypt/bcrypt.module';
 import { AuthGuard } from './guard/auth.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { BlacklistService } from './service/blacklist.service';
 import { CasModule } from '../cas/cas.module';
+import { UpdateTokenInterceptor } from './interceptor/updateToken.interceptor';
 
 @Module({
   providers: [
@@ -17,6 +18,10 @@ import { CasModule } from '../cas/cas.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: UpdateTokenInterceptor,
     },
     BlacklistService,
   ],
