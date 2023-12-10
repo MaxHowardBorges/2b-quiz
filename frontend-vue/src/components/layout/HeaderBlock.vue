@@ -58,7 +58,6 @@
 <script>
   import { ref } from 'vue';
   import PageMenuBlock from '@/components/layout/PageMenuBlock.vue';
-  import router from '@/router';
   import { useUserStore } from '@/stores/userStore';
 
   export default {
@@ -84,9 +83,7 @@
       },
       toggleLogout() {
         // TODO a lier avec le back
-        this.userStore.logoutUser()
-        console.log("logout")
-        //router.push("/register")
+        this.userStore.selfLogout();
       },
       getVS() {
         this.showTabs = false;

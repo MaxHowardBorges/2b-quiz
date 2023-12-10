@@ -14,11 +14,11 @@ import { serverError } from '@/router/routerUtils';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    userRole: UserRoles,
+    userRole: null,
     username: null,
     token: null,
     interval: null,
-    users: []
+    users: [],
   }),
   getters: {
     isStudent() {
@@ -47,7 +47,7 @@ export const useUserStore = defineStore('user', {
     setToken(token) {
       this.token = token;
     },
-    setUsers(user){
+    setUsers(user) {
       this.users = user;
     },
     async register(
@@ -89,7 +89,7 @@ export const useUserStore = defineStore('user', {
     async fetchUserType() {
       try {
         const response = await getUserType(this.token);
-        if (!response.ok) await this.logoutUser();
+        if (!response.ok) await this.forceLogout();
         else {
           this.updateToken(response.headers.get('Authorization'));
           const body = await response.json();
@@ -106,23 +106,28 @@ export const useUserStore = defineStore('user', {
           //TODO show inactivity message
         }
         if (activityStore.isInactiveAndClosed) {
-          this.logoutUser().then();
+          this.forceLogout().then();
         }
       }, 2 * 1000);
+    },
+    async selfLogout() {
+      await this.logoutUser();
+      const urlEncoded = encodeURIComponent(window.location.origin + '');
+      window.location.href =
+        import.meta.env.VITE_CAS_URL +
+        import.meta.env.VITE_CAS_LOGOUT_ROUTE +
+        '?service=' +
+        urlEncoded;
+    },
+    async forceLogout() {
+      await this.logoutUser();
+      await router.push({ name: 'Home', query: { expiredError: 'true' } });
     },
     async logoutUser() {
       clearInterval(this.interval);
       this.setToken(null);
       this.setUserRoles(null);
       this.setUsername(null);
-      const urlEncoded = encodeURIComponent((window.location.origin) + "")
-      console.log(urlEncoded);
-      window.location.href =(
-        import.meta.env.VITE_CAS_URL +
-        import.meta.env.VITE_CAS_LOGOUT_ROUTE +
-        '?service=' +urlEncoded
-        );
-      //await router.push({ name: 'Home', query: { expiredError: 'true' } });
     },
     async validateSelf(name, surname, userType) {
       const response = await validateSelf(
