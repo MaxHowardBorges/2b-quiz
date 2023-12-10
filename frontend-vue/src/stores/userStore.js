@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
-import { getUserType, loginUser, registerUser, validateSelf } from '@/api/user';
+import {
+  getAllUsers,
+  getUserType,
+  loginUser,
+  registerUser,
+  validateSelf,
+} from '@/api/user';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useActivityStore } from '@/stores/activityStore';
 import router from '@/router';
@@ -12,10 +18,14 @@ export const useUserStore = defineStore('user', {
     username: null,
     token: null,
     interval: null,
+    users: []
   }),
   getters: {
     isStudent() {
       return this.userRole === UserRoles.STUDENT;
+    },
+    isAdmin() {
+      return this.userRole === UserRoles.ADMIN;
     },
     isTeacher() {
       return this.userRole === UserRoles.TEACHER;
@@ -36,6 +46,9 @@ export const useUserStore = defineStore('user', {
     },
     setToken(token) {
       this.token = token;
+    },
+    setUsers(user){
+      this.users = user;
     },
     async register(
       name,
@@ -62,7 +75,6 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 201);
       const token = (await response.json()).access_token;
       this.setToken(token);
-      await this.updateUserType();
       //this.setUsername(username);
       this.intervalChecker();
     },
@@ -103,7 +115,14 @@ export const useUserStore = defineStore('user', {
       this.setToken(null);
       this.setUserRoles(null);
       this.setUsername(null);
-      await router.push({ name: 'Home', query: { expiredError: 'true' } });
+      const urlEncoded = encodeURIComponent((window.location.origin) + "")
+      console.log(urlEncoded);
+      window.location.href =(
+        import.meta.env.VITE_CAS_URL +
+        import.meta.env.VITE_CAS_LOGOUT_ROUTE +
+        '?service=' +urlEncoded
+        );
+      //await router.push({ name: 'Home', query: { expiredError: 'true' } });
     },
     async validateSelf(name, surname, userType) {
       const response = await validateSelf(
@@ -114,6 +133,19 @@ export const useUserStore = defineStore('user', {
       this.updateToken(response.headers.get('Authorization'));
       this.setUserRoles(await this.fetchUserType());
       if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
+    },
+
+    async getUsers(page, nbItem) {
+      try {
+        const response = await getAllUsers(page, nbItem, this.token);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la liste des utilisateur'); // TODO manage error
+        }
+        const users = await response.json();
+        this.setUsers(users);
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
   persist: true,
