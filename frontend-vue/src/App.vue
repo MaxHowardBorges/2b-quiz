@@ -22,8 +22,11 @@
     document.addEventListener('click', () => {
       activityStore.updateActivityTime();
     });
-    if (!!userStore.token) {
+    if (userStore.isAuthenticated) {
       await userStore.updateUserType();
+    }
+    if (!userStore.interval) {
+      userStore.intervalChecker();
     }
   });
 </script>

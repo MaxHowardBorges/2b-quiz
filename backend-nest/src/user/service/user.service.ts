@@ -121,4 +121,8 @@ export class UserService {
     user.surname = surname;
     await this.userRepository.save(user);
   }
+
+  async getNbUsersPage(nbItem: number) {
+    return Math.ceil((await this.userRepository.count()) / nbItem);
+  }
 }

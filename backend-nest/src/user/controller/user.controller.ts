@@ -22,10 +22,10 @@ import { UserRequest } from '../../auth/config/user.request';
 import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
-import { UserFullDataDto } from '../dto/userFullData.dto';
 import { UserMapper } from '../mapper/user.mapper';
 import { UserTypeDto } from '../dto/userType.dto';
 import { UserSelfValidateDto } from '../dto/userSelfValidate.dto';
+import { UserListDto } from '../dto/userList.dto';
 
 @Controller('user')
 export class UserController {
@@ -95,9 +95,10 @@ export class UserController {
   async getUsers(
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
     @Query('nb-item', new ParseIntPipe({ optional: true })) nbItem: number = 50,
-  ): Promise<UserFullDataDto[]> {
+  ): Promise<UserListDto> {
     const userList = await this.userService.getUsersPerPage(page, nbItem);
-    return this.userMapper.userFullDataDtoListMap(userList);
+    const nbPage = await this.userService.getNbUsersPage(nbItem);
+    return this.userMapper.userFullDataDtoListMap(userList, nbPage);
   }
 
   @Get('/role')

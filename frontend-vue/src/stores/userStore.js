@@ -19,6 +19,7 @@ export const useUserStore = defineStore('user', {
     token: null,
     interval: null,
     users: [],
+    nbPage: null,
   }),
   getters: {
     isStudent() {
@@ -49,6 +50,9 @@ export const useUserStore = defineStore('user', {
     },
     setUsers(user) {
       this.users = user;
+    },
+    setNbPageUser(nbPage) {
+      this.nbPage = nbPage;
     },
     async register(
       name,
@@ -139,19 +143,17 @@ export const useUserStore = defineStore('user', {
       this.setUserRoles(await this.fetchUserType());
       if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
     },
-
     async getUsers(page, nbItem) {
-      try {
-        const response = await getAllUsers(page, nbItem, this.token);
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la liste des utilisateur'); // TODO manage error
-        }
-        const users = await response.json();
-        this.setUsers(users);
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await getAllUsers(page, nbItem, this.token);
+      await throwIfNotOK(response, 200);
+      this.updateToken(response.headers.get('Authorization'));
+      const body = await response.json();
+      this.setUsers(body.userList);
+      this.setNbPageUser(body.nbPage);
+      return { userList: body.userList, nbPage: body.nbPage };
     },
   },
-  persist: true,
+  persist: {
+    paths: ['token'],
+  },
 });

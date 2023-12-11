@@ -13,6 +13,7 @@ const routes = [
       dialogError: !!route.query.dialogError,
     }),
     component: TeacherHomeView,
+    meta: { inMenu: true },
   },
   {
     path: '/session',
@@ -28,7 +29,7 @@ const routes = [
       ticket: route.query.ticket,
     }),
     component: HomeView,
-    meta: { public: true },
+    meta: { public: true, inMenu: true },
   },
   {
     path: '/register',
@@ -40,6 +41,7 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
+    meta: { inMenu: true },
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/AdminView.vue'),
   },

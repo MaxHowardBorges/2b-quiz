@@ -1,111 +1,134 @@
 <script>
-
   import { useUserStore } from '@/stores/userStore';
+  import { ref } from 'vue';
 
   export default {
     data() {
       return {
-        indexpage: 1,
-        indexLigne: 7,
+        nbItemsOptions: [10, 20, 50, 100],
+        indexpage: ref(1),
+        itemsPerPage: ref(10),
       };
     },
     setup() {
       const userStore = useUserStore();
-
       return {
+        users: ref([]),
+        nbPage: ref(1),
         userStore,
       };
     },
     async mounted() {
-      await this.userStore.getUsers(1, 7);
+      await this.loadUser();
     },
     computed: {
       pageOptions() {
-        return Array.from({ length: 25 }, (_, index) => index + 1);
-      },
-      lineOptions() {
-        return Array.from({ length: 50 }, (_, index) => index + 1);
+        return Array.from({ length: this.nbPage }, (_, index) => index + 1);
       },
     },
     methods: {
-
       async loadUser() {
-        let response = await this.userStore.getUsers(this.indexpage+1, this.indexLigne);
-        if(this.userStore.users.length===0){
-          this.indexpage=1;
-          response = await this.userStore.getUsers(this.indexpage, this.indexLigne);
-        }
-        else{
-          this.indexpage++;
-        }
+        const data = await this.userStore.getUsers(
+          this.indexpage,
+          this.itemsPerPage,
+        );
+        this.users = data.userList;
+        this.nbPage = data.nbPage;
       },
-
+      async nextPage() {
+        this.indexpage++;
+        await this.loadUser();
+      },
+      async prevPage() {
+        this.indexpage--;
+        await this.loadUser();
+      },
       async loadUserW() {
-        await this.userStore.getUsers(this.indexpage, this.indexLigne);
-        console.log("test",this.indexpage, this.indexLigne);
-      }
+        await this.userStore.getUsers(this.indexpage, this.itemsPerPage);
+        console.log('test', this.indexpage, this.itemsPerPage);
+      },
     },
-    watch: {
-      indexpage: 'loadUserW',
-      indexLigne: 'loadUserW',
-    },
-  }
-
+  };
 </script>
 
 <template>
-
   <v-sheet id="app" v-if="userStore.isAuthenticated && userStore.isAdmin">
     <h1>Admin Page</h1>
     <h2>List of Users</h2>
 
-
-    <v-sheet class='ma-2'>
+    <v-sheet class="ma-2">
       <v-select
         id="pageSelector"
         v-model="indexpage"
-        @change='loadUserW'
+        @change="loadUserW"
         :items="pageOptions"
         label="Select page:"
         dense
-        outlined
-      ></v-select>
+        outlined></v-select>
     </v-sheet>
 
-    <v-sheet class="ma-2">
-      <v-select
-        id="lineSelector"
-        v-model="indexLigne"
-        @change="loadUserW"
-        :items="lineOptions"
-        label="Select the number of lines:"
-        dense
-        outlined
-      ></v-select></v-sheet>
-    <table>
-      <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Surname</th>
-      <th>Type</th>
-    </tr>
-    </thead>
-      <tbody>
-
-      <tr class='professeurs-valides'  v-for="user in userStore.users" :key="user.id" v-if='userStore.users !== null'>
-        <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.surname }}</td>
-        <td>{{ user.userType }}</td>
-      </tr>
-      </tbody>
-    </table>
-
-    <v-sheet class='ma-5'>
-      <v-btn text="Next Page" @click="loadUser">    </v-btn>
-    </v-sheet>
-
+    <v-sheet class="ma-2"></v-sheet>
+    <v-data-iterator
+      :items="users"
+      :page="indexpage"
+      :items-per-page="itemsPerPage">
+      <template v-slot:header="{ page }">
+        <div
+          class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
+          <div class="text-truncate">List of Teachers</div>
+        </div>
+      </template>
+      <template v-slot:default="{ items }">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(item, i) in items" :key="i">
+              <tr>
+                <td>{{ item.raw.id }}</td>
+                <td>{{ item.raw.name }}</td>
+                <td>{{ item.raw.surname }}</td>
+                <td>{{ item.raw.userType }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <template v-slot:footer="">
+        <div class="d-flex align-sm-center justify-end pa-4">
+          <div>Items per page:</div>
+          <v-select
+            class="mt-6 mx-2 flex-0-1"
+            id="lineSelector"
+            v-model="itemsPerPage"
+            @update:modelValue="loadUser"
+            density="compact"
+            :items="nbItemsOptions"
+            variant="outlined"></v-select>
+          <div class="d-inline-flex">
+            <div class="mx-2 my-auto">Page {{ indexpage }} of {{ nbPage }}</div>
+            <v-btn
+              :disabled="indexpage.valueOf() === 1"
+              icon="arrow_back"
+              variant="tonal"
+              density="comfortable"
+              @click="prevPage"></v-btn>
+            <v-btn
+              :disabled="indexpage >= nbPage"
+              icon="arrow_forward"
+              variant="tonal"
+              density="comfortable"
+              @click="nextPage"></v-btn>
+          </div>
+        </div>
+      </template>
+    </v-data-iterator>
   </v-sheet>
 </template>
 
@@ -137,7 +160,8 @@
     margin-bottom: 20px;
   }
 
-  th, td {
+  th,
+  td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;

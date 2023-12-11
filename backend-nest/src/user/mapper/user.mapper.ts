@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../entity/user.entity';
 import { UserFullDataDto } from '../dto/userFullData.dto';
+import { UserListDto } from '../dto/userList.dto';
 
 @Injectable()
 export class UserMapper {
@@ -15,11 +16,11 @@ export class UserMapper {
     return dto;
   }
 
-  userFullDataDtoListMap(users: User[]) {
-    const list = [];
+  userFullDataDtoListMap(users: User[], nbPage: number): UserListDto {
+    const userList = [];
     for (let user of users) {
-      list.push(this.userFullDataDtoMap(user));
+      userList.push(this.userFullDataDtoMap(user));
     }
-    return list;
+    return { userList, nbPage };
   }
 }
