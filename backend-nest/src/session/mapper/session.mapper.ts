@@ -15,6 +15,7 @@ export class SessionMapper {
       id: question.id,
       content: question.content,
       answers: this.answerMapper.mapAnswersStudentDtos(question.answers),
+      type: question.type,
     };
   }
 
