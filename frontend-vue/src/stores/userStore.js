@@ -79,6 +79,7 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 201);
       const token = (await response.json()).access_token;
       this.setToken(token);
+      await this.updateUserType();
       //this.setUsername(username);
       this.intervalChecker();
     },
