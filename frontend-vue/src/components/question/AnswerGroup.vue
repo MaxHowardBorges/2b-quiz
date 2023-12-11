@@ -18,30 +18,6 @@
       </v-row>
     </v-container>
   </v-item-group>
-
-  <v-item-group
-    multiple="true"
-    v-if="type === 'qcm'"
-    mandatory
-    v-model="selected">
-    <v-container class="d-flex flex-wrap flex-column">
-      <v-row
-        v-for="nLine in getNumberOfRow()"
-        :key="nLine"
-        class="align-stretch">
-        <v-col
-          class="flex-grow-1"
-          v-for="nAnswer in getNbAnswerInLine(nLine - 1)"
-          cols="12"
-          :md="getMd(nLine)">
-          <answer-item
-            :disabled="disabled"
-            :content="answers[getAnswerId(nAnswer, nLine)].content"
-            :index="getAnswerId(nAnswer, nLine)" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-item-group>
 </template>
 
 <script>

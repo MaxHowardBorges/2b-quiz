@@ -19,21 +19,24 @@ export class SessionService {
   private sessionMap: Map<string, Session> = new Map<string, Session>();
   constructor(
     private questionService: QuestionService,
-    private questionnaryService : QuestionnaryService,
+    private questionnaryService: QuestionnaryService,
     private answerMapper: AnswerMapper,
     private eventService: EventService,
   ) {}
 
-  async initializeSession(ids : number[]): Promise<Session> {
+  async initializeSession(ids: number[]): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
     const questionnaries: Questionnary[] = [];
-    for(const id of ids){
+    for (const id of ids) {
       questionnaries.push(await this.questionnaryService.findQuestionnary(id));
     }
-    this.sessionMap.set(idSession, await this.createSession(idSession, questionnaries));
+    this.sessionMap.set(
+      idSession,
+      await this.createSession(idSession, questionnaries),
+    );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
   }
@@ -43,11 +46,11 @@ export class SessionService {
     return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
   }
 
-  async createSession(idSession: string, questionnaryTab : Questionnary[] ): Promise<Session> {
-    return new Session(
-      idSession,
-      questionnaryTab,
-    );
+  async createSession(
+    idSession: string,
+    questionnaryTab: Questionnary[],
+  ): Promise<Session> {
+    return new Session(idSession, questionnaryTab);
   }
 
   nextQuestion(idSession: string) {
@@ -147,10 +150,14 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers.get(username).set(
-      question,
-      question.answers.find((answer) => answer.id === idAnswer),
-    );
+    session.userAnswers
+      .get(username)
+      .set(
+        question,
+        typeof idAnswer == 'number'
+          ? question.answers.find((answer) => answer.id === idAnswer)
+          : idAnswer,
+      );
   }
 
   getMapUser(idSession: string) {
