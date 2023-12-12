@@ -53,6 +53,11 @@
         <p class="text-white font-weight-bold pa-2">Session history</p>
       </v-btn>
     </div>
+    <div class="">
+      <v-btn color="primary" class="mx-6 my-3" max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Banque privée de questions</p>
+      </v-btn>
+    </div>
   </v-sheet>
 </template>
 
