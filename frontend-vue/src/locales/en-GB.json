@@ -7,7 +7,10 @@
   "home": {
     "username": "Username",
     "SessionID": "Session ID",
-    "join": "Join"
+    "join": "Join",
+    "errorS": "Error while joining session:",
+    "ServOffline": "The Server is offline",
+    "PTL": "Please, try later."
   },
 
   "teacher": {

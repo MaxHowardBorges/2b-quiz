@@ -1,11 +1,11 @@
 <template>
   <error-dialog
-    title="The Server is offline"
-    content="Please, try later."
+    :title="$t('home.ServOffline')"
+    :content="$t('home.PTL')"
     ref="dialogError"></error-dialog>
 
   <error-snackbar
-    title="Error while connecting to the session"
+    :title="$t('home.errorS')"
     :content="errorSnackbarContent"
     ref="errorSnackbar"></error-snackbar>
 
@@ -79,7 +79,7 @@
             this.errorSnackbarContent = error.message;
             this.$refs.errorSnackbar.setSnackbarError(true);
           } else {
-            console.error('Error while joining session:', error);
+            console.error( this.$t('home.errorS'), error);
             this.$refs.dialogError.setDialogError(true);
           }
         }
