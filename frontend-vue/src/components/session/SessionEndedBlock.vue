@@ -5,7 +5,7 @@
     class="mt-5 px-6 py-8 mx-auto"
     elevation="5">
     <h1>Session ended</h1>
-    <h2 v-if="userStore.isStudent">Thanks for participating</h2>
+    <h2 v-if="userStore.isStudent">{{ $t('session.Thanks') }}</h2>
 
     <div class="mt-3 d-flex flex-wrap">
       <v-btn
@@ -16,7 +16,7 @@
         class="pa-2 ma-2 flex-1-1"
         style="flex-basis: 0 !important"
         :loading="loading">
-        <p class="text-white font-weight-bold">Start a new session</p>
+        <p class="text-white font-weight-bold">{{ $t('session.StartNewSession') }}</p>
       </v-btn>
       <v-btn
         min-width="190px"
@@ -24,7 +24,7 @@
         color="primary"
         class="pa-2 ma-2 flex-1-1"
         style="flex-basis: 0 !important">
-        <p class="text-white font-weight-bold">Return to menu</p>
+        <p class="text-white font-weight-bold">{{ $t('session.ReturnMenu') }}</p>
       </v-btn>
       <v-btn
         min-width="190px"

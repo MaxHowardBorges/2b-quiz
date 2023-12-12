@@ -16,5 +16,21 @@
   "teacher": {
     "createSess": "Create session",
     "SessionHist": "Session History"
+  },
+
+  "session": {
+    "Waiting": "Waiting for the start of the session",
+    "AnswerSub": "Answer submitted",
+    "WaitingNext": "Waiting for the next question",
+    "WaitingPart": "Waiting participants...",
+    "participantsCount": "participant joined the session !",
+    "CancelSession" : "Cancel session",
+    "StartSession": "Start session",
+    "StopTheSession": "Stop the session",
+    "NextQuestion": "Next question",
+    "SendAnswer": "Send answer",
+    "Thanks": "Thanks for participating",
+    "StartNewSession": "Start a new session",
+    "ReturnMenu": "Return to menu"
   }
 }

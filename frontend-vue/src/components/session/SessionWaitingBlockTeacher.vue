@@ -5,24 +5,24 @@
     class="mt-5 px-6 py-8 mx-auto"
     max-width="600px"
     elevation="5">
-    <h1>Waiting participants...</h1>
+    <h1>{{ $t('session.WaitingPart') }}</h1>
     <div class="session-info">
       <p>Session ID: {{ sessionStore.idSession }}</p>
       <img alt="Qr code" src="../../assets/QR_CODE.png" style="width: 200px" />
     </div>
 
-    <p>{{ participantsCount }} participant joined the session !</p>
+    <p>  {{ participantsCount }} ... {{ $t('session.participantsCount') }}</p>
 
     <div>
       <v-btn color="primary" class="mx-6 my-3" @click="cancelSession">
-        <p class="text-white font-weight-bold pa-2">Cancel session</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('session.CancelSession') }} </p>
       </v-btn>
       <v-btn
         color="primary"
         class="mx-6 my-3"
         :loading="loading"
         @click="handleLaunch">
-        <p class="text-white font-weight-bold pa-2">Start session</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('session.StartSession') }}</p>
       </v-btn>
     </div>
   </v-sheet>

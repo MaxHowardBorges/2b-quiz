@@ -1,6 +1,6 @@
 <template>
   <v-btn @click="handleSubmit" color="primary" v-if="userStore.isStudent">
-    <p class="text-white font-weight-bold">Send answer</p>
+    <p class="text-white font-weight-bold">{{ $t('session.SendAnswer') }}</p>
   </v-btn>
 
   <v-divider v-if="userStore.isTeacher" class="mx-6 my-5"></v-divider>
@@ -10,14 +10,14 @@
       color="primary"
       max-width="250"
       class="mx-6 my-3 flex-grow-1">
-      <p class="text-white font-weight-bold">Stop the session</p>
+      <p class="text-white font-weight-bold">{{ $t('session.StopTheSession') }}</p>
     </v-btn>
     <v-btn
       @click="handleNextQuestion"
       color="primary"
       max-width="250"
       class="mx-6 my-3 flex-grow-1">
-      <p class="text-white font-weight-bold">Next question</p>
+      <p class="text-white font-weight-bold">{{ $t('session.SendAnswer') }} </p>
     </v-btn>
   </div>
 </template>

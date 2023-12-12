@@ -16,5 +16,21 @@
   "teacher": {
     "createSess": "Créer session",
     "SessionHist": "Historique des sessions"
+  },
+
+  "session": {
+    "Waiting": "Attente du début de la session",
+    "AnswerSub": "Réponse envoyée",
+    "WaitingNext": "En attente de la prochaine question",
+    "WaitingPart": "Attente des participants...",
+    "participantsCount": "ont rejoint la session !",
+    "CancelSession" : "Annuler la session",
+    "StartSession": "Démarrer la session",
+    "StopTheSession": "Arrêter la session",
+    "NextQuestion": "Question suivante",
+    "SendAnswer": "Envoyer la réponse",
+    "Thanks": "Merci pour votre participation",
+    "StartNewSession": "Démarrer une nouvelle session",
+    "ReturnMenu": "Retour au menu"
   }
 }

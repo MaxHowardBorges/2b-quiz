@@ -16,5 +16,21 @@
   "teacher": {
     "createSess": "hongroisCreate Session",
     "SessionHist": "hongroisSessionHistory"
+  },
+
+  "session": {
+    "Waiting": "hongrois Waiting for the start of the session",
+    "AnswerSub": "hongrois Answer submitted",
+    "WaitingNext": "hongrois Waiting for the next question",
+    "WaitingPart": "hongrois Waiting participants...",
+    "participantsCount": "hongrois participant joined the session !",
+    "CancelSession" : "hongrois Cancel session",
+    "StartSession": "hongrois Start session",
+    "StopTheSession": "hongrois Stop the session",
+    "NextQuestion": "hongrois Next question",
+    "SendAnswer": "hongrois Send answer",
+    "Thanks": "hongrois Thanks for participating",
+    "StartNewSession": "hongrois Start a new session",
+    "ReturnMenu": "hongrois Return to menu"
   }
 }
