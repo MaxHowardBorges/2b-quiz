@@ -5,6 +5,8 @@ import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionService } from '../../question/service/question.service';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
+import { Question } from '../../question/entity/question.entity';
+import { QuestionDto } from '../../question/dto/question.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -31,6 +33,18 @@ export class QuestionnaryService {
     return questionnary;
   }
 
+  async createPrivateQuestionnary(questions: QuestionDto[]) {
+    const questionnary = new Questionnary();
+    questionnary.title = 'Private question bank';
+    questionnary.author = 'Private';
+    await this.questionnaryRepository.save(questionnary);
+    for (const q of questions) {
+      await this.questionService.createQuestion(q, questionnary);
+    }
+
+    return 'The question bank has been created';
+  }
+
   async deleteQuestionnary(idQuestionnary: number) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
@@ -43,7 +57,7 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
-  async findQuestionnary(idQuestionnary : number) {
+  async findQuestionnary(idQuestionnary: number) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
@@ -61,7 +75,8 @@ export class QuestionnaryService {
       : 'pas de questionnaire trouvé';
   }
 
-  async findQuestionnaryFromUser(idUser : number) {//TODO get from user questionnary bank
+  async findQuestionnaryFromUser(idUser: number) {
+    //TODO get from user questionnary bank
     const questionnary = await this.questionnaryRepository.find();
 
     const questionnaryDtos: QuestionnaryDto[] = [];
@@ -72,7 +87,9 @@ export class QuestionnaryService {
         questionnaryDto.id = questionnary[index].id;
         questionnaryDto.author = questionnary[index].author;
         questionnaryDto.title = questionnary[index].title;
-        questionnaryDto.questions = await this.questionService.findQuestion(questionnary[index]);
+        questionnaryDto.questions = await this.questionService.findQuestion(
+          questionnary[index],
+        );
         questionnaryDtos.push(questionnaryDto);
       }
     }

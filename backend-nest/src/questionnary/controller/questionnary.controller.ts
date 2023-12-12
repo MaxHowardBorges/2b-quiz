@@ -12,6 +12,8 @@ import {
 import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
+import { QuestionDto } from '../../question/dto/question.dto';
+import { PrivateQuestionnaryDto } from '../dto/PrivateQuestionnary.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {
@@ -24,6 +26,15 @@ export class QuestionnaryController {
       questionnaryDto.title,
       questionnaryDto.questions,
       questionnaryDto.author,
+    );
+  }
+
+  @Post('/createPrivate')
+  async createPrivateQuestionnary(
+    @Body(new ValidationPipe()) privateQuestionnaryDto: PrivateQuestionnaryDto,
+  ) {
+    return await this.questionnaryService.createPrivateQuestionnary(
+      privateQuestionnaryDto.questions,
     );
   }
 
