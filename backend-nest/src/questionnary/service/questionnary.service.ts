@@ -151,6 +151,7 @@ export class QuestionnaryService {
     question.content = questionDto.content;
     question.answers = [];
     question.questionnary = questionnaryRef;
+    question.type = questionDto.type;
     for (const answerDto of questionDto.answers) {
       question.answers.push(this.dtoToAnswer(answerDto, question));
     }
