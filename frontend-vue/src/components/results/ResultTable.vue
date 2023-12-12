@@ -59,7 +59,7 @@
         const question = this.getQuestion(answerQuestion.idQuestion);
         return (
           question?.answers.find(
-            (answer) => answer.id === answerQuestion.idAnswer,
+            (answer) => answer.id === answerQuestion.idAnswer.id,
           ).content || 'error'
         );
       },
@@ -71,8 +71,9 @@
       isAnswerCorrect(answerQuestion) {
         if (!answerQuestion) return false;
         const question = this.getQuestion(answerQuestion.idQuestion);
+
         return question.answers.find(
-          (answer) => answer.id === answerQuestion.idAnswer,
+          (answer) => answer.id === answerQuestion.idAnswer.id,
         ).isCorrect;
       },
     },
