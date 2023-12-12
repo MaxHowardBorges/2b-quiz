@@ -16,7 +16,7 @@
     rounded="lg"
     width="70%"
     position="relative">
-    <h1 class="mb-6">Teacher Menu</h1>
+    <h1 class="mb-6">{{ $t('menu.menuTeacher') }}</h1>
 
     <div class="">
       <v-btn
@@ -24,12 +24,12 @@
         color="primary"
         class="mx-6 my-3"
         max-width="250px">
-        <p class="text-white font-weight-bold pa-2">Create session</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('teacher.createSess') }}</p>
       </v-btn>
     </div>
     <div class="">
       <v-btn color="primary" class="mx-6 my-3" max-width="250px">
-        <p class="text-white font-weight-bold pa-2">Session history</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('teacher.SessionHist') }}</p>
       </v-btn>
     </div>
   </v-sheet>
