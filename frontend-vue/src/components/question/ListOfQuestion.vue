@@ -30,5 +30,23 @@ import QuestionnaryItem from '@/components/questionary/QuestionnaryItem.vue';
 </template>
 
 <style scoped>
+  .blocklist {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+  }
 
+  .blocklist b {
+    margin-right: 20px;
+  }
+
+  .blocklist .spacer {
+    flex: 1;
+  }
+
+  .blocklist v-btn {
+    margin-left: 20px;
+  }
 </style>

@@ -1,10 +1,6 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="blocklist">
-    <b>{{ questionnaryName.title }}</b>
+    <b>{{ questionName.title }}</b>
     <span class="spacer"></span>
     <span class="spacer"></span>
     <!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
@@ -13,6 +9,28 @@
   </div>
 </template>
 
-<style scoped>
+<script setup>
 
+</script>
+
+<style scoped>
+  .blocklist {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+  }
+
+  .blocklist b {
+    margin-right: 20px;
+  }
+
+  .blocklist .spacer {
+    flex: 1;
+  }
+
+  .blocklist v-btn {
+    margin-left: 20px;
+  }
 </style>
