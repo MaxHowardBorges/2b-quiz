@@ -10,7 +10,7 @@ export async function createQuestionnary(body) {
 
 export async function addQuestion(body, id) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/add-question',
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question',
     {
       method: 'POST',
       headers: {
@@ -23,21 +23,18 @@ export async function addQuestion(body, id) {
 
 export async function getQuestionnary(id) {
   // return questionnary without questions
-  return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/select/',
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/' + id, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+  });
 }
 
 export async function getQuestionnariesFromUser(id) {
   // return questionnaries without questions
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/select/user/' + id,
+    import.meta.env.VITE_API_URL + '/questionnary/user/' + id,
     {
       method: 'GET',
       headers: {
@@ -50,7 +47,7 @@ export async function getQuestionnariesFromUser(id) {
 export async function getQuestionsFromQuestionnary(id) {
   // return questions without answers
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/select-questions/',
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question/',
     {
       method: 'GET',
       headers: {
@@ -65,7 +62,7 @@ export async function modifyQuestion(idQuestionnary, idQuestion, body) {
     import.meta.env.VITE_API_URL +
       '/questionnary/' +
       idQuestionnary +
-      '/modify-question/' +
+      '/question/' +
       idQuestion,
     {
       method: 'PATCH',
@@ -79,10 +76,7 @@ export async function modifyQuestion(idQuestionnary, idQuestion, body) {
 
 export async function modifyQuestionnary(idQuestionnary, name) {
   return await fetch(
-    import.meta.env.VITE_API_URL +
-      '/questionnary/' +
-      idQuestionnary +
-      '/modify-questionnary/',
+    import.meta.env.VITE_API_URL + '/questionnary/' + idQuestionnary,
     {
       method: 'PATCH',
       headers: {
@@ -98,7 +92,7 @@ export async function deleteQuestion(idQuestionnary, idQuestion) {
     import.meta.env.VITE_API_URL +
       '/questionnary/' +
       idQuestionnary +
-      '/remove-question/' +
+      '/question/' +
       idQuestion,
     {
       method: 'DELETE',

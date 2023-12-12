@@ -33,10 +33,10 @@ export class SessionController {
   }
 
   @Post('/nextQuestion')
-  nextQuestion(
+  async nextQuestion(
     @Body(new ValidationPipe()) body: NextQuestionDto,
-  ): Question | NonNullable<unknown> {
-    const question = this.sessionService.nextQuestion(body.idSession);
+  ): Promise<Question | NonNullable<unknown>> {
+    const question = await this.sessionService.nextQuestion(body.idSession);
     if (question) {
       return question;
     }
@@ -75,7 +75,7 @@ export class SessionController {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
     return [
-      this.sessionService.getQuestionList(idSession),
+      await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ];
   }
