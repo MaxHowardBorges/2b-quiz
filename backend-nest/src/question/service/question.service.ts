@@ -46,10 +46,13 @@ export class QuestionService {
     const questions = await this.questionRepository.find({
       where: { questionnary },
     });
-    for (const question of questions) {
-      await this.answerRepository.delete({ question });
+    if (!!questions) {
+      for (const question of questions) {
+        await this.answerRepository.delete({ question });
+      }
+      await this.questionRepository.delete({ questionnary });
     }
-    await this.questionRepository.delete({ questionnary });
+    return !!questions;
   }
 
   async findQuestion(idQuestion: number) {
