@@ -7,5 +7,5 @@ export class AnswerQuestionDto {
 
   @IsNumber()
   @IsNotEmpty()
-  idAnswer: number;
+  idAnswer: number | string;
 }
