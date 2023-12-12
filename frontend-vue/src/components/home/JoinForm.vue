@@ -20,18 +20,18 @@
       <v-text-field
         id="username"
         v-model="username"
-        label="Username"></v-text-field>
+        :label ="$t('home.username')"></v-text-field>
       <v-text-field
         id="idSession"
         v-model="idSession"
-        label="Session ID"></v-text-field>
+        :label ="$t('home.SessionID')" ></v-text-field>
       <v-btn
         type="submit"
         block=""
         class="mt-2"
         color="primary"
         :loading="loading">
-        <p class="text-white font-weight-bold">Join</p>
+        <p class="text-white font-weight-bold">{{ $t('home.join') }}</p>
       </v-btn>
     </v-form>
   </v-sheet>
