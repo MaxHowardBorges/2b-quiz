@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, isString, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class RespondQuestionDto {
   @IsString()
@@ -6,7 +6,7 @@ export class RespondQuestionDto {
   idSession: string;
 
   @IsNotEmpty()
-  answer: number | string;
+  answer: number | string | number[];
 
   @IsString()
   @IsNotEmpty()

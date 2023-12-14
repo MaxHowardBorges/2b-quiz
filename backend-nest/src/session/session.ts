@@ -13,7 +13,7 @@ export class Session {
 
   connectedUser: Set<string>;
 
-  userAnswers: Map<string, Map<Question, Answer | string>>;
+  userAnswers: Map<string, Map<Question, Answer | string | Answer[]>>;
 
   endSession: boolean;
 

@@ -20,9 +20,13 @@ export class SessionMapper {
   }
 
   mapUserAnswerDto(
-    userAnswers: Map<string, Map<QuestionDto, AnswerDto | string>>,
+    userAnswers: Map<
+      string,
+      Map<QuestionDto, AnswerDto | string | AnswerDto[]>
+    >,
   ): UserAnswerDto[] {
     const userAnswerDtos = [];
+
     for (const [username, innerMap] of userAnswers.entries()) {
       const userAnswerDto = new UserAnswerDto();
       userAnswerDto.username = username;
@@ -30,10 +34,14 @@ export class SessionMapper {
 
       for (const [question, answer] of innerMap.entries()) {
         const answerQuestion = new AnswerQuestionDto();
-        if (answer instanceof AnswerDto) {
-          answerQuestion.idAnswer = answer.id;
+
+        if (Array.isArray(answer)) {
+          answerQuestion.idAnswer = answer.map((answer) =>
+            answer instanceof AnswerDto ? answer.id : answer,
+          );
         } else {
-          answerQuestion.idAnswer = answer;
+          answerQuestion.idAnswer =
+            answer instanceof AnswerDto ? answer.id : answer;
         }
         //answerQuestion.idAnswer = answer.id;
         answerQuestion.idQuestion = question.id;

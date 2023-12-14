@@ -60,12 +60,17 @@
       getAnswerContent(answerQuestion) {
         if (!answerQuestion) return '-';
         const question = this.getQuestion(answerQuestion.idQuestion);
-        return (
-          typeof answerQuestion.idAnswer !== "string" ?
-          question?.answers.find(
+        let userAnswer = answerQuestion.idAnswer;
+
+        // join all answers from multiple question into one string
+        Array.isArray(answerQuestion.idAnswer.content) ?  userAnswer = answerQuestion.idAnswer.content.join(' | ') : '';
+
+        typeof answerQuestion.idAnswer === 'number' ?
+          userAnswer = question?.answers.find(
             (answer) => answer.id === answerQuestion.idAnswer.id,
-          ).content : answerQuestion.idAnswer
-        );
+          ).content : ''
+
+        return userAnswer;
       },
       getQuestion(idQuestion) {
         return this.sessionStore.results[0].flatMap(questionnary => questionnary.questions).find(
