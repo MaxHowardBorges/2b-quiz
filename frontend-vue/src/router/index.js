@@ -45,6 +45,13 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/AdminView.vue'),
   },
+  {
+    path: '/user',
+    name: 'User',
+    meta: { inMenu: true ,public: true},
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/UserView.vue'),
+  },
 ];
 
 const router = createRouter({
