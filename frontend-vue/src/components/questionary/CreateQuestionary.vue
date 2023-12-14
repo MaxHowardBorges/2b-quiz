@@ -34,9 +34,9 @@
 
     <v-sheet
       v-if="
-        selectedQuestionType === 'Open-Ended' || this.selectedQuestionType === null
-      ">
-    </v-sheet>
+        selectedQuestionType === 'Open-Ended' ||
+        this.selectedQuestionType === null
+      "></v-sheet>
 
     <v-sheet v-if="selectedQuestionType === 'Multiple'">
       <v-sheet class="answers">
@@ -61,18 +61,10 @@
       <!-- Réponses possibles -->
       <v-sheet class="answers">
         <v-sheet>
-          <input
-            type="radio"
-            :id="true"
-            v-model="correctAnswer"
-            :value="true" />
-          <label>True</label>
-          <input
-            type="radio"
-            :id="false"
-            v-model="correctAnswer"
-            :value="false" />
-          <label>False</label>
+          <v-radio-group v-model="correct">
+            <v-radio :id="'correct-answer-1'" :value="0">True</v-radio>
+            <v-radio :id="'correct-answer-2'" :value="1">False</v-radio>
+          </v-radio-group>
         </v-sheet>
       </v-sheet>
     </v-sheet>
@@ -107,12 +99,6 @@
     computed() {},
     data() {
       let question = this.getQuestion();
-      if (!question) {
-        question = {
-          content: '',
-          answers: [],
-        };
-      }
       return {
         question,
         indexD: 0,
@@ -128,9 +114,19 @@
         if (!!this.idQuestion) {
           return this.questionnaryStore.getQuestion(this.idQuestion);
         }
-        return null;
+        return {
+          content: '',
+          answers: [],
+        };
       },
       getAnswers() {
+        switch (this.selectedQuestionType) {
+          case 'True-False':
+            this.question.answers = [];
+            this.question.answers.push({ content: 'true', isCorrect: false });
+            this.question.answers.push({ content: 'false', isCorrect: false });
+            break;
+        }
         return this.question.answers;
       },
       addAnswer() {
