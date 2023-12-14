@@ -6,7 +6,9 @@
       v-model="question.content"
       required
       label="Question :"
-      :value="question.content"></v-text-field>
+      :value="question.content"
+      :style="{ 'min-width': '200px' }"
+    ></v-text-field>
 
     <v-sheet
       v-if="
@@ -168,6 +170,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    min-width: 50px;
   }
   input[type='radio'] {
     margin-left: 10px;
