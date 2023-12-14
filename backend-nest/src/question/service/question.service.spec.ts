@@ -164,7 +164,6 @@ describe('QuestionService', () => {
   questionTest.content = 'Quelle est la capitale du Maroc?';
   questionTest.type = QuestionType.QCU;
 
-  //async createQuestion(q: Question, questionnary: Questionnary) {
   describe('createQuestion', () => {
     it('should create a question and return it', async () => {
       let test = await service.createQuestion(

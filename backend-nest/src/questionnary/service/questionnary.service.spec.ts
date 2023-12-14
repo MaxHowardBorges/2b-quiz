@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaryService } from './questionnary.service';
-import { QuestionnaryDto } from '../dto/questionnary.dto';
 import { QuestionService } from '../../question/service/question.service';
 import { Questionnary } from '../entity/questionnary.entity';
 import { Question } from '../../question/entity/question.entity';
@@ -217,12 +216,6 @@ describe('QuestionnaryService', () => {
       let test = await service.findQuestionnariesFromIdUser(0); //TODO check for users
       expect(test).toBeInstanceOf(Array);
       expect(test).not.toBeFalsy();
-
-      //test for no user found
-      // mockQuestionnaryRepository.findOne.mockResolvedValue(null);
-      // test = await service.findQuestionnariesFromIdUser(0);
-      // expect(typeof test).toBe('string');
-      // expect(test).not.toBeInstanceOf(Questionnary);
     });
   });
 
