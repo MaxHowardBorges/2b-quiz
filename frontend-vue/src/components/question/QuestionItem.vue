@@ -1,38 +1,19 @@
 <template>
-    <div class="blocklist" @click="toggleDropdown"()>
+    <div class="blocklist" @click="">
       <b>Est-ce que Santiago a eu son code ?</b>
       <span class="spacer"></span>
       <span class="spacer"></span>
       <!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
+      <v-btn icon="play_arrow" @click=""></v-btn>
       <v-btn icon="edit" @click=""></v-btn>
       <v-btn icon="delete" @click=""></v-btn>
+      <v-btn icon="visibility" @click=""></v-btn>
+      <v-btn icon="share" @click=""></v-btn>
     </div>
-  <div class="dropdown" id="dropdown" v-show="showDropdown">
-    <p>Oui</p>
-    <br>
-    <p>Non</p>
-    <br>
-    <p>Il est mort</p>
-    <br>
-    <p>Il a abandonné</p>
-  </div>
 
 </template>
 
 <script setup>
-
-  new Vue({
-    el: '#app', // Remplacez par l'ID de votre instance Vue
-    data: {
-      showDropdown: false
-    },
-    methods: {
-      toggleDropdown() {
-        this.showDropdown = !this.showDropdown;
-      }
-    }
-  });
-
 </script>
 
 <style scoped>
