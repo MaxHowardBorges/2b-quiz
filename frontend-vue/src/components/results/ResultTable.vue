@@ -20,12 +20,15 @@
         v-for="(question, index) in sessionStore.results[0].flatMap(questionnary => questionnary.questions)"
         :key="index"
         :style="{
-            'background-color': isAnswerCorrect(
-              getAnswer(question.id, participant),
-            )
-              ? 'lightgreen'
-              : 'tomato',
-          }"
+          'background-color': (() => {
+            const questionType = question.type;
+            if (questionType === 'qcu' || questionType === 'qcm') {
+              return isAnswerCorrect(getAnswer(question.id, participant)) ? 'lightgreen' : 'tomato';
+            } else {
+              return 'white';
+            }
+          })()
+        }"
         class="text-left text-truncate">
         {{ getAnswerContent(getAnswer(question.id, participant)) }}
       </td>
@@ -69,6 +72,7 @@
         );
       },
       isAnswerCorrect(answerQuestion) {
+        console.log("ok");
         if (!answerQuestion) return false;
         const question = this.getQuestion(answerQuestion.idQuestion);
 
