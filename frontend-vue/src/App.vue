@@ -39,5 +39,6 @@
 
   main {
     padding-top: 15px;
+    padding-bottom: 15px;
   }
 </style>

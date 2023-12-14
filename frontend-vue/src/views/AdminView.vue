@@ -52,21 +52,12 @@
 </script>
 
 <template>
-  <v-sheet id="app" v-if="userStore.isAuthenticated && userStore.isAdmin">
-    <h1>Admin Page</h1>
-    <h2>List of Users</h2>
-
-    <v-sheet class="ma-2">
-      <v-select
-        id="pageSelector"
-        v-model="indexpage"
-        @change="loadUserW"
-        :items="pageOptions"
-        label="Select page:"
-        dense
-        outlined></v-select>
-    </v-sheet>
-
+  <v-sheet
+    class="pa-5 d-block w-100"
+    elevation="3"
+    rounded="lg"
+    id="app"
+    v-if="userStore.isAuthenticated && userStore.isAdmin">
     <v-sheet class="ma-2"></v-sheet>
     <v-data-iterator
       :items="users"
@@ -75,7 +66,7 @@
       <template v-slot:header="{ page }">
         <div
           class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
-          <div class="text-truncate">List of Teachers</div>
+          <div class="text-truncate">List of Users</div>
         </div>
       </template>
       <template v-slot:default="{ items }">
