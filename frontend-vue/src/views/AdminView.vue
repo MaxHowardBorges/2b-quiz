@@ -39,6 +39,7 @@
         const data = await this.userStore.getUsers(
           this.indexpage,
           this.itemsPerPage,
+          this.getActiveSort(),
         );
         this.users = data.userList;
         this.nbPage = data.nbPage;
@@ -55,7 +56,7 @@
         await this.userStore.getUsers(this.indexpage, this.itemsPerPage);
         console.log('test', this.indexpage, this.itemsPerPage);
       },
-      saveValue(key, value) {
+      async saveValue(key, value) {
         this.sortId = null;
         this.sortName = null;
         this.sortSurname = null;
@@ -84,6 +85,31 @@
           this.$refs.sortType.sorted = value;
         } else if (key === 'sortValidate') {
           this.sortValidate = value;
+        }
+        await this.loadUser();
+      },
+      getOrder(value) {
+        return value ? 'ASC' : 'DESC';
+      },
+      getActiveSort() {
+        if (this.sortId !== null) {
+          return { field: 'id', order: this.getOrder(this.sortId) };
+        } else if (this.sortName !== null) {
+          return { field: 'name', order: this.getOrder(this.sortName) };
+        } else if (this.sortSurname !== null) {
+          return {
+            field: 'surname',
+            order: this.getOrder(this.sortSurname),
+          };
+        } else if (this.sortUsername !== null) {
+          return {
+            field: 'username',
+            order: this.getOrder(this.sortUsername),
+          };
+        } else if (this.sortType !== null) {
+          return { field: 'type', order: this.getOrder(this.sortType) };
+        } else {
+          return null;
         }
       },
     },

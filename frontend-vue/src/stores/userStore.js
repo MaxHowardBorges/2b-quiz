@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
 import {
   getAllUsers,
+  getAllUsersSort,
   getUserType,
   loginUser,
   registerUser,
@@ -144,8 +145,13 @@ export const useUserStore = defineStore('user', {
       this.setUserRoles(await this.fetchUserType());
       if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
     },
-    async getUsers(page, nbItem) {
-      const response = await getAllUsers(page, nbItem, this.token);
+    async getUsers(page, nbItem, sort) {
+      let response;
+      if (sort) {
+        response = await getAllUsersSort(page, nbItem, sort, this.token);
+      } else {
+        response = await getAllUsers(page, nbItem, this.token);
+      }
       await throwIfNotOK(response, 200);
       this.updateToken(response.headers.get('Authorization'));
       const body = await response.json();

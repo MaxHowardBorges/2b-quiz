@@ -61,3 +61,17 @@ export async function getAllUsers(page, nbItem, token) {
     },
   );
 }
+
+export async function getAllUsersSort(page, nbItem, sort, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL +
+      `/user?page=${page}&nb-item=${nbItem}&sort[field]=${sort.field}&sort[order]=${sort.order}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
