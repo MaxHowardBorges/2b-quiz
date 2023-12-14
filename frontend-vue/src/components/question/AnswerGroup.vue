@@ -18,6 +18,14 @@
       </v-row>
     </v-container>
   </v-item-group>
+
+  <v-text-field
+    id='NewAnswer'
+    v-model="selected"
+    label="Write an answer"
+    :disabled="disabled"
+    v-if='this.type==="ouv" || this.type==="ndm"'>    </v-text-field>
+
 </template>
 
 <script>
@@ -35,6 +43,7 @@
     data() {
       return {
         selected: ref(''),
+        NewAnswer: ref('')
       };
     },
     mounted() {

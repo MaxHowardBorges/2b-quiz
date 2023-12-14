@@ -22,7 +22,7 @@
         :style="{
           'background-color': (() => {
             const questionType = question.type;
-            if (questionType === 'qcu' || questionType === 'qcm') {
+            if (questionType === 'qcu' || questionType === 'qcm' ||questionType === 'tof') {
               return isAnswerCorrect(getAnswer(question.id, participant)) ? 'lightgreen' : 'tomato';
             } else {
               return 'white';
@@ -61,9 +61,10 @@
         if (!answerQuestion) return '-';
         const question = this.getQuestion(answerQuestion.idQuestion);
         return (
+          typeof answerQuestion.idAnswer !== "string" ?
           question?.answers.find(
             (answer) => answer.id === answerQuestion.idAnswer.id,
-          ).content || 'error'
+          ).content : answerQuestion.idAnswer
         );
       },
       getQuestion(idQuestion) {
