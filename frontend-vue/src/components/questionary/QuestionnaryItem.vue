@@ -7,6 +7,19 @@
     <v-btn icon="edit" @click="modifyQuestionnary"></v-btn>
     <v-btn icon="delete" @click="deleteQuestionnary"></v-btn>
   </div>
+
+  <v-dialog v-model="alertQuestionnaryDelete" max-width="600">
+    <v-card>
+      <v-card-title class="headline">Confirmation</v-card-title>
+      <v-card-text>
+        Are you sure to delete the questionnary : <b> " {{questionnaryName.title}} " </b> ?
+      </v-card-text>
+      <v-card-actions>
+        <v-btn @click="alertQuestionnaryDelete = false">Cancel</v-btn>
+        <v-btn @click="deleteQuestionnary">confirm</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -16,6 +29,7 @@
     data() {
       return {
         iflist: true,
+        alertQuestionnaryDelete: false
       };
     },
     setup() {
@@ -31,7 +45,13 @@
     },
     methods: {
       deleteQuestionnary() {
-        this.useQ.deleteQuestionnary(this.questionnaryId);
+        if(!this.alertQuestionnaryDelete){
+          this.alertQuestionnaryDelete=true;
+        }
+        else{
+          this.useQ.deleteQuestionnary(this.questionnaryId);
+        }
+
       },
       modifyQuestionnary() {
         this.useQ.idQuestionnary = this.questionnaryName.id;
