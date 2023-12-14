@@ -10,6 +10,8 @@ import { InvalidUsernameConfirmationException } from '../exception/invalidUserna
 import { faker } from '@faker-js/faker';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
+import { SortUserParam } from '../constants/sortUserParam.enum';
+import { SortOrder } from '../../constants/sortOrder.enum';
 
 @Injectable()
 export class UserService {
@@ -45,6 +47,22 @@ export class UserService {
     return await this.userRepository.find({
       skip,
       take: itemsPerPage,
+    });
+  }
+
+  async getUsersPerPageSorted(
+    page: number,
+    itemsPerPage: number,
+    field: SortUserParam,
+    order: SortOrder,
+  ) {
+    const skip = (page - 1) * itemsPerPage;
+    return await this.userRepository.find({
+      skip,
+      take: itemsPerPage,
+      order: {
+        [field]: order,
+      },
     });
   }
 

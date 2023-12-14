@@ -26,6 +26,8 @@ import { UserMapper } from '../mapper/user.mapper';
 import { UserTypeDto } from '../dto/userType.dto';
 import { UserSelfValidateDto } from '../dto/userSelfValidate.dto';
 import { UserListDto } from '../dto/userList.dto';
+import { SortParamUserDto } from '../dto/sortParamUser.dto';
+import { User } from '../entity/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -95,8 +97,18 @@ export class UserController {
   async getUsers(
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
     @Query('nb-item', new ParseIntPipe({ optional: true })) nbItem: number = 50,
+    @Query('sort', new ValidationPipe({ transform: true }))
+    sort: SortParamUserDto,
   ): Promise<UserListDto> {
-    const userList = await this.userService.getUsersPerPage(page, nbItem);
+    let userList: User[];
+    if (!!sort.field && !!sort.order)
+      userList = await this.userService.getUsersPerPageSorted(
+        page,
+        nbItem,
+        sort.field,
+        sort.order,
+      );
+    else userList = await this.userService.getUsersPerPage(page, nbItem);
     const nbPage = await this.userService.getNbUsersPage(nbItem);
     return this.userMapper.userFullDataDtoListMap(userList, nbPage);
   }
