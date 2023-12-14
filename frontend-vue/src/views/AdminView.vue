@@ -1,10 +1,18 @@
 <script>
   import { useUserStore } from '@/stores/userStore';
   import { ref } from 'vue';
+  import TableSortSwitchButton from '@/components/commun/TableSortSwitchButton.vue';
 
   export default {
+    components: { TableSortSwitchButton },
     data() {
       return {
+        sortId: ref(null),
+        sortName: ref(null),
+        sortSurname: ref(null),
+        sortUsername: ref(null),
+        sortType: ref(null),
+        sortValidate: ref(null),
         nbItemsOptions: [10, 20, 50, 100],
         indexpage: ref(1),
         itemsPerPage: ref(10),
@@ -47,6 +55,37 @@
         await this.userStore.getUsers(this.indexpage, this.itemsPerPage);
         console.log('test', this.indexpage, this.itemsPerPage);
       },
+      saveValue(key, value) {
+        this.sortId = null;
+        this.sortName = null;
+        this.sortSurname = null;
+        this.sortUsername = null;
+        this.sortType = null;
+        this.sortValidate = null;
+        this.$refs.sortId.sorted = null;
+        this.$refs.sortName.sorted = null;
+        this.$refs.sortSurname.sorted = null;
+        this.$refs.sortUsername.sorted = null;
+        this.$refs.sortType.sorted = null;
+        if (key === 'sortId') {
+          this.sortId = value;
+          this.$refs.sortId.sorted = value;
+        } else if (key === 'sortName') {
+          this.sortName = value;
+          this.$refs.sortName.sorted = value;
+        } else if (key === 'sortSurname') {
+          this.sortSurname = value;
+          this.$refs.sortSurname.sorted = value;
+        } else if (key === 'sortUsername') {
+          this.sortUsername = value;
+          this.$refs.sortUsername.sorted = value;
+        } else if (key === 'sortType') {
+          this.sortType = value;
+          this.$refs.sortType.sorted = value;
+        } else if (key === 'sortValidate') {
+          this.sortValidate = value;
+        }
+      },
     },
   };
 </script>
@@ -70,26 +109,95 @@
         </div>
       </template>
       <template v-slot:default="{ items }">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Surname</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(item, i) in items" :key="i">
+        <v-fade-transition>
+          <table>
+            <thead>
               <tr>
-                <td>{{ item.raw.id }}</td>
-                <td>{{ item.raw.name }}</td>
-                <td>{{ item.raw.surname }}</td>
-                <td>{{ item.raw.userType }}</td>
+                <v-hover>
+                  <template v-slot:default="{ isHovering, props }">
+                    <th v-bind="props">
+                      ID
+                      <table-sort-switch-button
+                        ref="sortId"
+                        :isHovered="isHovering"
+                        @update-sorted="
+                          (value) => saveValue('sortId', value)
+                        " />
+                    </th>
+                  </template>
+                </v-hover>
+                <v-hover>
+                  <template v-slot:default="{ isHovering, props }">
+                    <th v-bind="props">
+                      Username
+                      <table-sort-switch-button
+                        ref="sortUsername"
+                        :isHovered="isHovering"
+                        @update-sorted="
+                          (value) => saveValue('sortUsername', value)
+                        " />
+                    </th>
+                  </template>
+                </v-hover>
+                <v-hover>
+                  <template v-slot:default="{ isHovering, props }">
+                    <th v-bind="props">
+                      Name
+                      <table-sort-switch-button
+                        ref="sortName"
+                        :isHovered="isHovering"
+                        @update-sorted="
+                          (value) => saveValue('sortName', value)
+                        " />
+                    </th>
+                  </template>
+                </v-hover>
+                <v-hover>
+                  <template v-slot:default="{ isHovering, props }">
+                    <th v-bind="props">
+                      Surname
+                      <table-sort-switch-button
+                        ref="sortSurname"
+                        :isHovered="isHovering"
+                        @update-sorted="
+                          (value) => saveValue('sortSurname', value)
+                        " />
+                    </th>
+                  </template>
+                </v-hover>
+                <v-hover>
+                  <template v-slot:default="{ isHovering, props }">
+                    <th v-bind="props">
+                      Type
+                      <table-sort-switch-button
+                        ref="sortType"
+                        :isHovered="isHovering"
+                        @update-sorted="
+                          (value) => saveValue('sortType', value)
+                        " />
+                    </th>
+                  </template>
+                </v-hover>
               </tr>
-            </template>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <template v-for="(item, i) in items" :key="i">
+                <tr
+                  :class="
+                    item.raw.validate
+                      ? 'professeurs-valides'
+                      : 'professeurs-attente'
+                  ">
+                  <td>{{ item.raw.id }}</td>
+                  <td>{{ item.raw.username }}</td>
+                  <td>{{ item.raw.name }}</td>
+                  <td>{{ item.raw.surname }}</td>
+                  <td>{{ item.raw.userType }}</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </v-fade-transition>
       </template>
       <template v-slot:footer="">
         <div class="d-flex align-sm-center justify-end pa-4">
