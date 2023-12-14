@@ -15,7 +15,7 @@ export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
     questionnary: [],
-    question: { content: '', answers: [] },
+    question: { content: '', answers: [], type: '' },
     ended: false,
     results: [],
   }),

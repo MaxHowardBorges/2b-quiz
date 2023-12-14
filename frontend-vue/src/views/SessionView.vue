@@ -43,7 +43,6 @@
       let echoQuestion = ref(null);
 
       sessionStore.$subscribe((mutation, state) => {
-        console.log(mutation);
         if (state.ended !== ended.value) {
           ended.value = true;
         } else if (

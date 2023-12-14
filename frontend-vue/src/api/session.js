@@ -22,7 +22,6 @@ export async function getCurrentQuestion(body) {
 }
 
 export async function sendAnswer(body) {
-  console.log(JSON.stringify(body));
   return await fetch(import.meta.env.VITE_API_URL + '/session/respond', {
     method: 'POST',
     headers: {

@@ -52,7 +52,8 @@
       <v-card>
         <v-card-title class="headline">Confirmation</v-card-title>
         <v-card-text>
-          Please note that your questionnary has no questions if you leave it will not be saved.
+          Please note that your questionnary has no questions if you leave it
+          will not be saved.
         </v-card-text>
         <v-card-actions>
           <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
@@ -120,7 +121,7 @@
         questionnaryName: '',
         statusQ: 'add',
         idQuestion: null,
-        alertQuestionnaryNull: false
+        alertQuestionnaryNull: false,
       };
     },
     setup() {
@@ -169,7 +170,7 @@
               title: this.questionnaryName,
               questions: [],
             }); //TODO get author
-            await this.useQ.addQuestion({ content, answers });
+            await this.useQ.addQuestion({ content, type: 'qcu', answers });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
               content,
@@ -177,7 +178,7 @@
             });
             this.idQuestion = null;
           } else {
-            await this.useQ.addQuestion({ content, answers });
+            await this.useQ.addQuestion({ content, type: 'qcu', answers });
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
@@ -196,7 +197,10 @@
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
-        if (this.useQ.questionnary === null && this.alertQuestionnaryNull===false){
+        if (
+          this.useQ.questionnary === null &&
+          this.alertQuestionnaryNull === false
+        ) {
           this.alertQuestionnaryNull = true;
         } else {
           this.alertQuestionnaryNull = false;
@@ -246,10 +250,9 @@
     display: flex;
   }
 
-  .errrmes{
-    background-color: rgba(255, 0, 0, 0.2); ;
+  .errrmes {
+    background-color: rgba(255, 0, 0, 0.2);
     color: brown;
     border-radius: 5px;
   }
-
 </style>
