@@ -5,7 +5,7 @@ export async function getTypeOrmConfig(
   configService: ConfigService,
 ): Promise<TypeOrmModuleOptions> {
   return {
-    type: configService.getOrThrow<'mysql' | 'mariadb' | 'postgres'>('DB_TYPE'),
+    type: configService.getOrThrow<'mysql' | 'mariadb'>('DB_TYPE'),
     host: configService.getOrThrow<string>('DB_HOST'),
     port: configService.getOrThrow<number>('DB_PORT'),
     username: configService.getOrThrow<string>('DB_USERNAME'),

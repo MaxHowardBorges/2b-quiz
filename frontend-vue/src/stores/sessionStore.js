@@ -14,7 +14,8 @@ import { useUserStore } from '@/stores/userStore';
 export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
-    question: { answers: [], content: '' },
+    questionnary: [],
+    question: { content: '', answers: [] },
     ended: false,
     results: [],
   }),
@@ -72,13 +73,14 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
-      const response = await createSession();
+      this.setEnded(false);
+      const response = await createSession(this.questionnary);
       await throwIfNotOK(response);
       const content = await response.json();
       this.setIdSession(content.id);
     },
     async nextQuestion() {
-      const body = { id: this.idSession };
+      const body = { idSession: this.idSession };
       try {
         const response = await getNextQuestion(body);
         if (!response.ok) {

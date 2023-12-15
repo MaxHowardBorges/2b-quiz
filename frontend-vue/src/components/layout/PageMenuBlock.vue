@@ -34,6 +34,10 @@
             name: 'menu.home',
           },
           {
+            link: '/questionary',
+            name: 'Questionnary',
+          },
+          {
             link: '/teacher-home-page',
             name: 'menu.menuTeacher',
           },
