@@ -15,7 +15,9 @@
 
   "teacher": {
     "createSess": "hongroisCreate Session",
-    "SessionHist": "hongroisSessionHistory"
+    "SessionHist": "hongroisSessionHistory",
+    "CreateNewQuestionnary": "hongrois Create new Questionnary",
+    "SelectQuestionnary": "hongrois Select Questionnary"
   },
 
   "session": {

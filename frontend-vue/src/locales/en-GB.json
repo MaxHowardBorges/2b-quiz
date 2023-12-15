@@ -15,7 +15,9 @@
 
   "teacher": {
     "createSess": "Create session",
-    "SessionHist": "Session History"
+    "SessionHist": "Session History",
+    "CreateNewQuestionnary": "Create new Questionnary",
+    "SelectQuestionnary": "Select Questionnary"
   },
 
   "session": {

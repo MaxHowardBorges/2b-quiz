@@ -25,7 +25,7 @@
       item-value="id"
       return-object
       multiple=""
-      label="Select Questionnary"
+      :label="$t('teacher.SelectQuestionnary')"
       dense
       outlined></v-select>
 
@@ -45,7 +45,7 @@
         color="primary"
         class="mx-6 my-3"
         max-width="250px">
-        <p class="text-white font-weight-bold pa-2">Create new Questionnary</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('teacher.CreateNewQuestionnary') }}</p>
       </v-btn>
     </div>
     <div class="">
