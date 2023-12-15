@@ -42,8 +42,13 @@
     },
     methods: {
       updateSelectedValue(value) {
-        this.$refs['session-actions-block'].selectedValue =
-          this.sessionStore.question.answers[value].id;
+        if(typeof value !== "string"){
+          this.$refs['session-actions-block'].selectedValue =
+            this.sessionStore.question.answers[value].id;
+        }
+        else {
+          this.$refs['session-actions-block'].selectedValue =value;
+        }
       },
       relayEvent() {
         this.$emit('answer-sent-relay');

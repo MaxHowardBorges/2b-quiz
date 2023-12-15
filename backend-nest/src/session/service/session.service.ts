@@ -157,7 +157,7 @@ export class SessionService {
 
   async saveAnswer(
     idSession: string,
-    idAnswer: number | string,
+    idAnswer: number | string | number[],
     username: string,
   ) {
     if (this.sessionMap.get(idSession) == undefined) {
@@ -176,19 +176,29 @@ export class SessionService {
     if (!session.connectedUser.has(username)) {
       throw new UserUnknownException();
     }
+
     if (
-      typeof idAnswer == 'number' &&
-      !(await this.questionService.checkQuestionContainingAnswer(
-        question,
-        idAnswer,
-      ))
+      (typeof idAnswer === 'number' &&
+        !(await this.questionService.checkQuestionContainingAnswer(
+          question,
+          idAnswer,
+        ))) ||
+      (Array.isArray(idAnswer) &&
+        !idAnswer.every((num) => typeof num === 'number'))
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers.get(username).set(
-      question,
-      question.answers.find((answer) => answer.id === idAnswer),
-    );
+
+    session.userAnswers
+      .get(username)
+      .set(
+        question,
+        Array.isArray(idAnswer)
+          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+          : typeof idAnswer === 'number'
+          ? question.answers.find((answer) => answer.id === idAnswer)
+          : idAnswer,
+      );
   }
 
   getMapUser(idSession: string) {

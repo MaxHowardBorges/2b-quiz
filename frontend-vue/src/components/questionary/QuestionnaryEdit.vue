@@ -29,7 +29,7 @@
       @change="changeType"
       v-if="showTypeSelector"
       v-model="selectedType"
-      :items="typeOptions"
+      :items="typeOptions.map((option) => option.typeLabel)"
       label="Select Question Type"
       class="custom-select"
       dense
@@ -75,7 +75,7 @@
         :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
-          typeLabel="Unique"
+          :typeLabel="question.type"
           :idQuestion="question.id"
           @ChangeStatuss="ChangeStatus" />
       </v-sheet>
@@ -115,7 +115,13 @@
         OnList: true,
         showTypeSelector: false,
         selectedType: 'Unique',
-        typeOptions: ['Unique', 'Multiple', 'Open-Ended', 'True-False'],
+        typeOptions: [
+          { typeLabel: 'Unique', typeCode: 'qcu' },
+          { typeLabel: 'Multiple', typeCode: 'qcm' },
+          { typeLabel: 'Open-Ended', typeCode: 'ouv' },
+          { typeLabel: 'True-False', typeCode: 'tof' },
+          { typeLabel: 'Nuage de mots', typeCode: 'ndm' },
+        ],
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
@@ -158,6 +164,9 @@
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
+        const type = this.typeOptions.find(
+          (option) => option.typeLabel === this.selectedType,
+        ).typeCode;
 
         for (let i = 0; i < answers.length; i++) {
           answers[i].isCorrect = i === index;
@@ -170,15 +179,16 @@
               title: this.questionnaryName,
               questions: [],
             }); //TODO get author
-            await this.useQ.addQuestion({ content, type: 'qcu', answers });
+            await this.useQ.addQuestion({ content, type, answers });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
               content,
+              type,
               answers,
             });
             this.idQuestion = null;
           } else {
-            await this.useQ.addQuestion({ content, type: 'qcu', answers });
+            await this.useQ.addQuestion({ content, type, answers });
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
@@ -192,6 +202,7 @@
       },
       leaveWithoutSaving() {
         this.idQuestion = null;
+        this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;

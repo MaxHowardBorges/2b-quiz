@@ -42,7 +42,7 @@ export class QuestionService {
     return question;
   }
 
-  async deleteQuestions(questionnary: Questionnary) {
+  async deleteQuestions(questionnary : Questionnary) {
     const questions = await this.questionRepository.find({
       where: { questionnary },
     });
@@ -83,7 +83,7 @@ export class QuestionService {
     });
   }
 
-  async deleteQuestion(questionnary: Questionnary, idQuestion: number) {
+  async deleteQuestion(questionnary : Questionnary, idQuestion: number) {
     const question = await this.questionRepository.findOne({
       where: { questionnary, id: idQuestion },
     });
@@ -96,7 +96,7 @@ export class QuestionService {
 
   async modifyQuestion(
     question: Question,
-    questionnary: Questionnary,
+    questionnary : Questionnary,
     idQuestion: number,
   ) {
     const questionDB = await this.questionRepository.findOne({

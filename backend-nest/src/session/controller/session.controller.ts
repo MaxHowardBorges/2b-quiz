@@ -17,6 +17,7 @@ import { SessionMapper } from '../mapper/session.mapper';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
+import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 @Controller('session')
 export class SessionController {
@@ -74,6 +75,7 @@ export class SessionController {
   async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
+    console.log('LOG = ' + this.sessionMapper);
     return [
       await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),

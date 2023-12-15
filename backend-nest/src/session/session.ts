@@ -2,19 +2,18 @@ import { Questionnary } from '../questionnary/entity/questionnary.entity';
 import { Question } from '../question/entity/question.entity';
 import { Answer } from '../question/entity/answer.entity';
 
-
 export class Session {
   id: string;
 
   questionnaryList: Questionnary[];
 
-  questionnaryNumber : number;
+  questionnaryNumber: number;
 
   questionNumber: number;
 
   connectedUser: Set<string>;
 
-  userAnswers: Map<string, Map<Question, Answer>>;
+  userAnswers: Map<string, Map<Question, Answer | string | Answer[]>>;
 
   endSession: boolean;
 
