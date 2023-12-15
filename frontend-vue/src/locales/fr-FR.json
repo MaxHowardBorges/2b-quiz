@@ -20,6 +20,16 @@
     "SelectQuestionnary": "Choisir un Questionnaire"
   },
 
+  "questionnary": {
+    "BackHome" : "Retour Menu",
+    "newquestionnary" : "Nouveau Questionnaire",
+    "viewquestionnary": "Consulter Questionnaire",
+    "zeroquestion": "Questionnaire vide.. Cliquez sur le + pour ajouter une question",
+    "selectquestion": "Choisissez un type de question",
+    "confirmquestionnary":"Confirmez"
+  },
+
+
   "session": {
     "Waiting": "Attente du début de la session",
     "AnswerSub": "Réponse envoyée",

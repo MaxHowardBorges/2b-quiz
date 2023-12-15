@@ -20,6 +20,15 @@
     "SelectQuestionnary": "hongrois Select Questionnary"
   },
 
+  "questionnary": {
+    "BackHome" : " Hongrois Retour Menu",
+    "newquestionnary" : "Hongrois Nouveau Questionnaire",
+    "viewquestionnary": "Hongrois Consulter Questionnaire",
+    "zeroquestion": "Hongrois Questionnaire vide.. Cliquez sur le + pour ajouter une question",
+    "selectquestion": "Hongrois Select Question Type",
+    "confirmquestionnary":"Hongrois Confirm"
+  },
+
   "session": {
     "Waiting": "hongrois Waiting for the start of the session",
     "AnswerSub": "hongrois Answer submitted",

@@ -20,6 +20,15 @@
     "SelectQuestionnary": "Select Questionnary"
   },
 
+  "questionnary": {
+    "BackHome" : "Back Home",
+    "newquestionnary" : "New Questionnary",
+    "viewquestionnary": "View Questionnary",
+    "zeroquestion": "Empty Questionnary.. Please click on the + to add a question",
+    "selectquestion": "Select Question Type",
+    "confirmquestionnary":"Confirm"
+  },
+
   "session": {
     "Waiting": "Waiting for the start of the session",
     "AnswerSub": "Answer submitted",

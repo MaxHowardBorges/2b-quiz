@@ -30,7 +30,7 @@
       v-if="showTypeSelector"
       v-model="selectedType"
       :items="typeOptions"
-      label="Select Question Type"
+      :label="$t('questionnary.selectquestion')"
       class="custom-select"
       dense
       outlined
@@ -57,14 +57,14 @@
         </v-card-text>
         <v-card-actions>
           <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
-          <v-btn @click="EmitGoList">confirm</v-btn>
+          <v-btn @click="EmitGoList">{{$t('questionnary.confirmquestionnary')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
       <b>
-        Pas encore de questions.. Cliquez sur le + pour ajouter une question
+        {{$t('questionnary.zeroquestion')}}
       </b>
     </div>
 
@@ -246,12 +246,6 @@
 
   .button-container {
     display: flex;
-  }
-
-  .errrmes{
-    background-color: rgba(255, 0, 0, 0.2); ;
-    color: brown;
-    border-radius: 5px;
   }
 
 </style>
