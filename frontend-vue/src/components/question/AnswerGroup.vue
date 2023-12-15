@@ -24,13 +24,14 @@
     v-model="selected"
     label="Write an answer"
     :disabled="disabled"
-    v-if='this.type==="ouv" || this.type==="ndm"'>    </v-text-field>
+    v-if='(this.type==="ouv" || this.type==="ndm") && !disabled'>    </v-text-field>
 
 </template>
 
 <script>
   import { ref } from 'vue';
   import AnswerItem from '@/components/question/AnswerItem.vue';
+  import { useUserStore } from '@/stores/userStore';
 
   export default {
     name: 'AnswerGroup',
