@@ -42,12 +42,15 @@
     },
     methods: {
       updateSelectedValue(value) {
-        if(typeof value !== "string"){
+        console.log(value);
+        if(typeof value === "string"){
+          this.$refs['session-actions-block'].selectedValue =value;
+        }else if (Array.isArray(value)){
+          this.$refs['session-actions-block'].selectedValue = value;
+        }
+        else{
           this.$refs['session-actions-block'].selectedValue =
             this.sessionStore.question.answers[value].id;
-        }
-        else {
-          this.$refs['session-actions-block'].selectedValue =value;
         }
       },
       relayEvent() {

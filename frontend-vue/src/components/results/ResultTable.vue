@@ -22,8 +22,10 @@
         :style="{
           'background-color': (() => {
             const questionType = question.type;
-            if (questionType === 'qcu' || questionType === 'qcm' ||questionType === 'tof') {
+            if (questionType === 'qcu' ||questionType === 'tof') {
               return isAnswerCorrect(getAnswer(question.id, participant)) ? 'lightgreen' : 'tomato';
+            }else if(questionType === 'qcm' ){
+              return 'yellow'
             } else {
               return 'white';
             }
@@ -80,6 +82,9 @@
       isAnswerCorrect(answerQuestion) {
         if (!answerQuestion) return false;
         const question = this.getQuestion(answerQuestion.idQuestion);
+
+        console.log("answerQuestion : ",answerQuestion);
+        console.log("Question : ", question);
 
         return question.answers.find(
           (answer) => answer.id === answerQuestion.idAnswer.id,

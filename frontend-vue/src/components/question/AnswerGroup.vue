@@ -1,5 +1,5 @@
 <template>
-  <v-item-group mandatory v-model="selected">
+  <v-item-group mandatory v-model="selected" :multiple="type==='qcm'">
     <v-container class="d-flex flex-wrap flex-column">
       <v-row
         v-for="nLine in getNumberOfRow()"
@@ -43,7 +43,7 @@
     },
     data() {
       return {
-        selected: ref(''),
+        selected: ref(null),
         NewAnswer: ref('')
       };
     },
