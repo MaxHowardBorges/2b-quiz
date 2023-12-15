@@ -5,12 +5,19 @@ import QuestionItem from '@/components/question/QuestionItem.vue';
 </script>
 
 <template>
+
   <v-sheet
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
     elevation="5">
-    <h1>View question</h1>
+
+    <h1>Private Question Bank</h1>
+
+    <v-text-field
+      id="search"
+      v-model="searchQuery"
+      label="Search"></v-text-field>
 
     <v-sheet class="list">
       <!--<v-sheet
@@ -38,23 +45,7 @@ import QuestionItem from '@/components/question/QuestionItem.vue';
 </template>
 
 <style scoped>
- .blocklist {
-   display: flex;
-   align-items: center;
-   padding: 15px;
-   border: 1px solid #ddd;
-   margin-bottom: 15px;
- }
-
- .blocklist b {
-   margin-right: 20px;
- }
-
- .blocklist .spacer {
-   flex: 1;
- }
-
- .blocklist v-btn {
-   margin-left: 20px;
- }
+  #search{
+    width: 100%;
+  }
 </style>
