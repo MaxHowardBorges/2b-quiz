@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
 import {
+  deleteUser,
   getAllUsers,
   getAllUsersSort,
   getUserType,
   loginUser,
   registerUser,
   validateSelf,
+  validateUser,
 } from '@/api/user';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useActivityStore } from '@/stores/activityStore';
@@ -158,6 +160,16 @@ export const useUserStore = defineStore('user', {
       this.setUsers(body.userList);
       this.setNbPageUser(body.nbPage);
       return { userList: body.userList, nbPage: body.nbPage };
+    },
+    async validateUser(id) {
+      const response = await validateUser(id, this.token);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
+    },
+    async deleteUser(id) {
+      const response = await deleteUser(id, this.token);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
     },
   },
   persist: {

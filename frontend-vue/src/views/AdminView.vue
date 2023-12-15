@@ -2,11 +2,13 @@
   import { useUserStore } from '@/stores/userStore';
   import { ref } from 'vue';
   import TableSortSwitchButton from '@/components/commun/TableSortSwitchButton.vue';
+  import AdminListItem from '@/components/admin/AdminListItem.vue';
 
   export default {
-    components: { TableSortSwitchButton },
+    components: { AdminListItem, TableSortSwitchButton },
     data() {
       return {
+        loading: ref(false),
         sortId: ref(null),
         sortName: ref(null),
         sortSurname: ref(null),
@@ -29,13 +31,9 @@
     async mounted() {
       await this.loadUser();
     },
-    computed: {
-      pageOptions() {
-        return Array.from({ length: this.nbPage }, (_, index) => index + 1);
-      },
-    },
     methods: {
       async loadUser() {
+        this.loading = true;
         const data = await this.userStore.getUsers(
           this.indexpage,
           this.itemsPerPage,
@@ -43,6 +41,9 @@
         );
         this.users = data.userList;
         this.nbPage = data.nbPage;
+        setTimeout(() => {
+          this.loading = false;
+        }, 100);
       },
       async nextPage() {
         this.indexpage++;
@@ -51,10 +52,6 @@
       async prevPage() {
         this.indexpage--;
         await this.loadUser();
-      },
-      async loadUserW() {
-        await this.userStore.getUsers(this.indexpage, this.itemsPerPage);
-        console.log('test', this.indexpage, this.itemsPerPage);
       },
       async saveValue(key, value) {
         this.sortId = null;
@@ -68,6 +65,7 @@
         this.$refs.sortSurname.sorted = null;
         this.$refs.sortUsername.sorted = null;
         this.$refs.sortType.sorted = null;
+        this.$refs.sortValidate.sorted = null;
         if (key === 'sortId') {
           this.sortId = value;
           this.$refs.sortId.sorted = value;
@@ -85,6 +83,7 @@
           this.$refs.sortType.sorted = value;
         } else if (key === 'sortValidate') {
           this.sortValidate = value;
+          this.$refs.sortValidate.sorted = value;
         }
         await this.loadUser();
       },
@@ -108,9 +107,22 @@
           };
         } else if (this.sortType !== null) {
           return { field: 'type', order: this.getOrder(this.sortType) };
+        } else if (this.sortValidate !== null) {
+          return {
+            field: 'validate',
+            order: this.getOrder(this.sortValidate),
+          };
         } else {
           return null;
         }
+      },
+      async validateUser(id) {
+        await this.userStore.validateUser(id);
+        await this.loadUser();
+      },
+      async deleteUser(id) {
+        await this.userStore.deleteUser(id);
+        await this.loadUser();
       },
     },
   };
@@ -136,7 +148,7 @@
       </template>
       <template v-slot:default="{ items }">
         <v-fade-transition>
-          <table>
+          <table class="mb-0">
             <thead>
               <tr>
                 <v-hover>
@@ -204,26 +216,34 @@
                     </th>
                   </template>
                 </v-hover>
+                <v-hover>
+                  <template v-slot:default="{ isHovering, props }">
+                    <th v-bind="props">
+                      Validated
+                      <table-sort-switch-button
+                        ref="sortValidate"
+                        :isHovered="isHovering"
+                        @update-sorted="
+                          (value) => saveValue('sortValidate', value)
+                        " />
+                    </th>
+                  </template>
+                </v-hover>
               </tr>
             </thead>
             <tbody>
-              <template v-for="(item, i) in items" :key="i">
-                <tr
-                  :class="
-                    item.raw.validate
-                      ? 'professeurs-valides'
-                      : 'professeurs-attente'
-                  ">
-                  <td>{{ item.raw.id }}</td>
-                  <td>{{ item.raw.username }}</td>
-                  <td>{{ item.raw.name }}</td>
-                  <td>{{ item.raw.surname }}</td>
-                  <td>{{ item.raw.userType }}</td>
-                </tr>
+              <template v-for="(item, i) in items" :key="i" v-if="!loading">
+                <admin-list-item
+                  :user="item.raw"
+                  @validate-user="validateUser"
+                  @remove-user="deleteUser" />
               </template>
             </tbody>
           </table>
         </v-fade-transition>
+        <v-progress-linear
+          :indeterminate="true"
+          v-if="loading"></v-progress-linear>
       </template>
       <template v-slot:footer="">
         <div class="d-flex align-sm-center justify-end pa-4">
@@ -298,13 +318,5 @@
 
   tbody tr:hover {
     background-color: #f0f0f0;
-  }
-
-  .professeurs-valides {
-    background-color: #c9f7c5;
-  }
-
-  .professeurs-attente {
-    background-color: #fce5cd;
   }
 </style>

@@ -75,3 +75,23 @@ export async function getAllUsersSort(page, nbItem, sort, token) {
     },
   );
 }
+
+export async function validateUser(id, token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/${id}/validate`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function deleteUser(id, token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

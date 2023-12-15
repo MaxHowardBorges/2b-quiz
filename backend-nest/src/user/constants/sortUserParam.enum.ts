@@ -4,5 +4,5 @@ export enum SortUserParam {
   NAME = 'name',
   SURNAME = 'surname',
   USER_TYPE = 'type',
-  VALIDATED = 'validated',
+  VALIDATE = 'validate',
 }
