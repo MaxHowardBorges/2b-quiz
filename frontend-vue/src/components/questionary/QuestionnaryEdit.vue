@@ -68,7 +68,7 @@
       </b>
     </div>
 
-    <v-sheet class="questions" v-if="this.OnList">
+    <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
       <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
