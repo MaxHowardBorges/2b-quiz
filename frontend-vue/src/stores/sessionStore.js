@@ -63,7 +63,6 @@ export const useSessionStore = defineStore('session', {
         answer: idAnswer,
         username: userStore.username,
       };
-      console.log("sendAnswer : ", body.answer);
       try {
         const response = await sendAnswer(body);
 

@@ -51,6 +51,7 @@
       },
       async handleSubmit() {
         try {
+          console.log(this.selectedValue);
           await this.sessionStore.sendAnswer(this.selectedValue);
           this.$emit('answer-sent');
         } catch (e) {

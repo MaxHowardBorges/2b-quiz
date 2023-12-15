@@ -64,6 +64,8 @@ export class SessionController {
     @Body(new ValidationPipe())
     body: RespondQuestionDto,
   ) {
+    console.log('answer');
+    console.log(body);
     await this.sessionService.saveAnswer(
       body.idSession,
       body.answer,
@@ -75,10 +77,12 @@ export class SessionController {
   async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
-    console.log('LOG = ' + this.sessionMapper);
-    return [
+    const tabResult = [
       this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ];
+    console.log('tabResult');
+    console.log(tabResult);
+    return tabResult;
   }
 }
