@@ -68,11 +68,8 @@
       </b>
     </div>
 
-    <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
-      <v-sheet
-        v-if="this.useQ.questionnary"
-        v-for="(question, index) in this.useQ.questions"
-        :key="index">
+    <v-sheet class="questions" v-if="this.OnList">
+      <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
           :typeLabel="question.type"
@@ -202,7 +199,7 @@
       },
       leaveWithoutSaving() {
         this.idQuestion = null;
-        this.question = this.useQ.getQuestion(this.idQuestion);
+        //this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
