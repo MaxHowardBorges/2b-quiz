@@ -67,7 +67,7 @@
         let userAnswer = answerQuestion.idAnswer;
 
         // join all answers from multiple question into one string
-        Array.isArray(answerQuestion.idAnswer) ?  userAnswer = answerQuestion.idAnswer.content.join(' | ') : '';
+        Array.isArray(answerQuestion.idAnswer) ?  userAnswer = answerQuestion.idAnswer.map((answer) => answer.content).join(' | ') : '';
 
         console.log("answerQuestion");
         console.log(answerQuestion);
