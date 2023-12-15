@@ -65,7 +65,7 @@
         // join all answers from multiple question into one string
         Array.isArray(answerQuestion.idAnswer.content) ?  userAnswer = answerQuestion.idAnswer.content.join(' | ') : '';
 
-        typeof answerQuestion.idAnswer === 'number' ?
+        typeof answerQuestion.idAnswer !== 'string' ?
           userAnswer = question?.answers.find(
             (answer) => answer.id === answerQuestion.idAnswer.id,
           ).content : ''
@@ -78,7 +78,6 @@
         );
       },
       isAnswerCorrect(answerQuestion) {
-        console.log("ok");
         if (!answerQuestion) return false;
         const question = this.getQuestion(answerQuestion.idQuestion);
 
