@@ -70,7 +70,6 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async getQuestions() {
-      //if (this.isCreated) {
       this.questions = [];
       try {
         const response = await getQuestionsFromQuestionnary(
@@ -80,15 +79,12 @@ export const useQuestionnaryStore = defineStore('questionnary', {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
           for (const q of JSON.parse(await response.text())) {
-            console.log(q);
             this.questions.push(q);
           }
-          console.log(this.questions);
         }
       } catch (error) {
         console.error(error);
       }
-      // }
     },
     async getAnswers(idQuestion) {
       if (this.isCreated) {

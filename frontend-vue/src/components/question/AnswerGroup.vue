@@ -20,12 +20,11 @@
   </v-item-group>
 
   <v-text-field
-    id='NewAnswer'
+    id="NewAnswer"
     v-model="selected"
     label="Write an answer"
     :disabled="disabled"
-    v-if='this.type==="ouv" || this.type==="ndm"'>    </v-text-field>
-
+    v-if="this.type === 'ouv' || this.type === 'ndm'"></v-text-field>
 </template>
 
 <script>
@@ -33,6 +32,7 @@
   import AnswerItem from '@/components/question/AnswerItem.vue';
 
   export default {
+    emits: ['newSelectedValue', 'new-selected-value'],
     name: 'AnswerGroup',
     components: { AnswerItem },
     props: {
@@ -43,11 +43,8 @@
     data() {
       return {
         selected: ref(''),
-        NewAnswer: ref('')
+        NewAnswer: ref(''),
       };
-    },
-    mounted() {
-      console.log('Type de la question :', this.type);
     },
     methods: {
       getAnswerId(nAnswer, nLine) {

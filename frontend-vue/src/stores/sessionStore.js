@@ -22,7 +22,6 @@ export const useSessionStore = defineStore('session', {
   actions: {
     setQuestion(question) {
       this.question = question;
-      console.log('TYPE : ' + this.question.type);
     },
     setIdSession(idSession) {
       this.idSession = idSession;
