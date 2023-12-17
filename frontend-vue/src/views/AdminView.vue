@@ -3,11 +3,27 @@
   import { ref } from 'vue';
   import TableSortSwitchButton from '@/components/commun/TableSortSwitchButton.vue';
   import AdminListItem from '@/components/admin/AdminListItem.vue';
+  import RegisterForm from '@/components/user/RegisterForm.vue';
+  import InfoSnackbar from '@/components/commun/InfoSnackbar.vue';
+  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import errorSnackbar from '@/components/commun/ErrorSnackbar.vue';
 
   export default {
-    components: { AdminListItem, TableSortSwitchButton },
+    computed: {
+      errorSnackbar() {
+        return errorSnackbar;
+      },
+    },
+    components: {
+      ErrorSnackbar,
+      InfoSnackbar,
+      RegisterForm,
+      AdminListItem,
+      TableSortSwitchButton,
+    },
     data() {
       return {
+        addUser: ref(false),
         loading: ref(false),
         sortId: ref(null),
         sortName: ref(null),
@@ -18,6 +34,10 @@
         nbItemsOptions: [10, 20, 50, 100],
         indexpage: ref(1),
         itemsPerPage: ref(10),
+        infoSnackbarTitle: '',
+        infoSnackbarContent: '',
+        errorSnackbarTitle: '',
+        errorSnackbarContent: '',
       };
     },
     setup() {
@@ -124,122 +144,163 @@
         await this.userStore.deleteUser(id);
         await this.loadUser();
       },
+      userAdded(value) {
+        this.addUser = false;
+        this.infoSnackbarTitle = 'User added';
+        this.infoSnackbarContent = `The ${value.accountType}: ${value.username} has been added`;
+        this.$refs.infoSnackbar.snackbarInfo = true;
+      },
+      errorRegister(username) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent = `Username ${username} already exist`;
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
     },
   };
 </script>
 
 <template>
+  <error-snackbar
+    ref="errorSnackbar"
+    :title="errorSnackbarTitle"
+    :content="errorSnackbarContent"></error-snackbar>
+  <v-dialog v-model="addUser" width="auto">
+    <v-card class="pa-5" min-width="40vw">
+      <p class="text-h3 ma-2">Register new user</p>
+      <register-form
+        class="ma-2"
+        @user-registered="userAdded"
+        @error-register="errorRegister" />
+    </v-card>
+  </v-dialog>
+  <info-snackbar
+    ref="infoSnackbar"
+    :title="infoSnackbarTitle"
+    :content="infoSnackbarContent"></info-snackbar>
   <v-sheet
     class="pa-5 d-block w-100"
     elevation="3"
     rounded="lg"
     id="app"
     v-if="userStore.isAuthenticated && userStore.isAdmin">
-    <v-sheet class="ma-2"></v-sheet>
     <v-data-iterator
       :items="users"
       :page="indexpage"
       :items-per-page="itemsPerPage">
-      <template v-slot:header="{ page }">
+      <template v-slot:header="">
         <div
           class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
           <div class="text-truncate">List of Users</div>
+          <div>
+            <v-btn
+              @click="addUser = true"
+              class="ml-2"
+              icon="person_add"></v-btn>
+            <v-btn
+              @click="addUser = true"
+              class="ml-2"
+              icon="group_add"></v-btn>
+          </div>
         </div>
       </template>
       <template v-slot:default="{ items }">
         <v-fade-transition>
-          <table class="mb-0">
-            <thead>
-              <tr>
-                <v-hover>
-                  <template v-slot:default="{ isHovering, props }">
-                    <th v-bind="props">
-                      ID
-                      <table-sort-switch-button
-                        ref="sortId"
-                        :isHovered="isHovering"
-                        @update-sorted="
-                          (value) => saveValue('sortId', value)
-                        " />
-                    </th>
-                  </template>
-                </v-hover>
-                <v-hover>
-                  <template v-slot:default="{ isHovering, props }">
-                    <th v-bind="props">
-                      Username
-                      <table-sort-switch-button
-                        ref="sortUsername"
-                        :isHovered="isHovering"
-                        @update-sorted="
-                          (value) => saveValue('sortUsername', value)
-                        " />
-                    </th>
-                  </template>
-                </v-hover>
-                <v-hover>
-                  <template v-slot:default="{ isHovering, props }">
-                    <th v-bind="props">
-                      Name
-                      <table-sort-switch-button
-                        ref="sortName"
-                        :isHovered="isHovering"
-                        @update-sorted="
-                          (value) => saveValue('sortName', value)
-                        " />
-                    </th>
-                  </template>
-                </v-hover>
-                <v-hover>
-                  <template v-slot:default="{ isHovering, props }">
-                    <th v-bind="props">
-                      Surname
-                      <table-sort-switch-button
-                        ref="sortSurname"
-                        :isHovered="isHovering"
-                        @update-sorted="
-                          (value) => saveValue('sortSurname', value)
-                        " />
-                    </th>
-                  </template>
-                </v-hover>
-                <v-hover>
-                  <template v-slot:default="{ isHovering, props }">
-                    <th v-bind="props">
-                      Type
-                      <table-sort-switch-button
-                        ref="sortType"
-                        :isHovered="isHovering"
-                        @update-sorted="
-                          (value) => saveValue('sortType', value)
-                        " />
-                    </th>
-                  </template>
-                </v-hover>
-                <v-hover>
-                  <template v-slot:default="{ isHovering, props }">
-                    <th v-bind="props">
-                      Validated
-                      <table-sort-switch-button
-                        ref="sortValidate"
-                        :isHovered="isHovering"
-                        @update-sorted="
-                          (value) => saveValue('sortValidate', value)
-                        " />
-                    </th>
-                  </template>
-                </v-hover>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(item, i) in items" :key="i" v-if="!loading">
-                <admin-list-item
-                  :user="item.raw"
-                  @validate-user="validateUser"
-                  @remove-user="deleteUser" />
-              </template>
-            </tbody>
-          </table>
+          <v-sheet elevation="2" rounded="lg">
+            <v-table class="mb-0 h-75" :hover="true">
+              <thead>
+                <tr>
+                  <v-hover>
+                    <template v-slot:default="{ isHovering, props }">
+                      <th v-bind="props">
+                        ID
+                        <table-sort-switch-button
+                          ref="sortId"
+                          :isHovered="isHovering"
+                          @update-sorted="
+                            (value) => saveValue('sortId', value)
+                          " />
+                      </th>
+                    </template>
+                  </v-hover>
+                  <v-hover>
+                    <template v-slot:default="{ isHovering, props }">
+                      <th v-bind="props">
+                        Username
+                        <table-sort-switch-button
+                          ref="sortUsername"
+                          :isHovered="isHovering"
+                          @update-sorted="
+                            (value) => saveValue('sortUsername', value)
+                          " />
+                      </th>
+                    </template>
+                  </v-hover>
+                  <v-hover>
+                    <template v-slot:default="{ isHovering, props }">
+                      <th v-bind="props">
+                        Name
+                        <table-sort-switch-button
+                          ref="sortName"
+                          :isHovered="isHovering"
+                          @update-sorted="
+                            (value) => saveValue('sortName', value)
+                          " />
+                      </th>
+                    </template>
+                  </v-hover>
+                  <v-hover>
+                    <template v-slot:default="{ isHovering, props }">
+                      <th v-bind="props">
+                        Surname
+                        <table-sort-switch-button
+                          ref="sortSurname"
+                          :isHovered="isHovering"
+                          @update-sorted="
+                            (value) => saveValue('sortSurname', value)
+                          " />
+                      </th>
+                    </template>
+                  </v-hover>
+                  <v-hover>
+                    <template v-slot:default="{ isHovering, props }">
+                      <th v-bind="props">
+                        Type
+                        <table-sort-switch-button
+                          ref="sortType"
+                          :isHovered="isHovering"
+                          @update-sorted="
+                            (value) => saveValue('sortType', value)
+                          " />
+                      </th>
+                    </template>
+                  </v-hover>
+                  <v-hover>
+                    <template v-slot:default="{ isHovering, props }">
+                      <th v-bind="props" class="">
+                        <div class="overflow-hidden">
+                          Validated
+                          <table-sort-switch-button
+                            ref="sortValidate"
+                            :isHovered="isHovering"
+                            @update-sorted="
+                              (value) => saveValue('sortValidate', value)
+                            " />
+                        </div>
+                      </th>
+                    </template>
+                  </v-hover>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="(item, i) in items" :key="i" v-if="!loading">
+                  <admin-list-item
+                    :user="item.raw"
+                    @validate-user="validateUser"
+                    @remove-user="deleteUser" />
+                </template>
+              </tbody>
+            </v-table>
+          </v-sheet>
         </v-fade-transition>
         <v-progress-linear
           :indeterminate="true"
@@ -277,46 +338,4 @@
   </v-sheet>
 </template>
 
-<style scoped>
-  #app {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  h2 {
-    font-size: 20px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    margin-bottom: 20px;
-  }
-
-  th,
-  td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-
-  th {
-    background-color: #f2f2f2;
-  }
-
-  tbody tr:hover {
-    background-color: #f0f0f0;
-  }
-</style>
+<style scoped></style>

@@ -16,7 +16,6 @@ import {
 import { UserService } from '../service/user.service';
 import { UserRegisterDto } from '../dto/userRegister.dto';
 import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
-import { Public } from '../../decorators/public.decorator';
 import { UserDataModifyDto } from '../dto/userDataModify.dto';
 import { UserRequest } from '../../auth/config/user.request';
 import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
@@ -36,7 +35,7 @@ export class UserController {
     private readonly userMapper: UserMapper,
   ) {}
 
-  @Public() //TODO to pass for admin only
+  @Roles([UserType.ADMIN])
   @Post('/register')
   @HttpCode(HttpStatus.NO_CONTENT)
   async registerUser(
@@ -50,6 +49,7 @@ export class UserController {
       userRegisterDto.name,
       userRegisterDto.surname,
       userRegisterDto.userType,
+      true,
     );
   }
 

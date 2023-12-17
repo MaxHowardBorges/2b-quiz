@@ -15,8 +15,11 @@ export class UserRegisterDto {
   surname: string;
 
   @IsString()
-  @Matches(new RegExp(`^(${UserType.STUDENT}|${UserType.TEACHER})$`), {
-    message: 'userType must be a teacher or a student',
-  })
-  userType: UserType.STUDENT | UserType.TEACHER;
+  @Matches(
+    new RegExp(`^(${UserType.STUDENT}|${UserType.TEACHER}|${UserType.ADMIN})$`),
+    {
+      message: 'userType must be a teacher or a student or an admin',
+    },
+  )
+  userType: UserType.STUDENT | UserType.TEACHER | UserType.ADMIN;
 }

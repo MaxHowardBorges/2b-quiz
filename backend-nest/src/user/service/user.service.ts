@@ -24,17 +24,18 @@ export class UserService {
     name: string,
     surname: string,
     userType: UserType,
+    validate: boolean = false,
   ) {
     let user: User;
     switch (userType) {
       case UserType.ADMIN:
-        user = new Admin(username);
+        user = new Admin(username, validate);
         break;
       case UserType.STUDENT:
-        user = new Student(username);
+        user = new Student(username, validate);
         break;
       case UserType.TEACHER:
-        user = new Teacher(username);
+        user = new Teacher(username, validate);
         break;
     }
     user.surname = surname;
@@ -84,8 +85,7 @@ export class UserService {
       if (!user.validate) throw new NotValidatedUserException();
       return user;
     }
-    const newUser = new Student(username);
-    console.log(newUser);
+    const newUser = new Student(username, false);
     await this.userRepository.save(newUser);
     return newUser;
   }
@@ -132,7 +132,7 @@ export class UserService {
     if (userType === UserType.STUDENT) {
       user.validate = true;
     } else {
-      user = new Teacher(user.username);
+      user = new Teacher(user.username, false);
     }
     user.id = ancientId;
     user.name = name;

@@ -4,8 +4,8 @@ import { UserType } from '../constants/userType.constant';
 
 @ChildEntity()
 export class Admin extends User {
-  constructor(username: string) {
-    super(username);
+  constructor(username: string, validate: boolean) {
+    super(username, validate);
   }
   getUserType() {
     return UserType.ADMIN;

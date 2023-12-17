@@ -57,24 +57,16 @@ export const useUserStore = defineStore('user', {
     setNbPageUser(nbPage) {
       this.nbPage = nbPage;
     },
-    async register(
-      name,
-      surname,
-      username,
-      password,
-      passwordConfirm,
-      userType,
-    ) {
+    async register(name, surname, username, userType) {
       const body = {
         name,
         surname,
         username,
-        password,
-        passwordConfirm,
         userType,
       };
-      const response = await registerUser(body);
+      const response = await registerUser(body, this.token);
       await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
     },
     async login(ticket, service) {
       const body = { ticket, service };
