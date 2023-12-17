@@ -54,6 +54,8 @@ export class AuthGuard implements CanActivate {
     const user = request.user;
     const roles = this.reflector.get(Roles, context.getHandler());
     if (!roles) {
+      if (user.getUserType() === UserType.NOT_CHOOSE)
+        throw new UnauthorizedException();
       return true;
     }
     const authorised = matchRoles(roles, user.getUserType());

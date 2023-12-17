@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../entity/user.entity';
 import { UserFullDataDto } from '../dto/userFullData.dto';
 import { UserListDto } from '../dto/userList.dto';
+import { UserSelfDataDto } from '../dto/userSelfData.dto';
 
 @Injectable()
 export class UserMapper {
@@ -22,5 +23,14 @@ export class UserMapper {
       userList.push(this.userFullDataDtoMap(user));
     }
     return { userList, nbPage };
+  }
+
+  userSelfDataDtoMap(user: User): UserSelfDataDto {
+    const dto = new UserSelfDataDto();
+    dto.username = user.username;
+    dto.name = user.name;
+    dto.surname = user.surname;
+    dto.userType = user.getUserType();
+    return dto;
   }
 }

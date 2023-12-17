@@ -35,6 +35,11 @@ export class UserController {
     private readonly userMapper: UserMapper,
   ) {}
 
+  @Get('/me')
+  async getMe(@Req() request: UserRequest) {
+    return this.userMapper.userSelfDataDtoMap(request.user);
+  }
+
   @Roles([UserType.ADMIN])
   @Post('/register')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -114,6 +119,12 @@ export class UserController {
   }
 
   @Get('/role')
+  @Roles([
+    UserType.NOT_CHOOSE,
+    UserType.ADMIN,
+    UserType.STUDENT,
+    UserType.TEACHER,
+  ])
   async getRole(@Req() request: UserRequest): Promise<UserTypeDto> {
     return { userType: request.user.getUserType() };
   }
