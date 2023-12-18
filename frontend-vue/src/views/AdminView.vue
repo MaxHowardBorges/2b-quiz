@@ -7,6 +7,7 @@
   import InfoSnackbar from '@/components/commun/InfoSnackbar.vue';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import errorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import RegisterGroupUser from '@/components/user/RegisterGroupUser.vue';
 
   export default {
     computed: {
@@ -20,10 +21,12 @@
       RegisterForm,
       AdminListItem,
       TableSortSwitchButton,
+      RegisterGroupUser
     },
     data() {
       return {
         addUser: ref(false),
+        addMoreUser: ref(false),
         loading: ref(false),
         sortId: ref(null),
         sortName: ref(null),
@@ -150,6 +153,12 @@
         this.infoSnackbarContent = `The ${value.accountType}: ${value.username} has been added`;
         this.$refs.infoSnackbar.snackbarInfo = true;
       },
+      userMoreAdded(value) {
+        this.addMoreUser = false;
+        this.infoSnackbarTitle = 'User added';
+        this.infoSnackbarContent = `The ${value.accountType}: ${value.username} has been added`;
+        this.$refs.infoSnackbar.snackbarInfo = true;
+      },
       errorRegister(username) {
         this.errorSnackbarTitle = 'Error';
         this.errorSnackbarContent = `Username ${username} already exist`;
@@ -171,6 +180,14 @@
         class="ma-2"
         @user-registered="userAdded"
         @error-register="errorRegister" />
+    </v-card>
+  </v-dialog>
+  <v-dialog v-model="addMoreUser" width="auto">
+    <v-card class="pa-5" min-width="40vw">
+      <RegisterGroupUser
+        class="ma-2"
+        @user-registered="userMoreAdded"
+        @error-register="errorRegister"/>
     </v-card>
   </v-dialog>
   <info-snackbar
@@ -197,7 +214,7 @@
               class="ml-2"
               icon="person_add"></v-btn>
             <v-btn
-              @click="addUser = true"
+              @click="addMoreUser = true"
               class="ml-2"
               icon="group_add"></v-btn>
           </div>
