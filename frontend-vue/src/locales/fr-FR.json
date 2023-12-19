@@ -1,7 +1,8 @@
 {
   "menu": {
     "menuTeacher": "Menu enseignant",
-    "home": "Home"
+    "home": "Home",
+    "questionnary": "Questionnaire"
   },
 
   "home": {
