@@ -3,25 +3,27 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
-    elevation="5">
+    elevation="5"
+  >
     <input
       v-if="OnList"
       id="title"
       type="text"
       v-model="questionnaryName"
       @change="changeName"
-      required />
+      required
+    />
     <div v-else id="title">
       {{ this.questionnaryName }}
       <br />
       Question N°{{
         this.idQuestion
           ? this.useQ.questionnary.questions.findIndex(
-              (question) => question.id === this.idQuestion,
-            ) + 1
+          (question) => question.id === this.idQuestion
+        ) + 1
           : !!this.useQ.questionnary
-          ? this.useQ.questionnary.questions.length + 1
-          : 1
+            ? this.useQ.questionnary.questions.length + 1
+            : 1
       }}
     </div>
 
@@ -34,20 +36,51 @@
       class="custom-select"
       dense
       outlined
-      readonly=""></v-select>
+      readonly=""
+    ></v-select>
+
+    <v-select
+      v-if="!OnList"
+      v-model="selectedTags"
+      :items="tagOptions"
+      label="Select Tags"
+      style="width: 200px;"
+      multiple
+      outlined
+      dense
+    ></v-select>
+
+    <v-row v-if="!OnList" class="mt-3">
+      <v-col>
+        <v-text-field
+          v-model="newTag"
+          label="New Tag"
+          style="width: 200px;"
+          outlined
+          dense
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-btn @click="createNewTag"  icon="done">
+        </v-btn>
+      </v-col>
+    </v-row>
+
 
     <v-btn
       class="mb-5"
       v-if="OnList"
       icon="add"
-      @click="toggleTypeSelector"></v-btn>
+      @click="toggleTypeSelector"
+    ></v-btn>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
       id="quest"
       v-if="!OnList"
       :selectedQuestionType="selectedType"
-      :idQuestion="idQuestion" />
+      :idQuestion="idQuestion"
+    />
 
     <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
       <b>
@@ -55,16 +88,20 @@
       </b>
     </div>
 
+
+
     <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
       <v-sheet
         v-if="this.useQ.questionnary"
         v-for="(question, index) in this.useQ.questionnary.questions"
-        :key="index">
+        :key="index"
+      >
         <QuestionnaryListOne
           :numberLabel="question.content"
           typeLabel="Multiple"
           :idQuestion="question.id"
-          @ChangeStatuss="ChangeStatus" />
+          @ChangeStatuss="ChangeStatus"
+        />
       </v-sheet>
     </v-sheet>
 
@@ -91,7 +128,6 @@
 </template>
 
 <script>
-  // @ is an alias to /src
   import QuestionnaryListOne from '@/components/questionary/QuestionnaryList.vue';
   import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
@@ -99,6 +135,7 @@
   export default {
     data() {
       return {
+        newTag:"",
         OnList: true,
         showTypeSelector: false,
         selectedType: 'Multiple',
@@ -106,6 +143,8 @@
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
+        selectedTags: [],
+        tagOptions: ['Tag1', 'Tag2', 'Tag3'], // Remplacez par vos tags réels
         statusQ: 'add',
         idQuestion: null,
       };
@@ -128,6 +167,18 @@
       QuestionnaryListOne,
     },
     methods: {
+
+      createNewTag() {
+        const tagToAdd = this.newTag.trim();
+        if (tagToAdd && !this.tagOptions.includes(tagToAdd)) {
+          this.tagOptions.push(tagToAdd);
+          this.selectedTags.push(tagToAdd);
+          this.newTag = ''; // Réinitialisez le champ du nouveau tag après l'ajout
+        } else {
+          alert('Le tag est vide ou existe déjà.');
+        }
+      },
+
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
@@ -155,7 +206,7 @@
               author: 'author_default',
               title: this.questionnaryName,
               questions: [],
-            }); //TODO get author
+            });
             await this.useQ.addQuestion({ content, answers });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
@@ -168,10 +219,14 @@
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
-        } else alert('Remplissez les champs vide avant de valider');
+        } else alert('Remplissez les champs vides avant de valider');
       },
       changeType() {
         this.selectedQuestionType = this.selectedType;
+      },
+      changeTags() {
+        // Traitez les tags sélectionnés ici
+        console.log('Selected Tags:', this.selectedTags);
       },
       showConfirmationDialog() {
         this.confirmationDialog = true;
@@ -203,29 +258,5 @@
 </script>
 
 <style>
-  #title {
-    margin-bottom: 10px;
-    padding: 8px;
-    font-size: 40px !important;
-    font-weight: bold !important;
-    text-align: center;
-    border: 1px solid black;
-  }
-
-  v-btn {
-    margin-bottom: 20px;
-  }
-
-  v-select {
-    width: auto;
-  }
-
-  .custom-select {
-    width: 300px;
-    margin-bottom: 5px;
-  }
-
-  .button-container {
-    display: flex;
-  }
+  /* Styles personnalisés */
 </style>
