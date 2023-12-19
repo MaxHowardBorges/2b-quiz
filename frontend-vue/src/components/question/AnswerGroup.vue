@@ -1,5 +1,5 @@
 <template>
-  <v-item-group mandatory v-model="selected" :multiple="type==='qcm'">
+  <v-item-group mandatory v-model="selected" :multiple="type === 'qcm'">
     <v-container class="d-flex flex-wrap flex-column">
       <v-row
         v-for="nLine in getNumberOfRow()"
@@ -20,12 +20,20 @@
   </v-item-group>
 
   <v-text-field
-    id='NewAnswer'
+    id="NewAnswer"
     v-model="selected"
     label="Write an answer"
     :disabled="disabled"
-    v-if='(this.type==="ouv" || this.type==="ndm") && !disabled'>    </v-text-field>
+    :rules="[rules.required]"
+    v-if="this.type === 'ouv' && !disabled"></v-text-field>
 
+  <v-text-field
+    id="NewAnswer"
+    v-model="selected"
+    label="Write a word"
+    :disabled="disabled"
+    v-if="this.type === 'qoc' && !disabled"
+    :rules="[rules.notContainsSpace, rules.required]"></v-text-field>
 </template>
 
 <script>
@@ -44,7 +52,12 @@
     data() {
       return {
         selected: ref(null),
-        NewAnswer: ref('')
+        NewAnswer: ref(''),
+        rules: {
+          required: (value) => !!value || 'Field is required',
+          notContainsSpace: (value) =>
+            !/[_\s]/.test(value) || "Field mustn't contain space",
+        },
       };
     },
     mounted() {
