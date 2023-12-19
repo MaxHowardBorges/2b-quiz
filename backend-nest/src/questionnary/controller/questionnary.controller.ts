@@ -14,10 +14,44 @@ import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { PrivateQuestionnaryDto } from '../dto/PrivateQuestionnary.dto';
+import { QuestionService } from '../../question/service/question.service';
 
 @Controller('questionnary')
 export class QuestionnaryController {
-  constructor(private readonly questionnaryService: QuestionnaryService) {}
+  constructor(
+    private readonly questionnaryService: QuestionnaryService,
+    private readonly questionService: QuestionService,
+  ) {}
+  @Post('/createTag')
+  createTag(@Body() description: any) {
+    return this.questionService.createTag(description.description);
+  }
+
+  @Patch('/updateTag/:id')
+  updateTag(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() newDescription: any,
+  ) {
+    console.log(newDescription);
+    return this.questionService.updateTag(id, newDescription.newDescription);
+  }
+
+  @Delete('/deleteTag/:id')
+  deleteTag(@Param('id', ParseIntPipe) id: number) {
+    console.log('a');
+    return this.questionService.deleteTag(id);
+  }
+
+  @Get('/getTag/:id')
+  getTag(@Param('id', ParseIntPipe) id: number) {
+    return this.questionService.getTag(id);
+  }
+
+  @Get('/getTags')
+  getTags() {
+    return this.questionService.getTags();
+  }
+
   @Post('/create')
   createQuestionnary(
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
@@ -26,15 +60,6 @@ export class QuestionnaryController {
       questionnaryDto.title,
       questionnaryDto.questions,
       questionnaryDto.author,
-    );
-  }
-
-  @Post('/createPrivate')
-  async createPrivateQuestionnary(
-    @Body(new ValidationPipe()) privateQuestionnaryDto: PrivateQuestionnaryDto,
-  ) {
-    return await this.questionnaryService.createPrivateQuestionnary(
-      privateQuestionnaryDto.questions,
     );
   }
 

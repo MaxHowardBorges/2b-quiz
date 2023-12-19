@@ -33,18 +33,6 @@ export class QuestionnaryService {
     return questionnary;
   }
 
-  async createPrivateQuestionnary(questions: QuestionDto[]) {
-    const questionnary = new Questionnary();
-    questionnary.title = 'Private question bank';
-    questionnary.author = 'Private';
-    await this.questionnaryRepository.save(questionnary);
-    for (const q of questions) {
-      await this.questionService.createQuestion(q, questionnary);
-    }
-
-    return 'The question bank has been created';
-  }
-
   async deleteQuestionnary(idQuestionnary: number) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },

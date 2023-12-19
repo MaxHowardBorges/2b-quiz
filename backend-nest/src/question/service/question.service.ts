@@ -7,6 +7,7 @@ import { QuestionDto } from '../dto/question.dto';
 import { QuestionCreateDto } from '../dto/questionCreate.dto';
 import { AnswerDto } from '../dto/answer.dto';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
+import { Tag } from '../entity/tag.entity';
 
 @Injectable()
 export class QuestionService {
@@ -15,7 +16,48 @@ export class QuestionService {
     private readonly questionRepository: Repository<Question>,
     @InjectRepository(Answer)
     private readonly answerRepository: Repository<Answer>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
   ) {}
+
+  async createTag(description: string) {
+    const tag = new Tag();
+    console.log(description);
+    tag.description = description;
+    //console.log(tag.idTag);
+    console.log(tag);
+    await this.tagRepository.save(tag);
+  }
+  async updateTag(id: number, newDescription: string) {
+    const tag = await this.tagRepository.findOne({ where: { idTag: id } });
+    if (tag) {
+      console.log(newDescription);
+      tag.description = newDescription;
+      console.log(tag.idTag);
+      console.log(tag.description);
+      await this.tagRepository.save(tag);
+    }
+  }
+
+  async deleteTag(id: number) {
+    const tag = await this.tagRepository.findOne({ where: { idTag: id } });
+    if (tag) {
+      await this.tagRepository.delete({ idTag: id });
+    }
+  }
+
+  async getTag(id: number) {
+    const tag = await this.tagRepository.findOneBy({
+      idTag: id,
+    });
+    if (tag) {
+      return tag;
+    }
+  }
+
+  async getTags() {
+    return await this.tagRepository.find();
+  }
 
   async checkQuestionContainingAnswer(question: QuestionDto, idAnswer: number) {
     const answer = await this.answerRepository.findOne({
