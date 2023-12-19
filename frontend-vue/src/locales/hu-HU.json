@@ -26,7 +26,11 @@
     "viewquestionnary": "Hongrois Consulter Questionnaire",
     "zeroquestion": "Hongrois Questionnaire vide.. Cliquez sur le + pour ajouter une question",
     "selectquestion": "Hongrois Select Question Type",
-    "confirmquestionnary":"Hongrois Confirm"
+    "confirmquestionnary":"Hongrois Confirm",
+    "question": "Hongrois Question :",
+    "addAnswer": "hongrois Add an answer",
+    "deleteAnswer": "hongrois Delete an answer",
+    "done": "Hongrois Done"
   },
 
   "session": {

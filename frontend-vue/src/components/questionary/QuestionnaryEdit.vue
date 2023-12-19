@@ -99,7 +99,7 @@
       </v-card>
     </v-dialog>
 
-    <v-btn text="done" class="mt-5" @click="EmitGoList"></v-btn>
+    <v-btn class="mt-5" @click="EmitGoList">{{$t('questionnary.done')}}</v-btn>
   </v-sheet>
 </template>
 

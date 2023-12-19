@@ -26,7 +26,11 @@
     "viewquestionnary": "Consulter Questionnaire",
     "zeroquestion": "Questionnaire vide.. Cliquez sur le + pour ajouter une question",
     "selectquestion": "Choisissez un type de question",
-    "confirmquestionnary":"Confirmez"
+    "confirmquestionnary":"Confirmez",
+    "question": "Question :",
+    "addAnswer": "Ajouter une réponse",
+    "deleteAnswer": "Supprimer une réponse",
+    "done": "Complété"
   },
 
 

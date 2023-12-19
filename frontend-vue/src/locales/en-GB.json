@@ -26,7 +26,11 @@
     "viewquestionnary": "View Questionnary",
     "zeroquestion": "Empty Questionnary.. Please click on the + to add a question",
     "selectquestion": "Select Question Type",
-    "confirmquestionnary":"Confirm"
+    "confirmquestionnary":"Confirm",
+    "question": "Question :",
+    "addAnswer":"Add an answer",
+    "deleteAnswer": "Delete an answer",
+    "done": "Done"
   },
 
   "session": {

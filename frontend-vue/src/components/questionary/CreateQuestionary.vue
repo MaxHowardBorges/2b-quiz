@@ -5,7 +5,7 @@
       id="question"
       v-model="question.content"
       required
-      label="Question :"
+      :label="$t('questionnary.question')"
       :value="question.content"></v-text-field>
 
     <v-sheet
@@ -57,9 +57,9 @@
         this.selectedQuestionType === 'Multiple' ||
         this.selectedQuestionType === null
       ">
-      <button @click="addAnswer">Add an answer</button>
+      <button @click="addAnswer"><p class="text-white font">{{ $t('questionnary.addAnswer') }}</p></button>
 
-      <button @click="removeAnswer(index)">Delete an answer</button>
+      <button @click="removeAnswer(index)"><p class="text-white font">{{ $t('questionnary.deleteAnswer') }}</p></button>
     </v-sheet>
   </v-sheet>
 </template>
