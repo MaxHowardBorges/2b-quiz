@@ -106,7 +106,7 @@
           { typeLabel: 'Multiple', typeCode: 'qcm' },
           { typeLabel: 'Open-Ended', typeCode: 'ouv' },
           { typeLabel: 'True-False', typeCode: 'tof' },
-          { typeLabel: 'Nuage de mots', typeCode: 'ndm' },
+          { typeLabel: 'Open-Ended-Constraint', typeCode: 'qoc' },
         ],
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',

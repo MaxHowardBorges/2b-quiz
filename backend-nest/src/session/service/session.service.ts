@@ -13,6 +13,7 @@ import { Answer } from '../../question/entity/answer.entity';
 import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
+import { QuestionType } from '../../question/constants/questionType.constant';
 
 @Injectable()
 export class SessionService {
@@ -154,16 +155,17 @@ export class SessionService {
       throw new AnswerNotOfCurrentQuestionException();
     }
 
-    session.userAnswers
-      .get(username)
-      .set(
-        question,
-        Array.isArray(idAnswer)
-          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-          : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : idAnswer,
-      );
+    session.userAnswers.get(username).set(
+      question,
+
+      Array.isArray(idAnswer)
+        ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+        : typeof idAnswer === 'number'
+        ? question.answers.find((answer) => answer.id === idAnswer)
+        : question.type === QuestionType.QOC
+        ? idAnswer.split(/[ _]/)[0]
+        : idAnswer,
+    );
   }
 
   getMapUser(idSession: string) {
