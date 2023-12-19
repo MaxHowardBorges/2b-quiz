@@ -7,8 +7,7 @@
       required
       label="Question :"
       :value="question.content"
-      :style="{ 'min-width': '200px' }"
-    ></v-text-field>
+      :style="{ 'min-width': '200px' }"></v-text-field>
 
     <v-sheet
       v-if="
@@ -154,6 +153,11 @@
             content: 'false',
             isCorrect: false,
           });
+        } else if (
+          this.selectedQuestionType === 'Open-Ended' ||
+          this.selectedQuestionType === 'Open-Ended-Constraint'
+        ) {
+          this.question.answers = [];
         }
         return this.question.answers;
       },

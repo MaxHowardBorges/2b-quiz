@@ -153,11 +153,14 @@
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
-      ChangeStatus(idQuestion) {
+      ChangeStatus(idQuestion, typeL) {
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
         this.statusQ = 'modify';
         this.idQuestion = idQuestion;
+        this.selectedType = this.typeOptions.filter(
+          (type) => type.typeCode === typeL,
+        )[0].typeLabel;
         this.useQ.getAnswers(idQuestion);
       },
       async validQuestion() {
@@ -172,7 +175,7 @@
           answers[i].isCorrect = i === index;
         }
 
-        if (content && answers.length >= 2) {
+        if (content && answers) {
           if (this.useQ.idQuestionnary == null) {
             await this.useQ.createQuestionnary({
               author: 'author_default',

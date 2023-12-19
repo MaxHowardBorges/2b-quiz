@@ -2,7 +2,7 @@
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
-    emits: ['changeStatuss'],
+    emits: ['ChangeStatuss'],
     data() {
       return {
         alertQuestionDelete: false,
@@ -29,7 +29,7 @@
         }
       },
       modifyQuest() {
-        this.$emit('ChangeStatuss', this.idQuestion);
+        this.$emit('ChangeStatuss', this.idQuestion, this.typeLabel);
       },
     },
   };
