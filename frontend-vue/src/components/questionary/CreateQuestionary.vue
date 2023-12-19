@@ -88,7 +88,7 @@
       ">
       <button @click="addAnswer">Add an answer</button>
 
-      <button @click="removeAnswer(index)">Delete an answer</button>
+      <button @click="removeAnswer()">Delete an answer</button>
     </v-sheet>
   </v-sheet>
 </template>
@@ -122,21 +122,33 @@
     },
     methods: {
       getQuestion() {
-        if (!!this.idQuestion) {
+        if (this.idQuestion) {
           return this.questionnaryStore.getQuestion(this.idQuestion);
         }
-        return {
+        let initQuestion = {
           content: '',
           answers: [],
         };
+        if (
+          this.selectedQuestionType === 'Multiple' ||
+          this.selectedQuestionType === 'Unique'
+        ) {
+          initQuestion.answers.push({ content: '', isCorrect: true });
+          initQuestion.answers.push({ content: '', isCorrect: false });
+        }
+        return initQuestion;
       },
       getAnswers() {
-        switch (this.selectedQuestionType) {
-          case 'True-False':
-            this.question.answers = [];
-            this.question.answers.push({ content: 'true', isCorrect: false });
-            this.question.answers.push({ content: 'false', isCorrect: false });
-            break;
+        if (this.selectedQuestionType === 'True-False') {
+          this.question.answers = [];
+          this.question.answers.push({
+            content: 'true',
+            isCorrect: false,
+          });
+          this.question.answers.push({
+            content: 'false',
+            isCorrect: false,
+          });
         }
         return this.question.answers;
       },
@@ -144,9 +156,15 @@
         this.question.answers.push({ content: '', isCorrect: false });
       },
 
-      removeAnswer(index) {
-        // Utilisez splice pour supprimer la réponse de la liste des réponses
-        this.question.answers.splice(index, 1);
+      removeAnswer() {
+        if (
+          this.selectedQuestionType === 'Unique' ||
+          this.selectedQuestionType === 'Multiple'
+        ) {
+          this.question.answers.length > 2
+            ? this.question.answers.splice(this.question.answers.length - 1, 1)
+            : '';
+        }
       },
     },
   };
