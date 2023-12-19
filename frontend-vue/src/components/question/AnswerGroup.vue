@@ -57,13 +57,12 @@
         rules: {
           required: (value) => !!value || 'Field is required',
           notContainsSpace: (value) =>
-            !/[_\s]/.test(value) || "Field mustn't contain space",
+            !/[_\s]/.test(value) ||
+            "Field mustn't contain space or underscore !",
         },
       };
     },
-    mounted() {
-      console.log('Type de la question :', this.type);
-    },
+
     methods: {
       getAnswerId(nAnswer, nLine) {
         if (this.answers.length <= 4) return nAnswer - 1 + (nLine - 1) * 2;

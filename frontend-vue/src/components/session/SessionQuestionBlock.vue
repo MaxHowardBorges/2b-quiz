@@ -42,29 +42,21 @@
     },
     methods: {
       async updateSelectedValue(value) {
-        console.log(value);
-        if(typeof value === "string"){
-          this.$refs['session-actions-block'].selectedValue =value;
-        }else if (Array.isArray(value)){
-          const tab=[]
-          for (let i = 0; i <= value.length-1; i++) {
-            tab[i]= this.sessionStore.question.answers[value[i]].id
+        if (typeof value === 'string') {
+          this.$refs['session-actions-block'].selectedValue = value;
+        } else if (Array.isArray(value)) {
+          const tab = [];
+          for (let i = 0; i <= value.length - 1; i++) {
+            tab[i] = this.sessionStore.question.answers[value[i]].id;
           }
-          console.log("************", tab);
           this.$refs['session-actions-block'].selectedValue = tab;
-          console.log("1111111111111111",this.$refs['session-actions-block'].selectedValue);
-
-        }
-        else{
+        } else {
           this.$refs['session-actions-block'].selectedValue =
             this.sessionStore.question.answers[value].id;
-          console.log("################",this.sessionStore.question);
         }
       },
       async relayEvent() {
-        console.log("22222222222",this.$refs['session-actions-block'].selectedValue);
         this.$emit('answer-sent-relay');
-
       },
     },
   };
