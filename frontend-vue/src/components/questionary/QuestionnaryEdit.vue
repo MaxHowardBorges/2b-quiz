@@ -39,21 +39,33 @@
       readonly=""
     ></v-select>
 
-    <!-- Champ pour les tags -->
-    <v-autocomplete
-      v-if="showTypeSelector"
+    <v-select
+      v-if="!OnList"
       v-model="selectedTags"
       :items="tagOptions"
-      label="Select or Create Tags"
-      class="custom-select"
-      dense
-      outlined
+      label="Select Tags"
+      style="width: 200px;"
       multiple
-      chips
-      clearable
-      hide-selected
-      @input="changeTags"
-    ></v-autocomplete>
+      outlined
+      dense
+    ></v-select>
+
+    <v-row v-if="!OnList" class="mt-3">
+      <v-col>
+        <v-text-field
+          v-model="newTag"
+          label="New Tag"
+          style="width: 200px;"
+          outlined
+          dense
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-btn @click="createNewTag"  icon="done">
+        </v-btn>
+      </v-col>
+    </v-row>
+
 
     <v-btn
       class="mb-5"
@@ -75,6 +87,8 @@
         Pas encore de questions.. Cliquez sur le + pour ajouter une question
       </b>
     </div>
+
+
 
     <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
       <v-sheet
@@ -121,6 +135,7 @@
   export default {
     data() {
       return {
+        newTag:"",
         OnList: true,
         showTypeSelector: false,
         selectedType: 'Multiple',
@@ -152,6 +167,18 @@
       QuestionnaryListOne,
     },
     methods: {
+
+      createNewTag() {
+        const tagToAdd = this.newTag.trim();
+        if (tagToAdd && !this.tagOptions.includes(tagToAdd)) {
+          this.tagOptions.push(tagToAdd);
+          this.selectedTags.push(tagToAdd);
+          this.newTag = ''; // Réinitialisez le champ du nouveau tag après l'ajout
+        } else {
+          alert('Le tag est vide ou existe déjà.');
+        }
+      },
+
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
