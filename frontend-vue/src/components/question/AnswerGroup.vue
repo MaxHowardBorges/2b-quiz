@@ -49,6 +49,7 @@
       answers: Array,
       disabled: Boolean,
     },
+    emits: ['newSelectedValue', 'new-selected-value'],
     data() {
       return {
         selected: ref(null),
