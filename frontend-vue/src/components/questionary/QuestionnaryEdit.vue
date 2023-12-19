@@ -26,7 +26,6 @@
     </div>
 
     <v-select
-      @change="changeType"
       v-if="showTypeSelector"
       v-model="selectedType"
       :items="typeOptions.map((option) => option.typeLabel)"
@@ -54,9 +53,10 @@
       </b>
     </div>
 
-    <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
+    <v-sheet
+      class="questions"
+      v-if="this.OnList && this.useQ.isCreated && this.useQ.questionnary">
       <v-sheet
-        v-if="this.useQ.questionnary"
         v-for="(question, index) in this.useQ.questionnary.questions"
         :key="index">
         <QuestionnaryListOne
@@ -85,7 +85,11 @@
       </v-card>
     </v-dialog>
 
-    <v-btn text="done" class="mt-5" @click="EmitGoList"></v-btn>
+    <v-btn
+      v-if="OnList"
+      text="return to questionnary list"
+      class="mt-5"
+      @click="EmitGoList"></v-btn>
   </v-sheet>
 </template>
 
@@ -157,7 +161,7 @@
           answers[i].isCorrect = i === index;
         }
 
-        if (content && answers) {
+        if (content && answers.length >= 2) {
           if (this.useQ.idQuestionnary == null) {
             await this.useQ.createQuestionnary({
               author: 'author_default',
@@ -177,15 +181,14 @@
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
+          this.selectedType = 'Unique';
         } else alert('Remplissez les champs vide avant de valider');
-      },
-      changeType() {
-        this.selectedQuestionType = this.selectedType;
       },
       showConfirmationDialog() {
         this.confirmationDialog = true;
       },
       leaveWithoutSaving() {
+        this.selectedType = 'Unique';
         this.idQuestion = null;
         this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
