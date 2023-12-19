@@ -21,7 +21,7 @@
       RegisterForm,
       AdminListItem,
       TableSortSwitchButton,
-      RegisterGroupUser
+      RegisterGroupUser,
     },
     data() {
       return {
@@ -185,9 +185,9 @@
   <v-dialog v-model="addMoreUser" width="auto">
     <v-card class="pa-5" min-width="40vw">
       <RegisterGroupUser
-        class="ma-2"
+        class="ma-2 pa-4"
         @user-registered="userMoreAdded"
-        @error-register="errorRegister"/>
+        @error-register="errorRegister" />
     </v-card>
   </v-dialog>
   <info-snackbar
