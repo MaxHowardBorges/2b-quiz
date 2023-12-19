@@ -20,7 +20,7 @@
   </v-item-group>
 
   <v-text-field
-    id="NewAnswer"
+    id='NewAnswer'
     v-model="selected"
     label="Write an answer"
     :disabled="disabled"
@@ -42,6 +42,7 @@
   import { useUserStore } from '@/stores/userStore';
 
   export default {
+    emits: ['newSelectedValue', 'new-selected-value'],
     name: 'AnswerGroup',
     components: { AnswerItem },
     props: {
@@ -49,7 +50,6 @@
       answers: Array,
       disabled: Boolean,
     },
-    emits: ['newSelectedValue', 'new-selected-value'],
     data() {
       return {
         selected: ref(null),
@@ -62,7 +62,6 @@
         },
       };
     },
-
     methods: {
       getAnswerId(nAnswer, nLine) {
         if (this.answers.length <= 4) return nAnswer - 1 + (nLine - 1) * 2;

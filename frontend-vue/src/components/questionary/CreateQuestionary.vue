@@ -7,7 +7,8 @@
       required
       label="Question :"
       :value="question.content"
-      :style="{ 'min-width': '200px' }"></v-text-field>
+      :style="{ 'min-width': '200px' }"
+    ></v-text-field>
 
     <v-sheet
       v-if="
@@ -22,8 +23,8 @@
           <v-text-field
             :label="'Answer ' + (index + 1) + ' :'"
             :id="'answer-' + index"
-            :value="question.answers[index].content"
-            v-model="question.answers[index].content"
+            :value="answer.content"
+            v-model="answer.content"
             required></v-text-field>
           <div class="align-content-end">
             <v-radio-group v-model="correct">
@@ -53,8 +54,8 @@
           <v-text-field
             :label="'Answer ' + (index + 1) + ' :'"
             :id="'answer-' + index"
-            :value="question.answers[index].content"
-            v-model="question.answers[index].content"
+            :value="answer.content"
+            v-model="answer.content"
             required></v-text-field>
 
           <div class="align-content-end">
@@ -123,7 +124,11 @@
     methods: {
       getQuestion() {
         if (this.idQuestion) {
-          return this.questionnaryStore.getQuestion(this.idQuestion);
+          let question = this.questionnaryStore.questions.find(
+            (question) => question.id === this.idQuestion,
+          );
+          question.answers = this.questionnaryStore.answers;
+          return question;
         }
         let initQuestion = {
           content: '',

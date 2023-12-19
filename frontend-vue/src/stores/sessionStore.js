@@ -22,7 +22,6 @@ export const useSessionStore = defineStore('session', {
   actions: {
     setQuestion(question) {
       this.question = question;
-      console.log('TYPE : ' + this.question.type);
     },
     setIdSession(idSession) {
       this.idSession = idSession;
@@ -50,8 +49,7 @@ export const useSessionStore = defineStore('session', {
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
-        const question = await response.json();
-        this.setQuestion(question);
+        this.setQuestion(await response.json());
       } catch (error) {
         console.error(error);
       }
@@ -103,8 +101,7 @@ export const useSessionStore = defineStore('session', {
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
-        const tabResult = await response.json();
-        this.setTabResult(tabResult);
+        this.setTabResult(await response.json());
       } catch (error) {
         console.error(error);
       }

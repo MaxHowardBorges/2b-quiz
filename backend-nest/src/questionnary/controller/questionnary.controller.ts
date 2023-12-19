@@ -12,10 +12,6 @@ import {
 import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
-import { Questionnary } from '../entity/questionnary.entity';
-import { Question } from '../../question/entity/question.entity';
-import { Answer } from '../../question/entity/answer.entity';
-import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {
@@ -24,9 +20,7 @@ export class QuestionnaryController {
   createQuestionnary(
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
-    return this.questionnaryService.createQuestionnary(
-      this.DtoToQuestionnary(questionnaryDto),
-    );
+    return this.questionnaryService.createQuestionnary(questionnaryDto);
   }
 
   @Delete('/:id')
@@ -34,55 +28,55 @@ export class QuestionnaryController {
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
-  @Get('/:id/select')
+  @Get('/:id')
   selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
     return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
 
-  @Get('/select/user/:id')
-  selectQuestionnaryFromUser(@Param('id', ParseIntPipe) idUser: number) {
-    return this.questionnaryService.findQuestionnaryFromUser(idUser);
+  @Get('/user/:idUser')
+  selectQuestionnariesFromUser(@Param('idUser', ParseIntPipe) idUser: number) {
+    return this.questionnaryService.findQuestionnariesFromIdUser(idUser);
   }
 
-  @Post('/:id/add-question')
+  @Get('/:id/question/')
+  selectQuestionsFromQuestionnary(
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+  ) {
+    return this.questionnaryService.findQuestionsFromIdQuestionnary(
+      idQuestionnary,
+    );
+  }
+
+  @Post('/:id/question/')
   async addQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
-    return this.questionnaryService.addQuestion(
-      idQuestionnary,
-      this.DtoToQuestion(
-        questionDto,
-        await this.selectQuestionnary(idQuestionnary),
-      ),
-    );
+    return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
   }
 
-  @Delete('/:id/remove-question/:idQ')
+  @Delete('/:id/question/:idQuestion')
   async deleteQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Param('idQ', ParseIntPipe) idQuestion: number,
+    @Param('idQuestion', ParseIntPipe) idQuestion: number,
   ) {
     return this.questionnaryService.deleteQuestion(idQuestionnary, idQuestion);
   }
 
-  @Patch('/:id/modify-question/:idQ')
+  @Patch('/:id/question/:idQuestion')
   async modifyQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Param('idQ', ParseIntPipe) idQuestion: number,
+    @Param('idQuestion', ParseIntPipe) idQuestion: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
     return this.questionnaryService.modifyQuestion(
       idQuestionnary,
       idQuestion,
-      this.DtoToQuestion(
-        questionDto,
-        await this.selectQuestionnary(idQuestionnary),
-      ),
+      questionDto,
     );
   }
 
-  @Patch('/:id/modify-questionnary/')
+  @Patch('/:id')
   modifyQuestionnary(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body() body: { questionnaryName: string },
@@ -90,40 +84,7 @@ export class QuestionnaryController {
     return this.questionnaryService.modifyQuestionnary(
       idQuestionnary,
       body.questionnaryName,
+      //body.author,
     );
-  }
-
-  DtoToQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
-    const questionnary = new Questionnary();
-    questionnary.id = null;
-    questionnary.title = questionnaryDto.title;
-    questionnary.author = questionnaryDto.author;
-    questionnary.questions = [];
-    for (const questionDto of questionnaryDto.questions) {
-      questionnary.questions.push(
-        this.DtoToQuestion(questionDto, questionnary),
-      );
-    }
-    return questionnary;
-  }
-  DtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
-    const question = new Question();
-    question.id = null;
-    question.content = questionDto.content;
-    question.type = questionDto.type;
-    question.answers = [];
-    question.questionnary = questionnaryRef;
-    for (const answerDto of questionDto.answers) {
-      question.answers.push(this.DtoToAnswer(answerDto, question));
-    }
-    return question;
-  }
-  DtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
-    const answer = new Answer();
-    answer.id = null;
-    answer.content = answerDto.content;
-    answer.isCorrect = answerDto.isCorrect;
-    answer.question = questionRef;
-    return answer;
   }
 }

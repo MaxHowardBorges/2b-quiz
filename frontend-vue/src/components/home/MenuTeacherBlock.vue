@@ -91,7 +91,7 @@
       if (this.dialogError) {
         this.$refs.dialogError.setDialogError(true);
       }
-      await this.questionnaryStore.getQuestionnaryFromUser();
+      await this.questionnaryStore.getQuestionnariesFromUser(0); //TODO get user id
       this.choosedQuestionnary = this.questionnaryStore.questionnaryList;
     },
     data() {
@@ -102,7 +102,6 @@
     },
     methods: {
       async handleCreateSession() {
-        console.log(this.selectedQuestionnary);
         this.loading = true;
         if (this.selectedQuestionnary.length > 0) {
           this.sessionStore.questionnary = this.selectedQuestionnary;

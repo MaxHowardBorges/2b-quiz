@@ -34,10 +34,10 @@ export class SessionController {
   }
 
   @Post('/nextQuestion')
-  nextQuestion(
+  async nextQuestion(
     @Body(new ValidationPipe()) body: NextQuestionDto,
-  ): Question | NonNullable<unknown> {
-    const question = this.sessionService.nextQuestion(body.idSession);
+  ): Promise<Question | NonNullable<unknown>> {
+    const question = await this.sessionService.nextQuestion(body.idSession);
     if (question) {
       return question;
     }
@@ -51,10 +51,10 @@ export class SessionController {
   }
 
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(
+  async getCurrentQuestion(
     @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
-  ): CurrentQuestionDto {
-    const question = this.sessionService.currentQuestion(body.idSession);
+  ): Promise<CurrentQuestionDto> {
+    const question = await this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
@@ -64,8 +64,6 @@ export class SessionController {
     @Body(new ValidationPipe())
     body: RespondQuestionDto,
   ) {
-    console.log('answer');
-    console.log(body);
     await this.sessionService.saveAnswer(
       body.idSession,
       body.answer,
@@ -77,12 +75,9 @@ export class SessionController {
   async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
-    const tabResult = [
-      this.sessionService.getQuestionList(idSession),
+    return [
+      await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ];
-    console.log('tabResult');
-    console.log(tabResult);
-    return tabResult;
   }
 }

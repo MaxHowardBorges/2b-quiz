@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AnswerCreateDto } from './answerCreate.dto';
 import { QuestionType } from '../constants/questionType.constant';
@@ -8,9 +8,9 @@ export class QuestionCreateDto {
   @IsNotEmpty()
   content: string;
 
-  @IsString()
+  @IsEnum(QuestionType)
   @IsNotEmpty()
-  type: QuestionType = QuestionType.QCU;
+  type: QuestionType;
 
   @IsNotEmpty({ each: true })
   @ValidateNested({ each: true })

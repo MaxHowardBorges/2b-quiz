@@ -16,11 +16,11 @@
       <br />
       Question N°{{
         this.idQuestion
-          ? this.useQ.questionnary.questions.findIndex(
+          ? this.useQ.questions.findIndex(
               (question) => question.id === this.idQuestion,
             ) + 1
           : !!this.useQ.questionnary
-          ? this.useQ.questionnary.questions.length + 1
+          ? this.useQ.questions.length + 1
           : 1
       }}
     </div>
@@ -47,18 +47,28 @@
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
 
+    <v-dialog v-model="alertQuestionnaryNull" max-width="600">
+      <v-card>
+        <v-card-title class="headline">Confirmation</v-card-title>
+        <v-card-text>
+          Please note that your questionnary has no questions if you leave it
+          will not be saved.
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
+          <v-btn @click="EmitGoList">confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
       <b>
         Pas encore de questions.. Cliquez sur le + pour ajouter une question
       </b>
     </div>
 
-    <v-sheet
-      class="questions"
-      v-if="this.OnList && this.useQ.isCreated && this.useQ.questionnary">
-      <v-sheet
-        v-for="(question, index) in this.useQ.questionnary.questions"
-        :key="index">
+    <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
+      <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
           :typeLabel="question.type"
@@ -117,6 +127,7 @@
         questionnaryName: '',
         statusQ: 'add',
         idQuestion: null,
+        alertQuestionnaryNull: false,
       };
     },
     setup() {
@@ -147,7 +158,7 @@
         this.OnList = !this.OnList;
         this.statusQ = 'modify';
         this.idQuestion = idQuestion;
-        this.question = this.useQ.getQuestion(this.idQuestion);
+        this.useQ.getAnswers(idQuestion);
       },
       async validQuestion() {
         const index = this.$refs.questionnaryComponent.correct;
@@ -190,20 +201,28 @@
       leaveWithoutSaving() {
         this.selectedType = 'Unique';
         this.idQuestion = null;
-        this.question = this.useQ.getQuestion(this.idQuestion);
+        //this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
         if (
-          !this.useQ.isCreated ||
-          (this.useQ.isCreated &&
-            this.questionnaryName !== this.baseQuestionnaryName)
+          this.useQ.questionnary === null &&
+          this.alertQuestionnaryNull === false
         ) {
-          this.useQ.idQuestionnary = null;
-          this.$emit('GoList');
-        } else alert('Veuillez changer le nom du questionnaire');
+          this.alertQuestionnaryNull = true;
+        } else {
+          this.alertQuestionnaryNull = false;
+          if (
+            !this.useQ.isCreated ||
+            (this.useQ.isCreated &&
+              this.questionnaryName !== this.baseQuestionnaryName)
+          ) {
+            this.useQ.idQuestionnary = null;
+            this.$emit('GoList');
+          } else alert('Veuillez changer le nom du questionnaire');
+        }
       },
       changeName() {
         if (this.useQ.isCreated) {
@@ -239,5 +258,11 @@
 
   .button-container {
     display: flex;
+  }
+
+  .errrmes {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: brown;
+    border-radius: 5px;
   }
 </style>
