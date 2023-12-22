@@ -4,3 +4,10 @@ export const UserRoles = {
   STUDENT: 'student',
   TEACHER: 'teacher',
 };
+
+// return UserRoles without NOT_CHOOSE
+export function getUserRoles() {
+  return Object.values(UserRoles).filter(
+    (role) => role !== UserRoles.NOT_CHOOSE,
+  );
+}

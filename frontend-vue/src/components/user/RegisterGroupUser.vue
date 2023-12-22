@@ -3,63 +3,76 @@
     <v-data-table :items="users" class="elevation-1" :headers="headers">
       <template v-slot:top>
         <v-toolbar class="justify-center">
-          <v-btn @click="addRow" color="primary">
+          <v-btn @click="addRow" :disabled="isNotValidatedUser()">
             <v-icon left>mdi-plus</v-icon>
             Ajouter une ligne
           </v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item="{ item }">
-        <tr>
+        <tr v-if="item.validate">
           <td>{{ item.username }}</td>
           <td>{{ item.surname }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.accountType }}</td>
           <td>
-            <div v-if="item.validate">
-              <v-icon size="small" class="me-2" @click="editItem(item)">
-                edit
-              </v-icon>
-              <v-icon size="small" @click="deleteItem(item)">delete</v-icon>
-            </div>
-            <div v-else>
+            <div>
               <v-btn
-                class="ma-3 align-center"
-                @click="validateRow()"
-                color="success">
-                Valider
-              </v-btn>
+                elevation="2"
+                size="small"
+                class="mx-2"
+                @click="editItem(item)"
+                color="warning"
+                icon="edit"></v-btn>
+              <v-btn
+                elevation="2"
+                size="small"
+                class="mx-2"
+                @click="deleteItem(item)"
+                color="error"
+                icon="delete"></v-btn>
             </div>
           </td>
         </tr>
-      </template>
-      <template v-slot:bottom>
-        <tr>
+        <tr v-else>
           <td>
-            <v-text-field v-model="surname" label="Prénom" class="w-100" />
-          </td>
-          <td>
-            <v-text-field v-model="name" label="Nom de famille" class="w-100" />
+            <v-text-field
+              v-model="item.username"
+              variant="underlined"></v-text-field>
           </td>
           <td>
             <v-text-field
-              v-model="username"
-              label="Nom d'utilisateur"
-              class="w-100" />
+              v-model="item.name"
+              variant="underlined"></v-text-field>
+          </td>
+          <td>
+            <v-text-field
+              v-model="item.surname"
+              variant="underlined"></v-text-field>
           </td>
           <td>
             <v-select
-              v-model="accountType"
-              :items="types"
-              label="Type"></v-select>
+              v-model="item.accountType"
+              variant="underlined"
+              :items="types"></v-select>
           </td>
           <td>
-            <v-btn
-              class="ma-3 align-center"
-              @click="validateRow()"
-              color="success">
-              Valider
-            </v-btn>
+            <div>
+              <v-btn
+                elevation="2"
+                size="small"
+                class="mx-2"
+                @click="validateItem(item)"
+                color="success"
+                icon="done"></v-btn>
+              <v-btn
+                elevation="2"
+                size="small"
+                class="mx-2"
+                @click="deleteItem(item)"
+                color="error"
+                icon="delete"></v-btn>
+            </div>
           </td>
         </tr>
       </template>
@@ -71,11 +84,11 @@
   import { ValidationError } from '@/utils/valdiationError';
   import { useUserStore } from '@/stores/userStore';
   import { ref } from 'vue';
+  import { getUserRoles, UserRoles } from '@/utils/userRoles';
 
   export default {
     data() {
       return {
-        types: ['student', 'teacher', 'admin'],
         items: [
           { surname: '', name: '', username: '', accountType: 'student' },
         ],
@@ -97,13 +110,15 @@
         name: ref(''),
       };
     },
+    setup() {
+      const userStore = useUserStore();
+      return {
+        types: getUserRoles(),
+        userStore,
+      };
+    },
     methods: {
-      setup() {
-        const userStore = useUserStore();
-        return {
-          userStore,
-        };
-      },
+      getUserRoles,
       async register() {
         try {
           await this.userStore.register(
@@ -125,22 +140,29 @@
         }
       },
       addRow() {
-        this.items.splice(1, 0, {
+        const rowData = {
           surname: '',
           name: '',
           username: '',
-          accountType: 'student',
-        });
-      },
-      validateRow() {
-        const rowData = {
-          username: this.username,
-          accountType: this.accountType,
-          surname: this.surname,
-          name: this.name,
+          accountType: UserRoles.STUDENT,
           validate: false,
         };
         this.users.push(rowData);
+      },
+      validateItem(item) {
+        item.validate = true;
+      },
+      editItem(item) {
+        item.validate = false;
+      },
+      deleteItem(item) {
+        const index = this.users.indexOf(item);
+        if (index > -1) {
+          this.users.splice(index, 1);
+        }
+      },
+      isNotValidatedUser() {
+        return this.users.some((user) => !user.validate);
       },
     },
   };
