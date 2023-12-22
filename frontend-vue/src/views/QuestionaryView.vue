@@ -2,6 +2,7 @@
   <ListOfQuestionnary
    v-if="iflist"
    @nextQuestion="iflist = false"></ListOfQuestionnary>
+  <ListOfQuestion></ListOfQuestion>
  <QuestionnaryEdit v-if="!iflist" @GoList="iflist = true"></QuestionnaryEdit>
 </template>
 
