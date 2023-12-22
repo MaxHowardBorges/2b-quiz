@@ -1,13 +1,12 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class RespondQuestionDto {
   @IsString()
   @IsNotEmpty()
   idSession: string;
 
-  @IsNumber()
   @IsNotEmpty()
-  answer: number;
+  answer: number | string | number[];
 
   @IsString()
   @IsNotEmpty()

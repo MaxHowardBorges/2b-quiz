@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Answer } from './answer.entity';
+import { QuestionType } from '../constants/questionType.constant';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Tag } from './tag.entity';
 
@@ -19,6 +20,9 @@ export class Question {
 
   @Column()
   content: string;
+
+  @Column({ default: QuestionType.QCU })
+  type: QuestionType;
 
   @ManyToMany(() => Tag, (tag) => tag.questions)
   @JoinTable()

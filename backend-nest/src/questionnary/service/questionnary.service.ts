@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionService } from '../../question/service/question.service';
-import { QuestionnaryDto } from '../dto/questionnary.dto';
-import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 import { Question } from '../../question/entity/question.entity';
+import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
+import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
+import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
+import { Answer } from '../../question/entity/answer.entity';
 import { QuestionDto } from '../../question/dto/question.dto';
 
 @Injectable()
@@ -16,17 +18,10 @@ export class QuestionnaryService {
     private questionService: QuestionService,
   ) {}
 
-  async createQuestionnary(
-    title: string,
-    questions: QuestionCreateDto[],
-    author: string,
-  ) {
-    const questionnary = new Questionnary();
-    questionnary.title = title;
-    questionnary.author = author;
-
+  async createQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
+    const questionnary = this.dtoToQuestionnary(questionnaryDto);
     await this.questionnaryRepository.save(questionnary);
-    for (const q of questions) {
+    for (const q of questionnary.questions) {
       await this.questionService.createQuestion(q, questionnary);
     }
 
@@ -46,55 +41,42 @@ export class QuestionnaryService {
   }
 
   async findQuestionnary(idQuestionnary: number) {
-    const questionnary = await this.questionnaryRepository.findOne({
+    //questionnary without questions
+    return await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
-
-    const questionnaryDto = new QuestionnaryDto();
-    if (questionnary) {
-      questionnaryDto.id = questionnary.id;
-      questionnaryDto.author = questionnary.author;
-      questionnaryDto.title = questionnary.title;
-      questionnaryDto.questions =
-        await this.questionService.findQuestion(questionnary);
-    }
-    return questionnaryDto.title != null
-      ? questionnaryDto
-      : 'pas de questionnaire trouvé';
   }
 
-  async findQuestionnaryFromUser(idUser: number) {
+  async findQuestionnariesFromIdUser(idUser: number) {
+    // questionnaries without questions
     //TODO get from user questionnary bank
-    const questionnary = await this.questionnaryRepository.find();
+    /*return await this.questionnaryRepository.find({
+      where: {
+        id: idUser,
+      },
+    });*/
+    return await this.questionnaryRepository.find();
+  }
 
-    const questionnaryDtos: QuestionnaryDto[] = [];
-    if (questionnary) {
-      for (const q of questionnary) {
-        const index = questionnary.indexOf(q);
-        const questionnaryDto = new QuestionnaryDto();
-        questionnaryDto.id = questionnary[index].id;
-        questionnaryDto.author = questionnary[index].author;
-        questionnaryDto.title = questionnary[index].title;
-        questionnaryDto.questions = await this.questionService.findQuestion(
-          questionnary[index],
-        );
-        questionnaryDtos.push(questionnaryDto);
-      }
-    }
-    return questionnaryDtos.length > 0
-      ? questionnaryDtos
-      : 'pas de questionnaires trouvés';
+  async findQuestionsFromIdQuestionnary(idQuestionnary: number) {
+    // questions without answers
+    return this.questionService.findQuestions(
+      await this.questionnaryRepository.findOne({
+        where: { id: idQuestionnary },
+      }),
+    );
   }
 
   async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
+    const question = this.dtoToQuestion(
+      questionDto,
+      await this.findQuestionnary(idQuestionnary),
+    );
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
     if (questionnary) {
-      return await this.questionService.createQuestion(
-        questionDto,
-        questionnary,
-      );
+      return await this.questionService.createQuestion(question, questionnary);
     }
     return !!questionnary;
   }
@@ -122,8 +104,12 @@ export class QuestionnaryService {
       where: { id: idQuestionnary },
     });
     if (questionnary) {
-      return await this.questionService.modifyQuestion(
+      const question = this.dtoToQuestion(
         questionDto,
+        await this.findQuestionnary(idQuestionnary),
+      );
+      return await this.questionService.modifyQuestion(
+        question,
         questionnary,
         idQuestion,
       );
@@ -131,14 +117,53 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
-  async modifyQuestionnary(idQuestionnary: number, questionnaryName: string) {
+  async modifyQuestionnary(
+    idQuestionnary: number,
+    questionnaryName: string,
+    author: string = 'default_author',
+  ) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
     if (questionnary) {
       questionnary.title = questionnaryName;
+      questionnary.author = author;
       await this.questionnaryRepository.save(questionnary);
     }
     return !!questionnary;
+  }
+
+  dtoToQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
+    const questionnary = new Questionnary();
+    questionnary.id = null;
+    questionnary.title = questionnaryDto.title;
+    questionnary.author = questionnaryDto.author;
+    questionnary.questions = [];
+    for (const questionDto of questionnaryDto.questions) {
+      questionnary.questions.push(
+        this.dtoToQuestion(questionDto, questionnary),
+      );
+    }
+    return questionnary;
+  }
+  dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
+    const question = new Question();
+    question.id = null;
+    question.content = questionDto.content;
+    question.answers = [];
+    question.questionnary = questionnaryRef;
+    question.type = questionDto.type;
+    for (const answerDto of questionDto.answers) {
+      question.answers.push(this.dtoToAnswer(answerDto, question));
+    }
+    return question;
+  }
+  dtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
+    const answer = new Answer();
+    answer.id = null;
+    answer.content = answerDto.content;
+    answer.isCorrect = answerDto.isCorrect;
+    answer.question = questionRef;
+    return answer;
   }
 }

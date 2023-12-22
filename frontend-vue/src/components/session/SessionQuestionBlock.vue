@@ -41,11 +41,21 @@
       };
     },
     methods: {
-      updateSelectedValue(value) {
-        this.$refs['session-actions-block'].selectedValue =
-          this.sessionStore.question.answers[value].id;
+      async updateSelectedValue(value) {
+        if (typeof value === 'string') {
+          this.$refs['session-actions-block'].selectedValue = value;
+        } else if (Array.isArray(value)) {
+          const tab = [];
+          for (let i = 0; i <= value.length - 1; i++) {
+            tab[i] = this.sessionStore.question.answers[value[i]].id;
+          }
+          this.$refs['session-actions-block'].selectedValue = tab;
+        } else {
+          this.$refs['session-actions-block'].selectedValue =
+            this.sessionStore.question.answers[value].id;
+        }
       },
-      relayEvent() {
+      async relayEvent() {
         this.$emit('answer-sent-relay');
       },
     },
