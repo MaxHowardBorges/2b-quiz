@@ -1,63 +1,55 @@
 <template>
-    <div class="blocklist" @click="">
-      <b>Est-ce que Santiago a eu son code ?</b>
+  <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
+    <div>
+      <b>Est-ce que moi sam, je suis vraiment le goat ?</b>
       <span class="spacer"></span>
       <span class="spacer"></span>
-      <!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
-      <v-btn id='ic' icon="edit" @click=""></v-btn>
-      <v-btn id='ic' icon="delete" @click=""></v-btn>
-      <v-btn id='ic' icon="visibility" @click=""></v-btn>
-      <v-btn id='ic' icon="share" @click=""></v-btn>
+      <v-btn id="ic" icon="edit" @click=""></v-btn>
+      <v-btn id="ic" icon="delete" @click=""></v-btn>
+      <v-btn id="ic" icon="visibility" @click="toggleDropdown"></v-btn>
+      <v-btn id="ic" icon="share" @click=""></v-btn>
     </div>
-
+    <!-- Dropdown menu -->
+    <v-list v-if="showDropdown" id="dropdown" class="mt-2">
+      <v-list-item-group>
+        <v-list-item v-for="(answer, index) in answers" :key="index">
+          <template #default>
+            <v-list-item-content>
+              <v-list-item-title class="text-h6">
+                Réponse {{ index + 1 }}
+              </v-list-item-title>
+              {{ answer }}
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+  </v-sheet>
 </template>
 
-<script setup>
+<script>
+  import { ref } from 'vue';
+
+  export default {
+    name: 'QuestionItem',
+    setup() {
+      return {
+        showDropdown: ref(false),
+        answers: [
+          'Tu es clairement le goat',
+          'Je suis pas sur',
+          'Tu es cringe',
+        ],
+      };
+    },
+    methods: {
+      toggleDropdown() {
+        this.showDropdown = !this.showDropdown;
+      },
+    },
+  };
 </script>
 
 <style scoped>
-
-  #ic{
-    margin: 0px 6px;
-  }
-
-  .blocklist {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid #ddd;
-    margin-bottom: 15px;
-  }
-
-  .blocklist b {
-    margin-right: 20px;
-  }
-
-  .blocklist .spacer {
-    flex: 1;
-  }
-
-  .blocklist v-btn {
-    margin-left: 20px;
-  }
-
-  #dropdown {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    z-index: 1;
-  }
-
-  #dropdown a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-
-  #dropdown a:hover {
-    background-color: #f1f1f1;
-  }
+  /* Ajoutez du style au besoin */
 </style>
