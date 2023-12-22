@@ -6,6 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { QuestionType } from '../constants/questionType.constant';
 
 export class QuestionDto {
   @IsNumber()
@@ -20,4 +21,7 @@ export class QuestionDto {
   @ValidateNested({ each: true })
   @Type(() => AnswerDto)
   answers: AnswerDto[];
+
+  @IsNotEmpty()
+  type: QuestionType;
 }

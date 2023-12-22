@@ -20,11 +20,7 @@ export class QuestionnaryController {
   createQuestionnary(
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
-    return this.questionnaryService.createQuestionnary(
-      questionnaryDto.title,
-      questionnaryDto.questions,
-      questionnaryDto.author,
-    );
+    return this.questionnaryService.createQuestionnary(questionnaryDto);
   }
 
   @Delete('/:id')
@@ -32,36 +28,45 @@ export class QuestionnaryController {
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
-  @Get('/:id/select')
+  @Get('/:id')
   selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
     return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
 
-  @Get('/select/user/:id')
-  selectQuestionnaryFromUser(@Param('id', ParseIntPipe) idUser: number) {
-    return this.questionnaryService.findQuestionnaryFromUser(idUser);
+  @Get('/user/:idUser')
+  selectQuestionnariesFromUser(@Param('idUser', ParseIntPipe) idUser: number) {
+    return this.questionnaryService.findQuestionnariesFromIdUser(idUser);
   }
 
-  @Post('/:id/add-question')
-  addQuestion(
+  @Get('/:id/question/')
+  selectQuestionsFromQuestionnary(
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+  ) {
+    return this.questionnaryService.findQuestionsFromIdQuestionnary(
+      idQuestionnary,
+    );
+  }
+
+  @Post('/:id/question/')
+  async addQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
     return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
   }
 
-  @Delete('/:id/remove-question/:idQ')
+  @Delete('/:id/question/:idQuestion')
   async deleteQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Param('idQ', ParseIntPipe) idQuestion: number,
+    @Param('idQuestion', ParseIntPipe) idQuestion: number,
   ) {
     return this.questionnaryService.deleteQuestion(idQuestionnary, idQuestion);
   }
 
-  @Patch('/:id/modify-question/:idQ')
-  modifyQuestion(
+  @Patch('/:id/question/:idQuestion')
+  async modifyQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Param('idQ', ParseIntPipe) idQuestion: number,
+    @Param('idQuestion', ParseIntPipe) idQuestion: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
   ) {
     return this.questionnaryService.modifyQuestion(
@@ -71,7 +76,7 @@ export class QuestionnaryController {
     );
   }
 
-  @Patch('/:id/modify-questionnary/')
+  @Patch('/:id')
   modifyQuestionnary(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body() body: { questionnaryName: string },
@@ -79,6 +84,7 @@ export class QuestionnaryController {
     return this.questionnaryService.modifyQuestionnary(
       idQuestionnary,
       body.questionnaryName,
+      //body.author,
     );
   }
 }

@@ -16,25 +16,23 @@
       <br />
       Question N°{{
         this.idQuestion
-          ? this.useQ.questionnary.questions.findIndex(
+          ? this.useQ.questions.findIndex(
               (question) => question.id === this.idQuestion,
             ) + 1
           : !!this.useQ.questionnary
-          ? this.useQ.questionnary.questions.length + 1
+          ? this.useQ.questions.length + 1
           : 1
       }}
     </div>
 
     <v-select
-      @change="changeType"
       v-if="showTypeSelector"
       v-model="selectedType"
-      :items="typeOptions"
+      :items="typeOptions.map((option) => option.typeLabel)"
       label="Select Question Type"
       class="custom-select"
       dense
-      outlined
-      readonly=""></v-select>
+      outlined></v-select>
 
     <v-btn
       class="mb-5"
@@ -53,7 +51,8 @@
       <v-card>
         <v-card-title class="headline">Confirmation</v-card-title>
         <v-card-text>
-          Please note that your questionnary has no questions if you leave it will not be saved.
+          Please note that your questionnary has no questions if you leave it
+          will not be saved.
         </v-card-text>
         <v-card-actions>
           <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
@@ -69,13 +68,10 @@
     </div>
 
     <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
-      <v-sheet
-        v-if="this.useQ.questionnary"
-        v-for="(question, index) in this.useQ.questionnary.questions"
-        :key="index">
+      <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
-          typeLabel="Multiple"
+          :typeLabel="question.type"
           :idQuestion="question.id"
           @ChangeStatuss="ChangeStatus" />
       </v-sheet>
@@ -99,7 +95,11 @@
       </v-card>
     </v-dialog>
 
-    <v-btn text="done" class="mt-5" @click="EmitGoList"></v-btn>
+    <v-btn
+      v-if="OnList"
+      text="return to questionnary list"
+      class="mt-5"
+      @click="EmitGoList"></v-btn>
   </v-sheet>
 </template>
 
@@ -114,14 +114,20 @@
       return {
         OnList: true,
         showTypeSelector: false,
-        selectedType: 'Multiple',
-        typeOptions: ['Multiple', 'Open-Ended', 'True-False'],
+        selectedType: 'Unique',
+        typeOptions: [
+          { typeLabel: 'Unique', typeCode: 'qcu' },
+          { typeLabel: 'Multiple', typeCode: 'qcm' },
+          { typeLabel: 'Open-Ended', typeCode: 'ouv' },
+          { typeLabel: 'True-False', typeCode: 'tof' },
+          { typeLabel: 'Open-Ended-Constraint', typeCode: 'qoc' },
+        ],
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
         statusQ: 'add',
         idQuestion: null,
-        alertQuestionnaryNull: false
+        alertQuestionnaryNull: false,
       };
     },
     setup() {
@@ -147,17 +153,23 @@
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
       },
-      ChangeStatus(idQuestion) {
+      ChangeStatus(idQuestion, typeL) {
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
         this.statusQ = 'modify';
         this.idQuestion = idQuestion;
-        this.question = this.useQ.getQuestion(this.idQuestion);
+        this.selectedType = this.typeOptions.filter(
+          (type) => type.typeCode === typeL,
+        )[0].typeLabel;
+        this.useQ.getAnswers(idQuestion);
       },
       async validQuestion() {
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
+        const type = this.typeOptions.find(
+          (option) => option.typeLabel === this.selectedType,
+        ).typeCode;
 
         for (let i = 0; i < answers.length; i++) {
           answers[i].isCorrect = i === index;
@@ -170,35 +182,38 @@
               title: this.questionnaryName,
               questions: [],
             }); //TODO get author
-            await this.useQ.addQuestion({ content, answers });
+            await this.useQ.addQuestion({ content, type, answers });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
               content,
+              type,
               answers,
             });
             this.idQuestion = null;
           } else {
-            await this.useQ.addQuestion({ content, answers });
+            await this.useQ.addQuestion({ content, type, answers });
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
+          this.selectedType = 'Unique';
         } else alert('Remplissez les champs vide avant de valider');
-      },
-      changeType() {
-        this.selectedQuestionType = this.selectedType;
       },
       showConfirmationDialog() {
         this.confirmationDialog = true;
       },
       leaveWithoutSaving() {
+        this.selectedType = 'Unique';
         this.idQuestion = null;
-        this.question = this.useQ.getQuestion(this.idQuestion);
+        //this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
       },
       EmitGoList() {
-        if (this.useQ.questionnary === null && this.alertQuestionnaryNull===false){
+        if (
+          this.useQ.questionnary === null &&
+          this.alertQuestionnaryNull === false
+        ) {
           this.alertQuestionnaryNull = true;
         } else {
           this.alertQuestionnaryNull = false;
@@ -248,10 +263,9 @@
     display: flex;
   }
 
-  .errrmes{
-    background-color: rgba(255, 0, 0, 0.2); ;
+  .errrmes {
+    background-color: rgba(255, 0, 0, 0.2);
     color: brown;
     border-radius: 5px;
   }
-
 </style>

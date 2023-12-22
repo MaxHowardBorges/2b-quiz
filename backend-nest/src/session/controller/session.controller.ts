@@ -14,10 +14,10 @@ import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
-import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
+import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 @Controller('session')
 export class SessionController {
@@ -28,16 +28,16 @@ export class SessionController {
 
   @Post('/create')
   async createSession(
-    @Body(new ValidationPipe()) questionnary: QuestionnaryDto[],
+    @Body(new ValidationPipe()) ids: number[],
   ): Promise<Session> {
-    return this.sessionService.initializeSession(questionnary);
+    return this.sessionService.initializeSession(ids);
   }
 
   @Post('/nextQuestion')
-  nextQuestion(
+  async nextQuestion(
     @Body(new ValidationPipe()) body: NextQuestionDto,
-  ): Question | NonNullable<unknown> {
-    const question = this.sessionService.nextQuestion(body.idSession);
+  ): Promise<Question | NonNullable<unknown>> {
+    const question = await this.sessionService.nextQuestion(body.idSession);
     if (question) {
       return question;
     }
@@ -51,10 +51,10 @@ export class SessionController {
   }
 
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(
+  async getCurrentQuestion(
     @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
-  ): CurrentQuestionDto {
-    const question = this.sessionService.currentQuestion(body.idSession);
+  ): Promise<CurrentQuestionDto> {
+    const question = await this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
@@ -76,7 +76,7 @@ export class SessionController {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
     return [
-      this.sessionService.getQuestionList(idSession),
+      await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ];
   }

@@ -20,12 +20,17 @@
         v-for="(question, index) in sessionStore.results[0].flatMap(questionnary => questionnary.questions)"
         :key="index"
         :style="{
-            'background-color': isAnswerCorrect(
-              getAnswer(question.id, participant),
-            )
-              ? 'lightgreen'
-              : 'tomato',
-          }"
+          'background-color': (() => {
+            const questionType = question.type;
+            if (questionType === 'qcu' ||questionType === 'tof') {
+              return isAnswerCorrect(getAnswer(question.id, participant)) ? 'lightgreen' : 'tomato';
+            }else if(questionType === 'qcm' ){
+              return 'yellow'
+            } else {
+              return 'white';
+            }
+          })()
+        }"
         class="text-left text-truncate">
         {{ getAnswerContent(getAnswer(question.id, participant)) }}
       </td>
@@ -41,6 +46,8 @@
     name: 'ResultTable',
     setup() {
       const sessionStore = useSessionStore();
+      console.log('result');
+      console.log(sessionStore.results);
       return {
         sessionStore,
       };
@@ -57,11 +64,21 @@
       getAnswerContent(answerQuestion) {
         if (!answerQuestion) return '-';
         const question = this.getQuestion(answerQuestion.idQuestion);
-        return (
-          question?.answers.find(
-            (answer) => answer.id === answerQuestion.idAnswer,
-          ).content || 'error'
-        );
+        let userAnswer = answerQuestion.idAnswer;
+
+        // join all answers from multiple question into one string
+        Array.isArray(answerQuestion.idAnswer) ?  userAnswer = answerQuestion.idAnswer.map((answer) => answer.content).join(' | ') : '';
+
+        console.log("answerQuestion");
+        console.log(answerQuestion);
+
+        typeof answerQuestion.idAnswer !== 'string' &&  !Array.isArray(answerQuestion.idAnswer)?
+          userAnswer = question?.answers.find(
+            (answer) => answer.id === answerQuestion.idAnswer.id,
+          ).content : ''
+
+
+        return userAnswer;
       },
       getQuestion(idQuestion) {
         return this.sessionStore.results[0].flatMap(questionnary => questionnary.questions).find(
@@ -71,8 +88,12 @@
       isAnswerCorrect(answerQuestion) {
         if (!answerQuestion) return false;
         const question = this.getQuestion(answerQuestion.idQuestion);
+
+        console.log("answerQuestion : ",answerQuestion);
+        console.log("Question : ", question);
+
         return question.answers.find(
-          (answer) => answer.id === answerQuestion.idAnswer,
+          (answer) => answer.id === answerQuestion.idAnswer.id,
         ).isCorrect;
       },
     },
