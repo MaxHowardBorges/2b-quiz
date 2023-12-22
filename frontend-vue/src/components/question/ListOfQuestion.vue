@@ -18,13 +18,21 @@ import QuestionItem from '@/components/question/QuestionItem.vue';
       <v-btn id='ic' icon="undo" @click=""></v-btn>
       </div>
     <h1>Private Question Bank</h1>
+
     </div>
 
+    <div style='display: flex;margin: 20px 0px; width: 50%'>
+      <div id='divDrop1'>
+    <v-select label='Types' style='width: 180%'></v-select>
+      </div>
     <v-text-field
       id="search"
       v-model="searchQuery"
-      style='margin: 20px 0px; width: 50%'
       label="Search"></v-text-field>
+      <div id='divDrop2' >
+    <v-select label='Tags' style='width: 180%'></v-select>
+    </div>
+    </div>
 
     <v-sheet class="list">
       <!--<v-sheet
@@ -52,12 +60,18 @@ import QuestionItem from '@/components/question/QuestionItem.vue';
 </template>
 
 <style scoped>
-  #search{
-    width: 100%;
-  }
-
   #divButton{
     position: absolute;
     left: 18%;
+  }
+
+  #divDrop1{
+    position: absolute;
+    left: 75%;
+  }
+
+  #divDrop2{
+    position: absolute;
+    right: 75%;
   }
 </style>
