@@ -17,7 +17,7 @@
       color="primary"
       max-width="250"
       class="mx-6 my-3 flex-grow-1">
-      <p class="text-white font-weight-bold">{{ $t('session.SendAnswer') }} </p>
+      <p class="text-white font-weight-bold">{{ $t('session.NextQuestion') }} </p>
     </v-btn>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <v-table class="table mt-7 text-center" hover="">
     <thead>
     <tr>
-      <th rowspan='2' class='thclass text-center'>Participant</th>
+      <th rowspan='2' class='thclass text-center'>{{ $t('Result.Participant') }}</th>
       <th v-for="(questionnary, index) in sessionStore.results[0]" :key="index" :colspan="questionnary.questions.length" class='thclass text-center'>
         {{ questionnary.title }}
       </th>

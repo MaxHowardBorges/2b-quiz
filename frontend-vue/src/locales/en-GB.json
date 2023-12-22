@@ -47,6 +47,12 @@
     "SendAnswer": "Send answer",
     "Thanks": "Thanks for participating",
     "StartNewSession": "Start a new session",
-    "ReturnMenu": "Return to menu"
+    "ReturnMenu": "Return to menu",
+    "SessionEnded": "Session ended"
+  },
+
+  "Result": {
+    "Participant": "Participants",
+    "Setting": "Setting"
   }
 }

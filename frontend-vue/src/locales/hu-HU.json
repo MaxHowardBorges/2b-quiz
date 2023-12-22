@@ -47,6 +47,12 @@
     "SendAnswer": "hongrois Send answer",
     "Thanks": "hongrois Thanks for participating",
     "StartNewSession": "hongrois Start a new session",
-    "ReturnMenu": "hongrois Return to menu"
+    "ReturnMenu": "hongrois Return to menu",
+    "SessionEnded": "hongrois Session ended"
+  },
+
+  "Result": {
+    "Participant": "hongrois Participants",
+    "Setting": "hongrois Setting"
   }
 }

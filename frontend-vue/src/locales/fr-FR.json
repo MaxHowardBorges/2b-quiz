@@ -1,7 +1,7 @@
 {
   "menu": {
     "menuTeacher": "Menu enseignant",
-    "home": "Home",
+    "home": "Page d'accueil",
     "questionnary": "Questionnaire"
   },
 
@@ -31,7 +31,7 @@
     "question": "Question :",
     "addAnswer": "Ajouter une réponse",
     "deleteAnswer": "Supprimer une réponse",
-    "done": "Complété"
+    "done": "Valider"
   },
 
 
@@ -48,6 +48,12 @@
     "SendAnswer": "Envoyer la réponse",
     "Thanks": "Merci pour votre participation",
     "StartNewSession": "Démarrer une nouvelle session",
-    "ReturnMenu": "Retour au menu"
+    "ReturnMenu": "Retour au menu",
+    "SessionEnded": "Session terminée"
+  },
+
+  "Result": {
+    "Participant": "Participants",
+    "Setting": "Paramètres"
   }
 }
