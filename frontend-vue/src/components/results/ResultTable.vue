@@ -46,8 +46,6 @@
     name: 'ResultTable',
     setup() {
       const sessionStore = useSessionStore();
-      console.log('result');
-      console.log(sessionStore.results);
       return {
         sessionStore,
       };
@@ -69,9 +67,6 @@
         // join all answers from multiple question into one string
         Array.isArray(answerQuestion.idAnswer) ?  userAnswer = answerQuestion.idAnswer.map((answer) => answer.content).join(' | ') : '';
 
-        console.log("answerQuestion");
-        console.log(answerQuestion);
-
         typeof answerQuestion.idAnswer !== 'string' &&  !Array.isArray(answerQuestion.idAnswer)?
           userAnswer = question?.answers.find(
             (answer) => answer.id === answerQuestion.idAnswer.id,
@@ -88,9 +83,6 @@
       isAnswerCorrect(answerQuestion) {
         if (!answerQuestion) return false;
         const question = this.getQuestion(answerQuestion.idQuestion);
-
-        console.log("answerQuestion : ",answerQuestion);
-        console.log("Question : ", question);
 
         return question.answers.find(
           (answer) => answer.id === answerQuestion.idAnswer.id,
