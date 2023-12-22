@@ -14,7 +14,6 @@ import { Tag } from './tag.entity';
 
 @Entity()
 export class Question {
-  idAuthor: number;
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -33,4 +32,12 @@ export class Question {
 
   @ManyToOne(() => Questionnary, (questionnary) => questionnary.questions)
   questionnary: Questionnary;
+
+  @ManyToOne(() => Question, (question) => question.id, { nullable: true })
+  originalId?: number;
+
+  //TODO ADD ID AUTHOR
+  /*@ManyToOne(()=> )*/
+  @Column()
+  idAuthor: number;
 }

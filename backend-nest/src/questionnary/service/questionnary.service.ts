@@ -153,6 +153,8 @@ export class QuestionnaryService {
     question.answers = [];
     question.questionnary = questionnaryRef;
     question.type = questionDto.type;
+    question.originalId = questionDto.id !== undefined ? questionDto.id : null;
+    question.idAuthor = questionDto.author;
     for (const answerDto of questionDto.answers) {
       question.answers.push(this.dtoToAnswer(answerDto, question));
     }
