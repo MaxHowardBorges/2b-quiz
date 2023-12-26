@@ -36,6 +36,9 @@ export class Question {
   @ManyToOne(() => Question, (question) => question.id, { nullable: true })
   originalId?: number;
 
+  // @OneToMany(() => Question, (question) => question.id, { nullable: true })
+  // duplicates: Question[];
+
   //TODO ADD ID AUTHOR
   /*@ManyToOne(()=> )*/
   @Column()
