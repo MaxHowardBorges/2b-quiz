@@ -1,8 +1,9 @@
 <template>
   <ListOfQuestionnary
    v-if="iflist"
-   @nextQuestion="iflist = false"></ListOfQuestionnary>
-  <ListOfQuestion></ListOfQuestion>
+   @nextQuestion="iflist = false"
+   @toggleVoir="toggleVoirVisibility"></ListOfQuestionnary>
+  <ListOfQuestion v-if="voir"></ListOfQuestion>
  <QuestionnaryEdit v-if="!iflist" @GoList="iflist = true"></QuestionnaryEdit>
 </template>
 
@@ -17,6 +18,7 @@
    data() {
      return {
        iflist: true,
+       voir: false
      };
    },
    setup() {
@@ -27,6 +29,11 @@
    },
    mounted() {
      this.useQ.idQuestionnary = null;
+   },
+   methods: {
+     toggleVoirVisibility() {
+       this.voir = !this.voir;
+     },
    },
    name: 'QuestionaryView',
    components: {

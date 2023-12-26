@@ -10,7 +10,7 @@ import QuestionItem from '@/components/question/QuestionItem.vue';
   <v-sheet
     rounded="lg"
     width="70%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
+    class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
     elevation="5">
 
     <div style='display: flex'>
