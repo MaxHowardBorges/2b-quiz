@@ -164,6 +164,7 @@
         this.useQ.getAnswers(idQuestion);
       },
       async validQuestion() {
+        const author = '111111'; // TODO get id author
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
@@ -178,20 +179,21 @@
         if (content && answers) {
           if (this.useQ.idQuestionnary == null) {
             await this.useQ.createQuestionnary({
-              author: 'author_default',
+              author: author,
               title: this.questionnaryName,
               questions: [],
             }); //TODO get author
-            await this.useQ.addQuestion({ content, type, answers });
+            await this.useQ.addQuestion({ content, type, author, answers });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
               content,
               type,
+              author,
               answers,
             });
             this.idQuestion = null;
           } else {
-            await this.useQ.addQuestion({ content, type, answers });
+            await this.useQ.addQuestion({ content, type, author, answers });
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;

@@ -10,7 +10,7 @@ export class Questionnary {
   title: string;
 
   @Column() //TODO DEFINE AS A FOREIGN KEY
-  author: string;
+  author: number;
 
   @OneToMany(() => Question, (question) => question.questionnary)
   questions: Question[];

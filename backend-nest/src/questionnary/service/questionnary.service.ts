@@ -8,7 +8,6 @@ import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
 import { Answer } from '../../question/entity/answer.entity';
-import { QuestionDto } from '../../question/dto/question.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -120,7 +119,7 @@ export class QuestionnaryService {
   async modifyQuestionnary(
     idQuestionnary: number,
     questionnaryName: string,
-    author: string = 'default_author',
+    author: number = 111111, //TODO get author id
   ) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
