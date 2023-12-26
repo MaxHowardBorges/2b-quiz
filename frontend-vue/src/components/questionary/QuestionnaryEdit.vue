@@ -66,13 +66,41 @@
       </v-col>
     </v-row>
 
-
+    <div>
     <v-btn
       class="mb-5"
       v-if="OnList"
       icon="add"
       @click="toggleTypeSelector"
     ></v-btn>
+
+    <v-btn
+      class="mb-5"
+      v-if="OnList"
+      icon="quiz"
+      @click="toggleBank"
+    ></v-btn>
+    </div>
+
+    <v-dialog v-model="dialogVisible" max-width="500">
+      <v-card>
+        <v-card-title>Bank Private Questions</v-card-title>
+
+        <v-card-text>
+          <v-list>
+            <v-list-item v-for="(question, index) in questions" :key="index" @click="toggleQuestion(index)" :class="{ 'selected-question': selectedQuestions.includes(index) }">
+              <v-list-item-content>
+                <v-list-item-title>{{ question }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+
+        <v-card-actions class="text-center">
+          <v-btn @click="">Add</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
@@ -109,6 +137,7 @@
       <v-btn icon="done" @click="validQuestion"></v-btn>
       <v-btn icon="reply" @click="showConfirmationDialog"></v-btn>
     </div>
+
 
     <v-dialog v-model="confirmationDialog" max-width="600">
       <v-card>
@@ -147,6 +176,10 @@
         tagOptions: ['Tag1', 'Tag2', 'Tag3'], // Remplacez par vos tags réels
         statusQ: 'add',
         idQuestion: null,
+        dialogVisible: false,
+
+        questions: ['Question 1', 'Question 2', 'Question 3'],
+        selectedQuestions: [],
       };
     },
     setup() {
@@ -183,6 +216,9 @@
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
+      },
+      toggleBank() {
+        this.dialogVisible = true;
       },
       ChangeStatus(idQuestion) {
         this.showTypeSelector = !this.showTypeSelector;
@@ -253,10 +289,21 @@
           this.useQ.modifyQuestionnary(this.questionnaryName);
         }
       },
+
+      toggleQuestion(index) {
+        if (this.selectedQuestions.includes(index)) {
+          this.selectedQuestions = this.selectedQuestions.filter((i) => i !== index);
+        } else {
+          this.selectedQuestions.push(index);
+        }
+      },
     },
   };
 </script>
 
 <style>
   /* Styles personnalisés */
+  .selected-question {
+    background-color: #bbfcc2;
+  }
 </style>
