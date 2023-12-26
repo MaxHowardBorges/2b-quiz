@@ -7,6 +7,7 @@ import {
   getUserType,
   loginUser,
   registerUser,
+  registerUserArray,
   validateSelf,
   validateUser,
 } from '@/api/user';
@@ -65,6 +66,14 @@ export const useUserStore = defineStore('user', {
         userType,
       };
       const response = await registerUser(body, this.token);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
+    },
+    async registerMultiple(userList) {
+      const body = {
+        users: userList,
+      };
+      const response = await registerUserArray(body, this.token);
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },

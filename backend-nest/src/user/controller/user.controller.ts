@@ -27,6 +27,8 @@ import { UserSelfValidateDto } from '../dto/userSelfValidate.dto';
 import { UserListDto } from '../dto/userList.dto';
 import { SortParamUserDto } from '../dto/sortParamUser.dto';
 import { User } from '../entity/user.entity';
+import { UserRegisterArrayDto } from '../dto/userRegisterArray.dto';
+import { UsernamesAlreadyUsedException } from '../exception/usernamesAlreadyUsed.exception';
 
 @Controller('user')
 export class UserController {
@@ -56,6 +58,30 @@ export class UserController {
       userRegisterDto.userType,
       true,
     );
+  }
+
+  @Roles([UserType.ADMIN])
+  @Post('/register/multiple')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async registerMultipleUser(
+    @Body(new ValidationPipe()) userRegisterArrayDto: UserRegisterArrayDto,
+  ) {
+    const usedUsernames = [];
+    for (const userRegisterDto of userRegisterArrayDto.users) {
+      if (!(await this.userService.usernameNotUsed(userRegisterDto.username)))
+        usedUsernames.push(userRegisterDto.username);
+    }
+    if (usedUsernames.length > 0)
+      throw new UsernamesAlreadyUsedException(usedUsernames);
+    for (const userRegisterDto of userRegisterArrayDto.users) {
+      await this.userService.createUser(
+        userRegisterDto.username,
+        userRegisterDto.name,
+        userRegisterDto.surname,
+        userRegisterDto.userType,
+        true,
+      );
+    }
   }
 
   @Patch('/modify')

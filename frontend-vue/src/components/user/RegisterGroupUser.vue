@@ -108,6 +108,9 @@
         accountType: ref('student'),
         surname: ref(''),
         name: ref(''),
+        rules: {
+          required: (value) => !!value || 'Required',
+        },
       };
     },
     setup() {
@@ -121,17 +124,18 @@
       getUserRoles,
       async register() {
         try {
-          await this.userStore.register(
-            this.surname,
-            this.name,
-            this.username,
-            this.accountType,
-          );
-          this.$emit('user-registered', {
-            username: this.username,
-            name: this.name,
-            surname: this.surname,
-            accountType: this.accountType,
+          const body = [];
+          this.users.forEach((user) => {
+            body.push({
+              username: user.username,
+              name: user.name,
+              surname: user.surname,
+              userType: user.accountType,
+            });
+          });
+          await this.userStore.registerMultiple(this.users);
+          this.$emit('users-registered', {
+            nbUsers: this.users.length,
           });
         } catch (error) {
           if (error instanceof ValidationError) {

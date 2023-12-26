@@ -9,6 +9,17 @@ export async function registerUser(body, token) {
   });
 }
 
+export async function registerUserArray(body, token) {
+  return await fetch(import.meta.env.VITE_API_URL + '/user/register/multiple', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+}
+
 export async function loginUser(body) {
   return await fetch(import.meta.env.VITE_API_URL + '/auth/login', {
     method: 'POST',
