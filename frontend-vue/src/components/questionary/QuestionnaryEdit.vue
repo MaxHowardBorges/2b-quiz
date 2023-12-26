@@ -89,15 +89,14 @@
         <v-card-text>
           <v-list>
             <v-list-item v-for="(question, index) in questions" :key="index" @click="toggleQuestion(index)" :class="{ 'selected-question': selectedQuestions.includes(index) }">
-              <v-list-item-content>
                 <v-list-item-title>{{ question }}</v-list-item-title>
-              </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-card-text>
+<!--        //TODO mettre les vrais questions -->
 
         <v-card-actions class="text-center">
-          <v-btn @click="">Add</v-btn>
+          <v-btn @click="AddQuestion">Add</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -115,8 +114,6 @@
         Pas encore de questions.. Cliquez sur le + pour ajouter une question
       </b>
     </div>
-
-
 
     <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
       <v-sheet
@@ -137,7 +134,6 @@
       <v-btn icon="done" @click="validQuestion"></v-btn>
       <v-btn icon="reply" @click="showConfirmationDialog"></v-btn>
     </div>
-
 
     <v-dialog v-model="confirmationDialog" max-width="600">
       <v-card>
@@ -297,6 +293,11 @@
           this.selectedQuestions.push(index);
         }
       },
+      AddQuestion(){
+        //TODO with back
+        this.selectedQuestions = [];
+        this.dialogVisible = false;
+      }
     },
   };
 </script>
