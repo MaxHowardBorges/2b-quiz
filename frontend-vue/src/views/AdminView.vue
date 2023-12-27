@@ -173,21 +173,23 @@
     ref="errorSnackbar"
     :title="errorSnackbarTitle"
     :content="errorSnackbarContent"></error-snackbar>
-  <v-dialog v-model="addUser" width="auto">
+  <v-dialog v-model="addUser" width="auto" :persistent="true">
     <v-card class="pa-5" min-width="40vw">
       <p class="text-h3 ma-2">Register new user</p>
       <register-form
         class="ma-2"
         @user-registered="userAdded"
         @error-register="errorRegister" />
+      <v-btn @click="addUser = false">Close</v-btn>
     </v-card>
   </v-dialog>
-  <v-dialog v-model="addMoreUser" width="auto">
+  <v-dialog v-model="addMoreUser" width="auto" :persistent="true">
     <v-card class="pa-5" min-width="40vw">
       <RegisterGroupUser
         class="ma-2 pa-4"
         @user-registered="userMoreAdded"
         @error-register="errorRegister" />
+      <v-btn @click="addMoreUser = false">Close</v-btn>
     </v-card>
   </v-dialog>
   <info-snackbar

@@ -3,8 +3,10 @@
     <v-data-table :items="users" class="elevation-1" :headers="headers">
       <template v-slot:top>
         <v-toolbar class="justify-center">
-          <v-btn @click="addRow" :disabled="isNotValidatedUser()">
-            <v-icon left>mdi-plus</v-icon>
+          <v-btn
+            @click="addRow"
+            :disabled="isNotValidatedUser()"
+            prepend-icon="add">
             Ajouter une ligne
           </v-btn>
         </v-toolbar>
