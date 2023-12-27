@@ -9,13 +9,12 @@
       <template v-slot:top>
         <v-toolbar class="justify-center">
           <v-toolbar-title>New users</v-toolbar-title>
-          <v-divider class="mx-4" :inset="true" :vertical="true"></v-divider>
           <v-spacer></v-spacer>
           <v-btn
             @click="addRow"
             :disabled="isNotValidatedUser()"
             prepend-icon="add">
-            Ajouter une ligne
+            Add user
           </v-btn>
         </v-toolbar>
       </template>
@@ -87,6 +86,13 @@
         </tr>
       </template>
     </v-data-table>
+    <v-btn
+      class="mt-2"
+      color="primary"
+      @click="register"
+      :disabled="isNotValidatedUser()">
+      Register
+    </v-btn>
   </div>
 </template>
 
@@ -131,7 +137,6 @@
       };
     },
     methods: {
-      getUserRoles,
       async register() {
         try {
           const body = [];
@@ -143,14 +148,14 @@
               userType: user.accountType,
             });
           });
-          await this.userStore.registerMultiple(this.users);
+          await this.userStore.registerMultiple(body);
           this.$emit('users-registered', {
             nbUsers: this.users.length,
           });
         } catch (error) {
           if (error instanceof ValidationError) {
-            this.$emit('error-register', this.username);
-          } else this.$emit('error-register', error);
+            this.$emit('error-register-multiple', error.message.split(','));
+          } else this.$emit('error-register-multiple', error);
         }
       },
       addRow() {

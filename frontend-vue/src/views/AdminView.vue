@@ -164,6 +164,11 @@
         this.errorSnackbarContent = `Username ${username} already exist`;
         this.$refs.errorSnackbar.snackbarError = true;
       },
+      errorRegisterMultiple(usernames) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent = `Usernames ${usernames.toString()} already taken`;
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
     },
   };
 </script>
@@ -188,7 +193,7 @@
       <RegisterGroupUser
         class="ma-2 pa-4"
         @user-registered="userMoreAdded"
-        @error-register="errorRegister" />
+        @error-register-multiple="errorRegisterMultiple" />
       <v-btn @click="addMoreUser = false">Close</v-btn>
     </v-card>
   </v-dialog>
