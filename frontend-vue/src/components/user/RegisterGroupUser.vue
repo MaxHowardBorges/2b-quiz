@@ -1,8 +1,16 @@
 <template>
   <div>
-    <v-data-table :items="users" class="elevation-1" :headers="headers">
+    <v-data-table
+      :items="users"
+      class="elevation-1"
+      :headers="headers"
+      :multi-sort="true"
+      :sort-by="[{ key: 'validate', order: 'desc' }]">
       <template v-slot:top>
         <v-toolbar class="justify-center">
+          <v-toolbar-title>New users</v-toolbar-title>
+          <v-divider class="mx-4" :inset="true" :vertical="true"></v-divider>
+          <v-spacer></v-spacer>
           <v-btn
             @click="addRow"
             :disabled="isNotValidatedUser()"
@@ -174,4 +182,8 @@
   };
 </script>
 
-<style></style>
+<style>
+  .v-data-table-header__sort-badge {
+    display: none;
+  }
+</style>
