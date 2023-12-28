@@ -108,6 +108,24 @@ export class QuestionService {
     });
   }
 
+  async modifyQuestionsOriginalId(idOriginal: number) {
+    const questions = await this.questionRepository.find({
+      where: { originalId: idOriginal },
+    });
+    console.log(questions);
+    if (questions.length > 0) {
+      questions[0].originalId = null;
+      await this.questionRepository.save(questions[0]);
+      const newId = questions[0].id;
+      if (questions.length > 1) {
+        for (let i = 1; i < questions.length; i++) {
+          questions[i].originalId = newId;
+          await this.questionRepository.save(questions[i]);
+        }
+      }
+    }
+  }
+
   async findQuestions(questionnary: Questionnary) {
     return await this.questionRepository.find({
       where: { questionnary },

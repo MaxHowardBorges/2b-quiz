@@ -109,6 +109,9 @@ export class QuestionnaryService {
         questionDto,
         await this.findQuestionnary(idQuestionnary),
       );
+      if (question.originalId === null) {
+        await this.questionService.modifyQuestionsOriginalId(idQuestion);
+      }
       return await this.questionService.modifyQuestion(
         question,
         questionnary,
