@@ -189,7 +189,7 @@
     </v-card>
   </v-dialog>
   <v-dialog v-model="addMoreUser" width="auto" :persistent="true">
-    <v-card class="pa-5" min-width="40vw">
+    <v-card class="pa-1" min-width="40vw">
       <RegisterGroupUser
         class="ma-2 pa-4"
         @user-registered="userMoreAdded"
