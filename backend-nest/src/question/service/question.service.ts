@@ -66,13 +66,11 @@ export class QuestionService {
 
   async createQuestion(q: Question, questionnary: Questionnary) {
     const question = new Question();
-    console.log(q);
     question.questionnary = questionnary;
     question.content = q.content;
     question.type = q.type;
     question.idAuthor = q.idAuthor;
     question.originalId = q.originalId;
-    console.log(question.originalId);
     if (q.type == 'ouv') {
       q.answers = [];
     }
@@ -112,7 +110,6 @@ export class QuestionService {
     const questions = await this.questionRepository.find({
       where: { originalId: idOriginal },
     });
-    console.log(questions);
     if (questions.length > 0) {
       questions[0].originalId = null;
       await this.questionRepository.save(questions[0]);
