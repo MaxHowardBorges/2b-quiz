@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -33,11 +34,18 @@ export class Question {
   @ManyToOne(() => Questionnary, (questionnary) => questionnary.questions)
   questionnary: Questionnary;
 
-  @ManyToOne(() => Question, (question) => question.id, { nullable: true })
-  originalId?: number;
+  /*@ManyToOne(() => Question, (question) => question.id, { nullable: true })
+  originalId?: number;*/
 
   // @OneToMany(() => Question, (question) => question.id, { nullable: true })
   // duplicates: Question[];
+
+  @ManyToOne(() => Question, { nullable: true })
+  @JoinColumn({ name: 'originalId' })
+  originalQuestion?: Question;
+
+  @Column({ nullable: true })
+  originalId?: number;
 
   //TODO ADD ID AUTHOR
   /*@ManyToOne(()=> )*/

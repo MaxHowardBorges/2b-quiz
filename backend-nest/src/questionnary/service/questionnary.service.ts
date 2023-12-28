@@ -67,10 +67,12 @@ export class QuestionnaryService {
   }
 
   async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAA');
     const question = this.dtoToQuestion(
       questionDto,
       await this.findQuestionnary(idQuestionnary),
     );
+    console.log(question.originalId);
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
@@ -147,6 +149,8 @@ export class QuestionnaryService {
   }
   dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
     const question = new Question();
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAA');
+    console.log(questionDto);
     question.id = null;
     question.content = questionDto.content;
     question.answers = [];
@@ -157,6 +161,7 @@ export class QuestionnaryService {
     for (const answerDto of questionDto.answers) {
       question.answers.push(this.dtoToAnswer(answerDto, question));
     }
+    console.log(question.originalId);
     return question;
   }
   dtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
