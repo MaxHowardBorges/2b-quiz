@@ -152,6 +152,7 @@
       :disabled="isNotValidatedUser()">
       Register
     </v-btn>
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -179,6 +180,7 @@
           { title: 'Account Type', key: 'userType' },
           { title: 'Actions', key: 'actions', sortable: false },
         ],
+        errorMessage: "",
         users: [],
         username: ref(''),
         accountType: ref('student'),
@@ -186,6 +188,7 @@
         name: ref(''),
         importCsvDialog: false,
         csv: null,
+        usernameExists: false,
         preview: '',
         rules: {
           required: (value) => !!value || 'Required',
@@ -256,8 +259,21 @@
       },
       validateItem(item) {
         console.log(item);
-        if(item.username !== "" && item.name !== "" && item.surname !== "")
-          item.validate = true;
+        if(item.username !== "" && item.name !== "" && item.surname !== "") {
+          console.log(this.users);
+          this.usernameExists = this.users.some((user) => user.username === item.username && user !== item);
+          if (!this.usernameExists) {
+            item.validate = true;
+            this.errorMessage = "";
+          } else {
+            console.log("Username déjà existant dans une autre ligne.");
+            this.errorMessage = "Username déjà existant dans une autre ligne.";
+          }
+        }
+        else{
+          this.errorMessage = "Il y a un ou plusieurs éléments nécessaires qui n'ont pas été renseignés.";
+        }
+
       },
       editItem(item) {
         item.validate = false;
@@ -294,4 +310,8 @@
   .v-data-table-header__sort-badge {
     display: none;
   }
+   .error-message {
+     color: red;
+     margin-top: 10px;
+   }
 </style>
