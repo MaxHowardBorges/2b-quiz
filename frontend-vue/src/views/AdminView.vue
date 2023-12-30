@@ -164,7 +164,17 @@
         this.errorSnackbarContent = `Username ${username} already exist`;
         this.$refs.errorSnackbar.snackbarError = true;
       },
-      errorRegisterMultiple(usernames) {
+      errorRegisterMultiple(error) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent = `Error while adding users: ${error}`;
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
+      errorRegisterMultipleDuplicate(usernames) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent = `Usernames ${usernames.toString()} are the same`;
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
+      errorRegisterMultipleUsed(usernames) {
         this.errorSnackbarTitle = 'Error';
         this.errorSnackbarContent = `Usernames ${usernames.toString()} already taken`;
         this.$refs.errorSnackbar.snackbarError = true;
@@ -193,7 +203,9 @@
       <RegisterGroupUser
         class="ma-2 pa-4"
         @user-registered="userMoreAdded"
-        @error-register-multiple="errorRegisterMultiple" />
+        @error-register-multiple="errorRegisterMultiple"
+        @error-register-multiple-dulicate="errorRegisterMultipleDuplicate"
+        @rror-register-multiple-used="errorRegisterMultipleUsed" />
       <v-btn @click="addMoreUser = false">Close</v-btn>
     </v-card>
   </v-dialog>

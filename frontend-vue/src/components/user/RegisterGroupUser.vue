@@ -231,7 +231,16 @@
           });
         } catch (error) {
           if (error instanceof ValidationError) {
-            this.$emit('error-register-multiple', error.message.split(','));
+            if (error.message.includes('duplicate username error:'))
+              this.$emit(
+                'error-register-multiple-duplicate',
+                error.message.split('duplicate username error:')[1].split(','),
+              );
+            else
+              this.$emit(
+                'error-register-multiple-used',
+                error.message.split('used username error:')[1].split(','),
+              );
           } else this.$emit('error-register-multiple', error);
         }
       },
@@ -268,7 +277,7 @@
         //read csv file for preview with Line Feed
         reader.onload = (e) => {
           const text = e.target.result;
-          const lines = text.split(/\r|\n/);
+          const lines = text.split(/[\r\n]/);
           console.log(lines);
           this.preview = lines.slice(0, 5).join('\n');
         };

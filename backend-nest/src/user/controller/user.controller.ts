@@ -29,6 +29,7 @@ import { SortParamUserDto } from '../dto/sortParamUser.dto';
 import { User } from '../entity/user.entity';
 import { UserRegisterArrayDto } from '../dto/userRegisterArray.dto';
 import { UsernamesAlreadyUsedException } from '../exception/usernamesAlreadyUsed.exception';
+import { UsernamesDuplicatedUsedException } from '../exception/usernamesDuplicatedUsed.exception';
 
 @Controller('user')
 export class UserController {
@@ -73,6 +74,21 @@ export class UserController {
     }
     if (usedUsernames.length > 0)
       throw new UsernamesAlreadyUsedException(usedUsernames);
+
+    //check if there is duplicate usernames
+    const duplicateUsernames = [];
+    for (let i = 0; i < userRegisterArrayDto.users.length; i++) {
+      for (let j = i + 1; j < userRegisterArrayDto.users.length; j++) {
+        if (
+          userRegisterArrayDto.users[i].username ===
+          userRegisterArrayDto.users[j].username
+        )
+          duplicateUsernames.push(userRegisterArrayDto.users[i].username);
+      }
+    }
+    if (duplicateUsernames.length > 0)
+      throw new UsernamesDuplicatedUsedException(usedUsernames);
+
     for (const userRegisterDto of userRegisterArrayDto.users) {
       await this.userService.createUser(
         userRegisterDto.username,
