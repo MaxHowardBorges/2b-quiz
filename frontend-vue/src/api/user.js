@@ -107,3 +107,24 @@ export async function deleteUser(id, token) {
     },
   });
 }
+
+export async function getMe(token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/me`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function updateMe(token, body) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/modify`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+}
