@@ -255,7 +255,9 @@
         this.users.push(rowData);
       },
       validateItem(item) {
-        item.validate = true;
+        console.log(item);
+        if(item.username !== "" && item.name !== "" && item.surname !== "")
+          item.validate = true;
       },
       editItem(item) {
         item.validate = false;
