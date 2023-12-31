@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Answer } from '../entity/answer.entity';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Tag } from '../entity/tag.entity';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class QuestionService {
@@ -185,5 +186,14 @@ export class QuestionService {
     }
 
     return !!questionDB;
+  }
+
+  async getQuestionPrivateBank(
+    idUser: number = 111111, //TODO implement User
+  ) {
+    const questions = await this.questionRepository.find({
+      where: { idAuthor: idUser, originalId: IsNull() },
+    });
+    return questions;
   }
 }

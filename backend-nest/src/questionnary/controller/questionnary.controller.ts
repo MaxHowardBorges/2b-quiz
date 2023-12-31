@@ -91,6 +91,12 @@ export class QuestionnaryController {
     return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
   }
 
+  @Post('/getquestion/')
+  async getQuestionsPrivateBank() //@Body(new ValidationPipe()) questionDto: QuestionCreateDto, //@Param('id', ParseIntPipe) idQuestionnary: number,
+  {
+    return await this.questionService.getQuestionPrivateBank();
+  }
+
   @Delete('/:id/question/:idQuestion')
   async deleteQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
