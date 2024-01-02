@@ -6,13 +6,13 @@ import { AnswerNotOfCurrentQuestionException } from '../exception/answerNotOfCur
 import { UserUnknownException } from '../exception/userUnknown.exception';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
-import { QuestionNoneException } from '../exception/questionNone.exception';
-import { QuestionNumberNoneException } from '../exception/questionNumberNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
 import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
+import { Teacher } from '../../user/entity/teacher.entity';
+import { Student } from '../../user/entity/student.entity';
 
 @Injectable()
 export class SessionService {
@@ -23,13 +23,16 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(): Promise<Session> {
+  async initializeSession(teacher: Teacher): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
 
-    this.sessionMap.set(idSession, await this.createSession(idSession));
+    this.sessionMap.set(
+      idSession,
+      await this.createSession(idSession, teacher),
+    );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
   }
@@ -39,10 +42,11 @@ export class SessionService {
     return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
   }
 
-  async createSession(idSession: string): Promise<Session> {
+  async createSession(idSession: string, teacher: Teacher): Promise<Session> {
     return new Session(
       idSession,
       await this.questionService.findAllWithQuestion(),
+      teacher,
     );
   }
 
@@ -77,16 +81,16 @@ export class SessionService {
     return this.sessionMap.get(idSession).questionList;
   }
 
-  join(idSession: string, username: string): void {
+  join(idSession: string, user: Student | Teacher): void {
     if (this.sessionMap.has(idSession) == false) {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
-    if (session.connectedUser.has(username)) {
+    if (session.connectedUser.has(user)) {
       throw new UserAlreadyJoinedException();
     }
-    session.connectedUser.add(username);
-    session.userAnswers.set(username, new Map<Question, Answer>());
+    session.connectedUser.add(user);
+    session.userAnswers.set(user, new Map<Question, Answer>());
   }
 
   currentQuestion(idSession: string): Question {
@@ -106,7 +110,11 @@ export class SessionService {
     return question;
   }
 
-  async saveAnswer(idSession: string, idAnswer: number, username: string) {
+  async saveAnswer(
+    idSession: string,
+    idAnswer: number,
+    user: Student | Teacher,
+  ) {
     if (this.sessionMap.get(idSession) == undefined) {
       throw new IdSessionNoneException();
     }
@@ -114,7 +122,7 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     const question = session.questionList[session.questionNumber];
 
-    if (!session.connectedUser.has(username)) {
+    if (!session.connectedUser.has(user)) {
       throw new UserUnknownException();
     }
     if (
@@ -125,7 +133,7 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers.get(username).set(
+    session.userAnswers.get(user).set(
       question,
       question.answers.find((answer) => answer.id === idAnswer),
     );
@@ -133,5 +141,12 @@ export class SessionService {
 
   getMapUser(idSession: string) {
     return this.sessionMap.get(idSession).userAnswers;
+  }
+
+  isHost(idSession: string, teacher: Teacher): boolean {
+    return (
+      this.sessionMap.get(idSession) != undefined &&
+      this.sessionMap.get(idSession).host.id == teacher.id
+    );
   }
 }

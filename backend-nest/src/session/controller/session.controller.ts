@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
@@ -15,6 +16,9 @@ import { SessionMapper } from '../mapper/session.mapper';
 import { BodyEmptyException } from '../exception/bodyEmpty.exception';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
+import { UserRequest } from '../../auth/config/user.request';
+import { IsNotHostException } from '../exception/isNotHost.exception';
+import { IsHostException } from '../exception/isHost.exception';
 
 @Controller('session')
 export class SessionController {
@@ -25,16 +29,21 @@ export class SessionController {
 
   @Roles([UserType.TEACHER])
   @Post('/create')
-  async createSession(): Promise<Session> {
-    return this.sessionService.initializeSession();
+  async createSession(request: UserRequest): Promise<Session> {
+    return this.sessionService.initializeSession(request.user);
   }
 
   @Roles([UserType.TEACHER])
   @Post('/nextQuestion')
-  nextQuestion(@Body() body: { id: string }): Question | NonNullable<unknown> {
+  nextQuestion(
+    @Req() request: UserRequest,
+    @Body() body: { id: string },
+  ): Question | NonNullable<unknown> {
     if (body.id == undefined) {
       throw new BodyEmptyException();
     }
+    if (!this.sessionService.isHost(body.id, request.user))
+      throw new IsNotHostException();
     const question = this.sessionService.nextQuestion(body.id);
     if (question) {
       return question;
@@ -42,22 +51,32 @@ export class SessionController {
     return {};
   }
 
-  @Roles([UserType.STUDENT])
+  @Roles([UserType.STUDENT, UserType.TEACHER])
   @Post('/join')
   @HttpCode(HttpStatus.NO_CONTENT)
-  joinSession(@Body() body: { idSession: string; username: string }) {
+  joinSession(
+    @Req() request: UserRequest,
+    @Body() body: { idSession: string; username: string },
+  ) {
     if (body.idSession == undefined || body.username == undefined) {
       throw new BodyEmptyException();
     }
-    this.sessionService.join(body.idSession, body.username);
+    if (this.sessionService.isHost(body.idSession, request.user))
+      throw new IsHostException();
+    this.sessionService.join(body.idSession, request.user);
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(@Body() body: { idSession: string }): CurrentQuestionDto {
+  getCurrentQuestion(
+    @Req() request: UserRequest,
+    @Body() body: { idSession: string },
+  ): CurrentQuestionDto {
     if (body.idSession == undefined) {
       throw new BodyEmptyException();
     }
+    if (this.sessionService.isHost(body.idSession, request.user))
+      throw new IsHostException();
     const question = this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
@@ -66,6 +85,7 @@ export class SessionController {
   @Post('/respond')
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
+    @Req() request: UserRequest,
     @Body() body: { idSession: string; answer: number; username: string },
   ) {
     if (
@@ -78,14 +98,19 @@ export class SessionController {
     await this.sessionService.saveAnswer(
       body.idSession,
       body.answer,
-      body.username,
+      request.user,
     );
   }
 
   @Roles([UserType.TEACHER])
   @Get('/getMap') //?idsession={l'id du session}
-  async getMap(@Query('idsession') idSession: string) {
-    const a = this.sessionService.getMapUser(idSession);
+  async getMap(
+    @Req() request: UserRequest,
+    @Query('idsession') idSession: string,
+  ) {
+    if (!this.sessionService.isHost(idSession, request.user))
+      throw new IsNotHostException();
+    const a = this.sessionService.getMapUser(idSession); //TODO refactor
     this.sessionService.getMap();
     return [
       this.sessionService.getQuestionList(idSession),

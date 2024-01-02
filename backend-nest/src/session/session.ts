@@ -1,5 +1,7 @@
 import { Question } from '../question/entity/question.entity';
 import { Answer } from '../question/entity/answer.entity';
+import { Teacher } from '../user/entity/teacher.entity';
+import { Student } from '../user/entity/student.entity';
 
 export class Session {
   id: string;
@@ -8,18 +10,21 @@ export class Session {
 
   questionNumber: number;
 
-  connectedUser: Set<string>;
+  connectedUser: Set<Student | Teacher>;
 
-  userAnswers: Map<string, Map<Question, Answer>>;
+  userAnswers: Map<Student | Teacher, Map<Question, Answer>>;
 
   endSession: boolean;
 
-  constructor(idSession: string, tabQuestions: Question[]) {
+  host: Teacher;
+
+  constructor(idSession: string, tabQuestions: Question[], host: Teacher) {
     this.id = idSession;
     this.questionNumber = -1;
     this.questionList = tabQuestions;
-    this.connectedUser = new Set<string>();
-    this.userAnswers = new Map<string, Map<Question, Answer>>();
+    this.connectedUser = new Set<Student | Teacher>();
+    this.userAnswers = new Map<Student | Teacher, Map<Question, Answer>>();
     this.endSession = false;
+    this.host = host;
   }
 }

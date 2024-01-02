@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { Answer } from '../../question/entity/answer.entity';
 import { UserAnswerDto } from '../dto/userAnswer.dto';
 import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
+import { Teacher } from '../../user/entity/teacher.entity';
+import { Student } from '../../user/entity/student.entity';
 
 @Injectable()
 export class SessionMapper {
@@ -19,12 +21,12 @@ export class SessionMapper {
   }
 
   mapUserAnswerDto(
-    userAnswers: Map<string, Map<Question, Answer>>,
+    userAnswers: Map<Teacher | Student, Map<Question, Answer>>,
   ): UserAnswerDto[] {
     const userAnswerDtos = [];
-    for (const [username, innerMap] of userAnswers.entries()) {
+    for (const [user, innerMap] of userAnswers.entries()) {
       const userAnswerDto = new UserAnswerDto();
-      userAnswerDto.username = username;
+      userAnswerDto.username = user.username;
       userAnswerDto.tab = [];
 
       for (const [question, answer] of innerMap.entries()) {
