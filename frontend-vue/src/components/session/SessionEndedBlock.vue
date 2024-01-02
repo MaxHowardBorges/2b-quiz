@@ -71,14 +71,14 @@
         } catch (error) {
           if (error instanceof ValidationError) {
             await router.push({
-              path: '/teacher-home-page',
+              path: '/',
               query: { errorSnackbar: error.message },
             });
           } else {
             console.error('Error while creating session:', error);
             await router.push({
-              path: '/teacher-home-page',
-              query: { dialogError: 'true' },
+              path: '/',
+              query: { serverError: 'true' },
             });
           }
         }

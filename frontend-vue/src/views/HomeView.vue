@@ -9,6 +9,10 @@
     class="h-100 d-flex align-center justify-center ma-2">
     <join-form v-if="userStore.isStudent" />
     <new-user-block v-if="userStore.isNotChoose" />
+    <menu-teacher
+      v-if="userStore.isTeacher"
+      :error-snackbar="errorSnackbar"
+      :dialog-error="serverError" />
   </div>
 </template>
 
@@ -17,11 +21,13 @@
   import { useUserStore } from '@/stores/userStore';
   import NewUserBlock from '@/components/user/NewUserBlock.vue';
   import LoginBlock from '@/components/user/LoginBlock.vue';
+  import MenuTeacher from '@/components/home/MenuTeacherBlock.vue';
 
   export default {
     name: 'HomeView',
-    components: { LoginBlock, NewUserBlock, JoinForm },
+    components: { MenuTeacher, LoginBlock, NewUserBlock, JoinForm },
     props: {
+      errorSnackbar: null,
       expiredError: Boolean,
       serverError: Boolean,
       ticket: null,
