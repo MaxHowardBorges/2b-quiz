@@ -10,4 +10,8 @@ export class Admin extends User {
   getUserType() {
     return UserType.ADMIN;
   }
+
+  equals(user: User): boolean {
+    return super.equals(user);
+  }
 }

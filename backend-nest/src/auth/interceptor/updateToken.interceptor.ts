@@ -10,6 +10,7 @@ import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
 import { Reflector } from '@nestjs/core';
 import { BlacklistService } from '../service/blacklist.service';
 import { UserRequest } from '../config/user.request';
+import { IS_HEADERLESS_KEY } from '../../decorators/headerless.decorator';
 
 @Injectable()
 export class UpdateTokenInterceptor implements NestInterceptor {
@@ -25,6 +26,13 @@ export class UpdateTokenInterceptor implements NestInterceptor {
       context.getClass(),
     ]);
     if (isPublic) {
+      return next.handle();
+    }
+    const isHeaderless = this.reflector.getAllAndOverride<boolean>(
+      IS_HEADERLESS_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (isHeaderless) {
       return next.handle();
     }
     return next.handle().pipe(

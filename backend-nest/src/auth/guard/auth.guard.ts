@@ -13,6 +13,7 @@ import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { BlacklistService } from '../service/blacklist.service';
+import { IS_HEADERLESS_KEY } from '../../decorators/headerless.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -34,9 +35,16 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    //check user data from jwt
+    const isHeaderless = this.reflector.getAllAndOverride<boolean>(
+      IS_HEADERLESS_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    let token: string;
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    if (isHeaderless) {
+      token = request.query.token;
+    } else token = this.extractTokenFromHeader(request);
+
     if (!token || this.blacklistService.isTokenBlacklisted(token)) {
       throw new UnauthorizedException();
     }

@@ -34,4 +34,8 @@ export abstract class User {
   }
 
   abstract getUserType(): UserType;
+
+  equals(user: User): boolean {
+    return this.id === user.id;
+  }
 }

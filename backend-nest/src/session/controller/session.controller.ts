@@ -29,7 +29,7 @@ export class SessionController {
 
   @Roles([UserType.TEACHER])
   @Post('/create')
-  async createSession(request: UserRequest): Promise<Session> {
+  async createSession(@Req() request: UserRequest): Promise<Session> {
     return this.sessionService.initializeSession(request.user);
   }
 
@@ -56,9 +56,9 @@ export class SessionController {
   @HttpCode(HttpStatus.NO_CONTENT)
   joinSession(
     @Req() request: UserRequest,
-    @Body() body: { idSession: string; username: string },
+    @Body() body: { idSession: string },
   ) {
-    if (body.idSession == undefined || body.username == undefined) {
+    if (body.idSession == undefined) {
       throw new BodyEmptyException();
     }
     if (this.sessionService.isHost(body.idSession, request.user))
@@ -81,18 +81,14 @@ export class SessionController {
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
-  @Roles([UserType.STUDENT])
+  @Roles([UserType.STUDENT, UserType.TEACHER])
   @Post('/respond')
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
     @Req() request: UserRequest,
-    @Body() body: { idSession: string; answer: number; username: string },
+    @Body() body: { idSession: string; answer: number },
   ) {
-    if (
-      body.idSession == undefined ||
-      body.answer == undefined ||
-      body.username == undefined
-    ) {
+    if (body.idSession == undefined || body.answer == undefined) {
       throw new BodyEmptyException();
     }
     await this.sessionService.saveAnswer(

@@ -42,8 +42,6 @@
   import router from '@/router';
   import { ValidationError } from '@/utils/valdiationError';
   import { ref } from 'vue';
-  import { useUserStore } from '@/stores/userStore';
-  import { UserRoles } from '@/utils/userRoles';
 
   export default {
     name: 'MenuTeacherBlock',
@@ -73,8 +71,6 @@
         this.loading = true;
         try {
           await this.sessionStore.createSession();
-          const userStore = useUserStore(); //TODO replace
-          userStore.setUserRoles(UserRoles.TEACHER);
           await router.push('/session');
         } catch (error) {
           if (error instanceof ValidationError) {

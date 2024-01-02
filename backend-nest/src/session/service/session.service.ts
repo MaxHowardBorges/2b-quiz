@@ -13,6 +13,7 @@ import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { Student } from '../../user/entity/student.entity';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
 
 @Injectable()
 export class SessionService {
@@ -90,7 +91,7 @@ export class SessionService {
       throw new UserAlreadyJoinedException();
     }
     session.connectedUser.add(user);
-    session.userAnswers.set(user, new Map<Question, Answer>());
+    session.userAnswers.set(user.id, new Map<Question, Answer>());
   }
 
   currentQuestion(idSession: string): Question {
@@ -122,7 +123,7 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     const question = session.questionList[session.questionNumber];
 
-    if (!session.connectedUser.has(user)) {
+    if (!session.hasUser(user)) {
       throw new UserUnknownException();
     }
     if (
@@ -133,14 +134,20 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers.get(user).set(
+    session.userAnswers.get(user.id).set(
       question,
       question.answers.find((answer) => answer.id === idAnswer),
     );
   }
 
   getMapUser(idSession: string) {
-    return this.sessionMap.get(idSession).userAnswers;
+    //map userAnswers with connectedUser
+    const session = this.sessionMap.get(idSession);
+    const mapUser = new Map<ParticipantInterface, Map<Question, Answer>>();
+    for (const user of session.connectedUser) {
+      mapUser.set(user, session.userAnswers.get(user.id));
+    }
+    return mapUser;
   }
 
   isHost(idSession: string, teacher: Teacher): boolean {
