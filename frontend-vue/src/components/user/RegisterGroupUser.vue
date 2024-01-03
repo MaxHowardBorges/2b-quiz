@@ -180,7 +180,7 @@
           { title: 'Account Type', key: 'userType' },
           { title: 'Actions', key: 'actions', sortable: false },
         ],
-        errorMessage: "",
+        errorMessage: '',
         users: [],
         username: ref(''),
         accountType: ref('student'),
@@ -225,7 +225,7 @@
               username: user.username,
               name: user.name,
               surname: user.surname,
-              userType: user.accountType,
+              userType: user.userType,
             });
           });
           await this.userStore.registerMultiple(body);
@@ -234,16 +234,18 @@
           });
         } catch (error) {
           if (error instanceof ValidationError) {
+            console.log(error.message);
             if (error.message.includes('duplicate username error:'))
               this.$emit(
                 'error-register-multiple-duplicate',
                 error.message.split('duplicate username error:')[1].split(','),
               );
-            else
+            else if (error.message.includes('used username error:'))
               this.$emit(
                 'error-register-multiple-used',
                 error.message.split('used username error:')[1].split(','),
               );
+            else this.$emit('error-register-multiple', error);
           } else this.$emit('error-register-multiple', error);
         }
       },
@@ -259,21 +261,22 @@
       },
       validateItem(item) {
         console.log(item);
-        if(item.username !== "" && item.name !== "" && item.surname !== "") {
+        if (item.username !== '' && item.name !== '' && item.surname !== '') {
           console.log(this.users);
-          this.usernameExists = this.users.some((user) => user.username === item.username && user !== item);
+          this.usernameExists = this.users.some(
+            (user) => user.username === item.username && user !== item,
+          );
           if (!this.usernameExists) {
             item.validate = true;
-            this.errorMessage = "";
+            this.errorMessage = '';
           } else {
-            console.log("Username déjà existant dans une autre ligne.");
-            this.errorMessage = "Username déjà existant dans une autre ligne.";
+            console.log('Username déjà existant dans une autre ligne.');
+            this.errorMessage = 'Username déjà existant dans une autre ligne.';
           }
+        } else {
+          this.errorMessage =
+            "Il y a un ou plusieurs éléments nécessaires qui n'ont pas été renseignés.";
         }
-        else{
-          this.errorMessage = "Il y a un ou plusieurs éléments nécessaires qui n'ont pas été renseignés.";
-        }
-
       },
       editItem(item) {
         item.validate = false;
@@ -310,8 +313,8 @@
   .v-data-table-header__sort-badge {
     display: none;
   }
-   .error-message {
-     color: red;
-     margin-top: 10px;
-   }
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
 </style>
