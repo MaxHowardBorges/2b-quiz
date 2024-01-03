@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import RegisterForm from '@/components/user/RegisterForm.vue';
+  import RegisterForm from '@/components/admin/RegisterForm.vue';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
   import { ref } from 'vue';

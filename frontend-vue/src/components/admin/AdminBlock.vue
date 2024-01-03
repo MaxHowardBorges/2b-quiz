@@ -15,7 +15,7 @@
   </v-dialog>
   <v-dialog v-model="addMoreUser" width="auto" :persistent="true">
     <v-card class="pa-1" min-width="40vw">
-      <RegisterGroupUser
+      <register-group-user
         class="ma-2 pa-4"
         @user-registered="userMoreAdded"
         @error-register-multiple="errorRegisterMultiple"
@@ -36,8 +36,8 @@
 </template>
 
 <script>
-  import RegisterGroupUser from '@/components/user/RegisterGroupUser.vue';
-  import RegisterForm from '@/components/user/RegisterForm.vue';
+  import RegisterGroupUser from '@/components/admin/registerMultipleUser/RegisterGroupUser.vue';
+  import RegisterForm from '@/components/admin/RegisterForm.vue';
   import InfoSnackbar from '@/components/commun/InfoSnackbar.vue';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import AdminTableBlock from '@/components/admin/AdminTableBlock.vue';
@@ -71,8 +71,8 @@
       },
       userMoreAdded(value) {
         this.addMoreUser = false;
-        this.infoSnackbarTitle = 'User added';
-        this.infoSnackbarContent = `The ${value.accountType}: ${value.username} has been added`;
+        this.infoSnackbarTitle = 'Users added';
+        this.infoSnackbarContent = `${value.nbUsers} users have been added`;
         this.$refs.infoSnackbar.snackbarInfo = true;
       },
       errorRegister(username) {

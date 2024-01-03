@@ -3,61 +3,7 @@
     <div class="d-flex mb-3">
       <p class="text-h4">Import user</p>
       <v-spacer></v-spacer>
-      <v-dialog v-model="importCsvDialog" max-width="600px">
-        <template v-slot:activator="{ props }">
-          <v-btn dark class="mb-2" v-bind="props">Import from CSV</v-btn>
-        </template>
-        <v-card class="pa-2">
-          <v-card-title>
-            <span>Import CSV</span>
-          </v-card-title>
-          <v-card-text>
-            <v-alert color="info" icon="$info" class="mb-5 mx-5">
-              <p class="mb-1">
-                The csv file must contain a header with the following fields:
-                <code class="text-dark-color">
-                  username,name,surname,userType
-                </code>
-                .
-              </p>
-              <p>
-                The field
-                <code>userType</code>
-                must be one of the following values:
-                <code class="text-dark-color">student,teacher,admin</code>
-                .
-              </p>
-            </v-alert>
-            <v-file-input
-              v-model="csv"
-              accept=".csv"
-              label="Select CSV file"
-              outlined
-              dense
-              placeholder="No file selected"></v-file-input>
-            <div v-if="csv">
-              <v-divider></v-divider>
-              <p class="mb-2 mt-4">Preview of the file:</p>
-              <v-sheet class="pa-3" max-height="500" rounded="lg" border>
-                <pre class="overflow-auto">{{ getPreview() }}</pre>
-              </v-sheet>
-            </div>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn variant="text" @click="importCsvDialog = false">
-              Cancel
-            </v-btn>
-            <!-- TODO: add close popup message -->
-            <v-btn
-              variant="text"
-              @click="importCsv"
-              :disabled="!(csv && csv[0])">
-              Save
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <csv-import-dialog @import-csv="saveUsersFromCsv" />
     </div>
     <v-data-table
       :items="users"
@@ -69,6 +15,7 @@
         <v-toolbar class="justify-center">
           <v-toolbar-title>Users</v-toolbar-title>
           <v-spacer></v-spacer>
+
           <v-btn
             @click="addRow"
             :disabled="isNotValidatedUser()"
@@ -152,23 +99,23 @@
       :disabled="isNotValidatedUser()">
       Register
     </v-btn>
-    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+      <!--     TODO: repalce with v-alert-->
+    </p>
   </div>
 </template>
 
 <script>
   import { ValidationError } from '@/utils/valdiationError';
   import { useUserStore } from '@/stores/userStore';
-  import { ref } from 'vue';
   import { getUserRoles, UserRoles } from '@/utils/userRoles';
-  import { parseUserListCsv } from '@/utils/csvParser';
+  import CsvImportDialog from '@/components/admin/registerMultipleUser/CsvImportDialog.vue';
 
   export default {
+    components: { CsvImportDialog },
     data() {
       return {
-        items: [
-          { surname: '', name: '', username: '', accountType: 'student' },
-        ],
         headers: [
           {
             title: 'Username',
@@ -182,14 +129,7 @@
         ],
         errorMessage: '',
         users: [],
-        username: ref(''),
-        accountType: ref('student'),
-        surname: ref(''),
-        name: ref(''),
-        importCsvDialog: false,
-        csv: null,
         usernameExists: false,
-        preview: '',
         rules: {
           required: (value) => !!value || 'Required',
         },
@@ -203,20 +143,6 @@
       };
     },
     methods: {
-      async importCsv() {
-        console.log(this.csv[0]);
-        try {
-          const usersData = await parseUserListCsv(this.csv[0]);
-          usersData.forEach((user) => {
-            user.validate = true;
-          });
-          this.users = usersData;
-          this.importCsvDialog = false;
-          //TODO add success message
-        } catch (error) {
-          console.log(error); //TODO: handle parse error
-        }
-      },
       async register() {
         try {
           const body = [];
@@ -229,9 +155,10 @@
             });
           });
           await this.userStore.registerMultiple(body);
-          this.$emit('users-registered', {
+          this.$emit('user-registered', {
             nbUsers: this.users.length,
           });
+          this.users = [];
         } catch (error) {
           if (error instanceof ValidationError) {
             console.log(error.message);
@@ -260,9 +187,7 @@
         this.users.push(rowData);
       },
       validateItem(item) {
-        console.log(item);
         if (item.username !== '' && item.name !== '' && item.surname !== '') {
-          console.log(this.users);
           this.usernameExists = this.users.some(
             (user) => user.username === item.username && user !== item,
           );
@@ -290,20 +215,8 @@
       isNotValidatedUser() {
         return this.users.some((user) => !user.validate);
       },
-      getPreview() {
-        //return the content of the csv file
-        const file = this.csv[0];
-        const reader = new FileReader();
-        if (!file) return;
-        //read csv file for preview with Line Feed
-        reader.onload = (e) => {
-          const text = e.target.result;
-          const lines = text.split(/[\r\n]/);
-          console.log(lines);
-          this.preview = lines.slice(0, 5).join('\n');
-        };
-        reader.readAsText(file);
-        return this.preview;
+      saveUsersFromCsv(users) {
+        this.users = users;
       },
     },
   };
