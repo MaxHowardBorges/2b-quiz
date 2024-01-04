@@ -45,6 +45,12 @@
           Save
         </v-btn>
       </v-card-actions>
+      <v-alert
+        color="red"
+        dismissible
+        type="warning"
+        v-if="error"
+      > {{ error }} </v-alert>
     </v-card>
   </v-dialog>
   <v-alert
@@ -64,7 +70,8 @@
       importCsvDialog: false,
       csv: null,
       preview: '',
-      succes: ""
+      succes: "",
+      error: "",
     }),
     methods: {
       async importCsv() {
@@ -77,9 +84,11 @@
           this.$emit('import-csv', usersData);
           this.importCsvDialog = false;
           this.succes = 'Fichier csv traité avec succes.';
-          //TODO add success message
+          this.error = '';
         } catch (error) {
-          console.log(error); //TODO: handle parse error
+          console.log(error);
+          this.succes = '';
+          this.error = 'Problème avec le fichier csv .';
         }
       },
       getPreview() {
