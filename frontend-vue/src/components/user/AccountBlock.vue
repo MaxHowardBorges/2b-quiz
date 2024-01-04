@@ -73,7 +73,7 @@
       const userStore = useUserStore();
       return {
         userStore,
-        user: { username: '', name: '' },
+        user: ref({ username: '', name: '' }),
         name: ref('test'),
         modification: ref(false),
       };
