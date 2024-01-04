@@ -99,10 +99,12 @@
       :disabled="isNotValidatedUser()">
       Register
     </v-btn>
-    <p v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-      <!--     TODO: repalce with v-alert-->
-    </p>
+      <v-alert
+        color="red"
+        dismissible
+        type="warning"
+        v-if="errorMessage"
+      > {{ errorMessage }} </v-alert>
   </div>
 </template>
 
