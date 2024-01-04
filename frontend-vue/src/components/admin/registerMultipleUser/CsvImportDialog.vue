@@ -47,6 +47,12 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <v-alert
+    color="green"
+    dismissible
+    type="success"
+    v-if="succes"
+  > {{ succes }} </v-alert>
 </template>
 
 <script>
@@ -58,6 +64,7 @@
       importCsvDialog: false,
       csv: null,
       preview: '',
+      succes: ""
     }),
     methods: {
       async importCsv() {
@@ -69,6 +76,7 @@
           });
           this.$emit('import-csv', usersData);
           this.importCsvDialog = false;
+          this.succes = 'Fichier csv traité avec succes.';
           //TODO add success message
         } catch (error) {
           console.log(error); //TODO: handle parse error
