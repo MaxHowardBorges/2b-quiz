@@ -76,7 +76,7 @@ export const useSessionStore = defineStore('session', {
     async createSession() {
       this.setEnded(false);
       const userStore = useUserStore();
-      const response = await createSession(userStore.token,this.questionnary);
+      const response = await createSession(userStore.token, this.questionnary);
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
@@ -90,12 +90,15 @@ export const useSessionStore = defineStore('session', {
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
+        console.log(response);
         userStore.updateToken(response.headers.get('Authorization'));
-        const question = await response.json();
-        if (Object.entries(question).length === 0) {
+        if (response.status === 204) {
           await this.fetchResults();
           this.setEnded(true);
-        } else this.setQuestion(question);
+        } else {
+          const question = await response.json();
+          this.setQuestion(question);
+        }
       } catch (error) {
         console.error(error);
         throw error;

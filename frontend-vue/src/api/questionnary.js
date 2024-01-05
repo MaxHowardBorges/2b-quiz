@@ -1,50 +1,51 @@
-export async function createQuestionnary(body) {
+export async function createQuestionnary(body, token) {
   return await fetch(import.meta.env.VITE_API_URL + '/questionnary/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });
 }
 
-export async function addQuestion(body, id) {
+export async function addQuestion(body, id, token) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question',
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     },
   );
 }
 
-export async function getQuestionnary(id) {
+export async function getQuestionnary(id, token) {
   // return questionnary without questions
   return await fetch(import.meta.env.VITE_API_URL + '/questionnary/' + id, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   });
 }
 
-export async function getQuestionnariesFromUser(id) {
+export async function getQuestionnariesFromUser(token) {
   // return questionnaries without questions
-  return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/user/' + id,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 }
 
-export async function getQuestionsFromQuestionnary(id) {
+export async function getQuestionsFromQuestionnary(id, token) {
   // return questions without answers
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question/',
@@ -52,12 +53,13 @@ export async function getQuestionsFromQuestionnary(id) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     },
   );
 }
 
-export async function modifyQuestion(idQuestionnary, idQuestion, body) {
+export async function modifyQuestion(idQuestionnary, idQuestion, body, token) {
   return await fetch(
     import.meta.env.VITE_API_URL +
       '/questionnary/' +
@@ -68,26 +70,28 @@ export async function modifyQuestion(idQuestionnary, idQuestion, body) {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     },
   );
 }
 
-export async function modifyQuestionnary(idQuestionnary, name) {
+export async function modifyQuestionnary(idQuestionnary, name, token) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + idQuestionnary,
     {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ questionnaryName: name }),
     },
   );
 }
 
-export async function deleteQuestion(idQuestionnary, idQuestion) {
+export async function deleteQuestion(idQuestionnary, idQuestion, token) {
   return await fetch(
     import.meta.env.VITE_API_URL +
       '/questionnary/' +
@@ -98,6 +102,7 @@ export async function deleteQuestion(idQuestionnary, idQuestion) {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     },
   );

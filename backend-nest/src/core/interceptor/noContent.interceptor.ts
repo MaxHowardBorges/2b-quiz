@@ -13,6 +13,10 @@ import { map, Observable } from 'rxjs';
 @Injectable()
 export class NoContentInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    // exclude EventController from this interceptor
+    if (context.getClass().name === 'EventController') {
+      return next.handle();
+    }
     return next.handle().pipe(
       map(async (body) => {
         const response = context.switchToHttp().getResponse();

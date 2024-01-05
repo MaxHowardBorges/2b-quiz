@@ -1,22 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import SessionView from '@/views/SessionView.vue';
-//import TeacherHomeView from '@/views/TeacherHomeView.vue';
 import { useUserStore } from '@/stores/userStore';
-import TeacherHomeView from '@/views/TeacherHomeView.vue';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 
 const routes = [
-  // {
-  //   path: '/teacher-home-page',
-  //   name: 'Teacher home',
-  //   props: (route) => ({
-  //     errorSnackbar: route.query.errorSnackbar,
-  //     dialogError: !!route.query.dialogError,
-  //   }),
-  //   component: TeacherHomeView,
-  //   meta: { inMenu: true },
-  // },
   {
     path: '/session',
     name: 'Session',
@@ -42,16 +30,9 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/RegisterView.vue'),
   },
   {
-    path: '/admin',
-    name: 'Admin',
-    meta: { inMenu: true },
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/AdminView.vue'),
-  },
-  {
     path: '/user',
     name: 'User',
-    meta: { inMenu: true, public: true },
+    meta: { inMenu: true },
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/UserView.vue'),
   },
@@ -59,6 +40,7 @@ const routes = [
     path: '/questionary',
     name: 'questionary',
     component: QuestionaryView,
+    meta: { inMenu: true },
   },
 ];
 

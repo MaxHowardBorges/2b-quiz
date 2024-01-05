@@ -89,7 +89,7 @@
       if (this.dialogError) {
         this.$refs.dialogError.setDialogError(true);
       }
-      await this.questionnaryStore.getQuestionnariesFromUser(0); //TODO get user id
+      await this.questionnaryStore.getQuestionnariesFromUser();
       this.choosedQuestionnary = this.questionnaryStore.questionnaryList;
     },
     data() {
