@@ -14,7 +14,8 @@ import { useUserStore } from '@/stores/userStore';
 export const useSessionStore = defineStore('session', {
   state: () => ({
     idSession: null,
-    question: { answers: [], content: '' },
+    questionnary: [],
+    question: { content: '', answers: [], type: '' },
     ended: false,
     results: [],
   }),
@@ -50,8 +51,7 @@ export const useSessionStore = defineStore('session', {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
         userStore.updateToken(response.headers.get('Authorization'));
-        const question = await response.json();
-        this.setQuestion(question);
+        this.setQuestion(await response.json());
       } catch (error) {
         console.error(error);
       }
@@ -74,8 +74,9 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
+      this.setEnded(false);
       const userStore = useUserStore();
-      const response = await createSession(userStore.token);
+      const response = await createSession(userStore.token,this.questionnary);
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
@@ -83,7 +84,7 @@ export const useSessionStore = defineStore('session', {
     },
     async nextQuestion() {
       const userStore = useUserStore();
-      const body = { id: this.idSession };
+      const body = { idSession: this.idSession };
       try {
         const response = await getNextQuestion(body, userStore.token);
         if (!response.ok) {
@@ -111,8 +112,7 @@ export const useSessionStore = defineStore('session', {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
         userStore.updateToken(response.headers.get('Authorization'));
-        const tabResult = await response.json();
-        this.setTabResult(tabResult);
+        this.setTabResult(await response.json());
       } catch (error) {
         console.error(error);
       }

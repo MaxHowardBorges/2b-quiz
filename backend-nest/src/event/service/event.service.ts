@@ -12,9 +12,6 @@ export class EventService {
   >();
 
   sendEvent(event: EventEnum, clientGroup: string): void {
-    console.log(this.clientGroups);
-    console.log(this.clientGroups.get(clientGroup));
-    console.log(clientGroup);
     this.clientGroups.get(clientGroup).forEach((client) => client.next(event));
   }
 

@@ -1,18 +1,16 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
-import { Question } from '../entity/question.entity';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { QuestionService } from '../service/question.service';
-import { UserUpdateDto } from '../dto/idSession.dto';
 
 @Controller('question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
-  @Get()
-  async findAll(): Promise<Question[]> {
-    return await this.questionService.findAllWithQuestion();
-  }
 
-  @Post('/nextquestion')
-  async nextQuestion(@Body() dto: UserUpdateDto): Promise<Question> {
-    return await this.questionService.findOne(dto.id);
+  @Get('/:id/')
+  selectQuestion(@Param('id', ParseIntPipe) idQuestion: number) {
+    return this.questionService.findQuestion(idQuestion);
+  }
+  @Get('/:id/select-answers/')
+  selectAnswersFromQuestion(@Param('id', ParseIntPipe) idQuestion: number) {
+    return this.questionService.findAnswers(idQuestion);
   }
 }

@@ -3,6 +3,8 @@ import HomeView from '@/views/HomeView.vue';
 import SessionView from '@/views/SessionView.vue';
 //import TeacherHomeView from '@/views/TeacherHomeView.vue';
 import { useUserStore } from '@/stores/userStore';
+import TeacherHomeView from '@/views/TeacherHomeView.vue';
+import QuestionaryView from '@/views/QuestionaryView.vue';
 
 const routes = [
   // {
@@ -52,6 +54,11 @@ const routes = [
     meta: { inMenu: true, public: true },
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/UserView.vue'),
+  },
+  {
+    path: '/questionary',
+    name: 'questionary',
+    component: QuestionaryView,
   },
 ];
 

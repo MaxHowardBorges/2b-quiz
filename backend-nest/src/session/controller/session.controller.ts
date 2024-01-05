@@ -8,8 +8,10 @@ import {
   Post,
   Query,
   Req,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Session } from '../session';
+import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
@@ -19,6 +21,10 @@ import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
 import { IsNotHostException } from '../exception/isNotHost.exception';
 import { IsHostException } from '../exception/isHost.exception';
+import { RespondQuestionDto } from '../dto/respondQuestion.dto';
+import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
+import { NextQuestionDto } from '../dto/nextQuestion.dto';
+import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 @Controller('session')
 export class SessionController {
@@ -29,22 +35,22 @@ export class SessionController {
 
   @Roles([UserType.TEACHER])
   @Post('/create')
-  async createSession(@Req() request: UserRequest): Promise<Session> {
-    return this.sessionService.initializeSession(request.user);
+  async createSession(
+    @Req() request: UserRequest,
+    @Body(new ValidationPipe()) ids: number[],
+  ): Promise<Session> {
+    return this.sessionService.initializeSession(request.user, ids);
   }
 
   @Roles([UserType.TEACHER])
   @Post('/nextQuestion')
-  nextQuestion(
+  async nextQuestion(
     @Req() request: UserRequest,
-    @Body() body: { id: string },
-  ): Question | NonNullable<unknown> {
-    if (body.id == undefined) {
-      throw new BodyEmptyException();
-    }
-    if (!this.sessionService.isHost(body.id, request.user))
+    @Body(new ValidationPipe()) body: NextQuestionDto,
+  ): Promise<Question | NonNullable<unknown>> {
+    if (!this.sessionService.isHost(body.idSession, request.user))
       throw new IsNotHostException();
-    const question = this.sessionService.nextQuestion(body.id);
+    const question = this.sessionService.nextQuestion(body.idSession);
     if (question) {
       return question;
     }
@@ -56,11 +62,8 @@ export class SessionController {
   @HttpCode(HttpStatus.NO_CONTENT)
   joinSession(
     @Req() request: UserRequest,
-    @Body() body: { idSession: string },
+    @Body(new ValidationPipe()) body: JoinSessionDto,
   ) {
-    if (body.idSession == undefined) {
-      throw new BodyEmptyException();
-    }
     if (this.sessionService.isHost(body.idSession, request.user))
       throw new IsHostException();
     this.sessionService.join(body.idSession, request.user);
@@ -68,16 +71,13 @@ export class SessionController {
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
   @Post('/question/current') //TODO go to get
-  getCurrentQuestion(
+  async getCurrentQuestion(
     @Req() request: UserRequest,
-    @Body() body: { idSession: string },
-  ): CurrentQuestionDto {
-    if (body.idSession == undefined) {
-      throw new BodyEmptyException();
-    }
+    @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
+  ): Promise<CurrentQuestionDto> {
     if (this.sessionService.isHost(body.idSession, request.user))
       throw new IsHostException();
-    const question = this.sessionService.currentQuestion(body.idSession);
+    const question = await this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
@@ -86,11 +86,9 @@ export class SessionController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
     @Req() request: UserRequest,
-    @Body() body: { idSession: string; answer: number },
+    @Body(new ValidationPipe())
+    body: RespondQuestionDto,
   ) {
-    if (body.idSession == undefined || body.answer == undefined) {
-      throw new BodyEmptyException();
-    }
     await this.sessionService.saveAnswer(
       body.idSession,
       body.answer,
@@ -99,18 +97,18 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER])
-  @Get('/getMap') //?idsession={l'id du session}
+  @Get('/getMap')
   async getMap(
     @Req() request: UserRequest,
     @Query('idsession') idSession: string,
   ) {
     if (!this.sessionService.isHost(idSession, request.user))
       throw new IsNotHostException();
-    const a = this.sessionService.getMapUser(idSession); //TODO refactor
+    const a = this.sessionService.getMapUser(idSession);//TODO refactor
     this.sessionService.getMap();
     return [
-      this.sessionService.getQuestionList(idSession),
+      await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
-    ];
+    ];//TODO replace with a DTO
   }
 }

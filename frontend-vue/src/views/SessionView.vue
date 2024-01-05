@@ -40,14 +40,16 @@
       let ended = ref(false);
       let waiting = ref(true);
       let waitingSessionStart = ref(true);
+      let echoQuestion = ref(null);
 
-      sessionStore.$subscribe((mutation) => {
-        if (
-          mutation.events.key === 'ended' &&
-          mutation.events.newValue === true
-        ) {
+      sessionStore.$subscribe((mutation, state) => {
+        if (state.ended !== ended.value) {
           ended.value = true;
-        } else if (mutation.events.key === 'question' && userStore.isStudent) {
+        } else if (
+          echoQuestion.value !== state.question &&
+          userStore.isStudent
+        ) {
+          echoQuestion.value = state.question;
           waitingSessionStart.value = false;
           waiting.value = false;
         }

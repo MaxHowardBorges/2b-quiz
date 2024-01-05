@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BcryptModule } from './bcrypt/bcrypt.module';
 import { CasModule } from './cas/cas.module';
+import { QuestionnaryModule } from './questionnary/questionnary.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CasModule } from './cas/cas.module';
     QuestionModule,
     SessionModule,
     EventModule,
+    QuestionnaryModule,
     UserModule,
     AuthModule,
     BcryptModule,

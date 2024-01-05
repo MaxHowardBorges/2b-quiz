@@ -1,7 +1,7 @@
 <template>
   <v-sheet
     rounded="lg"
-    width="70%"
+    width="90%"
     class="mt-5 px-6 py-8 mx-auto"
     elevation="5">
     <h1>Session ended</h1>
