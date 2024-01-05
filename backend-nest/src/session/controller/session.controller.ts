@@ -15,7 +15,6 @@ import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
-import { BodyEmptyException } from '../exception/bodyEmpty.exception';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
@@ -24,7 +23,6 @@ import { IsHostException } from '../exception/isHost.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
-import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 @Controller('session')
 export class SessionController {
@@ -104,11 +102,11 @@ export class SessionController {
   ) {
     if (!this.sessionService.isHost(idSession, request.user))
       throw new IsNotHostException();
-    const a = this.sessionService.getMapUser(idSession);//TODO refactor
+    const a = this.sessionService.getMapUser(idSession); //TODO refactor
     this.sessionService.getMap();
     return [
       await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
-    ];//TODO replace with a DTO
+    ]; //TODO replace with a DTO
   }
 }
