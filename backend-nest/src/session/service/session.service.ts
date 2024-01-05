@@ -13,7 +13,6 @@ import { Answer } from '../../question/entity/answer.entity';
 import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
 import { Teacher } from '../../user/entity/teacher.entity';
-import { Student } from '../../user/entity/student.entity';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
@@ -65,6 +64,7 @@ export class SessionService {
   async nextQuestion(idSession: string) {
     const currentSession = this.sessionMap.get(idSession);
     // check for next question in the current questionnary
+    if (currentSession.endSession) return null;
     if (
       currentSession.questionNumber + 1 <
       (
@@ -129,7 +129,7 @@ export class SessionService {
     return questionnaries;
   }
 
-  join(idSession: string, user: Student | Teacher): void {
+  join(idSession: string, user: ParticipantInterface): void {
     if (this.sessionMap.has(idSession) == false) {
       throw new IdSessionNoneException();
     }
@@ -157,7 +157,7 @@ export class SessionService {
   async saveAnswer(
     idSession: string,
     idAnswer: number | string | number[],
-    user: Student | Teacher,
+    user: ParticipantInterface,
   ) {
     const session = this.getSessionOrThrow(idSession);
     const question = await this.getCurrentQuestion(session);

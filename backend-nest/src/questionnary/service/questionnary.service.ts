@@ -58,6 +58,7 @@ export class QuestionnaryService {
   async findQuestionnariesFromIdUser(teacher: Teacher) {
     // questionnaires without questions
     //TODO get from user questionnary bank
+
     return await this.questionnaryRepository.find({
       relations: {
         author: true,

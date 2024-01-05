@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { BcryptModule } from './bcrypt/bcrypt.module';
 import { CasModule } from './cas/cas.module';
 import { QuestionnaryModule } from './questionnary/questionnary.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { QuestionnaryModule } from './questionnary/questionnary.module';
     AuthModule,
     BcryptModule,
     CasModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
