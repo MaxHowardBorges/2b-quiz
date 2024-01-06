@@ -17,7 +17,9 @@
       "**/vite",
       "**/vite**",
       "**/@nestjs/**",
-      "**/@nestjs"
+      "**/@nestjs",
+      "**/typeorm**",
+      "**/typeorm"
     ]
   },
   "scripts": {

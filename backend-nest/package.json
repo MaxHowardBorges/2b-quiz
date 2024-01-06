@@ -45,6 +45,7 @@
     "rxjs": "^7.8.1",
     "sqlstring": "^2.3.3",
     "typeorm": "^0.3.17",
+    "typeorm-extension": "^3.2.0",
     "webpack": "^5.0.0",
     "xml2js": "^0.6.2"
   },
@@ -80,7 +81,7 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".*\\.(spec|e2e-spec)\\.ts$",
+    "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
