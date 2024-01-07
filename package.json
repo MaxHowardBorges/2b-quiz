@@ -19,7 +19,9 @@
       "**/@nestjs/**",
       "**/@nestjs",
       "**/typeorm**",
-      "**/typeorm"
+      "**/typeorm",
+      "**/@automock",
+      "**/@automock/**"
     ]
   },
   "scripts": {

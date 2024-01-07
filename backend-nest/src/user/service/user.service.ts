@@ -7,7 +7,7 @@ import { UserType } from '../constants/userType.constant';
 import { Admin } from '../entity/admin.entity';
 import { Teacher } from '../entity/teacher.entity';
 import { InvalidUsernameConfirmationException } from '../exception/invalidUsernameConfirmation.exception';
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker/locale/fr';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { SortUserParam } from '../constants/sortUserParam.enum';
