@@ -6,7 +6,7 @@ import { CasServerErrorException } from '../exception/casServerError.exception';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
-import { parseString } from 'xml2js';
+import { parseStringPromise } from 'xml2js';
 
 @Injectable()
 export class CasService {
@@ -35,13 +35,16 @@ export class CasService {
     this.casMainXmlTag = this.configService.getOrThrow('CAS_MAIN_XML_TAG');
   }
 
-  async validateTicket(service: string, ticket: string) {
+  async validateTicket(service: string, ticket: string): Promise<String> {
     if (this.casProtocol === '3.0')
       return await this.validateTicketV3(service, ticket);
     else throw new UnsupportedCasProtocolException();
   }
 
-  private async validateTicketV3(service: string, ticket: string) {
+  private async validateTicketV3(
+    service: string,
+    ticket: string,
+  ): Promise<string> {
     const url =
       this.casUrl +
       this.casValidateServiceRoute +
@@ -53,26 +56,56 @@ export class CasService {
       this.httpService.get<string>(url).pipe(
         map((response) => response.data),
         catchError((error: AxiosError) => {
-          console.log(error);
+          console.error(error);
           throw new CasServerErrorException();
         }),
       ),
     );
     let xml: any;
-    parseString(response, function (err, result) {
-      if (err) throw new TicketValidationErrorException();
-      xml = result;
-    });
+    try {
+      xml = await parseStringPromise(response);
+    } catch (err) {
+      throw new TicketValidationErrorException();
+    }
     if (
+      !xml[this.casMainXmlTag] ||
       !xml[this.casMainXmlTag][this.casSuccessXmlTag] ||
-      !xml[this.casMainXmlTag][this.casSuccessXmlTag][0][
+      !this.containsKey(
+        this.casUsernameXmlTag,
+        xml[this.casMainXmlTag][this.casSuccessXmlTag],
+      )
+    )
+      throw new TicketValidationErrorException();
+
+    const usernameTagIndex = this.getTagIndexInList(
+      this.casUsernameXmlTag,
+      xml[this.casMainXmlTag][this.casSuccessXmlTag],
+    );
+    if (
+      !xml[this.casMainXmlTag][this.casSuccessXmlTag][usernameTagIndex][
+        this.casUsernameXmlTag
+      ] ||
+      !xml[this.casMainXmlTag][this.casSuccessXmlTag][usernameTagIndex][
         this.casUsernameXmlTag
       ][0]
     )
       throw new TicketValidationErrorException();
-
-    return xml[this.casMainXmlTag][this.casSuccessXmlTag][0][
+    return xml[this.casMainXmlTag][this.casSuccessXmlTag][usernameTagIndex][
       this.casUsernameXmlTag
     ][0];
+  }
+
+  private getTagIndexInList(tag: string, xml: any[]) {
+    for (let i = 0; i < xml.length; i++) {
+      if (!!xml[i][tag]) return i;
+    }
+    return -1;
+  }
+
+  private containsKey(key: string, xml: any) {
+    for (let i = 0; i < xml.length; i++) {
+      if (!!xml[i][key]) return true;
+    }
+    return false;
   }
 }
