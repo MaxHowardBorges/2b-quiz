@@ -4,6 +4,7 @@ import { Question } from '../entity/question.entity';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Answer } from '../entity/answer.entity';
 import { QuestionType } from '../constants/questionType.constant';
+import { generateTeacherMock } from '../../../test/mock/user.mock';
 
 describe('QuestionService', () => {
   let service: QuestionService;
@@ -45,7 +46,7 @@ describe('QuestionService', () => {
   const questionnary: Questionnary = {
     id: 15,
     title: 'morocco',
-    author: 'malias',
+    author: generateTeacherMock(),
     questions: [],
   };
   const questions: Question[] = [
