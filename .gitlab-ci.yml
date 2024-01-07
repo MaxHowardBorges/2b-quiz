@@ -35,11 +35,12 @@ build-back:
 
 test:
   stage: test
-  image: ubuntu:latest
+  image: node:slim
+  before_script:
+    - yarn install
+    - yarn build-backend-prod
   script:
-    - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
-    - yarn test TODO
-    - docker-compose -f /backend-nest/docker-compose.dev.yaml down
+    - yarn test
 
 
 
