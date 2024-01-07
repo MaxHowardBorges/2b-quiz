@@ -35,7 +35,7 @@ export class CasService {
     this.casMainXmlTag = this.configService.getOrThrow('CAS_MAIN_XML_TAG');
   }
 
-  async validateTicket(service: string, ticket: string): Promise<String> {
+  async validateTicket(service: string, ticket: string): Promise<string> {
     if (this.casProtocol === '3.0')
       return await this.validateTicketV3(service, ticket);
     else throw new UnsupportedCasProtocolException();
