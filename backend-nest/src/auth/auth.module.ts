@@ -5,7 +5,6 @@ import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { getJwtModuleOptions } from './config/jwt.config';
-import { BcryptModule } from '../bcrypt/bcrypt.module';
 import { AuthGuard } from './guard/auth.guard';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { BlacklistService } from './service/blacklist.service';
@@ -27,7 +26,6 @@ import { UpdateTokenInterceptor } from './interceptor/updateToken.interceptor';
   ],
   controllers: [AuthController],
   imports: [
-    BcryptModule,
     CasModule,
     UserModule,
     JwtModule.registerAsync({

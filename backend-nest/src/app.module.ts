@@ -9,7 +9,6 @@ import { SessionModule } from './session/session.module';
 import { EventModule } from './event/event.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { BcryptModule } from './bcrypt/bcrypt.module';
 import { CasModule } from './cas/cas.module';
 import { QuestionnaryModule } from './questionnary/questionnary.module';
 import { CoreModule } from './core/core.module';
@@ -30,7 +29,6 @@ import { CoreModule } from './core/core.module';
     QuestionnaryModule,
     UserModule,
     AuthModule,
-    BcryptModule,
     CasModule,
     CoreModule,
   ],

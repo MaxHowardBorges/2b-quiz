@@ -207,7 +207,7 @@ describe('QuestionService', () => {
       let test: Answer[] = await service.findAnswers(
         questionnary.questions[0].id,
       );
-      console.log(test);
+      //console.log(test);
       expect(test).not.toBeNull();
       expect(test).toBeInstanceOf(Array);
     });

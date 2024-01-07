@@ -31,6 +31,7 @@
     "migrate-backend-prod": "cd ./backend-nest/ && yarn typeorm:migrate",
     "start-frontend": "cd ./frontend-vue/ && yarn serve",
     "build-frontend-prod": "cd ./frontend-vue/ && yarn build",
-    "start-frontend-prod": "cd ./frontend-vue/ && yarn preview"
+    "start-frontend-prod": "cd ./frontend-vue/ && yarn preview",
+    "test": "cd ./backend-nest/ && yarn test"
   }
 }
