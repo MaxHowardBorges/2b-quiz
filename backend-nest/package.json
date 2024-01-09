@@ -18,10 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm:create": "npx typeorm-ts-node-commonjs migration:create migrations/migration",
-    "typeorm:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/migration.config.ts migrations/migration",
-    "typeorm:migrate": "typeorm-ts-node-commonjs migration:run -d src/config/migration.config.ts",
-    "typeorm:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/config/migration.config.ts"
+    "typeorm:create": "yarn build && typeorm-ts-node-commonjs migration:create migrations/migration",
+    "typeorm:generate": "yarn build && typeorm-ts-node-commonjs migration:generate -d src/config/migration.config.ts migrations/migration",
+    "typeorm:migrate": "yarn build && typeorm-ts-node-commonjs migration:run -d src/config/migration.config.ts",
+    "typeorm:revert": "yarn build && typeorm-ts-node-commonjs migration:revert -d src/config/migration.config.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^8.2.0",

@@ -174,6 +174,11 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
+    async softDeleteUser(id) {
+      const response = await deleteUser(id, this.token);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
+    },
     async getSelf() {
       const response = await getMe(this.token);
       await throwIfNotOK(response, 200);

@@ -29,7 +29,8 @@
                 <admin-list-item
                   :user="item.raw"
                   @validate-user="validateUser"
-                  @remove-user="deleteUser" />
+                  @remove-user="deleteUser"
+                  @soft-delete-user="softDeleteUser" />
               </template>
             </tbody>
           </v-table>
@@ -154,6 +155,10 @@
       },
       async deleteUser(id) {
         await this.userStore.deleteUser(id);
+        await this.loadUser();
+      },
+      async softDeleteUser(id) {
+        await this.userStore.softDeleteUser(id);
         await this.loadUser();
       },
     },

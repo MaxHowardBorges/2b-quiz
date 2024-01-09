@@ -13,6 +13,7 @@
       v-if="userStore.isTeacher"
       :error-snackbar="errorSnackbar"
       :dialog-error="serverError" />
+    <admin-block v-if="userStore.isAdmin" />
   </div>
 </template>
 
@@ -22,10 +23,11 @@
   import NewUserBlock from '@/components/user/NewUserBlock.vue';
   import LoginBlock from '@/components/user/LoginBlock.vue';
   import MenuTeacher from '@/components/home/MenuTeacherBlock.vue';
+  import AdminBlock from '@/components/admin/AdminBlock.vue';
 
   export default {
     name: 'HomeView',
-    components: { MenuTeacher, LoginBlock, NewUserBlock, JoinForm },
+    components: { AdminBlock, MenuTeacher, LoginBlock, NewUserBlock, JoinForm },
     props: {
       errorSnackbar: null,
       expiredError: Boolean,

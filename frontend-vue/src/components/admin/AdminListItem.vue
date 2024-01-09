@@ -19,7 +19,14 @@
           icon="delete"
           @click="removeUser"></v-btn>
       </div>
-      <v-icon v-else>check</v-icon>
+      <div v-else>
+        <v-icon class="mr-4">check</v-icon>
+        <v-btn
+          variant="outlined"
+          density="comfortable"
+          icon="delete"
+          @click="softDeleteUser"></v-btn>
+      </div>
     </td>
   </tr>
 </template>
@@ -39,6 +46,9 @@
       },
       removeUser() {
         this.$emit('remove-user', this.user.id);
+      },
+      softDeleteUser() {
+        this.$emit('soft-delete-user', this.user.id);
       },
     },
   };
