@@ -150,6 +150,8 @@ export class UserController {
     @Query('nb-item', new ParseIntPipe({ optional: true })) nbItem: number = 50,
     @Query('sort', new ValidationPipe({ transform: true }))
     sort: SortParamUserDto,
+    @Query('deleted', new ValidationPipe({ transform: true }))
+    deleted: boolean = false,
   ): Promise<UserListDto> {
     let userList: User[];
     if (!!sort.field && !!sort.order)
@@ -161,6 +163,7 @@ export class UserController {
       );
     else userList = await this.userService.getUsersPerPage(page, nbItem);
     const nbPage = await this.userService.getNbUsersPage(nbItem);
+    if (deleted) return this.userMapper.userDeleteDtoListMap(userList, nbPage);
     return this.userMapper.userFullDataDtoListMap(userList, nbPage);
   }
 

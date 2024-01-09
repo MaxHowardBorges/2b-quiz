@@ -22,6 +22,7 @@ describe('UserService', () => {
 
   let teacherMock = generateTeacherMock();
   let userMockList = generateRandomUserMockList(20);
+  const userDeletedMockList = generateRandomUserMockList(20, true);
   let adminMock = generateAdminMock();
   let studentMock = generateStudentMock();
   let notValidatedTeacherMock = generateTeacherMock(false, false);
@@ -115,9 +116,38 @@ describe('UserService', () => {
         order: {
           [SortUserParam.USERNAME]: SortOrder.ASC,
         },
+        where: {
+          deleted: false,
+        },
       });
       expect(test).toEqual(userMockList);
       expect(test).toHaveLength(userMockList.length);
+      expect(test).toBeInstanceOf(Array);
+    });
+    it('should get users per page sorted with deleted', async () => {
+      const page = 1;
+      const itemsPerPage = 10;
+      const skip = (page - 1) * itemsPerPage;
+      userRepository.find.mockResolvedValue(userDeletedMockList);
+      const test = await service.getUsersPerPageSorted(
+        page,
+        itemsPerPage,
+        SortUserParam.USERNAME,
+        SortOrder.ASC,
+        true,
+      );
+      expect(userRepository.find).toBeCalledWith({
+        skip,
+        take: itemsPerPage,
+        order: {
+          [SortUserParam.USERNAME]: SortOrder.ASC,
+        },
+        where: {
+          deleted: true,
+        },
+      });
+      expect(test).toEqual(userDeletedMockList);
+      expect(test).toHaveLength(userDeletedMockList.length);
       expect(test).toBeInstanceOf(Array);
     });
   });
@@ -325,6 +355,15 @@ describe('UserService', () => {
       const nbPage = Math.ceil(nbItem / nbItemPerPage);
       const test = await service.getNbUsersPage(nbItemPerPage);
       expect(userRepository.count).toBeCalled();
+      expect(test).toEqual(nbPage);
+    });
+    it('should get the number of users per page with deleted', async () => {
+      const nbItem = 100;
+      const nbItemPerPage = 10;
+      userRepository.count.mockResolvedValue(nbItem);
+      const nbPage = Math.ceil(nbItem / nbItemPerPage);
+      const test = await service.getNbUsersPage(nbItemPerPage, true);
+      expect(userRepository.count).toBeCalledWith({ where: { deleted: true } });
       expect(test).toEqual(nbPage);
     });
   });

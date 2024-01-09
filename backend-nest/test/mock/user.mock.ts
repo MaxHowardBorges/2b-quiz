@@ -40,20 +40,24 @@ export function generateAdminMock(
   return user;
 }
 
-export function generateRandomUserMockList(nb: number) {
+export function generateRandomUserMockList(
+  nb: number,
+  deteleUser: boolean = false,
+  validate: boolean = true,
+) {
   const users: User[] = [];
   for (let i = 0; i < nb; i++) {
     let user = null;
     const random = Math.floor(Math.random() * 3);
     switch (random) {
       case 0:
-        user = generateTeacherMock();
+        user = generateTeacherMock(deteleUser, validate);
         break;
       case 1:
-        user = generateStudentMock();
+        user = generateStudentMock(deteleUser, validate);
         break;
       case 2:
-        user = generateAdminMock();
+        user = generateAdminMock(deteleUser, validate);
         break;
     }
     users.push(user);

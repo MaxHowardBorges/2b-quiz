@@ -55,6 +55,7 @@ export class UserService {
     itemsPerPage: number,
     field: SortUserParam,
     order: SortOrder,
+    deleted: boolean = false,
   ) {
     const skip = (page - 1) * itemsPerPage;
     return await this.userRepository.find({
@@ -62,6 +63,9 @@ export class UserService {
       take: itemsPerPage,
       order: {
         [field]: order,
+      },
+      where: {
+        deleted,
       },
     });
   }
@@ -134,8 +138,10 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async getNbUsersPage(nbItem: number) {
-    return Math.ceil((await this.userRepository.count()) / nbItem);
+  async getNbUsersPage(nbItem: number, deleted: boolean = false) {
+    return Math.ceil(
+      (await this.userRepository.count({ where: { deleted } })) / nbItem,
+    );
   }
 
   async isUserValidated(idUser: number) {
