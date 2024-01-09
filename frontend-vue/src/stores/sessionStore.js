@@ -18,6 +18,7 @@ export const useSessionStore = defineStore('session', {
     question: { content: '', answers: [], type: '' },
     ended: false,
     results: [],
+    start: false,
   }),
   actions: {
     setQuestion(question) {
@@ -28,6 +29,9 @@ export const useSessionStore = defineStore('session', {
     },
     setEnded(ended) {
       this.ended = ended;
+    },
+    setStart(oui){
+      this.start = true;
     },
     setTabResult(results) {
       this.results = results;
@@ -73,6 +77,7 @@ export const useSessionStore = defineStore('session', {
     },
     async createSession() {
       this.setEnded(false);
+      this.setStart(true);
       const response = await createSession(this.questionnary);
       await throwIfNotOK(response);
       const content = await response.json();
