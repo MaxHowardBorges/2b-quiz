@@ -26,7 +26,7 @@ describe('UserService', () => {
   let adminMock = generateAdminMock();
   let studentMock = generateStudentMock();
   let notValidatedTeacherMock = generateTeacherMock(false, false);
-  const notValidatedStudentMock = generateStudentMock(false, false);
+  let notValidatedStudentMock = generateStudentMock(false, false);
 
   beforeEach(() => {
     teacherMock = generateTeacherMock();
@@ -34,6 +34,7 @@ describe('UserService', () => {
     adminMock = generateAdminMock();
     studentMock = generateStudentMock();
     notValidatedTeacherMock = generateTeacherMock(false, false);
+    notValidatedStudentMock = generateStudentMock(false, false);
   });
 
   beforeAll(() => {
