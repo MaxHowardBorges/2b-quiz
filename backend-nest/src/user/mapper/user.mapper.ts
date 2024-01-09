@@ -15,6 +15,7 @@ export class UserMapper {
     dto.surname = user.surname;
     dto.validate = user.validate;
     dto.userType = user.getUserType();
+    dto.askedDelete = user.askedDelete;
     return dto;
   }
 

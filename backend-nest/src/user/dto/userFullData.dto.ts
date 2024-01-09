@@ -7,4 +7,5 @@ export class UserFullDataDto {
   surname: string;
   validate: boolean;
   userType: UserType;
+  askedDelete: boolean;
 }

@@ -29,6 +29,7 @@ describe('UserMapper', () => {
       expect(dto.surname).toEqual(user.surname);
       expect(dto.validate).toEqual(user.validate);
       expect(dto.userType).toEqual(user.getUserType());
+      expect(dto.askedDelete).toEqual(user.askedDelete);
     });
   });
 
@@ -45,6 +46,7 @@ describe('UserMapper', () => {
         expect(dto.userList[i].surname).toEqual(userMock[i].surname);
         expect(dto.userList[i].validate).toEqual(userMock[i].validate);
         expect(dto.userList[i].userType).toEqual(userMock[i].getUserType());
+        expect(dto.userList[i].askedDelete).toEqual(userMock[i].askedDelete);
       }
     });
   });

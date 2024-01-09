@@ -192,4 +192,10 @@ export class UserController {
       userSelfValidateDto.userType,
     );
   }
+
+  @Post('/ask-delete')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async askDeleteUser(@Req() request: UserRequest) {
+    await this.userService.askDeleteUser(request.user);
+  }
 }

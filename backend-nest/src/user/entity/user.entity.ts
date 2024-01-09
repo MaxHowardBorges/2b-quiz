@@ -27,10 +27,14 @@ export abstract class User {
   @Column({ default: false })
   deleted: boolean;
 
+  @Column({ default: false })
+  askedDelete: boolean;
+
   protected constructor(username: string, validate: boolean) {
     this.username = username;
     this.validate = validate;
     this.deleted = false;
+    this.askedDelete = false;
   }
 
   abstract getUserType(): UserType;

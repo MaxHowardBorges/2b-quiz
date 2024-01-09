@@ -158,4 +158,9 @@ export class UserService {
     user.deleted = false;
     await this.userRepository.save(user);
   }
+
+  async askDeleteUser(user: User) {
+    user.askedDelete = true;
+    await this.userRepository.save(user);
+  }
 }
