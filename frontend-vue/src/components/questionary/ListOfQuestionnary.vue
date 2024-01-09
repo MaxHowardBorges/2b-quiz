@@ -2,7 +2,7 @@
   <v-sheet
     rounded="lg"
     width="70%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
+    class="mt-5 px-6 py-8 mb-2 mx-auto d-flex flex-column align-center"
     elevation="5">
     <h1>View questionnary</h1>
 
@@ -19,6 +19,7 @@
 
     <v-card class="mt-25">
       <v-btn @click="backHome">Back to home</v-btn>
+      <v-btn @click="toggleVoirVisibility">Private question bank</v-btn>
       <v-btn @click="emitNextQuestion">New Questionnary</v-btn>
     </v-card>
   </v-sheet>
@@ -50,6 +51,9 @@
 
       backHome() {
         router.push('/');
+      },
+      toggleVoirVisibility() {
+        this.$emit('toggleVoir');
       },
     },
     name: 'ListOfQuestionnary',

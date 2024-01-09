@@ -3,14 +3,16 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
-    elevation="5">
+    elevation="5"
+  >
     <input
       v-if="OnList"
       id="title"
       type="text"
       v-model="questionnaryName"
       @change="changeName"
-      required />
+      required
+    />
     <div v-else id="title">
       {{ this.questionnaryName }}
       <br />
@@ -32,20 +34,79 @@
       label="Select Question Type"
       class="custom-select"
       dense
-      outlined></v-select>
+      outlined
+      readonly=""
+    ></v-select>
 
+    <v-select
+      v-if="!OnList"
+      v-model="selectedTags"
+      :items="tagOptions"
+      label="Select Tags"
+      style="width: 200px;"
+      multiple
+      outlined
+      dense
+    ></v-select>
+
+    <v-row v-if="!OnList" class="mt-3">
+      <v-col>
+        <v-text-field
+          v-model="newTag"
+          label="New Tag"
+          style="width: 200px;"
+          outlined
+          dense
+        ></v-text-field>
+      </v-col>
+      <v-col>
+        <v-btn @click="createNewTag"  icon="done">
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <div>
     <v-btn
       class="mb-5"
       v-if="OnList"
       icon="add"
-      @click="toggleTypeSelector"></v-btn>
+      @click="toggleTypeSelector"
+    ></v-btn>
+
+    <v-btn
+      class="mb-5"
+      v-if="OnList"
+      icon="quiz"
+      @click="toggleBank"
+    ></v-btn>
+    </div>
+
+    <v-dialog v-model="dialogVisible" max-width="500">
+      <v-card>
+        <v-card-title>Bank Private Questions</v-card-title>
+
+        <v-card-text>
+          <v-list>
+            <v-list-item v-for="(question, index) in questions" :key="index" @click="toggleQuestion(index)" :class="{ 'selected-question': selectedQuestions.includes(index) }">
+                <v-list-item-title>{{ question }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+<!--        //TODO mettre les vrais questions -->
+
+        <v-card-actions class="text-center">
+          <v-btn @click="AddQuestion">Add</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
       id="quest"
       v-if="!OnList"
       :selectedQuestionType="selectedType"
-      :idQuestion="idQuestion" />
+      :idQuestion="idQuestion"
+    />
 
     <v-dialog v-model="alertQuestionnaryNull" max-width="600">
       <v-card>
@@ -73,7 +134,8 @@
           :numberLabel="question.content"
           :typeLabel="question.type"
           :idQuestion="question.id"
-          @ChangeStatuss="ChangeStatus" />
+          @ChangeStatuss="ChangeStatus"
+        />
       </v-sheet>
     </v-sheet>
 
@@ -104,7 +166,6 @@
 </template>
 
 <script>
-  // @ is an alias to /src
   import QuestionnaryListOne from '@/components/questionary/QuestionnaryList.vue';
   import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
@@ -112,6 +173,7 @@
   export default {
     data() {
       return {
+        newTag:"",
         OnList: true,
         showTypeSelector: false,
         selectedType: 'Unique',
@@ -125,9 +187,15 @@
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
+        selectedTags: [],
+        tagOptions: ['Tag1', 'Tag2', 'Tag3'], // Remplacez par vos tags réels
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
+        dialogVisible: false,
+
+        questions: ['Question 1', 'Question 2', 'Question 3'],
+        selectedQuestions: [],
       };
     },
     setup() {
@@ -148,10 +216,25 @@
       QuestionnaryListOne,
     },
     methods: {
+
+      createNewTag() {
+        const tagToAdd = this.newTag.trim();
+        if (tagToAdd && !this.tagOptions.includes(tagToAdd)) {
+          this.tagOptions.push(tagToAdd);
+          this.selectedTags.push(tagToAdd);
+          this.newTag = ''; // Réinitialisez le champ du nouveau tag après l'ajout
+        } else {
+          alert('Le tag est vide ou existe déjà.');
+        }
+      },
+
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
+      },
+      toggleBank() {
+        this.dialogVisible = true;
       },
       ChangeStatus(idQuestion, typeL) {
         this.showTypeSelector = !this.showTypeSelector;
@@ -200,6 +283,10 @@
           this.selectedType = 'Unique';
         } else alert('Remplissez les champs vide avant de valider');
       },
+      changeTags() {
+        // Traitez les tags sélectionnés ici
+        console.log('Selected Tags:', this.selectedTags);
+      },
       showConfirmationDialog() {
         this.confirmationDialog = true;
       },
@@ -234,35 +321,27 @@
           this.useQ.modifyQuestionnary(this.questionnaryName);
         }
       },
+
+      toggleQuestion(index) {
+        if (this.selectedQuestions.includes(index)) {
+          this.selectedQuestions = this.selectedQuestions.filter((i) => i !== index);
+        } else {
+          this.selectedQuestions.push(index);
+        }
+      },
+      AddQuestion(){
+        //TODO with back
+        this.selectedQuestions = [];
+        this.dialogVisible = false;
+      }
     },
   };
 </script>
 
 <style>
-  #title {
-    margin-bottom: 10px;
-    padding: 8px;
-    font-size: 40px !important;
-    font-weight: bold !important;
-    text-align: center;
-    border: 1px solid black;
-  }
-
-  v-btn {
-    margin-bottom: 20px;
-  }
-
-  v-select {
-    width: auto;
-  }
-
-  .custom-select {
-    width: 300px;
-    margin-bottom: 5px;
-  }
-
-  .button-container {
-    display: flex;
+  /* Styles personnalisés */
+  .selected-question {
+    background-color: #bbfcc2;
   }
 
   .errrmes {
