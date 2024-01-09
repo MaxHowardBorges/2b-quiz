@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue';
 import SessionView from '@/views/SessionView.vue';
 import TeacherHomeView from '@/views/TeacherHomeView.vue';
 import QuestionaryView from '@/views/QuestionaryView.vue';
+import DisplayView from '@/views/DisplayView.vue';
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     path: '/questionary',
     name: 'questionary',
     component: QuestionaryView,
+  },
+  {
+    path: '/public',
+    name: 'public',
+    component: DisplayView,
   },
 ];
 

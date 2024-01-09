@@ -41,6 +41,10 @@
             link: '/teacher-home-page',
             name: 'Teacher Menu',
           },
+          {
+            link: '/public',
+            name: 'DisplayView',
+          }
         ],
       };
     },
