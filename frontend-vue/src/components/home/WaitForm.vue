@@ -6,7 +6,7 @@
        elevation="3"
        rounded="lg"
        position="relative">
-    <h2> Waiting for the questionnary launch... </h2>
+    <h2 v-if='waiting'> Waiting for the questionnary launch... </h2>
   </v-sheet>
 
 
@@ -18,10 +18,10 @@
   import { useUserStore } from '@/stores/userStore';
   import { UserRoles } from '@/utils/userRoles';
   import router from '@/router';
-  import { ValidationError } from '@/utils/valdiationError';
+  import { ref } from 'vue';
 
   export default {
-    name: 'JoinForm',
+    name: 'waitForm',
     methods: {
       async handleJoinSession() {
         this.loading = true;
@@ -36,6 +36,11 @@
         }
         this.loading = false;
       },
+    },
+    data() {
+      return {
+        waiting: ref(true),
+      }
     },
   }
 

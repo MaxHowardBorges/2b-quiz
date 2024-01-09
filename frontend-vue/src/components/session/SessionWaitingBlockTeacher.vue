@@ -12,7 +12,9 @@
     </div>
 
     <p>{{ participantsCount }} participant joined the session !</p>
-
+    <v-btn color="primary" class="mx-6 my-3" @click='launchWindows'>
+      <p class="text-white font-weight-bold pa-2">Launch 3rd screen</p>
+    </v-btn>
     <div>
       <v-btn color="primary" class="mx-6 my-3" @click="cancelSession">
         <p class="text-white font-weight-bold pa-2">Cancel session</p>
@@ -24,6 +26,7 @@
         @click="handleLaunch">
         <p class="text-white font-weight-bold pa-2">Start session</p>
       </v-btn>
+
     </div>
   </v-sheet>
 </template>
@@ -55,6 +58,10 @@
         this.$emit('session-start');
         this.loading = false;
       },
+      launchWindows() {
+        const routeData = router.resolve({name: 'public'});
+        window.open(routeData.href, '_blank');
+      }
     },
   };
 </script>
