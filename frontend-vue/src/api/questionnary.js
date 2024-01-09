@@ -44,6 +44,19 @@ export async function getQuestionnariesFromUser(id) {
   );
 }
 
+export async function getQuestionsFromUser(id) {
+  // return questions from idAuthor
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/user/' + id + '/questions/',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+}
+
 export async function getQuestionsFromQuestionnary(id) {
   // return questions without answers
   return await fetch(

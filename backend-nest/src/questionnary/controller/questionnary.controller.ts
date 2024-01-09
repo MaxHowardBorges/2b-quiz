@@ -12,8 +12,6 @@ import {
 import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
-import { QuestionDto } from '../../question/dto/question.dto';
-import { PrivateQuestionnaryDto } from '../dto/PrivateQuestionnary.dto';
 import { QuestionService } from '../../question/service/question.service';
 
 @Controller('questionnary')
@@ -91,10 +89,9 @@ export class QuestionnaryController {
     return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
   }
 
-  @Post('/getquestion/')
-  async getQuestionsPrivateBank() //@Body(new ValidationPipe()) questionDto: QuestionCreateDto, //@Param('id', ParseIntPipe) idQuestionnary: number,
-  {
-    return await this.questionService.getQuestionPrivateBank();
+  @Get('/user/:idUser/questions')
+  async getQuestionsPrivateBank(@Param('idUser', ParseIntPipe) idUser: number) {
+    return await this.questionService.getQuestionPrivateBank(idUser);
   }
 
   @Delete('/:id/question/:idQuestion')

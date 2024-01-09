@@ -9,6 +9,7 @@ import {
   modifyQuestionnary,
   getQuestionnariesFromUser,
   getQuestionsFromQuestionnary,
+  getQuestionsFromUser,
 } from '@/api/questionnary';
 import { getAnswersFromQuestion } from '@/api/question';
 
@@ -19,6 +20,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
     questionnaryList: [],
     questions: [],
     answers: [],
+    privateQuestions: [],
   }),
   getters: {
     isCreated() {
@@ -36,6 +38,22 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         } else {
           for (const q of JSON.parse(await response.text())) {
             this.questionnaryList.push(q);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getQuestionsFromUser(idUser = 0) {
+      //TODO get user id
+      this.privateQuestions = [];
+      try {
+        const response = await getQuestionsFromUser(idUser);
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          for (const q of JSON.parse(await response.text())) {
+            this.privateQuestions.push(q);
           }
         }
       } catch (error) {

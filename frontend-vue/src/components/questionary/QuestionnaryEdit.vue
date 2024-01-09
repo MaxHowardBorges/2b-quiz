@@ -3,16 +3,14 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
-    elevation="5"
-  >
+    elevation="5">
     <input
       v-if="OnList"
       id="title"
       type="text"
       v-model="questionnaryName"
       @change="changeName"
-      required
-    />
+      required />
     <div v-else id="title">
       {{ this.questionnaryName }}
       <br />
@@ -35,50 +33,40 @@
       class="custom-select"
       dense
       outlined
-      readonly=""
-    ></v-select>
+      readonly=""></v-select>
 
     <v-select
       v-if="!OnList"
       v-model="selectedTags"
       :items="tagOptions"
       label="Select Tags"
-      style="width: 200px;"
+      style="width: 200px"
       multiple
       outlined
-      dense
-    ></v-select>
+      dense></v-select>
 
     <v-row v-if="!OnList" class="mt-3">
       <v-col>
         <v-text-field
           v-model="newTag"
           label="New Tag"
-          style="width: 200px;"
+          style="width: 200px"
           outlined
-          dense
-        ></v-text-field>
+          dense></v-text-field>
       </v-col>
       <v-col>
-        <v-btn @click="createNewTag"  icon="done">
-        </v-btn>
+        <v-btn @click="createNewTag" icon="done"></v-btn>
       </v-col>
     </v-row>
 
     <div>
-    <v-btn
-      class="mb-5"
-      v-if="OnList"
-      icon="add"
-      @click="toggleTypeSelector"
-    ></v-btn>
+      <v-btn
+        class="mb-5"
+        v-if="OnList"
+        icon="add"
+        @click="toggleTypeSelector"></v-btn>
 
-    <v-btn
-      class="mb-5"
-      v-if="OnList"
-      icon="quiz"
-      @click="toggleBank"
-    ></v-btn>
+      <v-btn class="mb-5" v-if="OnList" icon="quiz" @click="toggleBank"></v-btn>
     </div>
 
     <v-dialog v-model="dialogVisible" max-width="500">
@@ -87,12 +75,18 @@
 
         <v-card-text>
           <v-list>
-            <v-list-item v-for="(question, index) in questions" :key="index" @click="toggleQuestion(index)" :class="{ 'selected-question': selectedQuestions.includes(index) }">
-                <v-list-item-title>{{ question }}</v-list-item-title>
+            <v-list-item
+              v-for="(question, index) in questions"
+              :key="index"
+              @click="toggleQuestion(index)"
+              :class="{
+                'selected-question': selectedQuestions.includes(index),
+              }">
+              <v-list-item-title>{{ question }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card-text>
-<!--        //TODO mettre les vrais questions -->
+        <!--        //TODO mettre les vrais questions -->
 
         <v-card-actions class="text-center">
           <v-btn @click="AddQuestion">Add</v-btn>
@@ -105,8 +99,7 @@
       id="quest"
       v-if="!OnList"
       :selectedQuestionType="selectedType"
-      :idQuestion="idQuestion"
-    />
+      :idQuestion="idQuestion" />
 
     <v-dialog v-model="alertQuestionnaryNull" max-width="600">
       <v-card>
@@ -134,8 +127,7 @@
           :numberLabel="question.content"
           :typeLabel="question.type"
           :idQuestion="question.id"
-          @ChangeStatuss="ChangeStatus"
-        />
+          @ChangeStatuss="ChangeStatus" />
       </v-sheet>
     </v-sheet>
 
@@ -173,7 +165,7 @@
   export default {
     data() {
       return {
-        newTag:"",
+        newTag: '',
         OnList: true,
         showTypeSelector: false,
         selectedType: 'Unique',
@@ -216,7 +208,6 @@
       QuestionnaryListOne,
     },
     methods: {
-
       createNewTag() {
         const tagToAdd = this.newTag.trim();
         if (tagToAdd && !this.tagOptions.includes(tagToAdd)) {
@@ -293,7 +284,6 @@
       leaveWithoutSaving() {
         this.selectedType = 'Unique';
         this.idQuestion = null;
-        //this.question = this.useQ.getQuestion(this.idQuestion);
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
@@ -324,16 +314,18 @@
 
       toggleQuestion(index) {
         if (this.selectedQuestions.includes(index)) {
-          this.selectedQuestions = this.selectedQuestions.filter((i) => i !== index);
+          this.selectedQuestions = this.selectedQuestions.filter(
+            (i) => i !== index,
+          );
         } else {
           this.selectedQuestions.push(index);
         }
       },
-      AddQuestion(){
+      AddQuestion() {
         //TODO with back
         this.selectedQuestions = [];
         this.dialogVisible = false;
-      }
+      },
     },
   };
 </script>
@@ -342,11 +334,5 @@
   /* Styles personnalisés */
   .selected-question {
     background-color: #bbfcc2;
-  }
-
-  .errrmes {
-    background-color: rgba(255, 0, 0, 0.2);
-    color: brown;
-    border-radius: 5px;
   }
 </style>
