@@ -25,7 +25,7 @@ describe('UserService', () => {
   let adminMock = generateAdminMock();
   let studentMock = generateStudentMock();
   let notValidatedTeacherMock = generateTeacherMock(false, false);
-  let notValidatedStudentMock = generateStudentMock(false, false);
+  const notValidatedStudentMock = generateStudentMock(false, false);
 
   beforeEach(() => {
     teacherMock = generateTeacherMock();
@@ -241,20 +241,20 @@ describe('UserService', () => {
     });
   });
 
-  // deleteSelfUser
-  describe('deleteSelfUser', () => {
-    it('should delete a user', async () => {
+  // deleteSoftUser
+  describe('deleteSoftUser', () => {
+    it('should soft delete a user', async () => {
       const user = teacherMock;
-      const userCopy = new Teacher(user.username, user.validate);
-      userCopy.name = user.name;
-      userCopy.surname = user.surname;
+      const baseUser = new Teacher(user.username, user.validate);
+      baseUser.name = user.name;
+      baseUser.surname = user.surname;
+      userRepository.findOneBy.mockResolvedValue(user);
       userRepository.save.mockResolvedValue(user);
-      await service.deleteSelfUser(user, user.username);
+      await service.deleteSoftUser(user.id);
       expect(userRepository.save).toBeCalledWith(user);
       expect(user.deleted).toEqual(true);
-      expect(user.username).not.toEqual(userCopy.username);
-      expect(user.name).not.toEqual(userCopy.name);
-      expect(user.surname).not.toEqual(userCopy.surname);
+      expect(user.name).not.toEqual(baseUser.name);
+      expect(user.surname).not.toEqual(baseUser.surname);
     });
   });
 
@@ -326,6 +326,31 @@ describe('UserService', () => {
       const test = await service.getNbUsersPage(nbItemPerPage);
       expect(userRepository.count).toBeCalled();
       expect(test).toEqual(nbPage);
+    });
+  });
+
+  // isUserValidated
+  describe('isUserValidated', () => {
+    it('should return true if user is validated', async () => {
+      const user = studentMock;
+      userRepository.findOneBy.mockResolvedValue(user);
+      const test = await service.isUserValidated(user.id);
+      expect(userRepository.findOneBy).toBeCalledWith({ id: user.id });
+      expect(test).toEqual(true);
+    });
+    it('should return false if user is not validated', async () => {
+      const user = notValidatedStudentMock;
+      userRepository.findOneBy.mockResolvedValue(user);
+      const test = await service.isUserValidated(user.id);
+      expect(userRepository.findOneBy).toBeCalledWith({ id: user.id });
+      expect(test).toEqual(false);
+    });
+    it('should throw an error if user is not found', async () => {
+      const user = studentMock;
+      userRepository.findOneBy.mockResolvedValue(null);
+      await expect(service.isUserValidated(user.id)).rejects.toThrow(
+        UserNotFoundException,
+      );
     });
   });
 });

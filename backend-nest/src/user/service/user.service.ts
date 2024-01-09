@@ -6,7 +6,6 @@ import { Student } from '../entity/student.entity';
 import { UserType } from '../constants/userType.constant';
 import { Admin } from '../entity/admin.entity';
 import { Teacher } from '../entity/teacher.entity';
-import { InvalidUsernameConfirmationException } from '../exception/invalidUsernameConfirmation.exception';
 import { faker } from '@faker-js/faker/locale/fr';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
@@ -96,15 +95,10 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async deleteSelfUser(user: User, username: string) {
-    if (username !== user.username)
-      throw new InvalidUsernameConfirmationException();
+  async deleteSoftUser(idUser: number) {
+    const user = await this.getUser(idUser);
     user.name = faker.person.firstName();
     user.surname = faker.person.lastName();
-    user.username = faker.internet.userName({
-      firstName: user.name,
-      lastName: user.surname,
-    });
     user.deleted = true;
     await this.userRepository.save(user);
   }
@@ -142,5 +136,20 @@ export class UserService {
 
   async getNbUsersPage(nbItem: number) {
     return Math.ceil((await this.userRepository.count()) / nbItem);
+  }
+
+  async isUserValidated(idUser: number) {
+    const user = await this.getUser(idUser);
+    if (!user) throw new UserNotFoundException();
+    return user.validate;
+  }
+
+  async restoreUser(idUser: number, name: string, surname: string) {
+    const user = await this.getUser(idUser);
+    if (!user) throw new UserNotFoundException();
+    user.name = name;
+    user.surname = surname;
+    user.deleted = false;
+    await this.userRepository.save(user);
   }
 }

@@ -18,7 +18,6 @@ import { UserRegisterDto } from '../dto/userRegister.dto';
 import { UsernameAlreadyUsedException } from '../exception/usernameAlreadyUsed.exception';
 import { UserDataModifyDto } from '../dto/userDataModify.dto';
 import { UserRequest } from '../../auth/config/user.request';
-import { UserSelfDeleteDto } from '../dto/userSelfDelete.dto';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
 import { UserMapper } from '../mapper/user.mapper';
@@ -30,6 +29,7 @@ import { User } from '../entity/user.entity';
 import { UserRegisterArrayDto } from '../dto/userRegisterArray.dto';
 import { UsernamesAlreadyUsedException } from '../exception/usernamesAlreadyUsed.exception';
 import { UsernamesDuplicatedUsedException } from '../exception/usernamesDuplicatedUsed.exception';
+import { UserDataRestoreDto } from '../dto/userDataRestore.dto';
 
 @Controller('user')
 export class UserController {
@@ -113,23 +113,27 @@ export class UserController {
     );
   }
 
-  @Patch('/delete')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteSelfUser(
-    @Req() request: UserRequest,
-    @Body(new ValidationPipe()) userSelfDeleteDto: UserSelfDeleteDto,
-  ) {
-    await this.userService.deleteSelfUser(
-      request.user,
-      userSelfDeleteDto.username,
-    );
-  }
-
   @Roles([UserType.ADMIN])
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Param('id', ParseIntPipe) idUser: number) {
+    if (await this.userService.isUserValidated(idUser))
+      await this.userService.deleteSoftUser(idUser);
     await this.userService.deleteUser(idUser);
+  }
+
+  @Roles([UserType.ADMIN])
+  @Patch('/:id/restore')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async restoreUser(
+    @Param('id', ParseIntPipe) idUser: number,
+    @Body(new ValidationPipe()) userDataDto: UserDataRestoreDto,
+  ) {
+    await this.userService.restoreUser(
+      idUser,
+      userDataDto.name,
+      userDataDto.surname,
+    );
   }
 
   @Roles([UserType.ADMIN])
