@@ -5,6 +5,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   ValidationPipe,
@@ -18,6 +20,7 @@ import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { isLogLevelEnabled } from '@nestjs/common/services/utils';
+import { AccessDto } from '../dto/access.dto';
 
 @Controller('session')
 export class SessionController {
@@ -79,5 +82,14 @@ export class SessionController {
       await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ];
+  }
+
+  @Post('/:idSession/settings')
+  async setSessionSettings(
+    @Param('idSession', ParseIntPipe) idSession: string,
+    open: boolean,
+    acces: AccessDto,
+  ) {
+    return this.sessionService.setSettings(open, acces, idSession);
   }
 }
