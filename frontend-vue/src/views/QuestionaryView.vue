@@ -1,16 +1,23 @@
 <template>
   <ListOfQuestionnary
-    v-if="iflist"
-    @nextQuestion="iflist = false"
-    @toggleVoir="toggleVoirVisibility"></ListOfQuestionnary>
+    v-if="toggleList"
+    @edit="
+      toggleList = false;
+      toggleEdit = true;
+    "
+    @bank="toggleVisibility"></ListOfQuestionnary>
   <ListOfQuestion
-    v-if="voir"
-    @toggleVoir="toggleVoirVisibility"
+    v-if="toggleBank"
+    @toggleVisibility="toggleVisibilityfromBank"
     @modifyQuestionFromBank="triggerChangeStatus"></ListOfQuestion>
   <QuestionnaryEdit
-    v-if="!iflist"
-    @GoList="iflist = true"
-    ref="questionnaryEditRef"></QuestionnaryEdit>
+    v-if="toggleEdit"
+    @GoList="
+      toggleEdit = false;
+      toggleList = true;
+    "
+    ref="questionnaryEditRef"
+    @returnToBank="toggleVisibility"></QuestionnaryEdit>
 </template>
 
 <script>
@@ -23,8 +30,9 @@
   export default {
     data() {
       return {
-        iflist: true,
-        voir: false,
+        toggleList: true,
+        toggleEdit: false,
+        toggleBank: false,
       };
     },
     setup() {
@@ -38,8 +46,7 @@
     },
     methods: {
       async triggerChangeStatus(questionId, questionType) {
-        this.toggleVoirVisibility();
-        this.iflist = !this.iflist;
+        this.toggleVisibilityfromBank(false);
         console.log(await this.$refs.questionnaryEditRef);
         await this.$refs.questionnaryEditRef.ChangeStatus(
           questionId,
@@ -47,8 +54,20 @@
           true,
         );
       },
-      toggleVoirVisibility() {
-        this.voir = !this.voir;
+      toggleVisibility() {
+        this.toggleBank = true;
+        this.toggleList = false;
+        this.toggleEdit = false;
+      },
+      toggleVisibilityfromBank(toList = true) {
+        this.toggleBank = false;
+        if (toList) {
+          this.toggleList = true;
+          this.toggleEdit = false;
+        } else {
+          this.toggleList = false;
+          this.toggleEdit = true;
+        }
       },
     },
     name: 'QuestionaryView',

@@ -192,7 +192,7 @@ export class QuestionService {
   ) {
     return await this.questionRepository.find({
       where: { idAuthor: idUser, originalId: IsNull() },
-      relations: ['answers'],
+      relations: ['answers', 'questionnary'],
     });
   }
 }

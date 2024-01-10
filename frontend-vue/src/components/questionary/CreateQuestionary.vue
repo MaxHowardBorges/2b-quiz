@@ -144,8 +144,13 @@
         }
         return initQuestion;
       },
-      async getQuestionFromBank() {
-        return await this.questionnaryStore.getQuestion(this.idQuestion);
+      getQuestionFromBank() {
+        let questionFromBank = this.questionnaryStore.privateQuestions.find(
+          (question) => question.id === this.idQuestion,
+        );
+        this.questionnaryStore.idQuestionnary =
+          questionFromBank.questionnary.id;
+        return questionFromBank;
       },
       getAnswers() {
         if (this.selectedQuestionType === 'True-False') {

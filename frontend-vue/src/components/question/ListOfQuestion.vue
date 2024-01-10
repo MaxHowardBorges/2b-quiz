@@ -25,8 +25,8 @@
     },
     emits: ['modifyQuestionFromBank', 'toggleVoir'],
     methods: {
-      toggleVoirVisibility() {
-        this.$emit('toggleVoir');
+      toggleVisibility() {
+        this.$emit('toggleVisibility');
       },
       modifyQuestionFromBank(questionId, questionType) {
         this.$emit('modifyQuestionFromBank', questionId, questionType);
@@ -43,7 +43,7 @@
     elevation="5">
     <div style="display: flex">
       <div style="align-self: start" id="divButton">
-        <v-btn id="ic" icon="undo" @click="toggleVoirVisibility"></v-btn>
+        <v-btn id="ic" icon="undo" @click="toggleVisibility"></v-btn>
       </div>
       <h1>Private Question Bank</h1>
     </div>

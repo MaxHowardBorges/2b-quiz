@@ -13,14 +13,14 @@
         <QuestionnaryItem
           :questionnaryName="questionnary"
           :questionnaryId="questionnary.id"
-          @nextQuestionE="emitNextQuestion"></QuestionnaryItem>
+          @nextQuestionE="edit"></QuestionnaryItem>
       </v-sheet>
     </v-sheet>
 
     <v-card class="mt-25">
       <v-btn @click="backHome">Back to home</v-btn>
-      <v-btn @click="toggleVoirVisibility">Private question bank</v-btn>
-      <v-btn @click="emitNextQuestion">New Questionnary</v-btn>
+      <v-btn @click="bank">Private question bank</v-btn>
+      <v-btn @click="edit">New Questionnary</v-btn>
     </v-card>
   </v-sheet>
 </template>
@@ -45,15 +45,15 @@
       };
     },
     methods: {
-      emitNextQuestion() {
-        this.$emit('nextQuestion');
+      edit() {
+        this.$emit('edit');
       },
 
       backHome() {
         router.push('/');
       },
-      toggleVoirVisibility() {
-        this.$emit('toggleVoir');
+      bank() {
+        this.$emit('bank');
       },
     },
     name: 'ListOfQuestionnary',

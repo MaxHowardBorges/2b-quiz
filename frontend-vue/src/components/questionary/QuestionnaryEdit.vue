@@ -230,6 +230,7 @@
       },
       ChangeStatus(idQuestion, typeL, fromBank = false) {
         this.isFromBank = fromBank;
+        this.isFromBank ? (this.questionnaryName = '') : '';
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
         this.statusQ = 'modify';
@@ -253,7 +254,7 @@
         }
 
         if (content && answers) {
-          if (this.useQ.idQuestionnary == null) {
+          if (this.useQ.idQuestionnary == null && !this.isFromBank) {
             await this.useQ.createQuestionnary({
               author: author,
               title: this.questionnaryName,
@@ -274,6 +275,7 @@
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
           this.selectedType = 'Unique';
+          this.isFromBank ? this.returnToBank() : '';
         } else alert('Remplissez les champs vide avant de valider');
       },
       changeTags() {
@@ -289,6 +291,7 @@
         this.OnList = !this.OnList;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
+        this.isFromBank ? this.returnToBank() : '';
       },
       EmitGoList() {
         if (
@@ -327,6 +330,10 @@
         //TODO with back
         this.selectedQuestions = [];
         this.dialogVisible = false;
+      },
+      returnToBank() {
+        this.useQ.idQuestionnary = null;
+        this.$emit('returnToBank');
       },
     },
   };

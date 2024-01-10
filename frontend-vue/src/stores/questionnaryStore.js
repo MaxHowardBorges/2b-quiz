@@ -147,21 +147,19 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async modifyQuestion(idQuestion, question) {
-      if (this.isCreated) {
-        try {
-          const response = await modifyQuestion(
-            this.idQuestionnary,
-            idQuestion,
-            question,
-          );
-          if (!response.ok || response.status !== 200) {
-            throw new Error('Erreur de réponse'); // TODO manage error
-          } else {
-            await this.getQuestions();
-          }
-        } catch (error) {
-          console.error(error);
+      try {
+        const response = await modifyQuestion(
+          this.idQuestionnary,
+          idQuestion,
+          question,
+        );
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          await this.getQuestions();
         }
+      } catch (error) {
+        console.error(error);
       }
     },
     async modifyQuestionnary(questionnaryName) {
