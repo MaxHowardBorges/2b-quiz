@@ -1,5 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Question } from './question.entity';
+import { userSession } from '../../session/entity/userSession.entity';
 
 @Entity()
 export class Answer {
@@ -14,4 +22,8 @@ export class Answer {
 
   @Column()
   isCorrect: boolean;
+
+  @ManyToMany(() => Answer, (answer) => answer.userSession)
+  @JoinTable()
+  userSession: userSession[];
 }
