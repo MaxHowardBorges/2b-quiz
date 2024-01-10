@@ -1,7 +1,7 @@
 import { UserService } from './user.service';
 import { Teacher } from '../entity/teacher.entity';
 import { TestBed } from '@automock/jest';
-import { Repository } from 'typeorm';
+import { ManyToOne, OneToMany, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import {
   generateAdminMock,
@@ -15,7 +15,9 @@ import { UserType } from '../constants/userType.constant';
 import { Student } from '../entity/student.entity';
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
-
+import mocked = jest.mocked;
+import { mock } from 'jest-mock-extended';
+import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 describe('UserService', () => {
   let service: UserService;
   let userRepository: jest.Mocked<Repository<User>>;
@@ -54,6 +56,7 @@ describe('UserService', () => {
     it('should create a user', async () => {
       const user = teacherMock;
       user.id = undefined;
+      user.questionnaries = undefined;
       userRepository.save.mockResolvedValue(user);
       await service.createUser(
         user.username,
@@ -93,6 +96,7 @@ describe('UserService', () => {
     it('should create a user with validate equals false', async () => {
       const user = notValidatedTeacherMock;
       user.id = undefined;
+      user.questionnaries = undefined;
       userRepository.save.mockResolvedValue(user);
       await service.createUser(
         user.username,

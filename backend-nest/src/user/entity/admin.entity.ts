@@ -12,6 +12,6 @@ export class Admin extends User {
   }
 
   equals(user: User): boolean {
-    return super.equals(user);
+    return this.id === user.id && this.getUserType() === user.getUserType();
   }
 }

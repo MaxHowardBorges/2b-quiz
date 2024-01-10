@@ -10,9 +10,11 @@ export function generateTeacherMock(
 ) {
   const username = faker.internet.userName();
   const user = new Teacher(username, validate);
+  user.id = Math.floor(Math.random() * 10000);
   user.name = faker.person.firstName();
   user.surname = faker.person.lastName();
   user.deleted = deleteUser;
+  user.questionnaries = [];
   return user;
 }
 
@@ -22,6 +24,7 @@ export function generateStudentMock(
 ) {
   const username = faker.internet.userName();
   const user = new Student(username, validate);
+  user.id = Math.floor(Math.random() * 10000);
   user.name = faker.person.firstName();
   user.surname = faker.person.lastName();
   user.deleted = deleteUser;
@@ -34,6 +37,7 @@ export function generateAdminMock(
 ) {
   const username = faker.internet.userName();
   const user = new Admin(username, validate);
+  user.id = Math.floor(Math.random() * 10000);
   user.name = faker.person.firstName();
   user.surname = faker.person.lastName();
   user.deleted = deleteUser;
