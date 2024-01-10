@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { UserRoles } from '@/utils/userRoles';
 import {
+  askDelete,
   deleteUser,
   getAllUsers,
   getAllUsersSort,
@@ -203,6 +204,11 @@ export const useUserStore = defineStore('user', {
         surname,
       };
       const response = await updateMe(this.token, body);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
+    },
+    async askDelete() {
+      const response = await askDelete(this.token);
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },

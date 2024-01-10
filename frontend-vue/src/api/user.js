@@ -146,3 +146,13 @@ export async function restoreUser(id, body, token) {
     body: JSON.stringify(body),
   });
 }
+
+export async function askDelete(token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/ask-delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

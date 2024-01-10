@@ -1,4 +1,13 @@
 <template>
+  <error-snackbar
+    ref="errorBar"
+    title="Error while asking for delete"
+    content="Please try later."></error-snackbar>
+  <confirmation-dialog
+    ref="confirmationDialog"
+    title="Confirmation for delete"
+    content="Are you sure you want to ask for the delete of your account"
+    @confirm="askDelete"></confirmation-dialog>
   <v-sheet
     max-width="750px"
     rounded="lg"
@@ -60,15 +69,20 @@
     <v-btn class="mt-5" color="primary" @click="modification = !modification">
       {{ modification ? 'Cancel' : 'Modify' }}
     </v-btn>
+    <v-divider class="my-5"></v-divider>
+    <v-btn @click="askDeleteDialog">Ask for delete account</v-btn>
   </v-sheet>
 </template>
 
 <script>
   import { useUserStore } from '@/stores/userStore';
   import { ref } from 'vue';
+  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import ConfirmationDialog from '@/components/commun/ConfirmationDialog.vue';
 
   export default {
     name: 'AccountBlock',
+    components: { ConfirmationDialog, ErrorSnackbar },
     setup() {
       const userStore = useUserStore();
       return {
@@ -86,6 +100,16 @@
       async updateUserData() {
         await this.userStore.updateSelf(this.user.name, this.user.surname);
         this.modification = false;
+      },
+      askDeleteDialog() {
+        this.$refs.confirmationDialog.dialog = true;
+      },
+      async askDelete() {
+        try {
+          await this.userStore.askDelete();
+        } catch (e) {
+          this.$refs.errorBar.snackbarError = true;
+        }
       },
     },
   };
