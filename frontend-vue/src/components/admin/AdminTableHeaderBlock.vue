@@ -1,18 +1,21 @@
 <template>
   <thead>
     <tr>
-      <admin-table-header-item
-        v-if="isDeletedUsers"
-        v-for="column in columns2"
-        :column-label="column.label"
-        :ref="column.id"
-        @update-sorted="(value) => saveValue(column.id, value)" />
-      <admin-table-header-item
-        v-else
-        v-for="column in columns1"
-        :column-label="column.label"
-        :ref="column.id"
-        @update-sorted="(value) => saveValue(column.id, value)" />
+      <template v-if="isDeletedUsers">
+        <admin-table-header-item
+          v-for="column in columns2"
+          :column-label="column.label"
+          :ref="column.id"
+          @update-sorted="(value) => saveValue(column.id, value)" />
+      </template>
+      <template v-else>
+        <admin-table-header-item
+          v-for="column in columns1"
+          :column-label="column.label"
+          :column-icon="column.icon"
+          :ref="column.id"
+          @update-sorted="(value) => saveValue(column.id, value)" />
+      </template>
     </tr>
   </thead>
 </template>
@@ -34,6 +37,7 @@
         { id: 'name', label: 'Name' },
         { id: 'surname', label: 'Surname' },
         { id: 'type', label: 'Type' },
+        { id: 'askedDelete', label: 'Asked delete', icon: 'feedback' },
         { id: 'validate', label: 'Validated' },
       ],
       columns2: [

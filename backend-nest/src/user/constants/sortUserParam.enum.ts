@@ -5,4 +5,5 @@ export enum SortUserParam {
   SURNAME = 'surname',
   USER_TYPE = 'type',
   VALIDATE = 'validate',
+  ASKED_DELETE = 'askedDelete',
 }

@@ -302,6 +302,8 @@ describe('UserService', () => {
       const baseUser = new Teacher(user.username, user.validate);
       baseUser.name = user.name;
       baseUser.surname = user.surname;
+      baseUser.deleted = user.deleted;
+      baseUser.askedDelete = user.askedDelete;
       userRepository.findOneBy.mockResolvedValue(user);
       userRepository.save.mockResolvedValue(user);
       await service.deleteSoftUser(user.id);
@@ -309,6 +311,7 @@ describe('UserService', () => {
       expect(user.deleted).toEqual(true);
       expect(user.name).not.toEqual(baseUser.name);
       expect(user.surname).not.toEqual(baseUser.surname);
+      expect(user.askedDelete).toEqual(false);
     });
   });
 

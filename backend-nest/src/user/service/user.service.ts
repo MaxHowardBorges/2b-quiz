@@ -107,6 +107,7 @@ export class UserService {
     user.name = faker.person.firstName();
     user.surname = faker.person.lastName();
     user.deleted = true;
+    user.askedDelete = false;
     await this.userRepository.save(user);
   }
 
