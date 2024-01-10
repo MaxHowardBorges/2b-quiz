@@ -99,12 +99,9 @@
       :disabled="isNotValidatedUser()">
       Register
     </v-btn>
-      <v-alert
-        color="red"
-        dismissible
-        type="warning"
-        v-if="errorMessage"
-      > {{ errorMessage }} </v-alert>
+    <v-alert color="red" dismissible type="warning" v-if="errorMessage">
+      {{ errorMessage }}
+    </v-alert>
   </div>
 </template>
 
@@ -221,6 +218,12 @@
         this.users = users;
       },
     },
+    emits: [
+      'user-registered',
+      'error-register-multiple',
+      'error-register-multiple-used',
+      'error-register-multiple-duplicate',
+    ],
   };
 </script>
 

@@ -67,6 +67,7 @@
         }
       },
     },
+    emits: ['update-sorting'],
   };
 </script>
 

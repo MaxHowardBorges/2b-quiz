@@ -9,6 +9,7 @@ import {
   loginUser,
   registerUser,
   registerUserArray,
+  restoreUser,
   updateMe,
   validateSelf,
   validateUser,
@@ -182,6 +183,11 @@ export const useUserStore = defineStore('user', {
     },
     async softDeleteUser(id) {
       const response = await deleteUser(id, this.token);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
+    },
+    async restoreUser(id, body) {
+      const response = await restoreUser(id, body, this.token);
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },

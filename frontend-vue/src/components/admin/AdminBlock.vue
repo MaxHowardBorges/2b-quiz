@@ -31,7 +31,9 @@
   <v-sheet class="pa-5 d-block w-100" elevation="3" rounded="lg" id="app">
     <admin-table-block
       @add-multiple-user="addMoreUser = true"
-      @add-user="addUser = true" />
+      @add-user="addUser = true"
+      @error-restore="errorRestore"
+      @error-delete="errorDelete" />
   </v-sheet>
 </template>
 
@@ -93,6 +95,16 @@
       errorRegisterMultipleUsed(usernames) {
         this.errorSnackbarTitle = 'Error';
         this.errorSnackbarContent = `Usernames ${usernames.toString()} already taken`;
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
+      errorRestore(id) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent = 'Error while restoring user id:' + id + '.';
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
+      errorDelete(id) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent = 'Error while deleting user id:' + id + '.';
         this.$refs.errorSnackbar.snackbarError = true;
       },
     },

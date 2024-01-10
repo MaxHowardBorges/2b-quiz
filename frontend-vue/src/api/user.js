@@ -135,3 +135,14 @@ export async function updateMe(token, body) {
     body: JSON.stringify(body),
   });
 }
+
+export async function restoreUser(id, body, token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/${id}/restore`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+}

@@ -1,4 +1,15 @@
 <template>
+  <confirmation-dialog
+    ref="confirmationDialog"
+    :title="confirmationDialogContent"
+    :content="confirmationDialogTextCaption"
+    @confirm="deleteConfirmation"
+    @cancel="echoUserToRemove = null"></confirmation-dialog>
+  <RestoreUserDialog
+    ref="restoreUserDialog"
+    :user="userToRestore"
+    @cancel="userToRestore = null"
+    @save="restoreConfirmUser"></RestoreUserDialog>
   <v-data-iterator
     :items="users"
     :page="indexPage"
@@ -31,14 +42,15 @@
             <admin-table-header-block
               @update-sorting="updateSorting"
               :isDeletedUsers="isDeletedUsers" />
-            <tbody>
-              <template v-for="item in items" v-if="!loading">
+            <tbody v-if="!loading">
+              <template v-for="item in items">
                 <admin-list-item
                   :isDeletedUsers="isDeletedUsers"
                   :user="item.raw"
                   @validate-user="validateUser"
                   @remove-user="deleteUser"
-                  @soft-delete-user="softDeleteUser" />
+                  @soft-delete-user="softDeleteUser"
+                  @restore-user="restoreUser" />
               </template>
             </tbody>
           </v-table>
@@ -84,13 +96,24 @@
   import AdminListItem from '@/components/admin/AdminListItem.vue';
   import { ref } from 'vue';
   import { useUserStore } from '@/stores/userStore';
+  import ConfirmationDialog from '@/components/commun/ConfirmationDialog.vue';
+  import RestoreUserDialog from '@/components/admin/RestoreUserDialog.vue';
 
   export default {
     name: 'AdminTableBlock',
-    components: { AdminListItem, AdminTableHeaderBlock },
+    components: {
+      RestoreUserDialog,
+      ConfirmationDialog,
+      AdminListItem,
+      AdminTableHeaderBlock,
+    },
 
     data() {
       return {
+        confirmationDialogContent:
+          'Are you sure you want to delete this user ?',
+        confirmationDialogTextCaption:
+          'This action is irreversible, you will not be able to recover this user.',
         loading: ref(false),
         sorting: {
           id: null,
@@ -104,6 +127,8 @@
         indexPage: 1,
         itemsPerPage: 10,
         isDeletedUsers: false,
+        echoUserToRemove: null,
+        userToRestore: null,
       };
     },
     setup() {
@@ -164,11 +189,28 @@
         await this.loadUser();
       },
       async deleteUser(id) {
-        await this.userStore.deleteUser(id);
-        await this.loadUser();
+        this.echoUserToRemove = id;
+        this.confirmationDialogTextCaption =
+          'This action is irreversible, you will not be able to recover this user.';
+        this.confirmationDialogContent =
+          'Are you sure you want to delete this user ?';
+        this.$refs.confirmationDialog.dialog = true;
       },
       async softDeleteUser(id) {
-        await this.userStore.softDeleteUser(id);
+        this.echoUserToRemove = id;
+        this.confirmationDialogTextCaption =
+          'This user will be anonymized. You can restore it later.';
+        this.confirmationDialogContent =
+          'Are you sure you want to delete this user ?';
+        this.$refs.confirmationDialog.dialog = true;
+      },
+      async deleteConfirmation() {
+        try {
+          await this.userStore.deleteUser(this.echoUserToRemove);
+        } catch (error) {
+          this.$emit('error-delete', this.echoUserToRemove);
+        }
+        this.echoUserToRemove = null;
         await this.loadUser();
       },
       async updateIsDeletedUsers(value) {
@@ -176,7 +218,25 @@
         await this.loadUser();
         console.log(this.users);
       },
+      async restoreUser(id) {
+        this.userToRestore = this.users.find((user) => user.id === id);
+        console.log(this.userToRestore);
+        this.$refs.restoreUserDialog.dialog = true;
+      },
+      async restoreConfirmUser(user) {
+        const body = {
+          name: user.name,
+          surname: user.surname,
+        };
+        try {
+          await this.userStore.restoreUser(this.userToRestore.id, body);
+        } catch (error) {
+          this.$emit('error-restore', this.userToRestore.id);
+        }
+        await this.loadUser();
+      },
     },
+    emits: ['add-user', 'add-multiple-user', 'error-restore', 'error-delete'],
   };
 </script>
 
