@@ -8,6 +8,9 @@ import { Teacher } from '../../user/entity/teacher.entity';
 import { TicketValidationErrorException } from '../../cas/exception/ticketValidationError.exception';
 import { InvalidTicketException } from '../exception/invalidTicket.exception';
 import { UserNotFoundException } from '../exception/userNotFound.exception';
+import { HttpException } from '@nestjs/common';
+import { CasServerErrorException } from '../../cas/exception/casServerError.exception';
+import { CasUnavailableException } from '../exception/casUnavailable.exception';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -58,6 +61,20 @@ describe('AuthService', () => {
       );
       await expect(service.signIn('ticket', 'service')).rejects.toThrow(
         InvalidTicketException,
+      );
+    });
+    it('should throw a CasUnavailableException if casService throw an CasServerErrorException', async () => {
+      casService.validateTicket.mockRejectedValue(
+        new CasServerErrorException(),
+      );
+      await expect(service.signIn('ticket', 'service')).rejects.toThrow(
+        CasUnavailableException,
+      );
+    });
+    it('should throw a CasUnavailableException if casService throw an error', async () => {
+      casService.validateTicket.mockRejectedValue(new HttpException('', 500));
+      await expect(service.signIn('ticket', 'service')).rejects.toThrow(
+        CasUnavailableException,
       );
     });
   });
