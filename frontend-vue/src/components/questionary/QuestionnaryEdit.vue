@@ -32,8 +32,7 @@
       label="Select Question Type"
       class="custom-select"
       dense
-      outlined
-      readonly=""></v-select>
+      outlined></v-select>
 
     <v-select
       v-if="!OnList"
@@ -98,6 +97,7 @@
       ref="questionnaryComponent"
       id="quest"
       v-if="!OnList"
+      :is-from-bank="isFromBank"
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
 
@@ -168,6 +168,7 @@
         newTag: '',
         OnList: true,
         showTypeSelector: false,
+        isFromBank: false,
         selectedType: 'Unique',
         typeOptions: [
           { typeLabel: 'Unique', typeCode: 'qcu' },
@@ -227,7 +228,8 @@
       toggleBank() {
         this.dialogVisible = true;
       },
-      ChangeStatus(idQuestion, typeL) {
+      ChangeStatus(idQuestion, typeL, fromBank = false) {
+        this.isFromBank = fromBank;
         this.showTypeSelector = !this.showTypeSelector;
         this.OnList = !this.OnList;
         this.statusQ = 'modify';
@@ -235,7 +237,7 @@
         this.selectedType = this.typeOptions.filter(
           (type) => type.typeCode === typeL,
         )[0].typeLabel;
-        this.useQ.getAnswers(idQuestion);
+        !this.isFromBank ? this.useQ.getAnswers(idQuestion) : '';
       },
       async validQuestion() {
         const author = '111111'; // TODO get id author

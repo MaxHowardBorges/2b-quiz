@@ -11,7 +11,7 @@ import {
   getQuestionsFromQuestionnary,
   getQuestionsFromUser,
 } from '@/api/questionnary';
-import { getAnswersFromQuestion } from '@/api/question';
+import { getAnswersFromQuestion, getQuestionFromId } from '@/api/question';
 
 export const useQuestionnaryStore = defineStore('questionnary', {
   state: () => ({
@@ -104,21 +104,32 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         console.error(error);
       }
     },
-    async getAnswers(idQuestion) {
-      if (this.isCreated) {
-        this.answers = [];
-        try {
-          const response = await getAnswersFromQuestion(idQuestion);
-          if (!response.ok || response.status !== 200) {
-            throw new Error('Erreur de réponse'); // TODO manage error
-          } else {
-            for (const a of JSON.parse(await response.text())) {
-              this.answers.push(a);
-            }
-          }
-        } catch (error) {
-          console.error(error);
+    async getQuestion(idQuestion) {
+      this.answers = [];
+      try {
+        const response = await getQuestionFromId(idQuestion);
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          return JSON.parse(await response.text());
         }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getAnswers(idQuestion) {
+      this.answers = [];
+      try {
+        const response = await getAnswersFromQuestion(idQuestion);
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          for (const a of JSON.parse(await response.text())) {
+            this.answers.push(a);
+          }
+        }
+      } catch (error) {
+        console.error(error);
       }
     },
     async addQuestion(question) {

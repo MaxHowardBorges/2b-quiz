@@ -19,12 +19,19 @@
     data() {
       this.questionnaryStore.getQuestionsFromUser(); //TODO add user id
       let question = this.questionnaryStore.privateQuestions;
-      console.log(question);
       return {
         question,
       };
     },
-    methods: {},
+    emits: ['modifyQuestionFromBank', 'toggleVoir'],
+    methods: {
+      toggleVoirVisibility() {
+        this.$emit('toggleVoir');
+      },
+      modifyQuestionFromBank(questionId, questionType) {
+        this.$emit('modifyQuestionFromBank', questionId, questionType);
+      },
+    },
   };
 </script>
 
@@ -36,7 +43,7 @@
     elevation="5">
     <div style="display: flex">
       <div style="align-self: start" id="divButton">
-        <v-btn id="ic" icon="undo" @click=""></v-btn>
+        <v-btn id="ic" icon="undo" @click="toggleVoirVisibility"></v-btn>
       </div>
       <h1>Private Question Bank</h1>
     </div>
@@ -56,7 +63,9 @@
 
     <v-sheet class="list">
       <v-sheet v-for="(q, index) in this.question" :key="index">
-        <QuestionItem :question="q"></QuestionItem>
+        <QuestionItem
+          :question="q"
+          @modifyQuestionFromBank="modifyQuestionFromBank"></QuestionItem>
       </v-sheet>
     </v-sheet>
 

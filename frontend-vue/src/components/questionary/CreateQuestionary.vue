@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mt-20px align-center">
+  <v-sheet class="mt-20px align-center" v-if="question">
     <v-text-field
       type="text"
       id="question"
@@ -98,6 +98,7 @@
 
   export default {
     props: {
+      isFromBank: { Boolean, default: false },
       selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
     },
@@ -107,9 +108,10 @@
         questionnaryStore,
       };
     },
-    computed() {},
     data() {
-      let question = this.getQuestion();
+      let question = this.isFromBank
+        ? this.getQuestionFromBank()
+        : this.getQuestion();
       return {
         question,
         indexD: 0,
@@ -141,6 +143,9 @@
           initQuestion.answers.push({ content: '', isCorrect: false });
         }
         return initQuestion;
+      },
+      async getQuestionFromBank() {
+        return await this.questionnaryStore.getQuestion(this.idQuestion);
       },
       getAnswers() {
         if (this.selectedQuestionType === 'True-False') {

@@ -4,7 +4,7 @@
       <b>{{ question.content }}</b>
       <span class="spacer"></span>
       <span class="spacer"></span>
-      <v-btn id="ic" icon="edit" @click=""></v-btn>
+      <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
       <v-btn id="ic" icon="visibility" @click="toggleDropdown"></v-btn>
       <v-btn id="ic" icon="content_copy" @click="copyQuestion"></v-btn>
     </div>
@@ -40,7 +40,15 @@
         showDropdown: false,
       };
     },
+    emits: ['modifyQuestionFromBank'],
     methods: {
+      modifyQuestion() {
+        this.$emit(
+          'modifyQuestionFromBank',
+          this.question.id,
+          this.question.type,
+        );
+      },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;
       },

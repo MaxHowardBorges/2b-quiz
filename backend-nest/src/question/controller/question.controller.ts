@@ -9,6 +9,7 @@ export class QuestionController {
   selectQuestion(@Param('id', ParseIntPipe) idQuestion: number) {
     return this.questionService.findQuestion(idQuestion);
   }
+
   @Get('/:id/select-answers/')
   selectAnswersFromQuestion(@Param('id', ParseIntPipe) idQuestion: number) {
     return this.questionService.findAnswers(idQuestion);
