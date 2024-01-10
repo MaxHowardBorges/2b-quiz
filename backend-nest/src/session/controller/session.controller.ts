@@ -31,9 +31,9 @@ export class SessionController {
 
   @Post('/create')
   async createSession(
-    @Body(new ValidationPipe()) ids: number[],
+    @Body(new ValidationPipe()) idsObject: { ids: number[] },
   ): Promise<Session> {
-    return this.sessionService.initializeSession(ids);
+    return this.sessionService.initializeSession(idsObject.ids);
   }
 
   @Post('/nextQuestion')
@@ -84,10 +84,15 @@ export class SessionController {
     ];
   }
 
+  @Get('/getMap2')
+  async getMap2() {
+    return this.sessionService.getMap();
+  }
+
   @Post('/:idSession/settings')
   async setSessionSettings(
-    @Param('idSession', ParseIntPipe) idSession: string,
-    acces: AccessDto,
+    @Param('idSession') idSession: string,
+    @Body(new ValidationPipe()) acces: AccessDto,
   ) {
     return this.sessionService.setSettings(acces, idSession);
   }
