@@ -6,9 +6,10 @@
        elevation="3"
        rounded="lg"
        position="relative">
-    <h2 v-if='waiting' > Waiting for the questionnary launch... </h2>
+    <h2 > Waiting for the questionnary launch... </h2>
     <v-btn @click='handleJoinSession'>okk</v-btn>
   </v-sheet>
+
 
 
 
@@ -26,24 +27,25 @@
     name: 'waitForm',
     setup: () => {
       const sessionStore = useSessionStore();
+
       return {
         sessionStore,
       };
     },
+    props: {
+      idSession: String
+    },
     methods: {
       async handleJoinSession() {
         console.log(this.sessionStore.start);
+        (this.sessionStore.idSession = this.idSession);
         if(!this.sessionStore.start) {
           this.loading = true;
           try {
-            //const body = { idSession: this.idSession, username: this.username };
-            //await this.sessionStore.joinSession(body);
             const userStore = useUserStore();
             userStore.setUserRoles(UserRoles.TEACHER);
-            //await router.push('/session');
-            console.log("ok");
-            await this.$router.push({ path: '/session', query: { key: 'display' } });
-            console.log("okk");
+            console.log(this.sessionStore.idSession);
+            await this.$router.push({ path: '/session?idSession='+this.sessionStore.idSession , query: { key: 'display' }});
           } catch (error) {
             console.error(error)
           }

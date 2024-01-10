@@ -1,4 +1,6 @@
 <template>
+
+
   <session-waiting-block-student
     v-if="waiting && !ended && userStore.isStudent"
     :id-session="sessionStore.idSession.toString()"
@@ -11,6 +13,8 @@
   <session-question-block
     @answer-sent-relay="waiting = true"
     v-if="!waiting && !ended" />
+
+
 
   <session-ended-block @reset="reset" v-if="ended" />
 </template>
@@ -25,7 +29,16 @@
   import { useUserStore } from '@/stores/userStore';
   import router from '@/router';
 
+  let waiting;
   export default {
+    beforeRouteUpdate(to, from, next) {
+      waiting = true;
+      console.log(to.query.key);
+      if (to.query.key === 'display') {
+        waiting = false;
+      }
+      next();
+    },
     name: 'SessionView',
     components: {
       SessionEndedBlock,
@@ -37,10 +50,11 @@
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
 
-      let ended = ref(false);
-      let waiting = ref(true);
+      let ended = ref(false)
       let waitingSessionStart = ref(true);
       let echoQuestion = ref(null);
+      waiting = ref(true);
+
 
       sessionStore.$subscribe((mutation, state) => {
         if (state.ended !== ended.value) {

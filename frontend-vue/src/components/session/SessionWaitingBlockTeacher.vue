@@ -59,7 +59,7 @@
         this.loading = false;
       },
       launchWindows() {
-        const routeData = router.resolve({name: 'public'});
+        const routeData = router.resolve({name: 'public', query: {idSession: this.sessionStore.idSession}});
         window.open(routeData.href, '_blank');
       }
     },

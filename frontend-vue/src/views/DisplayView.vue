@@ -1,10 +1,10 @@
-
-
 <template>
   <h1>Public screen</h1>
   <div class="h-10 d-flex align-center justify-center ma-2">
-
-    <WaitForm />
+  {{this.idSession}}
+    <WaitForm
+      :idSession="this.idSession"
+    />
   </div>
 
 </template>
@@ -19,6 +19,9 @@
   export default {
     name: 'DisplayView',
     components: { WaitForm },
+    props: {
+      idSession: String
+    },
 
   };
 

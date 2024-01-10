@@ -34,6 +34,9 @@ const routes = [
     path: '/public',
     name: 'public',
     component: DisplayView,
+    props: (route) => ({
+      idSession: route.query.idSession,
+    }),
   },
 ];
 
