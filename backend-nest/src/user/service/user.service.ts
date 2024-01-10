@@ -156,7 +156,6 @@ export class UserService {
 
   async restoreUser(idUser: number, name: string, surname: string) {
     const user = await this.getUser(idUser);
-    console.log(user, idUser);
     if (!user) throw new UserNotFoundException();
     user.name = name;
     user.surname = surname;

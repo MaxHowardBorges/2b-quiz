@@ -53,6 +53,7 @@ describe('UserService', () => {
   describe('createUser', () => {
     it('should create a user', async () => {
       const user = teacherMock;
+      user.id = undefined;
       userRepository.save.mockResolvedValue(user);
       await service.createUser(
         user.username,
@@ -63,9 +64,35 @@ describe('UserService', () => {
       );
       expect(userRepository.save).toBeCalledWith(user);
     });
-
+    it('should create a admin user', async () => {
+      const user = adminMock;
+      user.id = undefined;
+      userRepository.save.mockResolvedValue(user);
+      await service.createUser(
+        user.username,
+        user.name,
+        user.surname,
+        user.getUserType(),
+        user.validate,
+      );
+      expect(userRepository.save).toBeCalledWith(user);
+    });
+    it('should create a student user', async () => {
+      const user = studentMock;
+      user.id = undefined;
+      userRepository.save.mockResolvedValue(user);
+      await service.createUser(
+        user.username,
+        user.name,
+        user.surname,
+        user.getUserType(),
+        user.validate,
+      );
+      expect(userRepository.save).toBeCalledWith(user);
+    });
     it('should create a user with validate equals false', async () => {
       const user = notValidatedTeacherMock;
+      user.id = undefined;
       userRepository.save.mockResolvedValue(user);
       await service.createUser(
         user.username,
@@ -319,9 +346,18 @@ describe('UserService', () => {
   describe('deleteUser', () => {
     it('should delete a user', async () => {
       const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(user);
       userRepository.delete.mockResolvedValue(null);
       await service.deleteUser(user.id);
       expect(userRepository.delete).toBeCalledWith({ id: user.id });
+    });
+    it('should throw an error if user is not found', async () => {
+      const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(null);
+      userRepository.delete.mockResolvedValue(null);
+      await expect(service.deleteUser(user.id)).rejects.toThrow(
+        UserNotFoundException,
+      );
     });
   });
 
@@ -417,6 +453,35 @@ describe('UserService', () => {
       await expect(service.isUserValidated(user.id)).rejects.toThrow(
         UserNotFoundException,
       );
+    });
+  });
+
+  // restoreUser
+  describe('restoreUser', () => {
+    it('should restore a user', async () => {
+      const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(user);
+      await service.restoreUser(user.id, user.name, user.surname);
+      expect(userRepository.save).toBeCalledWith(user);
+      expect(user.deleted).toEqual(false);
+    });
+    it('should throw an error if user is not found', async () => {
+      const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(null);
+      await expect(
+        service.restoreUser(user.id, user.name, user.surname),
+      ).rejects.toThrow(UserNotFoundException);
+    });
+  });
+
+  // askDeleteUser
+  describe('askDeleteUser', () => {
+    it('should ask delete a user', async () => {
+      const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(user);
+      await service.askDeleteUser(user);
+      expect(userRepository.save).toBeCalledWith(user);
+      expect(user.askedDelete).toEqual(true);
     });
   });
 });
