@@ -16,6 +16,7 @@ import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
 import { AccessTypeEnum } from '../enum/accessType.enum';
 import { AccessDto } from '../dto/access.dto';
+import { SessionClosedException } from '../exception/sessionClosed.exception';
 
 @Injectable()
 export class SessionService {
@@ -129,23 +130,23 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
 
-    if (session.open) {
-      if (session.accessType == AccessTypeEnum.Public) {
-        if (session.connectedUser.has(username)) {
-          throw new UserAlreadyJoinedException();
-        }
-        session.connectedUser.add(username);
-        session.userAnswers.set(username, new Map<Question, Answer>());
+    if (session.accessType == AccessTypeEnum.Public) {
+      if (session.connectedUser.has(username)) {
+        throw new UserAlreadyJoinedException();
       }
-      // else if (session.accessType == AccessTypeEnum.Private) {
-      //   if (session.connectedUser.has(username)) {
-      //     throw new UserAlreadyJoinedException();
-      //   }
-      //   session.connectedUser.add(username);
-      //   session.userAnswers.set(username, new Map<Question, Answer>());
-      // }
+      session.connectedUser.add(username);
+      session.userAnswers.set(username, new Map<Question, Answer>());
+    } else if (
+      session.accessType == AccessTypeEnum.Private &&
+      session.whitelist.includes(username)
+    ) {
+      if (session.connectedUser.has(username)) {
+        throw new UserAlreadyJoinedException();
+      }
+      session.connectedUser.add(username);
+      session.userAnswers.set(username, new Map<Question, Answer>());
     } else {
-      // Gestion d'exception, la session est fermée
+      throw new SessionClosedException();
     }
   }
 
@@ -223,12 +224,11 @@ export class SessionService {
     return this.sessionMap.get(idSession).userAnswers;
   }
 
-  setSettings(open: boolean, access: AccessDto, idSession: string) {
+  setSettings(access: AccessDto, idSession: string) {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.accessType = access.accesType;
       session.whitelist = access.whitelist;
-      session.open = open;
     }
 
     return !!session;

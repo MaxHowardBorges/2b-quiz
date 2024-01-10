@@ -20,9 +20,7 @@ export class Session {
 
   accessType: AccessTypeEnum;
 
-  whitelist: number[];
-
-  open: boolean;
+  whitelist: string[];
 
   constructor(idSession: string, tabQuestionnary: Questionnary[]) {
     this.id = idSession;
@@ -32,7 +30,6 @@ export class Session {
     this.connectedUser = new Set<string>();
     this.userAnswers = new Map<string, Map<Question, Answer>>();
     this.endSession = false;
-    this.open = true;
     this.accessType = AccessTypeEnum.Public;
     this.whitelist = [];
   }

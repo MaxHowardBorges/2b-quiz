@@ -87,9 +87,8 @@ export class SessionController {
   @Post('/:idSession/settings')
   async setSessionSettings(
     @Param('idSession', ParseIntPipe) idSession: string,
-    open: boolean,
     acces: AccessDto,
   ) {
-    return this.sessionService.setSettings(open, acces, idSession);
+    return this.sessionService.setSettings(acces, idSession);
   }
 }
