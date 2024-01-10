@@ -66,7 +66,7 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException();
       return true;
     }
-    const authorised = matchRoles(roles, user.getUserType());
+    const authorised = this.matchRoles(roles, user.getUserType());
     if (!authorised) {
       throw new UnauthorizedException();
     }
@@ -77,8 +77,8 @@ export class AuthGuard implements CanActivate {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
-}
 
-function matchRoles(roles: UserType[], role: UserType) {
-  return roles.includes(role);
+  matchRoles(roles: UserType[], role: UserType) {
+    return roles.includes(role);
+  }
 }
