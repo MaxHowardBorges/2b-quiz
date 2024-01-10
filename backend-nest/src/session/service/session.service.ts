@@ -17,6 +17,7 @@ import { QuestionType } from '../../question/constants/questionType.constant';
 import { AccessTypeEnum } from '../enum/accessType.enum';
 import { AccessDto } from '../dto/access.dto';
 import { SessionClosedException } from '../exception/sessionClosed.exception';
+import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
 
 @Injectable()
 export class SessionService {
@@ -145,6 +146,11 @@ export class SessionService {
       }
       session.connectedUser.add(username);
       session.userAnswers.set(username, new Map<Question, Answer>());
+    } else if (
+      session.accessType == AccessTypeEnum.Private &&
+      !session.whitelist.includes(username)
+    ) {
+      throw new UserNotInWhitelistException();
     } else {
       throw new SessionClosedException();
     }
