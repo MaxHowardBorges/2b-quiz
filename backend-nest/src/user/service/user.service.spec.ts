@@ -88,10 +88,33 @@ describe('UserService', () => {
         itemsPerPage,
       );
       userRepository.find.mockResolvedValue(onePageUserMockList);
-      const test = await service.getUsersPerPage(page, itemsPerPage);
+      const test = await service.getUsersPerPage(page, itemsPerPage, false);
       expect(userRepository.find).toBeCalledWith({
         skip,
         take: itemsPerPage,
+        where: {
+          deleted: false,
+        },
+      });
+      expect(test).toEqual(onePageUserMockList);
+      expect(test).toHaveLength(itemsPerPage);
+    });
+    it('should get users per page with deleted', async () => {
+      const page = 1;
+      const itemsPerPage = 10;
+      const skip = (page - 1) * itemsPerPage;
+      const onePageUserMockList: User[] = userDeletedMockList.slice(
+        skip,
+        itemsPerPage,
+      );
+      userRepository.find.mockResolvedValue(onePageUserMockList);
+      const test = await service.getUsersPerPage(page, itemsPerPage, true);
+      expect(userRepository.find).toBeCalledWith({
+        skip,
+        take: itemsPerPage,
+        where: {
+          deleted: true,
+        },
       });
       expect(test).toEqual(onePageUserMockList);
       expect(test).toHaveLength(itemsPerPage);
