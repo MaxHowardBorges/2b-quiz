@@ -42,11 +42,14 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async getUsersPerPage(page: number, itemsPerPage: number) {
+  async getUsersPerPage(page: number, itemsPerPage: number, deleted: boolean) {
     const skip = (page - 1) * itemsPerPage;
     return await this.userRepository.find({
       skip,
       take: itemsPerPage,
+      where: {
+        deleted,
+      },
     });
   }
 

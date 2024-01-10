@@ -150,12 +150,18 @@ export const useUserStore = defineStore('user', {
       this.setUserRoles(await this.fetchUserType());
       if (this.userRole === UserRoles.TEACHER) await this.logoutUser();
     },
-    async getUsers(page, nbItem, sort) {
+    async getUsers(page, nbItem, deleted, sort) {
       let response;
       if (sort) {
-        response = await getAllUsersSort(page, nbItem, sort, this.token);
+        response = await getAllUsersSort(
+          page,
+          nbItem,
+          sort,
+          this.token,
+          deleted,
+        );
       } else {
-        response = await getAllUsers(page, nbItem, this.token);
+        response = await getAllUsers(page, nbItem, this.token, deleted);
       }
       await throwIfNotOK(response, 200);
       this.updateToken(response.headers.get('Authorization'));

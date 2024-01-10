@@ -7,6 +7,11 @@
       <div
         class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
         <div class="text-truncate">List of Users</div>
+        <v-spacer></v-spacer>
+        <v-switch
+          color="primary"
+          @update:model-value="updateIsDeletedUsers"
+          :label="isDeletedUsers ? 'Deleted Users' : 'Users'"></v-switch>
         <div>
           <v-btn
             @click="$emit('add-user')"
@@ -23,10 +28,13 @@
       <v-fade-transition>
         <v-sheet elevation="2" rounded="lg">
           <v-table class="mb-0 h-75" :hover="true">
-            <admin-table-header-block @update-sorting="updateSorting" />
+            <admin-table-header-block
+              @update-sorting="updateSorting"
+              :isDeletedUsers="isDeletedUsers" />
             <tbody>
               <template v-for="item in items" v-if="!loading">
                 <admin-list-item
+                  :isDeletedUsers="isDeletedUsers"
                   :user="item.raw"
                   @validate-user="validateUser"
                   @remove-user="deleteUser"
@@ -95,6 +103,7 @@
         nbItemsOptions: [10, 20, 50, 100],
         indexPage: 1,
         itemsPerPage: 10,
+        isDeletedUsers: false,
       };
     },
     setup() {
@@ -114,6 +123,7 @@
         const data = await this.userStore.getUsers(
           this.indexPage,
           this.itemsPerPage,
+          this.isDeletedUsers,
           this.getActiveSort(),
         );
         this.users = data.userList;
@@ -160,6 +170,11 @@
       async softDeleteUser(id) {
         await this.userStore.softDeleteUser(id);
         await this.loadUser();
+      },
+      async updateIsDeletedUsers(value) {
+        this.isDeletedUsers = value;
+        await this.loadUser();
+        console.log(this.users);
       },
     },
   };

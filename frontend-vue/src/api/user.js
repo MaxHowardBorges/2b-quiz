@@ -61,9 +61,10 @@ export async function validateSelf(body, token) {
   });
 }
 
-export async function getAllUsers(page, nbItem, token) {
+export async function getAllUsers(page, nbItem, token, deleted = false) {
   return await fetch(
-    import.meta.env.VITE_API_URL + `/user?page=${page}&nb-item=${nbItem}`,
+    import.meta.env.VITE_API_URL +
+      `/user?page=${page}&nb-item=${nbItem}&deleted=${deleted}`,
     {
       method: 'GET',
       headers: {
@@ -74,10 +75,16 @@ export async function getAllUsers(page, nbItem, token) {
   );
 }
 
-export async function getAllUsersSort(page, nbItem, sort, token) {
+export async function getAllUsersSort(
+  page,
+  nbItem,
+  sort,
+  token,
+  deleted = false,
+) {
   return await fetch(
     import.meta.env.VITE_API_URL +
-      `/user?page=${page}&nb-item=${nbItem}&sort[field]=${sort.field}&sort[order]=${sort.order}`,
+      `/user?page=${page}&nb-item=${nbItem}&sort[field]=${sort.field}&sort[order]=${sort.order}&deleted=${deleted}`,
     {
       method: 'GET',
       headers: {

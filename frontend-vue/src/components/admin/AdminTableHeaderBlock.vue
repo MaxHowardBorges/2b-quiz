@@ -2,7 +2,14 @@
   <thead>
     <tr>
       <admin-table-header-item
-        v-for="column in columns"
+        v-if="isDeletedUsers"
+        v-for="column in columns2"
+        :column-label="column.label"
+        :ref="column.id"
+        @update-sorted="(value) => saveValue(column.id, value)" />
+      <admin-table-header-item
+        v-else
+        v-for="column in columns1"
         :column-label="column.label"
         :ref="column.id"
         @update-sorted="(value) => saveValue(column.id, value)" />
@@ -17,12 +24,21 @@
   export default {
     name: 'AdminTableHeaderBlock',
     components: { AdminTableHeaderItem, TableSortSwitchButton },
+    props: {
+      isDeletedUsers: false,
+    },
     data: () => ({
-      columns: [
+      columns1: [
         { id: 'id', label: 'ID' },
         { id: 'username', label: 'Username' },
         { id: 'name', label: 'Name' },
         { id: 'surname', label: 'Surname' },
+        { id: 'type', label: 'Type' },
+        { id: 'validate', label: 'Validated' },
+      ],
+      columns2: [
+        { id: 'id', label: 'ID' },
+        { id: 'username', label: 'Username' },
         { id: 'type', label: 'Type' },
         { id: 'validate', label: 'Validated' },
       ],

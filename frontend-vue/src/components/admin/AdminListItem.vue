@@ -2,8 +2,8 @@
   <tr :class="user.validate ? 'bg-green-lighten-4' : 'bg-amber-lighten-4'">
     <td class="">{{ user.id }}</td>
     <td>{{ user.username }}</td>
-    <td>{{ user.name }}</td>
-    <td>{{ user.surname }}</td>
+    <td v-if="!isDeletedUsers">{{ user.name }}</td>
+    <td v-if="!isDeletedUsers">{{ user.surname }}</td>
     <td>{{ user.userType }}</td>
     <td class="pa-2">
       <div v-if="!user.validate">
@@ -39,6 +39,7 @@
     components: { TableSortSwitchButton },
     props: {
       user: null,
+      isDeletedUsers: false,
     },
     methods: {
       validateUser() {
@@ -54,4 +55,8 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  td + td {
+    border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
+  }
+</style>

@@ -119,7 +119,7 @@ export class UserController {
   async deleteUser(@Param('id', ParseIntPipe) idUser: number) {
     if (await this.userService.isUserValidated(idUser))
       await this.userService.deleteSoftUser(idUser);
-    await this.userService.deleteUser(idUser);
+    else await this.userService.deleteUser(idUser);
   }
 
   @Roles([UserType.ADMIN])
@@ -160,8 +160,10 @@ export class UserController {
         nbItem,
         sort.field,
         sort.order,
+        deleted,
       );
-    else userList = await this.userService.getUsersPerPage(page, nbItem);
+    else
+      userList = await this.userService.getUsersPerPage(page, nbItem, deleted);
     const nbPage = await this.userService.getNbUsersPage(nbItem);
     if (deleted) return this.userMapper.userDeleteDtoListMap(userList, nbPage);
     return this.userMapper.userFullDataDtoListMap(userList, nbPage);

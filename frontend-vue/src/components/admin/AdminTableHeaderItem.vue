@@ -30,4 +30,8 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  th + th {
+    border-left: 1px solid rgba(0, 0, 0, 0.12) !important;
+  }
+</style>
