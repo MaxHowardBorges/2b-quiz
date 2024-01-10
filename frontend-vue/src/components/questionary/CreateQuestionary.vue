@@ -185,7 +185,7 @@
     margin-bottom: 20px;
   }
   button {
-    background-color: #ffd700; /* Jaune */
+    background-color: #00afd7; /* bleu uni */
     color: #fff; /* Texte blanc */
     padding: 10px 20px;
     border: none;
@@ -196,7 +196,7 @@
   }
   label {
     font-size: 16px;
-    color: #333; /* Couleur de texte normale */
+    color: #00afd7; /* Couleur de texte normale */
   }
   input[type='text'] {
     padding: 5px;

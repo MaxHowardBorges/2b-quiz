@@ -64,5 +64,7 @@
 </script>
 
 <style scoped>
-
-</style>
+  * {
+    color: #007EA1;
+  }
+  </style>

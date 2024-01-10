@@ -23,6 +23,8 @@
       :items="choosedQuestionnary"
       item-title="title"
       item-value="id"
+      item-color='#007EA1'
+      color="primary"
       multiple=""
       label="Select Questionnary"
       dense
@@ -139,4 +141,20 @@
     align-content: center;
     align-self: center;
   }
+
+  v-select {
+    color: blue;
+  }
+
+  v-list {
+    background-color: #007EA1 !important;
+    color: #00afd7 !important;
+  }
+
+  v-list-item {
+    color: #ffffff !important;
+  }
+
+
+
 </style>

@@ -10,19 +10,19 @@ main {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: #007EA1;
 }
 
-div.custom_background {
-    content: '';
-    background-image: url('@/assets/hexagons.svg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    z-index: -1;
-    opacity: 0.7;
-}
+/*div.custom_background {*/
+/*    content: '';*/
+/*    background-image: url('@/assets/hexagons.svg');*/
+/*    background-repeat: no-repeat;*/
+/*    background-attachment: fixed;*/
+/*    background-size: cover;*/
+/*    z-index: -1;*/
+/*    opacity: 0.7;*/
+/*}*/
 
-.logo {
-    font-family: 'Damion', cursive;
-}
+/*.logo {*/
+/*    font-family: 'Damion', cursive;*/
+/*}*/

@@ -1,17 +1,13 @@
 <template>
   <h1>Public screen</h1>
   <div class="h-10 d-flex align-center justify-center ma-2">
-  {{this.idSession}}
+<!--  {{this.idSession}}-->
     <WaitForm
       :idSession="this.idSession"
     />
   </div>
 
 </template>
-
-<style scoped>
-
-</style>
 
 <script>
   import WaitForm from '@/components/home/WaitForm.vue';
@@ -26,3 +22,15 @@
   };
 
 </script>
+
+<style scoped>
+  * {
+    color: #007EA1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000;
+  }
+
+
+</style>

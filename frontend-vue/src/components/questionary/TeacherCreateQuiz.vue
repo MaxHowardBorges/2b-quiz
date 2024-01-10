@@ -55,7 +55,7 @@ $
         onclick="var buttons = document.getElementsByClassName('qtype');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
-        }this.style['background']='#f1dc66';"
+        }this.style['background']='#00afd7';"
         class="qtype"
         type="button">
         Multiple Choice question
@@ -68,7 +68,7 @@ $
         onclick="var buttons = document.getElementsByClassName('qtype');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
-        }this.style['background']='#f1dc66';"
+        }this.style['background']='#00afd7';"
         class="qtype"
         type="button">
         Open question
@@ -81,7 +81,7 @@ $
         onclick="var buttons = document.getElementsByClassName('qtype');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
-        }this.style['background']='#f1dc66';"
+        }this.style['background']='#00afd7';"
         style="margin-bottom: 20px"
         class="qtype"
         type="button">
@@ -156,7 +156,7 @@ $
             onclick="var buttons = document.getElementsByClassName('validate2');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
-        }this.style['background']='#f1dc66';"
+        }this.style['background']='#00afd7';"
             class="validate2"
             type="button">
             True
@@ -165,7 +165,7 @@ $
             onclick="var buttons = document.getElementsByClassName('validate2');
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].style.background = '#605E73'; // Réinitialise la couleur de fond de tous les boutons
-        }this.style['background']='#f1dc66';"
+        }this.style['background']='#00afd7';"
             class="validate2"
             type="button">
             False
@@ -198,7 +198,7 @@ $
   .teacher-interface h1 {
     font-size: 24px;
     margin-bottom: 20px;
-    color: #ffd700; /* Couleur jaune */
+    color: #00afd7; /* Couleur jaune */
   }
 
   input::placeholder {
@@ -215,7 +215,7 @@ $
   }
 
   .validate {
-    background-color: #f1dc66;
+    background-color: #00afd7;
     border: none;
     color: white;
     padding: 14px 20px;
@@ -334,7 +334,7 @@ $
   }
 
   #QuizName::placeholder {
-    color: #5e6567;
+    color: #007ea1;
     opacity: 50%;
     margin-left: 50%;
   }

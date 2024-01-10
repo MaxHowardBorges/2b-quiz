@@ -60,4 +60,12 @@
   };
 </script>
 
-<style></style>
+<style scoped>
+  * {
+    color: #007EA1;
+  }
+
+  h1{
+    color: black;
+  }
+</style>
