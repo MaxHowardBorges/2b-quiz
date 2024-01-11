@@ -189,6 +189,8 @@ describe('SessionService', () => {
     userAnswers: null,
     endSession: false,
     host: hostTeacher,
+    accessType: null,
+    whitelist: null,
   };
   session.questionnaryList.push(questionnary);
 

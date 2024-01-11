@@ -23,7 +23,6 @@ import { IsHostException } from '../exception/isHost.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
-import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 import { AccessDto } from '../dto/access.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 
@@ -40,7 +39,10 @@ export class SessionController {
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) idsObject: { ids: number[] },
   ): Promise<Session> {
-    return this.sessionService.initializeSession(request.user as Teacher,idsObject.ids);
+    return this.sessionService.initializeSession(
+      request.user as Teacher,
+      idsObject.ids,
+    );
   }
 
   @Roles([UserType.TEACHER])

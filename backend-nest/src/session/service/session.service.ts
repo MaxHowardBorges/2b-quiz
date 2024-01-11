@@ -139,20 +139,20 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
     if (session.accessType == AccessTypeEnum.Public) {
-      if (session.connectedUser.has(user.id)) {
+      if (session.connectedUser.has(user)) {
         throw new UserAlreadyJoinedException();
       }
-      session.connectedUser.add(user.id);
+      session.connectedUser.add(user);
       session.userAnswers.set(user.id, new Map<Question, Answer>());
     } else if (
       session.accessType == AccessTypeEnum.Private &&
       session.whitelist.includes(user.id)
     ) {
-    if (session.connectedUser.has(user)) {
-      throw new UserAlreadyJoinedException();
-    }
-    session.connectedUser.add(user);
-    session.userAnswers.set(user.id, new Map<Question, Answer>());
+      if (session.connectedUser.has(user)) {
+        throw new UserAlreadyJoinedException();
+      }
+      session.connectedUser.add(user);
+      session.userAnswers.set(user.id, new Map<Question, Answer>());
     } else if (
       session.accessType == AccessTypeEnum.Private &&
       !session.whitelist.includes(user.id)

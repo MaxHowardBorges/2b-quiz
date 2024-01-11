@@ -8,5 +8,5 @@ export class AccessDto {
 
   @IsArray()
   @IsString({ each: true })
-  whitelist: string[];
+  whitelist: number[];
 }
