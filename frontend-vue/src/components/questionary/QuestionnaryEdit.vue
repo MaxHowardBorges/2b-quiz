@@ -138,6 +138,9 @@
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
+    /*props: {
+      ChangeStatus: String,
+    },*/ //USE IF WARNING IN CONSOLE
     data() {
       return {
         newTag: '',
