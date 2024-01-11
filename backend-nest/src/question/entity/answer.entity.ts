@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Question } from './question.entity';
-import { userSession } from '../../session/entity/userSession.entity';
+import { UserSession } from '../../session/entity/userSession.entity';
 
 @Entity()
 export class Answer {
@@ -22,8 +22,4 @@ export class Answer {
 
   @Column()
   isCorrect: boolean;
-
-  @ManyToMany(() => Answer, (answer) => answer.userSession)
-  @JoinTable()
-  userSession: userSession[];
 }

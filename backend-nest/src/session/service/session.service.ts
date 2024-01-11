@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Session } from '../session';
+import { SessionTemp } from '../temp/sessionTemp';
 import { QuestionService } from '../../question/service/question.service';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { Question } from '../../question/entity/question.entity';
@@ -17,7 +17,7 @@ import { QuestionType } from '../../question/constants/questionType.constant';
 
 @Injectable()
 export class SessionService {
-  private sessionMap: Map<string, Session> = new Map<string, Session>();
+  private sessionMap: Map<string, SessionTemp> = new Map<string, SessionTemp>();
   constructor(
     private questionService: QuestionService,
     private questionnaryService: QuestionnaryService,
@@ -25,7 +25,7 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(ids: number[]): Promise<Session> {
+  async initializeSession(ids: number[]): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
@@ -50,8 +50,8 @@ export class SessionService {
   async createSession(
     idSession: string,
     questionnaryTab: Questionnary[],
-  ): Promise<Session> {
-    return new Session(idSession, questionnaryTab);
+  ): Promise<SessionTemp> {
+    return new SessionTemp(idSession, questionnaryTab);
   }
 
   async nextQuestion(idSession: string) {

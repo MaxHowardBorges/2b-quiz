@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Question } from '../../question/entity/question.entity';
+import { Session } from '../../session/entity/session.entity';
 
 @Entity()
 export class Questionnary {

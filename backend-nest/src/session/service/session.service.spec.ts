@@ -3,7 +3,7 @@ import { SessionService } from './session.service';
 import { QuestionService } from '../../question/service/question.service';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { EventService } from '../../event/service/event.service';
-import { Session } from '../session';
+import { SessionTemp } from '../temp/sessionTemp';
 import { Question } from '../../question/entity/question.entity';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
@@ -16,7 +16,7 @@ describe('SessionService', () => {
   let questionnaryService: QuestionnaryService;
   let answerMapper: AnswerMapper;
   let eventService: EventService;
-  let sessionMap: Map<string, Session>;
+  let sessionMap: Map<string, SessionTemp>;
 
   const mockQuestionService = {
     createQuestion: jest.fn(),
@@ -173,7 +173,7 @@ describe('SessionService', () => {
   questionnaryTest.author = 'malias';
   questionnaryTest.title = 'morocco';
 
-  const session: Session = {
+  const session: SessionTemp = {
     id: '111111',
     questionnaryList: [],
     questionnaryNumber: 0,
@@ -205,7 +205,7 @@ describe('SessionService', () => {
           useValue: mockEventService,
         },
         {
-          provide: Map<string, Session>,
+          provide: Map<string, SessionTemp>,
           useValue: mockMap,
         },
       ],
@@ -216,9 +216,8 @@ describe('SessionService', () => {
     questionService = module.get<QuestionService>(QuestionService);
     questionnaryService = module.get<QuestionnaryService>(QuestionnaryService);
     eventService = module.get<EventService>(EventService);
-    sessionMap = module.get<Map<string, Session>>(Map<string, Session>);
+    sessionMap = module.get<Map<string, SessionTemp>>(Map<string, SessionTemp>);
   });
-
 
   describe('initializeSession', () => {
     it('generate idSession : should be returned an idSession, should be a STRING', async () => {
@@ -230,23 +229,21 @@ describe('SessionService', () => {
     it('initializeSession : should be not equal to the empty session', async () => {
       const testSession = await service.initializeSession([questionnary.id]);
       expect(testSession).not.toEqual(session);
-      expect(testSession).toBeInstanceOf(Session);
+      expect(testSession).toBeInstanceOf(SessionTemp);
       expect(testSession.id).not.toBeNull();
       expect(testSession.id).not.toMatch(/[a-zA-ZÀ-ÿ]/);
     });
   });
-
 
   describe('CreateSession', () => {
     it('should create a session and return a Session', async () => {
       let test = await service.createSession(service.generateIdSession(), [
         questionnary,
       ]);
-      expect(test).toBeInstanceOf(Session);
+      expect(test).toBeInstanceOf(SessionTemp);
       expect(typeof test.id).toBe('string');
     });
   });
-
 
   describe('nextQuestion', () => {
     it('should return the next question', async () => {
@@ -255,14 +252,14 @@ describe('SessionService', () => {
         questions,
       );
       mockQuestionService.findQuestion.mockResolvedValue(questions[0]);
-      const mockSessionMap = new Map<string, Session>();
+      const mockSessionMap = new Map<string, SessionTemp>();
       mockSessionMap.set('111111', session);
       (service as any).sessionMap = mockSessionMap;
 
       let test = await service.nextQuestion('111111');
       expect(test).not.toBeNull();
       expect(test).not.toEqual(session);
-      let session2: Session = session;
+      let session2: SessionTemp = session;
       let quest = new Question();
       quest.answers = [];
 
@@ -271,7 +268,6 @@ describe('SessionService', () => {
       (service as any).sessionMap = mockSessionMap;
       let test2 = await service.nextQuestion('111111');
       expect(test2).not.toEqual(quest);
-
     });
   });
 

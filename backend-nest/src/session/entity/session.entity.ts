@@ -1,17 +1,34 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
+import { SessionTemp } from '../temp/sessionTemp';
+import { UserSession } from './userSession.entity';
 
 @Entity()
 export class Session {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Questionnary, (questionnary) => questionnary.id)
+  @OneToOne(() => Questionnary)
+  @JoinColumn()
   questionnary: Questionnary;
+
+  @OneToMany(() => UserSession, (userSession) => userSession.id)
+  userSession: UserSession;
 
   //TODO IMPLEMENT USER
   /*@ManyToOne(() => Teacher, (teacher) => teacher.id)
   teacher: Teacher;*/
+
+  @Column()
+  teacher: string;
 
   @Column()
   isResult: boolean;
@@ -20,4 +37,7 @@ export class Session {
   isGlobal: boolean;
   @Column()
   isAvailableAfter: boolean;
+
+  @Column({ type: 'timestamp', default: () => 'NOW()' })
+  date: Date;
 }

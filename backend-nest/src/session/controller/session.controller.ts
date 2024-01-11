@@ -9,7 +9,7 @@ import {
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { Session } from '../session';
+import { SessionTemp } from '../temp/sessionTemp';
 import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
@@ -29,7 +29,7 @@ export class SessionController {
   @Post('/create')
   async createSession(
     @Body(new ValidationPipe()) ids: number[],
-  ): Promise<Session> {
+  ): Promise<SessionTemp> {
     return this.sessionService.initializeSession(ids);
   }
 

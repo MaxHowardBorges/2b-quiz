@@ -1,8 +1,8 @@
-import { Questionnary } from '../questionnary/entity/questionnary.entity';
-import { Question } from '../question/entity/question.entity';
-import { Answer } from '../question/entity/answer.entity';
+import { Questionnary } from '../../questionnary/entity/questionnary.entity';
+import { Question } from '../../question/entity/question.entity';
+import { Answer } from '../../question/entity/answer.entity';
 
-export class Session {
+export class SessionTemp {
   id: string;
 
   questionnaryList: Questionnary[];

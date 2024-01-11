@@ -6,11 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Session } from '../session';
 import { Answer } from '../../question/entity/answer.entity';
+import { Session } from './session.entity';
 
 @Entity()
-export class userSession {
+export class UserSession {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,8 +20,10 @@ export class userSession {
   //TODO IMPLEMENT USER
   /*@ManyToOne(() => User, (user) => user.id)
   user: User;*/
+  @Column()
+  user: string;
 
-  @ManyToMany(() => Answer, (answer) => answer.userSession)
+  @ManyToMany(() => Answer)
   @JoinTable()
   answer: Answer[];
 }
