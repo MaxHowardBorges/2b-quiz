@@ -59,11 +59,6 @@
     data() {
       return {
         searchQuery: '',
-        answers: [
-          'Tu es clairement le goat',
-          'Je ne suis pas sûr',
-          'Tu es cringe',
-        ],
         questions: [
           'A quoi joue Elias ?',
           'Qui est Miles Morales ?',
