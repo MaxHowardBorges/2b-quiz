@@ -10,6 +10,8 @@ import {
   getQuestionnariesFromUser,
   getQuestionsFromQuestionnary,
   getQuestionsFromUser,
+  createTag,
+  getTags,
 } from '@/api/questionnary';
 import { getAnswersFromQuestion, getQuestionFromId } from '@/api/question';
 
@@ -21,6 +23,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
     questions: [],
     answers: [],
     privateQuestions: [],
+    tagList: [],
   }),
   getters: {
     isCreated() {
@@ -203,6 +206,33 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         } else {
           this.questionnaryList = [];
           await this.getQuestionnariesFromUser(); //TODO get user id
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getTags() {
+      this.tagList = [];
+      try {
+        const response = await getTags();
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          for (const t of JSON.parse(await response.text())) {
+            this.tagList.push(t);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async createTag(tagName) {
+      try {
+        const response = await createTag(tagName);
+        if (!response.ok || response.status !== 201) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          await this.getTags();
         }
       } catch (error) {
         console.error(error);

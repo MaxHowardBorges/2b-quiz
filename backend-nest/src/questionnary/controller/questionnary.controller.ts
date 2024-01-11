@@ -25,7 +25,7 @@ export class QuestionnaryController {
     return this.questionService.createTag(description.description);
   }
 
-  @Patch('/updateTag/:id')
+  @Patch('/updateTag/:id') //TODO to implement
   updateTag(
     @Param('id', ParseIntPipe) id: number,
     @Body() newDescription: any,
@@ -34,9 +34,8 @@ export class QuestionnaryController {
     return this.questionService.updateTag(id, newDescription.newDescription);
   }
 
-  @Delete('/deleteTag/:id')
+  @Delete('/deleteTag/:id') //TODO to implement
   deleteTag(@Param('id', ParseIntPipe) id: number) {
-    console.log('a');
     return this.questionService.deleteTag(id);
   }
 

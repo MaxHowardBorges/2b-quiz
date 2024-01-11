@@ -19,19 +19,14 @@ export class QuestionService {
 
   async createTag(description: string) {
     const tag = new Tag();
-    console.log(description);
     tag.description = description;
-    //console.log(tag.idTag);
-    console.log(tag);
+    tag.questions = [];
     await this.tagRepository.save(tag);
   }
   async updateTag(id: number, newDescription: string) {
     const tag = await this.tagRepository.findOne({ where: { idTag: id } });
     if (tag) {
-      console.log(newDescription);
       tag.description = newDescription;
-      console.log(tag.idTag);
-      console.log(tag.description);
       await this.tagRepository.save(tag);
     }
   }
@@ -82,6 +77,13 @@ export class QuestionService {
       answer.isCorrect = a.isCorrect;
       answer.question = question;
       await this.answerRepository.save(answer);
+    }
+    for (const t of q.tags) {
+      const tag = await this.getTag(t.idTag);
+      if (!tag.questions.some((q) => q.id === question.id)) {
+        tag.questions.push(question);
+      }
+      await this.tagRepository.save(tag);
     }
     return question;
   }

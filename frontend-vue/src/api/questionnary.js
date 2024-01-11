@@ -127,3 +127,22 @@ export async function deleteQuestionnary(idQuestionnary) {
     },
   );
 }
+
+export async function getTags() {
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/getTags', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+export async function createTag(tagName) {
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/createTag', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ description: tagName }),
+  });
+}

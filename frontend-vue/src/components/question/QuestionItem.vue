@@ -52,7 +52,7 @@
         ],
       };
     },
-    emits: ['modifyQuestionFromBank'],
+    emits: ['modifyQuestionFromBank', 'showQuestionnaryList'],
     methods: {
       modifyQuestion() {
         this.$emit(

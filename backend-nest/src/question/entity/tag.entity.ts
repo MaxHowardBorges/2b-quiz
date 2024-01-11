@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './question.entity';
-import { IsString } from 'class-validator';
+
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn()

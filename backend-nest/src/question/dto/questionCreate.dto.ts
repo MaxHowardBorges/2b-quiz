@@ -9,7 +9,7 @@ import {
 import { Type } from 'class-transformer';
 import { AnswerCreateDto } from './answerCreate.dto';
 import { QuestionType } from '../constants/questionType.constant';
-import { Column } from 'typeorm';
+import { TagDto } from './tag.dto';
 
 export class QuestionCreateDto {
   @IsNumber()
@@ -31,4 +31,8 @@ export class QuestionCreateDto {
   @ValidateNested({ each: true })
   @Type(() => AnswerCreateDto)
   answers: AnswerCreateDto[];
+
+  @ValidateNested({ each: true })
+  @Type(() => TagDto)
+  tags: TagDto[];
 }

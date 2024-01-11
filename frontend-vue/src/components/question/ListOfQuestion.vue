@@ -29,7 +29,7 @@
         author: '111111', // TODO get id author
       };
     },
-    emits: ['modifyQuestionFromBank', 'toggleVoir'],
+    emits: ['modifyQuestionFromBank', 'toggleVisibility'],
     methods: {
       toggleVisibility() {
         this.$emit('toggleVisibility');
@@ -123,7 +123,11 @@
 
         <v-card-text>
           <v-list>
+            <v-list-item v-if="this.questionnaries.length < 1">
+              No questionnaries
+            </v-list-item>
             <v-list-item
+              v-else
               v-for="(questionnary, index) in questionnaries"
               :key="index"
               @click="toggleQuestion(index)"

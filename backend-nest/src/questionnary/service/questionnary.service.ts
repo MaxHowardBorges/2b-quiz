@@ -7,7 +7,9 @@ import { Question } from '../../question/entity/question.entity';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
+import { TagDto } from '../../question/dto/tag.dto';
 import { Answer } from '../../question/entity/answer.entity';
+import { Tag } from '../../question/entity/tag.entity';
 
 @Injectable()
 export class QuestionnaryService {
@@ -162,6 +164,10 @@ export class QuestionnaryService {
     question.type = questionDto.type;
     question.originalId = questionDto.id !== undefined ? questionDto.id : null;
     question.idAuthor = questionDto.author;
+    question.tags = [];
+    for (const tagDto of questionDto.tags) {
+      question.tags.push(this.dtoToTag(tagDto));
+    }
     for (const answerDto of questionDto.answers) {
       question.answers.push(this.dtoToAnswer(answerDto, question));
     }
@@ -174,5 +180,12 @@ export class QuestionnaryService {
     answer.isCorrect = answerDto.isCorrect;
     answer.question = questionRef;
     return answer;
+  }
+
+  dtoToTag(tagDto: TagDto) {
+    const tag = new Tag();
+    tag.idTag = tagDto.idTag;
+    tag.description = tagDto.description;
+    return tag;
   }
 }

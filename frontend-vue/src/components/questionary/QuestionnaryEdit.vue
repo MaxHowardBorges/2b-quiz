@@ -37,7 +37,9 @@
     <v-select
       v-if="!OnList"
       v-model="selectedTags"
-      :items="tagOptions"
+      :items="this.tagList"
+      item-title="description"
+      return-object
       label="Select Tags"
       style="width: 200px"
       multiple
@@ -102,7 +104,7 @@
           :numberLabel="question.content"
           :typeLabel="question.type"
           :idQuestion="question.id"
-          @ChangeStatuss="ChangeStatus" />
+          @ChangeStatuss="changeStatus" />
       </v-sheet>
     </v-sheet>
 
@@ -155,8 +157,8 @@
         confirmationDialog: false,
         baseQuestionnaryName: '[Questionnary name]',
         questionnaryName: '',
+        tagList: [],
         selectedTags: [],
-        tagOptions: ['Tag1', 'Tag2', 'Tag3'], // Remplacez par vos tags réels
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
@@ -173,6 +175,10 @@
         await this.useQ.getQuestionnary();
         this.questionnaryName = this.useQ.questionnary.title;
       } else this.questionnaryName = this.baseQuestionnaryName;
+      await this.useQ.getTags();
+      this.tagList = this.useQ.tagList;
+      console.log(this.tagList);
+      this.selectedTags = [];
     },
     name: 'QuestionnaryEdit',
     components: {
@@ -180,17 +186,19 @@
       QuestionnaryListOne,
     },
     methods: {
-      createNewTag() {
+      async createNewTag() {
         const tagToAdd = this.newTag.trim();
-        if (tagToAdd && !this.tagOptions.includes(tagToAdd)) {
-          this.tagOptions.push(tagToAdd);
-          this.selectedTags.push(tagToAdd);
-          this.newTag = ''; // Réinitialisez le champ du nouveau tag après l'ajout
+        if (
+          tagToAdd &&
+          !this.useQ.tagList.some((t) => t.description === tagToAdd)
+        ) {
+          await this.useQ.createTag(tagToAdd);
+          this.tagList = this.useQ.tagList;
+          this.newTag = '';
         } else {
           alert('Le tag est vide ou existe déjà.');
         }
       },
-
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
@@ -219,6 +227,8 @@
         const type = this.typeOptions.find(
           (option) => option.typeLabel === this.selectedType,
         ).typeCode;
+        const tags = this.selectedTags;
+        console.log(tags);
 
         for (let i = 0; i < answers.length; i++) {
           answers[i].isCorrect = i === index;
@@ -231,17 +241,30 @@
               title: this.questionnaryName,
               questions: [],
             }); //TODO get author
-            await this.useQ.addQuestion({ content, type, author, answers });
+            await this.useQ.addQuestion({
+              content,
+              type,
+              author,
+              answers,
+              tags,
+            });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
               content,
               type,
               author,
               answers,
+              tags,
             });
             this.idQuestion = null;
           } else {
-            await this.useQ.addQuestion({ content, type, author, answers });
+            await this.useQ.addQuestion({
+              content,
+              type,
+              author,
+              answers,
+              tags,
+            });
           }
           this.showTypeSelector = !this.showTypeSelector;
           this.OnList = !this.OnList;
