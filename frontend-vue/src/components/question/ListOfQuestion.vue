@@ -7,7 +7,7 @@
   >
     <h1>Private Question Bank</h1>
 
-    <div style='display: flex; margin: 20px 0; width: 50%'>
+    <div style='display: flex; margin: 20px 0px; width: 50%'>
       <div id='divDrop1'>
         <v-select label='Types' style='width: 180%'></v-select>
       </div>
@@ -22,13 +22,26 @@
       </div>
     </div>
 
+    <v-pagination
+      v-if="totalPages > 1"
+      v-model="currentPage"
+      :length="totalPages"
+    ></v-pagination>
+
     <v-sheet class="list">
       <QuestionItem
-        v-for="(q, index) in filteredQuestions"
+        v-for="(q, index) in paginatedQuestions"
         :key="index"
         :question="q"
       ></QuestionItem>
     </v-sheet>
+
+    <!-- Pagination controls -->
+    <v-pagination
+      v-if="totalPages > 1"
+      v-model="currentPage"
+      :length="totalPages"
+    ></v-pagination>
 
     <v-card class="mt-25">
       <!--<v-btn @click="">Done</v-btn>-->
@@ -55,22 +68,45 @@
           'A quoi joue Elias ?',
           'Qui est Miles Morales ?',
           'Sam va t-il percer ?',
+          'A quoi joue Elias ?',
+          'Qui est Miles Morales ?',
+          'Sam va t-il percer ?',
+          'A quoi joue Elias ?',
+          'Qui est Miles Morales ?',
+          'Sam va t-il percer ?',
+          'Bissap ou Butane ?',
+          'hmmmmmm ?',
+          'Que faire ?',
+          'Bissap ou Butane ?',
+          'Cest quoi les bails ?',
+          'Que faire ?',
+          'Lebron ou Jordan ?',
+          // ... autres questions
         ],
-        filteredQuestions: [], // Initialize with an empty array
+        itemsPerPage: 9,
+        currentPage: 1,
+        filteredQuestions: [],
       };
     },
+    computed: {
+      totalPages() {
+        return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
+      },
+      paginatedQuestions() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        return this.filteredQuestions.slice(startIndex, endIndex);
+      },
+    },
     created() {
-      // Initialize filteredQuestions with all questions when the component is created
       this.filterQuestions();
     },
     methods: {
       filterQuestions() {
         const query = this.searchQuery.toLowerCase();
         if (query.trim() === '') {
-          // If the search bar is empty, show all questions
           this.filteredQuestions = this.questions;
         } else {
-          // Otherwise, filter questions based on the search text
           this.filteredQuestions = this.questions.filter(q => q.toLowerCase().includes(query));
         }
       },
@@ -79,6 +115,11 @@
 </script>
 
 <style scoped>
+  #divButton {
+    position: absolute;
+    left: 18%;
+  }
+
   #divDrop1 {
     position: absolute;
     left: 75%;
