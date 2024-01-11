@@ -11,6 +11,24 @@
 <script setup>
   import HeaderBlock from '@/components/layout/HeaderBlock.vue';
   import FooterBlock from '@/components/layout/FooterBlock.vue';
+  import { onMounted } from 'vue';
+  import { useActivityStore } from '@/stores/activityStore';
+  import { useUserStore } from '@/stores/userStore';
+
+  const activityStore = useActivityStore();
+  const userStore = useUserStore();
+
+  onMounted(async () => {
+    document.addEventListener('click', () => {
+      activityStore.updateActivityTime();
+    });
+    if (userStore.isAuthenticated) {
+      await userStore.updateUserType();
+    }
+    if (!userStore.interval) {
+      userStore.intervalChecker();
+    }
+  });
 </script>
 
 <style>
@@ -21,5 +39,6 @@
 
   main {
     padding-top: 15px;
+    padding-bottom: 15px;
   }
 </style>

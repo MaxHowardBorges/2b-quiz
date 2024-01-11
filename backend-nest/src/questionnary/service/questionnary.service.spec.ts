@@ -1,37 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaryService } from './questionnary.service';
 import { QuestionService } from '../../question/service/question.service';
 import { Questionnary } from '../entity/questionnary.entity';
 import { Question } from '../../question/entity/question.entity';
 import { Answer } from '../../question/entity/answer.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
+import { TestBed } from '@automock/jest';
+import { generateTeacherMock } from '../../../test/mock/user.mock';
+import { Repository } from 'typeorm';
 
 describe('QuestionnaryService', () => {
   let service: QuestionnaryService;
-  let questionnaryRepository: 'QuestionnaryRepository';
-  let questionService: QuestionService;
+  let questionnaryRepository: jest.Mocked<Repository<Questionnary>>;
+  let questionService: jest.Mocked<QuestionService>;
 
-  const mockQuestionService = {
-    createQuestion: jest.fn(),
-    deleteQuestions: jest.fn(),
-    deleteQuestion: jest.fn(),
-    findQuestion: jest.fn(),
-    modifyQuestion: jest.fn(),
-    findQuestions: jest.fn(),
-    modifyQuestionnary: jest.fn(),
-  };
-
-  const mockQuestionnaryRepository = {
-    save: jest.fn(),
-    findOne: jest.fn(),
-    delete: jest.fn(),
-    find: jest.fn(),
-  };
-
+  // TODO deplace questionnary/question generation in /test/mock
   const questionnary: Questionnary = {
     id: 15,
     title: 'morocco',
-    author: 'malias',
+    author: generateTeacherMock(),
     questions: [],
   };
   const questions: Question[] = [
@@ -146,34 +132,45 @@ describe('QuestionnaryService', () => {
   let questionnaryTest = new Questionnary();
   questionnaryTest.questions = questions;
   questionnaryTest.id = 15;
-  questionnaryTest.author = 'malias';
+  questionnaryTest.author = generateTeacherMock();
   questionnaryTest.title = 'morocco';
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        QuestionnaryService,
-        {
-          provide: QuestionService,
-          useValue: mockQuestionService,
-        },
-        {
-          provide: 'QuestionnaryRepository',
-          useValue: mockQuestionnaryRepository,
-        },
-      ],
-    }).compile();
+  beforeAll(() => {
+    const { unit, unitRef } = TestBed.create(QuestionnaryService).compile();
 
-    service = module.get<QuestionnaryService>(QuestionnaryService);
-    questionService = module.get<QuestionService>(QuestionService);
-    questionnaryRepository = module.get<'QuestionnaryRepository'>(
-      'QuestionnaryRepository',
-    );
+    service = unit;
+    questionService = unitRef.get(QuestionService);
+    questionnaryRepository = unitRef.get('QuestionnaryRepository');
   });
+
+  // beforeEach(async () => {
+  //   const module: TestingModule = await Test.createTestingModule({
+  //     providers: [
+  //       QuestionnaryService,
+  //       {
+  //         provide: QuestionService,
+  //         useValue: mockQuestionService,
+  //       },
+  //       {
+  //         provide: 'QuestionnaryRepository',
+  //         useValue: mockQuestionnaryRepository,
+  //       },
+  //     ],
+  //   }).compile();
+  //
+  //   service = module.get<QuestionnaryService>(QuestionnaryService);
+  //   questionService = module.get<QuestionService>(QuestionService);
+  //   questionnaryRepository = module.get<'QuestionnaryRepository'>(
+  //     'QuestionnaryRepository',
+  //   );
+  // });
 
   describe('createQuestionnary', () => {
     it('should be returned a questionnary', async () => {
-      let test: Questionnary = await service.createQuestionnary(questionnary);
+      let test: Questionnary = await service.createQuestionnary(
+        questionnary,
+        generateTeacherMock(),
+      );
 
       expect(test).not.toEqual(questionnary);
       expect(test).toBeInstanceOf(Questionnary);
@@ -182,7 +179,7 @@ describe('QuestionnaryService', () => {
 
   describe('deleteQuestionnary', () => {
     it('should be returned a boolean', async () => {
-      mockQuestionnaryRepository.findOne.mockResolvedValue(questionnary);
+      questionnaryRepository.findOne.mockResolvedValue(questionnary);
       let test = await service.deleteQuestionnary(questionnary.id);
       expect(test).toEqual(true);
     });
@@ -190,17 +187,15 @@ describe('QuestionnaryService', () => {
 
   describe('findQuestionnary', () => {
     it('should be returned a Questionnary', async () => {
-      mockQuestionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
-      mockQuestionService.findQuestion.mockResolvedValue(
-        questionnary.questions,
-      );
+      questionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
 
-      let test = await service.findQuestionnary(questionnary.id);
-      expect(test).toEqual(questionnary);
+      let test = await service.findQuestionnary(questionnaryTest.id);
+      expect(test).toEqual(questionnaryTest);
       expect(test).toBeInstanceOf(Questionnary);
       expect(test).not.toBeFalsy();
 
-      mockQuestionnaryRepository.findOne.mockResolvedValue(null);
+      questionService.findQuestions.mockResolvedValue(questionnary.questions);
+      questionnaryRepository.findOne.mockResolvedValue(null);
       test = await service.findQuestionnary(questionnary.id);
       expect(test).toBeNull();
     });
@@ -208,12 +203,12 @@ describe('QuestionnaryService', () => {
 
   describe('findQuestionnariesFromIdUser', () => {
     it('should be returned a set of Questionnaries from a user id', async () => {
-      mockQuestionnaryRepository.find.mockResolvedValue([questionnaryTest]);
-      mockQuestionService.findQuestion.mockResolvedValue(
-        questionnary.questions,
-      );
+      questionnaryRepository.find.mockResolvedValue([questionnaryTest]);
+      questionService.findQuestions.mockResolvedValue(questionnary.questions);
 
-      let test = await service.findQuestionnariesFromIdUser(0); //TODO check for users
+      let test = await service.findQuestionnariesFromIdUser(
+        generateTeacherMock(),
+      );
       expect(test).toBeInstanceOf(Array);
       expect(test).not.toBeFalsy();
     });
@@ -221,18 +216,16 @@ describe('QuestionnaryService', () => {
 
   describe('findQuestionsFromIdQuestionnary', () => {
     it('should be returned an array of Question', async () => {
-      mockQuestionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
-      mockQuestionService.findQuestions.mockResolvedValue(
-        questionnary.questions,
-      );
+      questionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
+      questionService.findQuestions.mockResolvedValue(questionnary.questions);
 
       let test = await service.findQuestionsFromIdQuestionnary(questionnary.id);
       expect(test).toEqual(questionnary.questions);
       expect(test).toBeInstanceOf(Array);
       expect(test).not.toBeFalsy();
 
-      mockQuestionnaryRepository.findOne.mockResolvedValue(null);
-      mockQuestionService.findQuestions.mockResolvedValue(null);
+      questionnaryRepository.findOne.mockResolvedValue(null);
+      questionService.findQuestions.mockResolvedValue(null);
       test = await service.findQuestionsFromIdQuestionnary(0);
       expect(test).toBeNull();
     });
@@ -240,8 +233,8 @@ describe('QuestionnaryService', () => {
 
   describe('addQuestion', () => {
     it('should be returned a question', async () => {
-      mockQuestionnaryRepository.findOne.mockResolvedValue(questionnary);
-      mockQuestionService.createQuestion.mockResolvedValue(questions[0]);
+      questionnaryRepository.findOne.mockResolvedValue(questionnary);
+      questionService.createQuestion.mockResolvedValue(questions[0]);
       let test = await service.addQuestion(questionnary.id, questions[0]);
       let resultQuestion = questions[0];
       resultQuestion.id = 39;
@@ -252,14 +245,14 @@ describe('QuestionnaryService', () => {
 
   describe('deleteQuestions', () => {
     it('should be returned a boolean and delete question', async () => {
-      mockQuestionService.deleteQuestion.mockResolvedValue(true);
-      mockQuestionnaryRepository.findOne.mockResolvedValue(questionnary);
+      questionService.deleteQuestion.mockResolvedValue(true);
+      questionnaryRepository.findOne.mockResolvedValue(questionnary);
       let test = await service.deleteQuestion(
         questionnary.id,
         questionnary.questions[0].id,
       );
       expect(test).toBeTruthy();
-      mockQuestionService.deleteQuestion.mockResolvedValue(false);
+      questionService.deleteQuestion.mockResolvedValue(false);
       let test2 = await service.deleteQuestion(
         questionnary.id,
         questionnary.questions[0].id,
@@ -270,7 +263,7 @@ describe('QuestionnaryService', () => {
 
   describe('modifyQuestion', () => {
     it('should be returned a boolean and modify question', async () => {
-      mockQuestionService.modifyQuestion.mockResolvedValue(true);
+      questionService.modifyQuestion.mockResolvedValue(true);
       let test = await service.modifyQuestion(
         questionnary.id,
         questionnary.questions[0].id,
@@ -282,12 +275,12 @@ describe('QuestionnaryService', () => {
 
   describe('modifyQuestionnary', () => {
     it('should be returned a boolean and modify question', async () => {
-      mockQuestionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
-      mockQuestionService.modifyQuestionnary.mockResolvedValue(true);
+      questionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
+      questionService.modifyQuestion.mockResolvedValue(true);
       let test = await service.modifyQuestionnary(
         questionnary.id,
         'nouveau titre',
-        'nouvel auteur',
+        generateTeacherMock(),
       );
       expect(test).toBeTruthy();
     });

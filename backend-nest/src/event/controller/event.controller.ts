@@ -2,6 +2,10 @@ import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import { EventService } from '../service/event.service';
 import { EventEnum } from '../enum/event.enum';
 import { Response } from 'express';
+import { Headerless } from '../../decorators/headerless.decorator';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserType } from '../../user/constants/userType.constant';
+import { Request } from 'express';
 
 @Controller('event')
 export class EventController {
@@ -12,9 +16,11 @@ export class EventController {
     this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
   }
 
+  @Roles([UserType.STUDENT, UserType.TEACHER])
+  @Headerless()
   @Get(':idSession')
   async sse(
-    @Req() req,
+    @Req() req: Request,
     @Res() res: Response,
     @Param('idSession') idSession: string,
   ) {
