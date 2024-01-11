@@ -26,3 +26,7 @@ main {
 /*.logo {*/
 /*    font-family: 'Damion', cursive;*/
 /*}*/
+
+.bg-gradiant {
+    background: linear-gradient(90deg, #007EA1 0%, #00AFD7 100%) !important;
+}

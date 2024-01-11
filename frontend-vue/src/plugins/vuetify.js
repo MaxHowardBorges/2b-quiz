@@ -7,8 +7,8 @@ import { md, aliases } from 'vuetify/iconsets/md';
 
 let defaultColors = {
   primary: '#00AFD7',
-  'dark-color': '#212121',
-  'light-color': '#fcfcfc',
+  'dark-color': '#000000',
+  'light-color': '#ffffff',
 };
 
 const lightTheme = {

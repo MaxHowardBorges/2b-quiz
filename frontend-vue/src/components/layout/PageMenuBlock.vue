@@ -1,9 +1,9 @@
 <template>
   <v-tabs
-    :selected-class="!vertical ? 'text-primary' : ''"
+    :selected-class="!vertical ? 'text-dark-color' : ''"
     grow=""
     :direction="vertical ? 'vertical' : 'horizontal'"
-    :bg-color="!vertical ? 'dark-color' : ''"
+    :bg-color="!vertical ? 'transparent' : ''"
     :class="!vertical ? 'align-self-center' : ''">
     <page-menu-item
       v-if="userStore.isAuthenticated && !userStore.isNotChoose"
