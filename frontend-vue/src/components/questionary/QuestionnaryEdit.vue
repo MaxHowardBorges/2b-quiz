@@ -68,31 +68,6 @@
       <v-btn class="mb-5" v-if="OnList" icon="quiz" @click="toggleBank"></v-btn>
     </div>
 
-    <v-dialog v-model="dialogVisible" max-width="500">
-      <v-card>
-        <v-card-title>Bank Private Questions</v-card-title>
-
-        <v-card-text>
-          <v-list>
-            <v-list-item
-              v-for="(question, index) in questions"
-              :key="index"
-              @click="toggleQuestion(index)"
-              :class="{
-                'selected-question': selectedQuestions.includes(index),
-              }">
-              <v-list-item-title>{{ question }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <!--        //TODO mettre les vrais questions -->
-
-        <v-card-actions class="text-center">
-          <v-btn @click="AddQuestion">Add</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <CreateQuestionnary
       ref="questionnaryComponent"
       id="quest"
@@ -185,10 +160,6 @@
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
-        dialogVisible: false,
-
-        questions: ['Question 1', 'Question 2', 'Question 3'],
-        selectedQuestions: [],
       };
     },
     setup() {
@@ -226,7 +197,7 @@
         this.OnList = !this.OnList;
       },
       toggleBank() {
-        this.dialogVisible = true;
+        this.returnToBank();
       },
       ChangeStatus(idQuestion, typeL, fromBank = false) {
         this.isFromBank = fromBank;
@@ -316,21 +287,6 @@
           this.useQ.modifyQuestionnary(this.questionnaryName);
         }
       },
-
-      toggleQuestion(index) {
-        if (this.selectedQuestions.includes(index)) {
-          this.selectedQuestions = this.selectedQuestions.filter(
-            (i) => i !== index,
-          );
-        } else {
-          this.selectedQuestions.push(index);
-        }
-      },
-      AddQuestion() {
-        //TODO with back
-        this.selectedQuestions = [];
-        this.dialogVisible = false;
-      },
       returnToBank() {
         this.useQ.idQuestionnary = null;
         this.$emit('returnToBank');
@@ -338,10 +294,3 @@
     },
   };
 </script>
-
-<style>
-  /* Styles personnalisés */
-  .selected-question {
-    background-color: #bbfcc2;
-  }
-</style>

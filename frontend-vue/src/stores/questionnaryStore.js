@@ -133,17 +133,15 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async addQuestion(question) {
-      if (this.isCreated) {
-        try {
-          const response = await addQuestion(question, this.idQuestionnary);
-          if (!response.ok || response.status !== 201) {
-            throw new Error('Erreur de réponse'); // TODO manage error
-          } else {
-            await this.getQuestions();
-          }
-        } catch (error) {
-          console.error(error);
+      try {
+        const response = await addQuestion(question, this.idQuestionnary);
+        if (!response.ok || response.status !== 201) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          await this.getQuestions();
         }
+      } catch (error) {
+        console.error(error);
       }
     },
     async modifyQuestion(idQuestion, question) {
