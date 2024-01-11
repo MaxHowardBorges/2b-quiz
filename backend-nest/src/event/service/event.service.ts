@@ -26,7 +26,10 @@ export class EventService {
     }
   }
 
-  createClient(idSession: string, idUser: number): Subject<string> {
+  async createClient(
+    idSession: string,
+    idUser: number,
+  ): Promise<Subject<string>> {
     if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
     const studentSession = this.sessionMap.get(idSession);
     if (
@@ -37,7 +40,7 @@ export class EventService {
     return studentSession.getParticipants(idUser).getSubject();
   }
 
-  removeClient(idSession: string, idUser: number): void {
+  async removeClient(idSession: string, idUser: number): Promise<void> {
     if (this.sessionMap.get(idSession)) {
       if (!this.sessionMap.get(idSession).checkIdParticipant(idUser))
         throw new UserUnauthorisedException();
@@ -45,7 +48,10 @@ export class EventService {
     }
   }
 
-  createObserver(idSession: string, idUser: number): Subject<string> {
+  async createObserver(
+    idSession: string,
+    idUser: number,
+  ): Promise<Subject<string>> {
     if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
     const observerSession = this.sessionMap.get(idSession);
     if (!observerSession.checkIdHost(idUser))
@@ -53,21 +59,24 @@ export class EventService {
     return observerSession.getObserverSubject();
   }
 
-  removeObserver(idSession: string): void {
+  async removeObserver(idSession: string): Promise<void> {
     const observerSession = this.sessionMap.get(idSession);
     if (observerSession) {
       observerSession.resetObserverSubject();
     }
   }
 
-  createHost(idSession: string, idUser: number): Subject<string> {
+  async createHost(
+    idSession: string,
+    idUser: number,
+  ): Promise<Subject<string>> {
     if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
     const hostSession = this.sessionMap.get(idSession);
     if (!hostSession.checkIdHost(idUser)) throw new UserUnauthorisedException();
     return hostSession.getHostSubject();
   }
 
-  removeHost(idSession: string): void {
+  async removeHost(idSession: string): Promise<void> {
     const hostSession = this.sessionMap.get(idSession);
     if (hostSession) {
       hostSession.resetHostSubject();
@@ -88,5 +97,9 @@ export class EventService {
   }
   closeSessionGroup(idSession: string) {
     this.sessionMap.delete(idSession);
+  }
+
+  getSession(idSession: string) {
+    return this.sessionMap.get(idSession);
   }
 }

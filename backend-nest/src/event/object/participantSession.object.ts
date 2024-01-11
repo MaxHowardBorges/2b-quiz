@@ -18,10 +18,13 @@ export class ParticipantSessionObject {
     this.idSession = idSession;
     this.isPrivate = !!participantList;
     this.idHost = idHost;
-    for (const participant of participantList) {
-      this.participants.push(
-        new ParticipantEventListenerObject(participant.id),
-      );
+    this.participants = [];
+    if (participantList) {
+      for (const participant of participantList) {
+        this.participants.push(
+          new ParticipantEventListenerObject(participant.id),
+        );
+      }
     }
     this.hostSubject = new Subject<string>();
     this.observerSubject = new Subject<string>();

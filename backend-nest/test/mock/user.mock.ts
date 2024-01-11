@@ -3,6 +3,7 @@ import { Teacher } from '../../src/user/entity/teacher.entity';
 import { Student } from '../../src/user/entity/student.entity';
 import { Admin } from '../../src/user/entity/admin.entity';
 import { faker } from '@faker-js/faker/locale/fr';
+import { ParticipantInterface } from '../../src/user/interface/participant.interface';
 
 export function generateTeacherMock(
   deleteUser: boolean = false,
@@ -62,6 +63,28 @@ export function generateRandomUserMockList(
         break;
       case 2:
         user = generateAdminMock(deteleUser, validate);
+        break;
+    }
+    users.push(user);
+  }
+  return users;
+}
+
+export function generateRandomParticipantMockList(
+  nb: number,
+  deteleUser: boolean = false,
+  validate: boolean = true,
+) {
+  const users: ParticipantInterface[] = [];
+  for (let i = 0; i < nb; i++) {
+    let user = null;
+    const random = Math.floor(Math.random() * 2);
+    switch (random) {
+      case 0:
+        user = generateTeacherMock(deteleUser, validate);
+        break;
+      case 1:
+        user = generateStudentMock(deteleUser, validate);
         break;
     }
     users.push(user);
