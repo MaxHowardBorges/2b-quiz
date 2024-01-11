@@ -118,11 +118,13 @@ export class SessionController {
     ]; //TODO replace with a DTO
   }
 
+  @Roles([UserType.TEACHER])
   @Get('/getMap2')
   async getMap2() {
     return this.sessionService.getMap();
   }
 
+  @Roles([UserType.TEACHER])
   @Post('/:idSession/settings')
   async setSessionSettings(
     @Param('idSession') idSession: string,
