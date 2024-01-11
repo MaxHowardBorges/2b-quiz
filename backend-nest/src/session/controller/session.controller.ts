@@ -37,12 +37,9 @@ export class SessionController {
   @Post('/create')
   async createSession(
     @Req() request: UserRequest,
-    @Body(new ValidationPipe()) idsObject: { ids: number[] },
+    @Body(new ValidationPipe()) ids: number[],
   ): Promise<Session> {
-    return this.sessionService.initializeSession(
-      request.user as Teacher,
-      idsObject.ids,
-    );
+    return this.sessionService.initializeSession(request.user as Teacher, ids);
   }
 
   @Roles([UserType.TEACHER])

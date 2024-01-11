@@ -138,6 +138,7 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
+
     if (session.accessType == AccessTypeEnum.Public) {
       if (session.connectedUser.has(user)) {
         throw new UserAlreadyJoinedException();
