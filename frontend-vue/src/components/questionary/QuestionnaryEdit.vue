@@ -228,7 +228,7 @@
       toggleBank() {
         this.dialogVisible = true;
       },
-      ChangeStatus(idQuestion, typeL, fromBank = false) {
+      changeStatus(idQuestion, typeL, fromBank = false) {
         this.isFromBank = fromBank;
         this.isFromBank ? (this.questionnaryName = '') : '';
         this.showTypeSelector = !this.showTypeSelector;

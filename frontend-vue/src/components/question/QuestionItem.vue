@@ -10,18 +10,18 @@
     </div>
     <!-- Dropdown menu -->
     <v-list v-if="showDropdown" id="dropdown" class="mt-2">
-      <v-list-item-group>
+      <v-list-item>
         <v-list-item v-for="(answer, index) in question.answers" :key="index">
           <template #default>
-            <v-list-item-content>
+            <v-list-item>
               <v-list-item-title class="text-h6">
                 Réponse {{ index + 1 }}
               </v-list-item-title>
               {{ answer.content }}
-            </v-list-item-content>
+            </v-list-item>
           </template>
         </v-list-item>
-      </v-list-item-group>
+      </v-list-item>
     </v-list>
   </v-sheet>
 </template>
