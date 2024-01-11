@@ -33,7 +33,8 @@
       @add-multiple-user="addMoreUser = true"
       @add-user="addUser = true"
       @error-restore="errorRestore"
-      @error-delete="errorDelete" />
+      @error-delete="errorDelete"
+      @error-reject="errorReject" />
   </v-sheet>
 </template>
 
@@ -105,6 +106,12 @@
       errorDelete(id) {
         this.errorSnackbarTitle = 'Error';
         this.errorSnackbarContent = 'Error while deleting user id:' + id + '.';
+        this.$refs.errorSnackbar.snackbarError = true;
+      },
+      errorReject(id) {
+        this.errorSnackbarTitle = 'Error';
+        this.errorSnackbarContent =
+          'Error while rejecting user id:' + id + ' delete request.';
         this.$refs.errorSnackbar.snackbarError = true;
       },
     },

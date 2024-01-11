@@ -10,6 +10,7 @@ import {
   loginUser,
   registerUser,
   registerUserArray,
+  rejectRequest,
   restoreUser,
   updateMe,
   validateSelf,
@@ -209,6 +210,11 @@ export const useUserStore = defineStore('user', {
     },
     async askDelete() {
       const response = await askDelete(this.token);
+      await throwIfNotOK(response, 204);
+      this.updateToken(response.headers.get('Authorization'));
+    },
+    async rejectRequest(id) {
+      const response = await rejectRequest(id, this.token);
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },

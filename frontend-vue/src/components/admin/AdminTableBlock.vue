@@ -50,7 +50,8 @@
                   @validate-user="validateUser"
                   @remove-user="deleteUser"
                   @soft-delete-user="softDeleteUser"
-                  @restore-user="restoreUser" />
+                  @restore-user="restoreUser"
+                  @reject-request="rejectRequest" />
               </template>
             </tbody>
           </v-table>
@@ -235,8 +236,22 @@
         }
         await this.loadUser();
       },
+      async rejectRequest(id) {
+        try {
+          await this.userStore.rejectRequest(id);
+        } catch (error) {
+          this.$emit('error-reject', id);
+        }
+        await this.loadUser();
+      },
     },
-    emits: ['add-user', 'add-multiple-user', 'error-restore', 'error-delete'],
+    emits: [
+      'add-user',
+      'add-multiple-user',
+      'error-restore',
+      'error-delete',
+      'error-reject',
+    ],
   };
 </script>
 

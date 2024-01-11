@@ -71,7 +71,7 @@
                 variant="outlined"
                 density="comfortable"
                 icon="close"
-                @click="softDeleteUser"></v-btn>
+                @click="rejectRequest"></v-btn>
             </template>
           </v-tooltip>
         </div>
@@ -100,8 +100,17 @@
       restoreUser() {
         this.$emit('restore-user', this.user.id);
       },
+      rejectRequest() {
+        this.$emit('reject-request', this.user.id);
+      },
     },
-    emits: ['validate-user', 'remove-user', 'soft-delete-user', 'restore-user'],
+    emits: [
+      'validate-user',
+      'remove-user',
+      'soft-delete-user',
+      'restore-user',
+      'reject-request',
+    ],
   };
 </script>
 

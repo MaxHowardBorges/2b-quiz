@@ -30,16 +30,6 @@ export async function loginUser(body) {
   });
 }
 
-export async function renewToken(token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/auth/renew', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
-
 export async function getUserType(token) {
   return await fetch(import.meta.env.VITE_API_URL + '/user/role', {
     method: 'GET',
@@ -155,4 +145,17 @@ export async function askDelete(token) {
       Authorization: `Bearer ${token}`,
     },
   });
+}
+
+export async function rejectRequest(id, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/user/${id}/reject-ask-delete`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
 }
