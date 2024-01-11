@@ -57,8 +57,18 @@
         await this.sessionStore.nextQuestion();
         this.$emit('session-start');
         this.loading = false;
+        // try {
+        //   console.log(this.sessionStore);
+        //   await this.sessionStore.nextQuestion();
+        //   this.$emit('session-start');
+        // } catch (error) {
+        //   console.error("Erreur lors de la requête nextQuestion:", error);
+        // } finally {
+        //   this.loading = false;
+        // }
       },
       launchWindows() {
+        console.log(this.sessionStore);
         const routeData = router.resolve({name: 'public', query: {idSession: this.sessionStore.idSession}});
         window.open(routeData.href, '_blank');
       }

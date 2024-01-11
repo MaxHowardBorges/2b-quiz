@@ -77,8 +77,6 @@
       };
     },
     mounted() {
-      const info = this.$route.query.key;
-      console.log(info);
       if (!this.sessionStore.idSession) router.replace('/');
 
     },

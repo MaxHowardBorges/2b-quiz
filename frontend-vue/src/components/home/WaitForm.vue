@@ -30,6 +30,8 @@
 
       return {
         sessionStore,
+        loading: ref(false),
+        waiting: ref(true),
       };
     },
     props: {
@@ -38,16 +40,19 @@
     methods: {
       async handleJoinSession() {
         console.log(this.sessionStore.start);
-        (this.sessionStore.idSession = this.idSession);
-        if(!this.sessionStore.start) {
+
+        if (!this.sessionStore.start) {
           this.loading = true;
           try {
             const userStore = useUserStore();
             userStore.setUserRoles(UserRoles.TEACHER);
             console.log(this.sessionStore.idSession);
-            await this.$router.push({ path: '/session?idSession='+this.sessionStore.idSession , query: { key: 'display' }});
+            await this.$router.push({
+              path: '/session',
+              query: { idSession: this.sessionStore.idSession, key: 'display' },
+            });
           } catch (error) {
-            console.error(error)
+            console.error(error);
           }
           this.loading = false;
           this.waiting = false;
