@@ -18,7 +18,7 @@ export class EventController {
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
   @Headerless()
-  @Get(':idSession')
+  @Get(':idSession/student')
   async sse(
     @Req() req: Request,
     @Res() res: Response,
@@ -32,6 +32,52 @@ export class EventController {
 
     req.on('close', () => {
       this.eventService.removeClient(idSession, client);
+    });
+
+    client.subscribe((data) => {
+      res.write(`data: ${data}\n\n`);
+    });
+  }
+
+  @Roles([UserType.TEACHER])
+  @Headerless()
+  @Get(':idSession/observer')
+  async sseObserver(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('idSession') idSession: string,
+  ) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const client = this.eventService.createObserver(idSession);
+
+    req.on('close', () => {
+      this.eventService.removeObserver(idSession);
+    });
+
+    client.subscribe((data) => {
+      res.write(`data: ${data}\n\n`);
+    });
+  }
+
+  @Roles([UserType.TEACHER])
+  @Headerless()
+  @Get(':idSession/host')
+  async sseHost(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('idSession') idSession: string,
+  ) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const client = this.eventService.createHost(idSession);
+
+    req.on('close', () => {
+      this.eventService.removeHost(idSession);
     });
 
     client.subscribe((data) => {

@@ -1,39 +1,86 @@
 import { Injectable } from '@nestjs/common';
 import { EventEnum } from '../enum/event.enum';
 import { Subject } from 'rxjs';
+import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
 
 @Injectable()
 export class EventService {
   constructor() {}
 
-  private clientGroups: Map<string, Set<Subject<string>>> = new Map<
+  private studentSessionMap: Map<string, Set<Subject<string>>> = new Map<
     string,
     Set<Subject<string>>
   >();
 
-  sendEvent(event: EventEnum, clientGroup: string): void {
-    this.clientGroups.get(clientGroup).forEach((client) => client.next(event));
+  private observerSessionMap: Map<string, Subject<string>> = new Map<
+    string,
+    Subject<string>
+  >();
+
+  private hostSessionMap: Map<string, Subject<string>> = new Map<
+    string,
+    Subject<string>
+  >();
+
+  sendEvent(event: EventEnum, idSession: string): void {
+    this.studentSessionMap
+      .get(idSession)
+      .forEach((client) => client.next(event));
+    this.observerSessionMap.get(idSession).next(event);
+    this.hostSessionMap.get(idSession).next(event);
   }
 
-  createClient(clientGroup: string): Subject<string> {
+  createClient(idSession: string): Subject<string> {
     const client = new Subject<string>();
-    if (!this.clientGroups.get(clientGroup)) {
-      this.clientGroups.set(clientGroup, new Set<Subject<string>>());
+    if (!this.studentSessionMap.get(idSession)) {
+      this.studentSessionMap.set(idSession, new Set<Subject<string>>());
     }
-    this.clientGroups.get(clientGroup).add(client);
+    this.studentSessionMap.get(idSession).add(client);
     return client;
   }
 
-  removeClient(clientGroup: string, client: Subject<string>): void {
-    if (this.clientGroups.get(clientGroup)) {
-      this.clientGroups.get(clientGroup).delete(client);
+  removeClient(idSession: string, client: Subject<string>): void {
+    if (this.studentSessionMap.get(idSession)) {
+      this.studentSessionMap.get(idSession).delete(client);
     }
   }
 
-  createClientGroup(clientGroup: string) {
-    this.clientGroups.set(clientGroup, new Set<Subject<string>>());
+  createObserver(idSession: string): Subject<string> {
+    const observer = new Subject<string>();
+    if (!this.observerSessionMap.get(idSession))
+      throw new SessionNotFoundException();
+    this.observerSessionMap.set(idSession, observer);
+    return observer;
   }
-  closeClientGroup(clientGroup: string) {
-    this.clientGroups.delete(clientGroup);
+
+  removeObserver(idSession: string): void {
+    if (this.observerSessionMap.get(idSession)) {
+      this.observerSessionMap.set(idSession, new Subject<string>());
+    }
+  }
+
+  createHost(idSession: string): Subject<string> {
+    const host = new Subject<string>();
+    if (!this.hostSessionMap.get(idSession))
+      throw new SessionNotFoundException();
+    this.hostSessionMap.set(idSession, host);
+    return host;
+  }
+
+  removeHost(idSession: string): void {
+    if (this.hostSessionMap.get(idSession)) {
+      this.hostSessionMap.set(idSession, new Subject<string>());
+    }
+  }
+
+  createSessionGroup(idSession: string) {
+    this.studentSessionMap.set(idSession, new Set<Subject<string>>());
+    this.observerSessionMap.set(idSession, new Subject<string>());
+    this.hostSessionMap.set(idSession, new Subject<string>());
+  }
+  closeSessionGroup(idSession: string) {
+    this.studentSessionMap.delete(idSession);
+    this.observerSessionMap.delete(idSession);
+    this.hostSessionMap.delete(idSession);
   }
 }
