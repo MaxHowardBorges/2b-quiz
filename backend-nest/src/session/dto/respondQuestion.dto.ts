@@ -7,8 +7,4 @@ export class RespondQuestionDto {
 
   @IsNotEmpty()
   answer: number | string | number[];
-
-  @IsString()
-  @IsNotEmpty()
-  username: string;
 }

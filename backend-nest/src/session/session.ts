@@ -1,7 +1,8 @@
 import { Questionnary } from '../questionnary/entity/questionnary.entity';
 import { Question } from '../question/entity/question.entity';
 import { Answer } from '../question/entity/answer.entity';
-import { AccessTypeEnum } from './enum/accessType.enum';
+import { Teacher } from '../user/entity/teacher.entity';
+import { ParticipantInterface } from '../user/interface/participant.interface';
 
 export class Session {
   id: string;
@@ -12,25 +13,33 @@ export class Session {
 
   questionNumber: number;
 
-  connectedUser: Set<string>;
+  connectedUser: Set<ParticipantInterface>;
 
-  userAnswers: Map<string, Map<Question, Answer | string | Answer[]>>;
+  userAnswers: Map<number, Map<Question, Answer | string | Answer[]>>;
 
   endSession: boolean;
 
-  accessType: AccessTypeEnum;
+  host: Teacher;
 
-  whitelist: string[];
-
-  constructor(idSession: string, tabQuestionnary: Questionnary[]) {
+  constructor(
+    idSession: string,
+    tabQuestionnary: Questionnary[],
+    host: Teacher,
+  ) {
     this.id = idSession;
     this.questionNumber = -1;
     this.questionnaryNumber = 0;
     this.questionnaryList = tabQuestionnary;
-    this.connectedUser = new Set<string>();
-    this.userAnswers = new Map<string, Map<Question, Answer>>();
+    this.connectedUser = new Set<ParticipantInterface>();
+    this.userAnswers = new Map<
+      number,
+      Map<Question, Answer | string | Answer[]>
+    >();
     this.endSession = false;
-    this.accessType = AccessTypeEnum.Public;
-    this.whitelist = [];
+    this.host = host;
+  }
+
+  hasUser(user: ParticipantInterface): boolean {
+    return [...this.connectedUser].some((u) => u.equals(user));
   }
 }

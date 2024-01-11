@@ -12,12 +12,10 @@ import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.excep
 import { Answer } from '../../question/entity/answer.entity';
 import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
+import { Teacher } from '../../user/entity/teacher.entity';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
-import { AccessTypeEnum } from '../enum/accessType.enum';
-import { AccessDto } from '../dto/access.dto';
-import { SessionClosedException } from '../exception/sessionClosed.exception';
-import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
 
 @Injectable()
 export class SessionService {
@@ -29,7 +27,7 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(ids: number[]): Promise<Session> {
+  async initializeSession(teacher: Teacher, ids: number[]): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
@@ -40,7 +38,7 @@ export class SessionService {
     }
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, questionnaries),
+      await this.createSession(idSession, teacher, questionnaries),
     );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
@@ -53,14 +51,20 @@ export class SessionService {
 
   async createSession(
     idSession: string,
+    teacher: Teacher,
     questionnaryTab: Questionnary[],
   ): Promise<Session> {
-    return new Session(idSession, questionnaryTab);
+    return new Session(idSession, questionnaryTab, teacher);
+  }
+
+  startSession(idSession: string): boolean {
+    return this.sessionMap.has(idSession);
   }
 
   async nextQuestion(idSession: string) {
     const currentSession = this.sessionMap.get(idSession);
     // check for next question in the current questionnary
+    if (currentSession.endSession) return null;
     if (
       currentSession.questionNumber + 1 <
       (
@@ -125,50 +129,21 @@ export class SessionService {
     return questionnaries;
   }
 
-  join(idSession: string, username: string): void {
+  join(idSession: string, user: ParticipantInterface): void {
     if (this.sessionMap.has(idSession) == false) {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
-
-    if (session.accessType == AccessTypeEnum.Public) {
-      if (session.connectedUser.has(username)) {
-        throw new UserAlreadyJoinedException();
-      }
-      session.connectedUser.add(username);
-      session.userAnswers.set(username, new Map<Question, Answer>());
-    } else if (
-      session.accessType == AccessTypeEnum.Private &&
-      session.whitelist.includes(username)
-    ) {
-      if (session.connectedUser.has(username)) {
-        throw new UserAlreadyJoinedException();
-      }
-      session.connectedUser.add(username);
-      session.userAnswers.set(username, new Map<Question, Answer>());
-    } else if (
-      session.accessType == AccessTypeEnum.Private &&
-      !session.whitelist.includes(username)
-    ) {
-      throw new UserNotInWhitelistException();
-    } else {
-      throw new SessionClosedException();
+    if (session.connectedUser.has(user)) {
+      throw new UserAlreadyJoinedException();
     }
+    session.connectedUser.add(user);
+    session.userAnswers.set(user.id, new Map<Question, Answer>());
   }
 
   async currentQuestion(idSession: string) {
-    if (this.sessionMap.get(idSession) == undefined) {
-      throw new IdSessionNoneException();
-    }
-    const session = this.sessionMap.get(idSession);
-
-    const questionTab =
-      await this.questionnaryService.findQuestionsFromIdQuestionnary(
-        session.questionnaryList[session.questionnaryNumber].id,
-      );
-    const question = await this.questionService.findQuestion(
-      questionTab[session.questionNumber].id,
-    );
+    const session = this.getSessionOrThrow(idSession);
+    const question = await this.getCurrentQuestion(session);
 
     if (
       this.answerMapper.mapAnswersStudentDtos(question.answers) == undefined
@@ -182,22 +157,12 @@ export class SessionService {
   async saveAnswer(
     idSession: string,
     idAnswer: number | string | number[],
-    username: string,
+    user: ParticipantInterface,
   ) {
-    if (this.sessionMap.get(idSession) == undefined) {
-      throw new IdSessionNoneException();
-    }
+    const session = this.getSessionOrThrow(idSession);
+    const question = await this.getCurrentQuestion(session);
 
-    const session = this.sessionMap.get(idSession);
-    const questionTab =
-      await this.questionnaryService.findQuestionsFromIdQuestionnary(
-        session.questionnaryList[session.questionnaryNumber].id,
-      );
-    const question = await this.questionService.findQuestion(
-      questionTab[session.questionNumber].id,
-    );
-
-    if (!session.connectedUser.has(username)) {
+    if (!session.hasUser(user)) {
       throw new UserUnknownException();
     }
 
@@ -212,31 +177,54 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-
-    session.userAnswers.get(username).set(
-      question,
-
-      Array.isArray(idAnswer)
-        ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-        : typeof idAnswer === 'number'
-        ? question.answers.find((answer) => answer.id === idAnswer)
-        : question.type === QuestionType.QOC
-        ? idAnswer.split(/[ _]/)[0]
-        : idAnswer,
-    );
+    session.userAnswers
+      .get(user.id)
+      .set(
+        question,
+        Array.isArray(idAnswer)
+          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+          : typeof idAnswer === 'number'
+          ? question.answers.find((answer) => answer.id === idAnswer)
+          : question.type === QuestionType.QOC
+          ? idAnswer.split(/[ _]/)[0]
+          : idAnswer,
+      );
   }
 
   getMapUser(idSession: string) {
-    return this.sessionMap.get(idSession).userAnswers;
+    //map userAnswers with connectedUser
+    const session = this.sessionMap.get(idSession);
+    const mapUser = new Map<
+      ParticipantInterface,
+      Map<Question, Answer | string | Answer[]>
+    >();
+    for (const user of session.connectedUser) {
+      mapUser.set(user, session.userAnswers.get(user.id));
+    }
+    return mapUser;
   }
 
-  setSettings(access: AccessDto, idSession: string) {
-    const session = this.sessionMap.get(idSession);
-    if (!!session) {
-      session.accessType = access.accesType;
-      session.whitelist = access.whitelist;
-    }
+  isHost(idSession: string, teacher: Teacher): boolean {
+    return (
+      this.sessionMap.get(idSession) != undefined &&
+      this.sessionMap.get(idSession).host.id == teacher.id
+    );
+  }
 
-    return !!session;
+  async getCurrentQuestion(session: Session) {
+    const questionTab =
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        session.questionnaryList[session.questionnaryNumber].id,
+      );
+    return await this.questionService.findQuestion(
+      questionTab[session.questionNumber].id,
+    );
+  }
+
+  getSessionOrThrow(idSession: string) {
+    if (this.sessionMap.get(idSession) == undefined) {
+      throw new IdSessionNoneException();
+    }
+    return this.sessionMap.get(idSession);
   }
 }
