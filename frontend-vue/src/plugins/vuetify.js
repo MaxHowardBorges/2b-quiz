@@ -7,16 +7,26 @@ import { md, aliases } from 'vuetify/iconsets/md';
 
 let defaultColors = {
   primary: '#00AFD7',
+  'dark-color': '#212121',
+  'light-color': '#fcfcfc',
 };
 
 const lightTheme = {
   dark: false,
-  colors: Object.assign({}, { secondary: '#007EA1' }, defaultColors),
+  colors: Object.assign(
+    {},
+    { secondary: '#007EA1', tertiary: '#fcfcfc' },
+    defaultColors,
+  ),
 };
 
 const darkTheme = {
   dark: true,
-  colors: Object.assign({}, { secondary: '#007EA1' }, defaultColors),
+  colors: Object.assign(
+    {},
+    { secondary: '#007EA1', tertiary: '#212121' },
+    defaultColors,
+  ),
 };
 
 export const vuetify = createVuetify({

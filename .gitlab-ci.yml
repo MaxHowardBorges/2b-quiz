@@ -13,7 +13,7 @@ services:
 
 build: &build
   stage: build
-  image: node:18.18.0-alpine3.18
+  image: node:slim
   script:
     - yarn -v
 
@@ -33,13 +33,14 @@ build-back:
   script:
     - yarn build-backend-prod
 
-#test:
-#  stage: test
-#  image: node:18.18.0-alpine3.18
-#  script:
-#    - docker-compose -f /backend-nest/docker-compose.dev.yaml up --build -d
-#    - yarn test TODO
-#    - docker-compose -f /backend-nest/docker-compose.dev.yaml down
+test:
+  stage: test
+  image: node:slim
+  before_script:
+    - yarn install
+    - yarn build-backend-prod
+  script:
+    - yarn test
 
 
 

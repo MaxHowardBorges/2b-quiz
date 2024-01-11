@@ -50,7 +50,7 @@
     methods: {
       async cancelSession() {
         //TODO call api/store
-        await router.push('/teacher-home-page');
+        await router.push('/');
       },
       async handleLaunch() {
         this.loading = true;
