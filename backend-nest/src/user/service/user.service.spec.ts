@@ -1,7 +1,7 @@
 import { UserService } from './user.service';
 import { Teacher } from '../entity/teacher.entity';
 import { TestBed } from '@automock/jest';
-import { ManyToOne, OneToMany, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import {
   generateAdminMock,
@@ -15,9 +15,6 @@ import { UserType } from '../constants/userType.constant';
 import { Student } from '../entity/student.entity';
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
-import mocked = jest.mocked;
-import { mock } from 'jest-mock-extended';
-import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 describe('UserService', () => {
   let service: UserService;
   let userRepository: jest.Mocked<Repository<User>>;
@@ -486,6 +483,24 @@ describe('UserService', () => {
       await service.askDeleteUser(user);
       expect(userRepository.save).toBeCalledWith(user);
       expect(user.askedDelete).toEqual(true);
+    });
+  });
+
+  // rejectAskDeleteUser
+  describe('rejectAskDeleteUser', () => {
+    it('should reject ask delete a user', async () => {
+      const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(user);
+      await service.rejectAskDeleteUser(user.id);
+      expect(userRepository.save).toBeCalledWith(user);
+      expect(user.askedDelete).toEqual(false);
+    });
+    it('should throw an error if user is not found', async () => {
+      const user = teacherMock;
+      userRepository.findOneBy.mockResolvedValue(null);
+      await expect(service.rejectAskDeleteUser(user.id)).rejects.toThrow(
+        UserNotFoundException,
+      );
     });
   });
 });

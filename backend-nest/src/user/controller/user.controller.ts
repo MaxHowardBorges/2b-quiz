@@ -200,4 +200,11 @@ export class UserController {
   async askDeleteUser(@Req() request: UserRequest) {
     await this.userService.askDeleteUser(request.user);
   }
+
+  @Patch('/:id/reject-ask-delete')
+  @Roles([UserType.ADMIN])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async rejectAskDeleteUser(@Param('id', ParseIntPipe) idUser: number) {
+    await this.userService.rejectAskDeleteUser(idUser);
+  }
 }

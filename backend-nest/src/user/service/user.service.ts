@@ -167,4 +167,11 @@ export class UserService {
     user.askedDelete = true;
     await this.userRepository.save(user);
   }
+
+  async rejectAskDeleteUser(idUser: number) {
+    const user = await this.getUser(idUser);
+    if (!user) throw new UserNotFoundException();
+    user.askedDelete = false;
+    await this.userRepository.save(user);
+  }
 }
