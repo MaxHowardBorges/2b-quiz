@@ -44,7 +44,7 @@ export class SessionService {
       idSession,
       await this.createSession(idSession, teacher, questionnaries),
     );
-    this.eventService.createSessionGroup(idSession);
+    this.eventService.createSessionGroup(idSession, teacher.id);
     return this.sessionMap.get(idSession);
   }
 

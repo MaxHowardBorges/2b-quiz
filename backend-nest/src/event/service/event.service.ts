@@ -2,85 +2,91 @@ import { Injectable } from '@nestjs/common';
 import { EventEnum } from '../enum/event.enum';
 import { Subject } from 'rxjs';
 import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
+import { UserUnauthorisedException } from '../exception/userUnauthorised.exception';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { ParticipantSessionObject } from '../object/participantSession.object';
 
 @Injectable()
 export class EventService {
   constructor() {}
 
-  private studentSessionMap: Map<string, Set<Subject<string>>> = new Map<
+  private sessionMap: Map<string, ParticipantSessionObject> = new Map<
     string,
-    Set<Subject<string>>
-  >();
-
-  private observerSessionMap: Map<string, Subject<string>> = new Map<
-    string,
-    Subject<string>
-  >();
-
-  private hostSessionMap: Map<string, Subject<string>> = new Map<
-    string,
-    Subject<string>
+    ParticipantSessionObject
   >();
 
   sendEvent(event: EventEnum, idSession: string): void {
-    this.studentSessionMap
-      .get(idSession)
-      .forEach((client) => client.next(event));
-    this.observerSessionMap.get(idSession).next(event);
-    this.hostSessionMap.get(idSession).next(event);
-  }
-
-  createClient(idSession: string): Subject<string> {
-    const client = new Subject<string>();
-    if (!this.studentSessionMap.get(idSession)) {
-      this.studentSessionMap.set(idSession, new Set<Subject<string>>());
-    }
-    this.studentSessionMap.get(idSession).add(client);
-    return client;
-  }
-
-  removeClient(idSession: string, client: Subject<string>): void {
-    if (this.studentSessionMap.get(idSession)) {
-      this.studentSessionMap.get(idSession).delete(client);
+    if (this.sessionMap.get(idSession)) {
+      this.sessionMap
+        .get(idSession)
+        .getParticipantSubjectList()
+        .forEach((subject) => {
+          subject.next(event);
+        });
     }
   }
 
-  createObserver(idSession: string): Subject<string> {
-    const observer = new Subject<string>();
-    if (!this.observerSessionMap.get(idSession))
-      throw new SessionNotFoundException();
-    this.observerSessionMap.set(idSession, observer);
-    return observer;
+  createClient(idSession: string, idUser: number): Subject<string> {
+    if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
+    const studentSession = this.sessionMap.get(idSession);
+    if (
+      studentSession.isPrivateSession() &&
+      !studentSession.checkIdParticipant(idUser)
+    )
+      throw new UserUnauthorisedException();
+    return studentSession.getParticipants(idUser).getSubject();
+  }
+
+  removeClient(idSession: string, idUser: number): void {
+    if (this.sessionMap.get(idSession)) {
+      if (!this.sessionMap.get(idSession).checkIdParticipant(idUser))
+        throw new UserUnauthorisedException();
+      this.sessionMap.get(idSession).removeParticipant(idUser);
+    }
+  }
+
+  createObserver(idSession: string, idUser: number): Subject<string> {
+    if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
+    const observerSession = this.sessionMap.get(idSession);
+    if (!observerSession.checkIdHost(idUser))
+      throw new UserUnauthorisedException();
+    return observerSession.getObserverSubject();
   }
 
   removeObserver(idSession: string): void {
-    if (this.observerSessionMap.get(idSession)) {
-      this.observerSessionMap.set(idSession, new Subject<string>());
+    const observerSession = this.sessionMap.get(idSession);
+    if (observerSession) {
+      observerSession.resetObserverSubject();
     }
   }
 
-  createHost(idSession: string): Subject<string> {
-    const host = new Subject<string>();
-    if (!this.hostSessionMap.get(idSession))
-      throw new SessionNotFoundException();
-    this.hostSessionMap.set(idSession, host);
-    return host;
+  createHost(idSession: string, idUser: number): Subject<string> {
+    if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
+    const hostSession = this.sessionMap.get(idSession);
+    if (!hostSession.checkIdHost(idUser)) throw new UserUnauthorisedException();
+    return hostSession.getHostSubject();
   }
 
   removeHost(idSession: string): void {
-    if (this.hostSessionMap.get(idSession)) {
-      this.hostSessionMap.set(idSession, new Subject<string>());
+    const hostSession = this.sessionMap.get(idSession);
+    if (hostSession) {
+      hostSession.resetHostSubject();
     }
   }
 
-  createSessionGroup(idSession: string) {
-    this.studentSessionMap.set(idSession, new Set<Subject<string>>());
-    this.observerSessionMap.set(idSession, new Subject<string>());
-    this.hostSessionMap.set(idSession, new Subject<string>());
+  createSessionGroup(
+    idSession: string,
+    idHost: number,
+    participantInterfaces?: ParticipantInterface[],
+  ) {
+    const participantSessionObject = new ParticipantSessionObject(
+      idSession,
+      idHost,
+      participantInterfaces,
+    );
+    this.sessionMap.set(idSession, participantSessionObject);
   }
   closeSessionGroup(idSession: string) {
-    this.studentSessionMap.delete(idSession);
-    this.observerSessionMap.delete(idSession);
-    this.hostSessionMap.delete(idSession);
+    this.sessionMap.delete(idSession);
   }
 }
