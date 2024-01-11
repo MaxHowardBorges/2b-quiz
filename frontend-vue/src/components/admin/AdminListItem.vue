@@ -58,6 +58,22 @@
             density="comfortable"
             icon="delete"
             @click="softDeleteUser"></v-btn>
+
+          <v-tooltip
+            class="ml-4"
+            v-if="user.askedDelete"
+            location="start"
+            text="To reject delete request">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                class="ml-2"
+                v-bind="props"
+                variant="outlined"
+                density="comfortable"
+                icon="close"
+                @click="softDeleteUser"></v-btn>
+            </template>
+          </v-tooltip>
         </div>
       </div>
     </td>
