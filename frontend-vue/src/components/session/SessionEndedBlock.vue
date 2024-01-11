@@ -60,8 +60,7 @@
     },
     methods: {
       returnToMenu() {
-        if (this.userStore.isTeacher) router.push('/teacher-home-page');
-        else router.push('/');
+        router.push('/');
       },
       async handleCreateSession() {
         this.loading = true;
