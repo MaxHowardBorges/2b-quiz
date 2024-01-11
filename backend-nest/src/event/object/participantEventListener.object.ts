@@ -20,8 +20,4 @@ export class ParticipantEventListenerObject {
   resetSubject(): void {
     this.subject = new Subject<string>();
   }
-
-  equals(studentEventListenerObject: ParticipantEventListenerObject): boolean {
-    return this.id === studentEventListenerObject.id;
-  }
 }

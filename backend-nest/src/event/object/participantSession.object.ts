@@ -30,10 +30,6 @@ export class ParticipantSessionObject {
     this.observerSubject = new Subject<string>();
   }
 
-  checkIdSession(idSession: string): boolean {
-    return this.idSession === idSession;
-  }
-
   checkIdHost(idHost: number): boolean {
     return this.idHost === idHost;
   }
