@@ -32,6 +32,9 @@
 </script>
 
 <style>
+  @import './fonts/Brother1816-Bold/style.css';
+  @import './fonts/Brother1816-Book/style.css';
+  @import './fonts/ApexNew-Light/style.css';
   @import url('./styles/main.scss');
   @import './styles/z-indexes.css';
   @import './styles/global.css';

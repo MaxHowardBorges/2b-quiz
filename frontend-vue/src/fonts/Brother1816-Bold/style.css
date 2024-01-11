@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Brother 1816';
+    src: local('Brother 1816 Bold'), local('Brother-1816-Bold'),
+        url('Brother1816-Bold.woff2') format('woff2'),
+        url('Brother1816-Bold.woff') format('woff'),
+        url('Brother1816-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }

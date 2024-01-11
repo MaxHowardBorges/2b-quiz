@@ -1,13 +1,24 @@
-@font-face {
-  font-family: Brother1816;
-  font-weight: normal;
-  src: url("../fonts/07-brother1816-regular.otf") format("opentype");
-}
-$body-font-family: Brother1816;
+$body-font-family: 'Brother 1816 book';
+$sub-title-font: 'Brother 1816 bold';
+$title-font: 'Apex New';
+
 .v-application {
-  [class*='text-'] {
-    color: #007EA1;
+  [class*='text-']{
     font-family: $body-font-family, sans-serif !important;
+    [class*='text-h'] {
+      font-family: $title-font, sans-serif !important;
+    }
+    [class*='text-subtitle-']{
+      font-family: $sub-title-font, sans-serif !important;
+      font-weight: 700;
+    }
+  }
+  [class*='v-btn']{
+    font-family: $sub-title-font, sans-serif !important;
+    font-weight: 700;
+  }
+  .title,.logo {
+    font-family: $title-font, sans-serif !important;
   }
   font-family: $body-font-family, sans-serif !important;
 }
@@ -15,6 +26,6 @@ $body-font-family: Brother1816;
 #app {
   font-family: $body-font-family, sans-serif !important;
   .title {
-    font-family: $body-font-family, sans-serif !important;
+    font-family: $title-font, sans-serif !important;
   }
 }

@@ -17,7 +17,7 @@
     <template v-slot:header="">
       <div
         class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
-        <div class="text-truncate">List of Users</div>
+        <div class="text-h3">List of Users</div>
         <v-spacer></v-spacer>
         <v-switch
           color="primary"

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Apex New';
+    src: local('Apex New Light'), local('Apex-New-Light'),
+        url('ApexNew-Light.woff2') format('woff2'),
+        url('ApexNew-Light.woff') format('woff'),
+        url('ApexNew-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+  }
