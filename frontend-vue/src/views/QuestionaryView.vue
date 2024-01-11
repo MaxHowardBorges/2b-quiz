@@ -10,6 +10,7 @@
     v-if="toggleBank"
     @toggleVisibility="toggleVisibilityfromBank"
     @modifyQuestionFromBank="triggerChangeStatus"></ListOfQuestion>
+
   <QuestionnaryEdit
     v-if="toggleEdit"
     @GoList="
@@ -26,13 +27,14 @@
   import ListOfQuestionnary from '@/components/questionary/ListOfQuestionnary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
   import ListOfQuestion from '@/components/question/ListOfQuestion.vue';
+  import { ref } from 'vue';
 
   export default {
     data() {
       return {
-        toggleList: true,
-        toggleEdit: false,
-        toggleBank: false,
+        toggleList: ref(true),
+        toggleEdit: ref(false),
+        toggleBank: ref(false),
       };
     },
     setup() {
@@ -45,14 +47,16 @@
       this.useQ.idQuestionnary = null;
     },
     methods: {
-      async triggerChangeStatus(questionId, questionType) {
+      triggerChangeStatus(questionId, questionType) {
         this.toggleVisibilityfromBank(false);
-        console.log(await this.$refs.questionnaryEditRef);
-        await this.$refs.questionnaryEditRef.ChangeStatus(
-          questionId,
-          questionType,
-          true,
-        );
+        //console.log(this.$refs.questionnaryEditRef + ' DO NOT DELETE'); //DO NOT DELETE
+        this.$nextTick(() => {
+          this.$refs.questionnaryEditRef.changeStatus(
+            questionId,
+            questionType,
+            true,
+          );
+        });
       },
       toggleVisibility() {
         this.toggleBank = true;

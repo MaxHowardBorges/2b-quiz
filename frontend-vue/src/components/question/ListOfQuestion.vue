@@ -9,6 +9,7 @@
     props: {
       selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
+      searchQuery: String,
     },
     setup() {
       const questionnaryStore = useQuestionnaryStore();
@@ -100,7 +101,7 @@
       </div>
       <v-text-field
         id="search"
-        v-model="searchQuery"
+        v-model="this.searchQuery"
         label="Search"></v-text-field>
       <div id="divDrop2">
         <v-select label="Tags" style="width: 180%"></v-select>
