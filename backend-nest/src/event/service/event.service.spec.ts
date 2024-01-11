@@ -10,6 +10,7 @@ import { EventEnum } from '../enum/event.enum';
 import { Subject } from 'rxjs';
 import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
 import { UserUnauthorisedException } from '../exception/userUnauthorised.exception';
+import { ParticipantSessionObject } from '../object/participantSession.object';
 
 describe('EventService', () => {
   let service: EventService;
@@ -69,7 +70,7 @@ describe('EventService', () => {
       const client = await service.createClient(idSession, participant[0].id);
       expect(client).toBeDefined();
       expect(client).toBeInstanceOf(Subject<string>);
-      const idSession2 = '123456';
+      const idSession2 = '123486';
       service.createSessionGroup(idSession2, host.id);
       const client2 = await service.createClient(idSession, participant[0].id);
       expect(client2).toBeDefined();
@@ -89,6 +90,139 @@ describe('EventService', () => {
       await expect(
         service.createClient(idSession, otherParticipant.id),
       ).rejects.toThrow(UserUnauthorisedException);
+    });
+  });
+
+  //removeClient
+  describe('removeClient', () => {
+    it('should remove a client', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await service.createClient(idSession, participant[0].id);
+      await service.removeClient(idSession, participant[0].id);
+      const idSession2 = '123486';
+      service.createSessionGroup(idSession2, host.id);
+      await service.createClient(idSession2, participant[0].id);
+      await service.removeClient(idSession2, participant[0].id);
+    });
+    it('should throw an error if user not found', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(
+        service.removeClient(idSession, otherParticipant.id),
+      ).rejects.toThrow(UserUnauthorisedException);
+      const idSession2 = '123486';
+      service.createSessionGroup(idSession2, host.id);
+      await expect(
+        service.removeClient(idSession2, otherParticipant.id),
+      ).rejects.toThrow(UserUnauthorisedException);
+    });
+  });
+
+  //createObserver
+  describe('createObserver', () => {
+    it('should create an observer', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      const observer = await service.createObserver(idSession, host.id);
+      expect(observer).toBeDefined();
+      expect(observer).toBeInstanceOf(Subject<string>);
+    });
+    it('should throw an error if session not found', async () => {
+      const idSession = '123456';
+      const idSessionOther = '124556';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(
+        service.createObserver(idSessionOther, host.id),
+      ).rejects.toThrow(SessionNotFoundException);
+    });
+    it('should throw an error if user not host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(
+        service.createObserver(idSession, otherParticipant.id),
+      ).rejects.toThrow(UserUnauthorisedException);
+    });
+  });
+
+  //removeObserver
+  describe('removeObserver', () => {
+    it('should remove an observer', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await service.createObserver(idSession, host.id);
+      await service.removeObserver(idSession, host.id);
+    });
+    it('should throw an error if user not host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(
+        service.removeObserver(idSession, otherParticipant.id),
+      ).rejects.toThrow(UserUnauthorisedException);
+    });
+  });
+
+  //createHost
+  describe('createHost', () => {
+    it('should create a host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      const hostSubject = await service.createHost(idSession, host.id);
+      expect(hostSubject).toBeDefined();
+      expect(hostSubject).toBeInstanceOf(Subject<string>);
+    });
+    it('should throw an error if session not found', async () => {
+      const idSession = '123456';
+      const idSessionOther = '124556';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(service.createHost(idSessionOther, host.id)).rejects.toThrow(
+        SessionNotFoundException,
+      );
+    });
+    it('should throw an error if user not host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(
+        service.createHost(idSession, otherParticipant.id),
+      ).rejects.toThrow(UserUnauthorisedException);
+    });
+  });
+
+  //removeHost
+  describe('removeHost', () => {
+    it('should remove a host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await service.createHost(idSession, host.id);
+      await service.removeHost(idSession, host.id);
+    });
+    it('should throw an error if user not host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      await expect(
+        service.removeHost(idSession, otherParticipant.id),
+      ).rejects.toThrow(UserUnauthorisedException);
+    });
+  });
+
+  //closeSessionGroup
+  describe('closeSessionGroup', () => {
+    it('should close a session group', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      service.closeSessionGroup(idSession);
+      expect(service.getSession(idSession)).toBeUndefined();
+    });
+  });
+
+  //getSession
+  describe('getSession', () => {
+    it('should get a session', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      const session = service.getSession(idSession);
+      expect(session).toBeDefined();
+      expect(session).toBeInstanceOf(ParticipantSessionObject);
     });
   });
 });

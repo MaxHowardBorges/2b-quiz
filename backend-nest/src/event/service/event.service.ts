@@ -59,9 +59,11 @@ export class EventService {
     return observerSession.getObserverSubject();
   }
 
-  async removeObserver(idSession: string): Promise<void> {
+  async removeObserver(idSession: string, idHost: number): Promise<void> {
     const observerSession = this.sessionMap.get(idSession);
     if (observerSession) {
+      if (!observerSession.checkIdHost(idHost))
+        throw new UserUnauthorisedException();
       observerSession.resetObserverSubject();
     }
   }
@@ -76,9 +78,11 @@ export class EventService {
     return hostSession.getHostSubject();
   }
 
-  async removeHost(idSession: string): Promise<void> {
+  async removeHost(idSession: string, idHost: number): Promise<void> {
     const hostSession = this.sessionMap.get(idSession);
     if (hostSession) {
+      if (!hostSession.checkIdHost(idHost))
+        throw new UserUnauthorisedException();
       hostSession.resetHostSubject();
     }
   }
