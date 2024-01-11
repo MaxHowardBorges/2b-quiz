@@ -4,7 +4,7 @@
       <b> {{ question }} </b>
       <span class="spacer"></span>
       <span class="spacer"></span>
-      <v-btn id="ic" icon="edit" @click=""></v-btn>
+      <v-btn id="ic" icon="edit" ></v-btn>
       <v-btn id="ic" icon="visibility" @click="toggleDropdown"></v-btn>
       <v-btn id="ic" icon="content_copy" @click="copyQuestion"></v-btn>
     </div>
@@ -31,9 +31,14 @@
 
   export default {
     name: 'QuestionItem',
+    props: {
+      question: {
+        type: String,
+        required: true,
+      },
+    },
     setup() {
       return {
-        question: ref("Est-ce que moi sam, je suis vraiment le goat ?"),
         showDropdown: ref(false),
         answers: [
           'Tu es clairement le goat',
