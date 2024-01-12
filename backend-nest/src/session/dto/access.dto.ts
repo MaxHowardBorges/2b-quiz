@@ -1,5 +1,5 @@
 import { AccessTypeEnum } from '../enum/accessType.enum';
-import { IsArray, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class AccessDto {
   @IsEnum(AccessTypeEnum)
@@ -7,6 +7,6 @@ export class AccessDto {
   accesType: AccessTypeEnum;
 
   @IsArray()
-  @IsString({ each: true })
+  @IsInt({ each: true })
   whitelist: number[];
 }
