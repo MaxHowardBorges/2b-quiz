@@ -57,9 +57,11 @@
 
 <script>
   import QuestionItem from '@/components/question/QuestionItem.vue';
+  import TagItem from '@/components/questionary/TagItem.vue';
 
   export default {
     components: {
+      TagItem,
       QuestionItem,
     },
     data() {
