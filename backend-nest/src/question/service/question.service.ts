@@ -5,6 +5,7 @@ import { IsNull, Repository } from 'typeorm';
 import { Answer } from '../entity/answer.entity';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Tag } from '../entity/tag.entity';
+import { TagDto } from '../dto/tag.dto';
 
 @Injectable()
 export class QuestionService {
@@ -17,9 +18,10 @@ export class QuestionService {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
-  async createTag(description: string) {
+  async createTag(tagDto: TagDto) {
     const tag = new Tag();
-    tag.description = description;
+    tag.description = tagDto.description;
+    tag.author = tagDto.author;
     tag.questions = [];
     await this.tagRepository.save(tag);
   }
@@ -104,7 +106,7 @@ export class QuestionService {
   async findQuestion(idQuestion: number) {
     return await this.questionRepository.findOne({
       where: { id: idQuestion },
-      relations: ['answers'],
+      relations: ['answers', 'tags'],
     });
   }
 
@@ -194,7 +196,7 @@ export class QuestionService {
   ) {
     return await this.questionRepository.find({
       where: { idAuthor: idUser, originalId: IsNull() },
-      relations: ['answers', 'questionnary'],
+      relations: ['answers', 'questionnary', 'tags'],
     });
   }
 }

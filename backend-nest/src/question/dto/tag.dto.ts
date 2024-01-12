@@ -1,11 +1,15 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class TagDto {
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   idTag: number;
 
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  author: number;
 }

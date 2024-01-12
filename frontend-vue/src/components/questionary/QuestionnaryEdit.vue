@@ -42,7 +42,7 @@
       return-object
       label="Select Tags"
       style="width: 200px"
-      multiple
+      multiple=""
       outlined
       dense></v-select>
 
@@ -165,6 +165,7 @@
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
+        author: '111111', // TODO get id author
       };
     },
     setup() {
@@ -195,7 +196,10 @@
           tagToAdd &&
           !this.useQ.tagList.some((t) => t.description === tagToAdd)
         ) {
-          await this.useQ.createTag(tagToAdd);
+          await this.useQ.createTag({
+            description: tagToAdd,
+            author: this.author,
+          });
           this.tagList = this.useQ.tagList;
           this.newTag = '';
         } else {
@@ -223,7 +227,6 @@
         !this.isFromBank ? this.useQ.getAnswers(idQuestion) : '';
       },
       async validQuestion() {
-        const author = '111111'; // TODO get id author
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
@@ -240,33 +243,33 @@
         if (content && answers) {
           if (this.useQ.idQuestionnary == null && !this.isFromBank) {
             await this.useQ.createQuestionnary({
-              author: author,
+              author: this.author,
               title: this.questionnaryName,
               questions: [],
-            }); //TODO get author
+            });
             await this.useQ.addQuestion({
-              content,
-              type,
-              author,
-              answers,
-              tags,
+              content: content,
+              type: type,
+              author: this.author,
+              answers: answers,
+              tags: tags,
             });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
-              content,
-              type,
-              author,
-              answers,
-              tags,
+              content: content,
+              type: type,
+              author: this.author,
+              answers: answers,
+              tags: tags,
             });
             this.idQuestion = null;
           } else {
             await this.useQ.addQuestion({
-              content,
-              type,
-              author,
-              answers,
-              tags,
+              content: content,
+              type: type,
+              author: this.author,
+              answers: answers,
+              tags: tags,
             });
           }
           this.showTypeSelector = !this.showTypeSelector;

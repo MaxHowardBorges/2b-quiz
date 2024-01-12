@@ -9,6 +9,10 @@ export class Tag {
   @Column()
   description: string;
 
+  //TODO ADD ID AUTHOR
+  @Column()
+  author: number;
+
   @ManyToMany(() => Question, (question) => question.tags)
   //@JoinTable()
   questions: Question[];

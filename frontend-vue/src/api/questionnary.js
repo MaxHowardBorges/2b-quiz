@@ -137,12 +137,12 @@ export async function getTags() {
   });
 }
 
-export async function createTag(tagName) {
+export async function createTag(tag) {
   return await fetch(import.meta.env.VITE_API_URL + '/questionnary/createTag', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ description: tagName }),
+    body: JSON.stringify(tag),
   });
 }

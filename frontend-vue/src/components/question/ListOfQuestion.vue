@@ -6,11 +6,6 @@
     components: {
       QuestionItem,
     },
-    props: {
-      selectedQuestionType: { String, default: 'Unique' },
-      idQuestion: { Number, default: null },
-      searchQuery: String,
-    },
     setup() {
       const questionnaryStore = useQuestionnaryStore();
       return {
@@ -22,7 +17,6 @@
       let questions = this.questionnaryStore.privateQuestions;
       return {
         questions,
-        paginatedQuestions: questions,
         selectedQuestion: null,
         dialogVisible: false,
         questionnaries: [],
@@ -31,7 +25,7 @@
         searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
-        selectedType: '',
+        selectedType: [],
         selectedTags: [],
         tags: [],
         typeOptions: [
@@ -97,29 +91,34 @@
         let filtered = this.questions;
 
         // Filtrer par type
-        if (this.selectedType) {
-          filtered = filtered.filter((q) => q.type === this.selectedType);
+        if (this.selectedType.length > 0) {
+          filtered = filtered.filter((f) => this.selectedType.includes(f.type));
         }
 
         // Filtrer par tag
-        if (this.selectedTags) {
-          filtered = filtered.filter((q) => q.tags.includes(this.selectedTags));
+        if (this.selectedTags.length > 0) {
+          filtered = filtered.filter((f) =>
+            f.tags.some((t) =>
+              this.selectedTags
+                .map((st) => st.description)
+                .includes(t.description),
+            ),
+          );
         }
 
         //Recherche par nom
         const query = this.searchQuery.toLowerCase();
-        if (query.trim() === '') {
-          return this.questions;
-        } else {
-          return this.questions.filter((q) =>
-            q.content.toLowerCase().includes(query),
-          ); //TODO
+        if (query.trim() !== '') {
+          filtered = filtered.filter((f) =>
+            f.content.toLowerCase().includes(query.toLowerCase()),
+          );
         }
+        return filtered;
       },
       paginatedQuestions() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
-        return this.filteredQuestions.slice(startIndex, endIndex);
+        return this.filteredQuestions().slice(startIndex, endIndex);
       },
       totalPages() {
         return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
@@ -145,7 +144,9 @@
       <div id="divDrop1">
         <v-select
           v-model="selectedType"
-          :items="typeOptions.map((option) => option.typeLabel)"
+          :items="typeOptions"
+          item-title="typeLabel"
+          item-value="typeCode"
           label="Types"
           :multiple="true"
           style="width: 180%"
@@ -153,7 +154,7 @@
       </div>
       <v-text-field
         id="search"
-        v-model="searchQuery"
+        v-model="this.searchQuery"
         label="Search"
         @input="filteredQuestions"></v-text-field>
       <div id="divDrop2">
@@ -167,14 +168,15 @@
     </div>
 
     <v-pagination
-      v-if="this.totalPages > 1"
+      v-if="this.totalPages() > 1"
       v-model="currentPage"
-      :length="this.totalPages"></v-pagination>
+      :length="this.totalPages()"></v-pagination>
 
-    <v-sheet class="list">
+    <v-sheet
+      class="list"
+      v-for="(q, index) in this.paginatedQuestions()"
+      :key="index">
       <QuestionItem
-        v-for="(q, index) in paginatedQuestions"
-        :key="index"
         :question="q"
         @modifyQuestionFromBank="modifyQuestionFromBank"
         @showQuestionnaryList="showQuestionnaryList"></QuestionItem>
@@ -182,9 +184,9 @@
 
     <!-- Pagination controls -->
     <v-pagination
-      v-if="this.totalPages > 1"
+      v-if="this.totalPages() > 1"
       v-model="currentPage"
-      :length="this.totalPages"></v-pagination>
+      :length="this.totalPages()"></v-pagination>
 
     <v-card class="mt-25">
       <!--<v-btn @click="">Done</v-btn>-->

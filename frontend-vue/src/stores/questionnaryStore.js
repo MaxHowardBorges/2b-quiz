@@ -226,9 +226,9 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         console.error(error);
       }
     },
-    async createTag(tagName) {
+    async createTag(tag) {
       try {
-        const response = await createTag(tagName);
+        const response = await createTag(tag);
         if (!response.ok || response.status !== 201) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {

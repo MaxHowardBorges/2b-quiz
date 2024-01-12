@@ -13,6 +13,7 @@ import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 import { QuestionService } from '../../question/service/question.service';
+import { TagDto } from '../../question/dto/tag.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {
@@ -21,8 +22,8 @@ export class QuestionnaryController {
     private readonly questionService: QuestionService,
   ) {}
   @Post('/createTag')
-  createTag(@Body() description: any) {
-    return this.questionService.createTag(description.description);
+  createTag(@Body(new ValidationPipe()) tagDto: TagDto) {
+    return this.questionService.createTag(tagDto);
   }
 
   @Patch('/updateTag/:id') //TODO to implement
