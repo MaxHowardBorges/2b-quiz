@@ -8,6 +8,9 @@ import {
 } from 'typeorm';
 import { Answer } from '../../question/entity/answer.entity';
 import { Session } from './session.entity';
+import { Student } from '../../user/entity/student.entity';
+import { Teacher } from '../../user/entity/teacher.entity';
+import { notNull } from 'jest-mock-extended';
 
 @Entity()
 export class UserSession {
@@ -17,13 +20,13 @@ export class UserSession {
   @ManyToOne(() => Session, (session) => session.id)
   session: Session;
 
-  //TODO IMPLEMENT USER
-  /*@ManyToOne(() => User, (user) => user.id)
-  user: User;*/
-  @Column()
-  user: string;
+  @ManyToOne(() => Student, (student) => student.id, { nullable: true })
+  student: Student;
 
-  @ManyToMany(() => Answer)
+  @ManyToOne(() => Teacher, (teacher) => teacher.id, { nullable: true })
+  teacher: Teacher;
+
+  @ManyToMany(() => Answer, { nullable: true })
   @JoinTable()
   answer: Answer[];
 }

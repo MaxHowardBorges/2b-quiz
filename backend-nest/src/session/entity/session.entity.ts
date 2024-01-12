@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { UserSession } from './userSession.entity';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 @Entity()
 export class Session {
@@ -22,12 +23,8 @@ export class Session {
   @OneToMany(() => UserSession, (userSession) => userSession.id)
   userSession: UserSession;
 
-  //TODO IMPLEMENT USER
-  /*@ManyToOne(() => Teacher, (teacher) => teacher.id)
-  teacher: Teacher;*/
-
-  @Column()
-  teacher: string;
+  @ManyToOne(() => Teacher, (teacher) => teacher.id)
+  teacher: Teacher;
 
   @Column()
   isResult: boolean;
