@@ -42,6 +42,13 @@ const routes = [
     component: QuestionaryView,
     meta: { inMenu: true },
   },
+  {
+    path: '/group',
+    name: 'group',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/GroupView.vue'),
+    meta: { inMenu: true },
+  },
 ];
 
 const router = createRouter({
