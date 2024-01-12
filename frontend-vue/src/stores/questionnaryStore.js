@@ -15,7 +15,6 @@ import {
   UpdateTag,
   DeleteTag,
 } from '@/api/questionnary';
-import { getAnswersFromQuestion } from '@/api/question';
 import { useUserStore } from '@/stores/userStore';
 import { getAnswersFromQuestion, getQuestionFromId } from '@/api/question';
 
@@ -136,58 +135,58 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       }
     },
     async getAnswers(idQuestion) {
-        this.answers = [];
-        try {
-          const userStore = useUserStore();
-          const response = await getAnswersFromQuestion(
-            idQuestion,
-            userStore.token,
-          );
-          if (!response.ok || response.status !== 200) {
-            throw new Error('Erreur de réponse'); // TODO manage error in component
-          }
-          userStore.updateToken(response.headers.get('Authorization'));
-          for (const a of JSON.parse(await response.text())) {
-            this.answers.push(a);
-          }
-        } catch (error) {
-          console.error(error);
+      this.answers = [];
+      try {
+        const userStore = useUserStore();
+        const response = await getAnswersFromQuestion(
+          idQuestion,
+          userStore.token,
+        );
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error in component
         }
+        userStore.updateToken(response.headers.get('Authorization'));
+        for (const a of JSON.parse(await response.text())) {
+          this.answers.push(a);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
     async addQuestion(question) {
-        try {
-          const userStore = useUserStore();
-          const response = await addQuestion(
-            question,
-            this.idQuestionnary,
-            userStore.token,
-          );
-          if (!response.ok || response.status !== 201) {
-            throw new Error('Erreur de réponse'); // TODO manage error
-          }
-          userStore.updateToken(response.headers.get('Authorization'));
-          await this.getQuestions();
-        } catch (error) {
-          console.error(error);
+      try {
+        const userStore = useUserStore();
+        const response = await addQuestion(
+          question,
+          this.idQuestionnary,
+          userStore.token,
+        );
+        if (!response.ok || response.status !== 201) {
+          throw new Error('Erreur de réponse'); // TODO manage error
         }
+        userStore.updateToken(response.headers.get('Authorization'));
+        await this.getQuestions();
+      } catch (error) {
+        console.error(error);
+      }
     },
     async modifyQuestion(idQuestion, question) {
       try {
-          const userStore = useUserStore();
-          const response = await modifyQuestion(
-            this.idQuestionnary,
-            idQuestion,
-            question,
-            userStore.token,
-          );
-          if (!response.ok || response.status !== 200) {
-            throw new Error('Erreur de réponse'); // TODO manage error
-          }
-          userStore.updateToken(response.headers.get('Authorization'));
-          await this.getQuestions();
-        } catch (error) {
-          console.error(error);
+        const userStore = useUserStore();
+        const response = await modifyQuestion(
+          this.idQuestionnary,
+          idQuestion,
+          question,
+          userStore.token,
+        );
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
         }
+        userStore.updateToken(response.headers.get('Authorization'));
+        await this.getQuestions();
+      } catch (error) {
+        console.error(error);
+      }
     },
     async modifyQuestionnary(questionnaryName) {
       if (this.isCreated) {
