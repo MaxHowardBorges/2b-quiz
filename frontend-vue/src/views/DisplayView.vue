@@ -16,7 +16,7 @@
     name: 'DisplayView',
     components: { WaitForm },
     props: {
-      idSession: String
+      idSession: []
     },
 
   };

@@ -88,6 +88,7 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 201);
       const token = (await response.json()).access_token;
       this.setToken(token);
+      this.saveState();
       await this.updateUserType();
       //this.setUsername(username);
       this.intervalChecker();
@@ -95,6 +96,7 @@ export const useUserStore = defineStore('user', {
     updateToken(token) {
       token = token.replace('Bearer ', '');
       this.setToken(token);
+      this.saveState();
     },
     async updateUserType() {
       const userType = await this.fetchUserType();
@@ -102,6 +104,7 @@ export const useUserStore = defineStore('user', {
     },
     async fetchUserType() {
       try {
+        this.reloadState()
         const response = await getUserType(this.token);
         if (!response.ok) await this.forceLogout();
         else {
@@ -218,8 +221,15 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
+    reloadState() {
+      this.setToken(localStorage.getItem('token'));
+    },
+    saveState() {
+      localStorage.setItem('token', this.token);
+    },
   },
   persist: {
+    strategies:[{storage: localStorage, paths: ['token']}],
     paths: ['token'],
   },
 });

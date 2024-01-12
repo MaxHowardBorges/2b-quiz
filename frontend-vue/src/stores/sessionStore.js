@@ -18,7 +18,7 @@ export const useSessionStore = defineStore('session', {
     question: { content: '', answers: [], type: '' },
     ended: false,
     results: [],
-    start: false,
+    isDisplay: false,
   }),
   actions: {
     setQuestion(question) {
@@ -30,14 +30,15 @@ export const useSessionStore = defineStore('session', {
     setEnded(ended) {
       this.ended = ended;
     },
-    setStart(oui){
-      this.start = true;
+    setIsDisplay(oui){
+      this.start = oui;
     },
     setTabResult(results) {
-      this.results = results;
+      this.isDisplay = results;
     },
     async joinSession(body) {
       const userStore = useUserStore();
+      userStore.reloadState();
       this.setEnded(false);
       const response = await joinSession(body, userStore.token);
       await throwIfNotOK(response, 204);
@@ -48,6 +49,7 @@ export const useSessionStore = defineStore('session', {
     },
     async getQuestions() {
       const userStore = useUserStore();
+      userStore.reloadState();
       const body = { idSession: this.idSession };
       try {
         const response = await getCurrentQuestion(body, userStore.token);
@@ -62,6 +64,7 @@ export const useSessionStore = defineStore('session', {
     },
     async sendAnswer(idAnswer) {
       const userStore = useUserStore();
+      userStore.reloadState();
       const body = {
         idSession: this.idSession,
         answer: idAnswer,
@@ -79,8 +82,9 @@ export const useSessionStore = defineStore('session', {
     },
     async createSession() {
       this.setEnded(false);
-      this.setStart(true);
+      //this.setIsDisplay(true);
       const userStore = useUserStore();
+      userStore.reloadState();
       const response = await createSession(userStore.token, this.questionnary);
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
@@ -89,10 +93,14 @@ export const useSessionStore = defineStore('session', {
     },
     async nextQuestion() {
       const userStore = useUserStore();
+      userStore.reloadState();
       const body = { idSession: this.idSession };
       try {
+        console.log(body, userStore.token);
         const response = await getNextQuestion(body, userStore.token);
+        console.log(response);
         if (!response.ok) {
+          console.log(await response.text());
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
         userStore.updateToken(response.headers.get('Authorization'));
@@ -110,6 +118,7 @@ export const useSessionStore = defineStore('session', {
     },
     async fetchResults() {
       const userStore = useUserStore();
+      userStore.reloadState();
       try {
         const response = await getSessionResults(
           this.idSession,

@@ -7,6 +7,7 @@
        rounded="lg"
        position="relative">
     <h2 > Waiting for the questionnary launch... </h2>
+    <h1> {{idSession}}</h1>
     <v-btn @click='handleJoinSession'>okk</v-btn>
   </v-sheet>
 
@@ -35,7 +36,7 @@
       };
     },
     props: {
-      idSession: String
+      idSession: []
     },
     methods: {
       async handleJoinSession() {
@@ -45,7 +46,6 @@
           this.loading = true;
           try {
             const userStore = useUserStore();
-            userStore.setUserRoles(UserRoles.TEACHER);
             console.log(this.sessionStore.idSession);
             await this.$router.push({
               path: '/session',
