@@ -181,7 +181,6 @@
       } else this.questionnaryName = this.baseQuestionnaryName;
       await this.useQ.getTags(this.author);
       this.tagList = this.useQ.tagList;
-      console.log(this.tagList);
       this.selectedTags = [];
     },
     name: 'QuestionnaryEdit',
@@ -224,6 +223,14 @@
         this.selectedType = this.typeOptions.filter(
           (type) => type.typeCode === typeL,
         )[0].typeLabel;
+
+        this.selectedTags = this.tagList.filter((tl) =>
+          this.useQ.questions
+            .find((q) => q.id === this.idQuestion)
+            .tags.map((t) => t.description)
+            .some((questionTag) => questionTag === tl.description),
+        );
+
         !this.isFromBank ? this.useQ.getAnswers(idQuestion) : '';
       },
       async validQuestion() {

@@ -82,6 +82,7 @@ export class QuestionService {
       answer.question = question;
       await this.answerRepository.save(answer);
     }
+
     for (const t of q.tags) {
       const tag = await this.getTag(t.idTag);
       if (!tag.questions.some((q) => q.id === question.id)) {
@@ -132,6 +133,7 @@ export class QuestionService {
   async findQuestions(questionnary: Questionnary) {
     return await this.questionRepository.find({
       where: { questionnary },
+      relations: ['tags'],
     });
   }
 
@@ -168,11 +170,11 @@ export class QuestionService {
   ) {
     const questionDB = await this.questionRepository.findOne({
       where: { questionnary, id: idQuestion },
-      relations: ['answers'],
+      relations: ['answers', 'tags'],
     });
 
     if (questionDB) {
-      let { id, ...questionWithoutId } = question;
+      const { id, ...questionWithoutId } = question;
       const newQuestion: Question = Object.assign(
         {},
         questionDB,
