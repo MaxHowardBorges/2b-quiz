@@ -39,7 +39,7 @@
     },
     setup() {
       const useQ = useQuestionnaryStore();
-      useQ.getQuestionnariesFromUser(0); //TODO get user id
+      useQ.getQuestionnariesFromUser();
       return {
         useQ,
       };

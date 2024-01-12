@@ -46,7 +46,7 @@
         await this.sessionStore.nextQuestion();
       },
       async handleStop() {
-        await router.push('/teacher-home-page');
+        await router.push('/');
         //TODO to finish
       },
       async handleSubmit() {

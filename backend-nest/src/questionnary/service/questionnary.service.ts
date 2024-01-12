@@ -10,6 +10,7 @@ import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
 import { TagDto } from '../../question/dto/tag.dto';
 import { Answer } from '../../question/entity/answer.entity';
 import { Tag } from '../../question/entity/tag.entity';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 @Injectable()
 export class QuestionnaryService {
@@ -19,8 +20,12 @@ export class QuestionnaryService {
     private questionService: QuestionService,
   ) {}
 
-  async createQuestionnary(questionnaryDto: QuestionnaryCreateDto) {
+  async createQuestionnary(
+    questionnaryDto: QuestionnaryCreateDto,
+    author: Teacher,
+  ) {
     const questionnary = this.dtoToQuestionnary(questionnaryDto);
+    questionnary.author = author;
     await this.questionnaryRepository.save(questionnary);
     for (const q of questionnary.questions) {
       await this.questionService.createQuestion(q, questionnary);
@@ -41,6 +46,10 @@ export class QuestionnaryService {
     return !!questionnary;
   }
 
+  async questionnaryExists(idQuestionnary: number) {
+    return !!(await this.findQuestionnary(idQuestionnary));
+  }
+
   async findQuestionnary(idQuestionnary: number) {
     //questionnary without questions
     return await this.questionnaryRepository.findOne({
@@ -48,15 +57,16 @@ export class QuestionnaryService {
     });
   }
 
-  async findQuestionnariesFromIdUser(idUser: number) {
-    // questionnaries without questions
+  async findQuestionnariesFromIdUser(teacher: Teacher) {
+    // questionnaires without questions
     //TODO get from user questionnary bank
-    /*return await this.questionnaryRepository.find({
-      where: {
-        id: idUser,
+
+    return await this.questionnaryRepository.find({
+      relations: {
+        author: true,
       },
-    });*/
-    return await this.questionnaryRepository.find();
+      where: { author: { id: teacher.id } },
+    });
   }
 
   async findQuestionsFromIdQuestionnary(idQuestionnary: number) {
@@ -129,7 +139,7 @@ export class QuestionnaryService {
   async modifyQuestionnary(
     idQuestionnary: number,
     questionnaryName: string,
-    author: number = 111111, //TODO get author id
+    author: Teacher,
   ) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
@@ -146,7 +156,6 @@ export class QuestionnaryService {
     const questionnary = new Questionnary();
     questionnary.id = null;
     questionnary.title = questionnaryDto.title;
-    questionnary.author = questionnaryDto.author;
     questionnary.questions = [];
     for (const questionDto of questionnaryDto.questions) {
       questionnary.questions.push(
@@ -187,5 +196,17 @@ export class QuestionnaryService {
     tag.idTag = tagDto.idTag;
     tag.description = tagDto.description;
     return tag;
+  }
+
+  async isQuestionnaryFromTeacher(idQuestionnary: number, teacher: Teacher) {
+    const questionnary = await this.findOne(idQuestionnary, ['author']);
+    return questionnary.author.id === teacher.id;
+  }
+
+  async findOne(idQuestionnary: number, relations: string[]) {
+    return await this.questionnaryRepository.findOne({
+      where: { id: idQuestionnary },
+      relations: relations,
+    });
   }
 }

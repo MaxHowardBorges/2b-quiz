@@ -67,8 +67,6 @@
   import router from '@/router';
   import { ValidationError } from '@/utils/valdiationError';
   import { ref } from 'vue';
-  import { useUserStore } from '@/stores/userStore';
-  import { UserRoles } from '@/utils/userRoles';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
@@ -96,7 +94,7 @@
       if (this.dialogError) {
         this.$refs.dialogError.setDialogError(true);
       }
-      await this.questionnaryStore.getQuestionnariesFromUser(0); //TODO get user id
+      await this.questionnaryStore.getQuestionnariesFromUser();
       this.choosedQuestionnary = this.questionnaryStore.questionnaryList;
     },
     data() {
@@ -107,13 +105,11 @@
     },
     methods: {
       async handleCreateSession() {
-        this.loading = true;
+        this.loading = false;
         if (this.selectedQuestionnary.length > 0) {
           this.sessionStore.questionnary = this.selectedQuestionnary;
           try {
             await this.sessionStore.createSession();
-            const userStore = useUserStore(); //TODO replace
-            userStore.setUserRoles(UserRoles.TEACHER);
             await router.push('/session');
           } catch (error) {
             if (error instanceof ValidationError) {
