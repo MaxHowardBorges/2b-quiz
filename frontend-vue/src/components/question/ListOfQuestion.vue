@@ -7,7 +7,7 @@
   >
     <h1>Private Question Bank</h1>
 
-    <div style='display: flex; margin: 20px 0px; width: 50%'>
+    <div style='display: flex; margin: 20px 0; width: 50%'>
       <div id='divDrop1'>
         <v-select label='Types' style='width: 180%'></v-select>
       </div>
@@ -80,41 +80,36 @@
         ],
         itemsPerPage: 9,
         currentPage: 1,
-        filteredQuestions: [],
       };
     },
     computed: {
-      totalPages() {
-        return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
+      filteredQuestions() {
+        const query = this.searchQuery.toLowerCase();
+        if (query.trim() === '') {
+          return this.questions;
+        } else {
+          return this.questions.filter(q => q.toLowerCase().includes(query));
+        }
       },
       paginatedQuestions() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
         return this.filteredQuestions.slice(startIndex, endIndex);
       },
-    },
-    created() {
-      this.filterQuestions();
+      totalPages() {
+        return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
+      },
     },
     methods: {
       filterQuestions() {
-        const query = this.searchQuery.toLowerCase();
-        if (query.trim() === '') {
-          this.filteredQuestions = this.questions;
-        } else {
-          this.filteredQuestions = this.questions.filter(q => q.toLowerCase().includes(query));
-        }
+        // Reset current page to 1 when the search query changes
+        this.currentPage = 1;
       },
     },
   };
 </script>
 
 <style scoped>
-  #divButton {
-    position: absolute;
-    left: 18%;
-  }
-
   #divDrop1 {
     position: absolute;
     left: 75%;

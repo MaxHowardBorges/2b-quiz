@@ -2,12 +2,11 @@
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
     <div>
       <b> {{ question }} </b>
-      <span class="spacer"></span>
-      <span class="spacer"></span>
       <v-btn id="ic" icon="edit" ></v-btn>
       <v-btn id="ic" icon="visibility" @click="toggleDropdown"></v-btn>
       <v-btn id="ic" icon="content_copy" @click="copyQuestion"></v-btn>
     </div>
+    <b style='margin-right: 90%'>type{{ type }}</b>
     <!-- Dropdown menu -->
     <v-list v-if="showDropdown" id="dropdown" class="mt-2">
       <v-list-item-group>
