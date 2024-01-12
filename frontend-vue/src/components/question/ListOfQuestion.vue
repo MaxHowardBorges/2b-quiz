@@ -15,7 +15,6 @@
       const questionnaryStore = useQuestionnaryStore();
       return {
         questionnaryStore,
-
       };
     },
     data() {
@@ -23,6 +22,7 @@
       let questions = this.questionnaryStore.privateQuestions;
       return {
         questions,
+        paginatedQuestions: questions,
         selectedQuestion: null,
         dialogVisible: false,
         questionnaries: [],
@@ -31,40 +31,20 @@
         searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
+        selectedType: '',
+        selectedTags: [],
+        tags: [],
+        typeOptions: [
+          { typeLabel: 'Unique', typeCode: 'qcu' },
+          { typeLabel: 'Multiple', typeCode: 'qcm' },
+          { typeLabel: 'Open-Ended', typeCode: 'ouv' },
+          { typeLabel: 'True-False', typeCode: 'tof' },
+          { typeLabel: 'Open-Ended-Constraint', typeCode: 'qoc' },
+        ],
       };
     },
     emits: ['modifyQuestionFromBank', 'toggleVisibility'],
-    computed: {
-      filteredQuestions() {
-        let filtered = this.questions;
-
-        // Filtrer par type
-        if (this.selectedType) {
-          filtered = filtered.filter((q) => q.type === this.selectedType);
-        }
-
-        // Filtrer par tag
-        if (this.selectedTag) {
-          filtered = filtered.filter((q) => q.tags.includes(this.selectedTags));
-        }
-
-        //Recherche par nom
-        const query = this.searchQuery.toLowerCase();
-        if (query.trim() === '') {
-          return this.questions;
-        } else {
-          return this.questions.filter((q) => q.toLowerCase().includes(query));
-        }
-      },
-      paginatedQuestions() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        return this.filteredQuestions.slice(startIndex, endIndex);
-      },
-      totalPages() {
-        return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
-      },
-    },
+    computed: {},
     methods: {
       toggleVisibility() {
         this.$emit('toggleVisibility');
@@ -113,6 +93,37 @@
         this.questionnaryStore.idQuestionnary = null;
         this.dialogVisible = false;
       },
+      filteredQuestions() {
+        let filtered = this.questions;
+
+        // Filtrer par type
+        if (this.selectedType) {
+          filtered = filtered.filter((q) => q.type === this.selectedType);
+        }
+
+        // Filtrer par tag
+        if (this.selectedTags) {
+          filtered = filtered.filter((q) => q.tags.includes(this.selectedTags));
+        }
+
+        //Recherche par nom
+        const query = this.searchQuery.toLowerCase();
+        if (query.trim() === '') {
+          return this.questions;
+        } else {
+          return this.questions.filter((q) =>
+            q.content.toLowerCase().includes(query),
+          ); //TODO
+        }
+      },
+      paginatedQuestions() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        return this.filteredQuestions.slice(startIndex, endIndex);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
+      },
     },
   };
 </script>
@@ -134,31 +145,31 @@
       <div id="divDrop1">
         <v-select
           v-model="selectedType"
-          :items="types"
+          :items="typeOptions.map((option) => option.typeLabel)"
           label="Types"
           :multiple="true"
           style="width: 180%"
-          @change="filterQuestions"></v-select>
+          @change="filteredQuestions"></v-select>
       </div>
       <v-text-field
         id="search"
         v-model="searchQuery"
         label="Search"
-        @input="filterQuestions"></v-text-field>
+        @input="filteredQuestions"></v-text-field>
       <div id="divDrop2">
         <v-select
-          v-model="selectedTag"
+          v-model="selectedTags"
           :items="tags"
           label="Tags"
           style="width: 180%"
-          @change="filterQuestions"></v-select>
+          @change="filteredQuestions"></v-select>
       </div>
     </div>
 
     <v-pagination
-      v-if="totalPages > 1"
+      v-if="this.totalPages > 1"
       v-model="currentPage"
-      :length="totalPages"></v-pagination>
+      :length="this.totalPages"></v-pagination>
 
     <v-sheet class="list">
       <QuestionItem
@@ -171,49 +182,49 @@
 
     <!-- Pagination controls -->
     <v-pagination
-      v-if="totalPages > 1"
+      v-if="this.totalPages > 1"
       v-model="currentPage"
-      :length="totalPages"></v-pagination>
+      :length="this.totalPages"></v-pagination>
 
     <v-card class="mt-25">
       <!--<v-btn @click="">Done</v-btn>-->
     </v-card>
   </v-sheet>
-    <v-dialog v-model="dialogVisible" max-width="500">
-      <v-card>
-        <v-card-title>Bank Private Questions</v-card-title>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Bank Private Questions</v-card-title>
 
-        <v-card-text>
-          <v-list>
-            <v-list-item v-if="this.questionnaries.length < 1">
-              No questionnaries
-            </v-list-item>
-            <v-list-item
-              v-else
-              v-for="(questionnary, index) in questionnaries"
-              :key="index"
-              @click="toggleQuestion(index)"
-              :class="{
-                'selected-question': selectedQuestionnaries.includes(index),
-              }">
-              <v-list-item-title>{{ questionnary.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions class="text-center">
-          <v-btn @click="AddQuestion">Add</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-card-text>
+        <v-list>
+          <v-list-item v-if="this.questionnaries.length < 1">
+            No questionnaries
+          </v-list-item>
+          <v-list-item
+            v-else
+            v-for="(questionnary, index) in questionnaries"
+            :key="index"
+            @click="toggleQuestion(index)"
+            :class="{
+              'selected-question': selectedQuestionnaries.includes(index),
+            }">
+            <v-list-item-title>{{ questionnary.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="AddQuestion">Add</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
-  #divButton{
+  #divButton {
     position: absolute;
     left: 18%;
   }
 
-  #divDrop1{
+  #divDrop1 {
     position: absolute;
     left: 75%;
   }
