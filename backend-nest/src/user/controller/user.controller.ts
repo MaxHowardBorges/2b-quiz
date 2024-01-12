@@ -30,6 +30,7 @@ import { UserRegisterArrayDto } from '../dto/userRegisterArray.dto';
 import { UsernamesAlreadyUsedException } from '../exception/usernamesAlreadyUsed.exception';
 import { UsernamesDuplicatedUsedException } from '../exception/usernamesDuplicatedUsed.exception';
 import { UserDataRestoreDto } from '../dto/userDataRestore.dto';
+import { Teacher } from '../entity/teacher.entity';
 
 @Controller('user')
 export class UserController {
@@ -206,5 +207,10 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async rejectAskDeleteUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.rejectAskDeleteUser(idUser);
+  }
+
+  @Post('/createGroup')
+  createGroup(@Body() name: string, teacher: Teacher) {
+    return this.userService.createGroup(name, teacher);
   }
 }

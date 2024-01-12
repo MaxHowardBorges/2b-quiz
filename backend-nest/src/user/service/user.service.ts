@@ -11,6 +11,7 @@ import { UserNotFoundException } from '../../auth/exception/userNotFound.excepti
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { SortUserParam } from '../constants/sortUserParam.enum';
 import { SortOrder } from '../../constants/sortOrder.enum';
+import { Group } from '../entity/group.entity';
 
 @Injectable()
 export class UserService {
@@ -173,5 +174,11 @@ export class UserService {
     if (!user) throw new UserNotFoundException();
     user.askedDelete = false;
     await this.userRepository.save(user);
+  }
+
+  createGroup(name: string, teacher: Teacher) {
+    let group: Group;
+    group.teacher = teacher;
+    group.groupName = name;
   }
 }
