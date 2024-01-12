@@ -74,12 +74,12 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async createSession() {
+      const userStore = useUserStore();
       this.setEnded(false);
       const isResult = true;
       const isGlobal = true;
       const isAvailableAfter = true;
-      const response = await createSession({
-        ...userStore.token,
+      const response = await createSession(userStore.token, {
         ...this.questionnary,
         idsQuestionnarys: this.questionnary,
         isResult,

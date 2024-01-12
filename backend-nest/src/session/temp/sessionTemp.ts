@@ -1,6 +1,8 @@
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Question } from '../../question/entity/question.entity';
 import { Answer } from '../../question/entity/answer.entity';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 export class SessionTemp {
   id: string;
