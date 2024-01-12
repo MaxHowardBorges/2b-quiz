@@ -130,7 +130,7 @@ export async function deleteQuestionnary(idQuestionnary) {
 
 export async function getTags(id) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/getTags/user/' + id,
+    import.meta.env.VITE_API_URL + '/questionnary/tag/user/' + id,
     {
       method: 'GET',
       headers: {
@@ -141,11 +141,33 @@ export async function getTags(id) {
 }
 
 export async function createTag(tag) {
-  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/createTag', {
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/tag', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(tag),
+  });
+}
+
+export async function UpdateTag(tag) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/questionnary/tag/' + tag.id,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tag),
+    },
+  );
+}
+
+export async function DeleteTag(id) {
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/tag/' + id, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 }

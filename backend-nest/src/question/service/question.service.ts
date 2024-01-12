@@ -24,13 +24,15 @@ export class QuestionService {
     tag.author = tagDto.author;
     tag.questions = [];
     await this.tagRepository.save(tag);
+    return tag;
   }
-  async updateTag(id: number, newDescription: string) {
+  async updateTag(id: number, newTag: TagDto) {
     const tag = await this.tagRepository.findOne({ where: { idTag: id } });
     if (tag) {
-      tag.description = newDescription;
+      tag.description = newTag.description;
       await this.tagRepository.save(tag);
     }
+    return !!tag;
   }
 
   async deleteTag(id: number) {
@@ -38,6 +40,7 @@ export class QuestionService {
     if (tag) {
       await this.tagRepository.delete({ idTag: id });
     }
+    return !!tag;
   }
 
   async getTag(id: number) {

@@ -21,31 +21,30 @@ export class QuestionnaryController {
     private readonly questionnaryService: QuestionnaryService,
     private readonly questionService: QuestionService,
   ) {}
-  @Post('/createTag')
+  @Post('/tag')
   createTag(@Body(new ValidationPipe()) tagDto: TagDto) {
     return this.questionService.createTag(tagDto);
   }
 
-  @Patch('/updateTag/:id') //TODO to implement
+  @Patch('/tag/:id')
   updateTag(
     @Param('id', ParseIntPipe) id: number,
-    @Body() newDescription: any,
+    @Body(new ValidationPipe()) newTag: TagDto,
   ) {
-    console.log(newDescription);
-    return this.questionService.updateTag(id, newDescription.newDescription);
+    return this.questionService.updateTag(id, newTag);
   }
 
-  @Delete('/deleteTag/:id') //TODO to implement
+  @Delete('/tag/:id')
   deleteTag(@Param('id', ParseIntPipe) id: number) {
     return this.questionService.deleteTag(id);
   }
 
-  @Get('/getTag/:id')
+  @Get('/tag/:id')
   getTag(@Param('id', ParseIntPipe) id: number) {
     return this.questionService.getTag(id);
   }
 
-  @Get('/getTags/user/:id')
+  @Get('/tag/user/:id')
   getTags(@Param('id', ParseIntPipe) id: number) {
     return this.questionService.getTags(id);
   }

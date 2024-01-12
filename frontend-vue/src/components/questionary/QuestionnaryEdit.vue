@@ -205,6 +205,12 @@
           alert('Le tag est vide ou existe déjà.');
         }
       },
+      async UpdateTag() {
+        //TODO waiting front-end component
+      },
+      async DeleteTag() {
+        //TODO waiting front-end component
+      },
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;

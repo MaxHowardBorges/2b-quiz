@@ -12,6 +12,8 @@ import {
   getQuestionsFromUser,
   createTag,
   getTags,
+  UpdateTag,
+  DeleteTag,
 } from '@/api/questionnary';
 import { getAnswersFromQuestion, getQuestionFromId } from '@/api/question';
 
@@ -230,6 +232,30 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       try {
         const response = await createTag(tag);
         if (!response.ok || response.status !== 201) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          await this.getTags(tag.author);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async UpdateTag(tag) {
+      try {
+        const response = await UpdateTag(tag);
+        if (!response.ok || response.status !== 200) {
+          throw new Error('Erreur de réponse'); // TODO manage error
+        } else {
+          await this.getTags(tag.author);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async DeleteTag(tag) {
+      try {
+        const response = await DeleteTag(tag.id);
+        if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
           await this.getTags(tag.author);
