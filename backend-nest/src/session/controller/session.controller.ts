@@ -38,7 +38,13 @@ export class SessionController {
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) paramSession: CreateSessionDto,
   ): Promise<SessionTemp> {
-    return this.sessionService.initializeSession(request.user as Teacher, paramSession);
+    return this.sessionService.initializeSession(
+      request.user as Teacher,
+      paramSession.idsQuestionnarys,
+      paramSession.isResult,
+      paramSession.isGlobal,
+      paramSession.isAvailableAfter,
+    );
   }
 
   @Roles([UserType.TEACHER])

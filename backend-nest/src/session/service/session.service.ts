@@ -28,19 +28,31 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(teacher: Teacher, paramSession: CreateSessionDto,
+  async initializeSession(
+    teacher: Teacher,
+    idsQuestionnarys: number[],
+    isResult: boolean,
+    isGlobal: boolean,
+    isAvailableAfter: boolean,
   ): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
     const questionnaries: Questionnary[] = [];
-    for (const id of paramSession.idsQuestionnarys) {
+    for (const id of idsQuestionnarys) {
       questionnaries.push(await this.questionnaryService.findQuestionnary(id));
     }
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, paramSession,teacher, questionnaries),
+      await this.createSession(
+        idSession,
+        teacher,
+        questionnaries,
+        isResult,
+        isGlobal,
+        isAvailableAfter,
+      ),
     );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
@@ -53,11 +65,20 @@ export class SessionService {
 
   async createSession(
     idSession: string,
-    paramSession: CreateSessionDto,
     teacher: Teacher,
     questionnaryTab: Questionnary[],
+    isResult: boolean,
+    isGlobal: boolean,
+    isAvailableAfter: boolean,
   ): Promise<SessionTemp> {
-    return new SessionTemp(idSession, questionnaryTab, teacher);
+    return new SessionTemp(
+      idSession,
+      questionnaryTab,
+      isResult,
+      isGlobal,
+      isAvailableAfter,
+      teacher,
+    );
   }
 
   startSession(idSession: string): boolean {
