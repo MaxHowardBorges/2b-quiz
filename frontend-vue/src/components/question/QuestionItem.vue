@@ -1,18 +1,13 @@
 <template>
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
     <div>
-      <b>
-        {{
-          this.typeOptions.filter((type) => type.typeCode === question.type)[0]
-            .typeLabel
-        }}
-      </b>
-      <br />
       <b>{{ question.content }}</b>
       <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
       <v-btn id="ic" icon="visibility" @click="toggleDropdown"></v-btn>
       <v-btn id="ic" icon="content_copy" @click="copyQuestion"></v-btn>
     </div>
+    <b style='margin-right: 90%'>{{ this.typeOptions.filter((type) => type.typeCode === question.type)[0]
+      .typeLabel }}</b>
     <!-- Dropdown menu -->
     <v-list v-if="showDropdown" id="dropdown" class="mt-2">
       <v-list-item>

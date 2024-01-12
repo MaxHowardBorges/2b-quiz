@@ -15,6 +15,7 @@
       const questionnaryStore = useQuestionnaryStore();
       return {
         questionnaryStore,
+
       };
     },
     data() {
@@ -27,9 +28,43 @@
         questionnaries: [],
         selectedQuestionnaries: [],
         author: '111111', // TODO get id author
+        searchQuery: '',
+        itemsPerPage: 9,
+        currentPage: 1,
       };
     },
     emits: ['modifyQuestionFromBank', 'toggleVisibility'],
+    computed: {
+      filteredQuestions() {
+        let filtered = this.questions;
+
+        // Filtrer par type
+        if (this.selectedType) {
+          filtered = filtered.filter((q) => q.type === this.selectedType);
+        }
+
+        // Filtrer par tag
+        if (this.selectedTag) {
+          filtered = filtered.filter((q) => q.tags.includes(this.selectedTags));
+        }
+
+        //Recherche par nom
+        const query = this.searchQuery.toLowerCase();
+        if (query.trim() === '') {
+          return this.questions;
+        } else {
+          return this.questions.filter((q) => q.toLowerCase().includes(query));
+        }
+      },
+      paginatedQuestions() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        return this.filteredQuestions.slice(startIndex, endIndex);
+      },
+      totalPages() {
+        return Math.ceil(this.filteredQuestions.length / this.itemsPerPage);
+      },
+    },
     methods: {
       toggleVisibility() {
         this.$emit('toggleVisibility');
@@ -95,28 +130,55 @@
       <h1>Private Question Bank</h1>
     </div>
 
-    <div style="display: flex; margin: 20px 0px; width: 50%">
+    <div style="display: flex; margin: 20px 0; width: 50%">
       <div id="divDrop1">
-        <v-select label="Types" style="width: 180%"></v-select>
+        <v-select
+          v-model="selectedType"
+          :items="types"
+          label="Types"
+          :multiple="true"
+          style="width: 180%"
+          @change="filterQuestions"></v-select>
       </div>
       <v-text-field
         id="search"
-        v-model="this.searchQuery"
-        label="Search"></v-text-field>
+        v-model="searchQuery"
+        label="Search"
+        @input="filterQuestions"></v-text-field>
       <div id="divDrop2">
-        <v-select label="Tags" style="width: 180%"></v-select>
+        <v-select
+          v-model="selectedTag"
+          :items="tags"
+          label="Tags"
+          style="width: 180%"
+          @change="filterQuestions"></v-select>
       </div>
     </div>
 
+    <v-pagination
+      v-if="totalPages > 1"
+      v-model="currentPage"
+      :length="totalPages"></v-pagination>
+
     <v-sheet class="list">
-      <v-sheet v-for="(q, index) in this.questions" :key="index">
-        <QuestionItem
-          :question="q"
-          @modifyQuestionFromBank="modifyQuestionFromBank"
-          @showQuestionnaryList="showQuestionnaryList"></QuestionItem>
-      </v-sheet>
+      <QuestionItem
+        v-for="(q, index) in paginatedQuestions"
+        :key="index"
+        :question="q"
+        @modifyQuestionFromBank="modifyQuestionFromBank"
+        @showQuestionnaryList="showQuestionnaryList"></QuestionItem>
     </v-sheet>
 
+    <!-- Pagination controls -->
+    <v-pagination
+      v-if="totalPages > 1"
+      v-model="currentPage"
+      :length="totalPages"></v-pagination>
+
+    <v-card class="mt-25">
+      <!--<v-btn @click="">Done</v-btn>-->
+    </v-card>
+  </v-sheet>
     <v-dialog v-model="dialogVisible" max-width="500">
       <v-card>
         <v-card-title>Bank Private Questions</v-card-title>
@@ -143,16 +205,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-sheet>
 </template>
 
 <style scoped>
-  #divButton {
+  #divButton{
     position: absolute;
     left: 18%;
   }
 
-  #divDrop1 {
+  #divDrop1{
     position: absolute;
     left: 75%;
   }
