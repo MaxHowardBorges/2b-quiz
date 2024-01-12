@@ -4,7 +4,7 @@
       <b>{{ question.content }}</b>
       <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
       <v-btn id="ic" icon="visibility" @click="toggleDropdown"></v-btn>
-      <v-btn id="ic" icon="quiz" @click="addToQuestionnary"></v-btn>
+      <v-btn id="ic" icon="library_add" @click="addToQuestionnary"></v-btn>
     </div>
     <b style="margin-right: 90%">
       {{
