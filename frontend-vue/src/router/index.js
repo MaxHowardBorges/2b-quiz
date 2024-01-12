@@ -3,8 +3,15 @@ import HomeView from '@/views/HomeView.vue';
 import SessionView from '@/views/SessionView.vue';
 import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
+import SessionHistoryView from '@/views/SessionHistoryView.vue';
 
 const routes = [
+  {
+    path: '/session-history',
+    name: 'SessionHistory',
+    component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
+  },
+
   {
     path: '/session',
     name: 'Session',
