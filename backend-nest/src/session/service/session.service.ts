@@ -39,7 +39,7 @@ export class SessionService {
     }
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, questionnaries),
+      await this.createSession(idSession, paramSession, questionnaries),
     );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
@@ -52,6 +52,7 @@ export class SessionService {
 
   async createSession(
     idSession: string,
+    paramSession: CreateSessionDto,
     questionnaryTab: Questionnary[],
   ): Promise<SessionTemp> {
     return new SessionTemp(idSession, questionnaryTab);

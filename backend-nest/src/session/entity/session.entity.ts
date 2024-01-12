@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
-import { SessionTemp } from '../temp/sessionTemp';
 import { UserSession } from './userSession.entity';
 
 @Entity()
