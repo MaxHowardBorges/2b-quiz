@@ -179,7 +179,7 @@
         await this.useQ.getQuestionnary();
         this.questionnaryName = this.useQ.questionnary.title;
       } else this.questionnaryName = this.baseQuestionnaryName;
-      await this.useQ.getTags();
+      await this.useQ.getTags(this.author);
       this.tagList = this.useQ.tagList;
       console.log(this.tagList);
       this.selectedTags = [];
@@ -198,7 +198,7 @@
         ) {
           await this.useQ.createTag({
             description: tagToAdd,
-            author: this.author,
+            author: Number.parseInt(this.author),
           });
           this.tagList = this.useQ.tagList;
           this.newTag = '';

@@ -49,8 +49,10 @@ export class QuestionService {
     }
   }
 
-  async getTags() {
-    return await this.tagRepository.find();
+  async getTags(id: number) {
+    return await this.tagRepository.find({
+      where: { author: id },
+    });
   }
 
   async checkQuestionContainingAnswer(question: Question, idAnswer: number) {

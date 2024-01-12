@@ -45,9 +45,9 @@ export class QuestionnaryController {
     return this.questionService.getTag(id);
   }
 
-  @Get('/getTags')
-  getTags() {
-    return this.questionService.getTags();
+  @Get('/getTags/user/:id')
+  getTags(@Param('id', ParseIntPipe) id: number) {
+    return this.questionService.getTags(id);
   }
 
   @Post('/create')

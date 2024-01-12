@@ -15,6 +15,8 @@
     data() {
       this.questionnaryStore.getQuestionsFromUser(); //TODO add user id
       let questions = this.questionnaryStore.privateQuestions;
+      this.questionnaryStore.getTags(111111); //TODO add user id
+      let tags = this.questionnaryStore.tagList;
       return {
         questions,
         selectedQuestion: null,
@@ -27,7 +29,7 @@
         currentPage: 1,
         selectedType: [],
         selectedTags: [],
-        tags: [],
+        tags,
         typeOptions: [
           { typeLabel: 'Unique', typeCode: 'qcu' },
           { typeLabel: 'Multiple', typeCode: 'qcm' },
@@ -157,10 +159,14 @@
         v-model="this.searchQuery"
         label="Search"
         @input="filteredQuestions"></v-text-field>
+
       <div id="divDrop2">
         <v-select
           v-model="selectedTags"
           :items="tags"
+          item-title="description"
+          multiple=""
+          return-object
           label="Tags"
           style="width: 180%"
           @change="filteredQuestions"></v-select>

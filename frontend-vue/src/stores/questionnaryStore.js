@@ -211,10 +211,10 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         console.error(error);
       }
     },
-    async getTags() {
+    async getTags(id) {
       this.tagList = [];
       try {
-        const response = await getTags();
+        const response = await getTags(id);
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
@@ -232,7 +232,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 201) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
-          await this.getTags();
+          await this.getTags(tag.author);
         }
       } catch (error) {
         console.error(error);
