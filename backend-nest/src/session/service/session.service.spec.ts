@@ -9,6 +9,8 @@ import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
 import { Answer } from '../../question/entity/answer.entity';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
+import { generateTeacherMock } from '../../../test/mock/user.mock';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -52,10 +54,12 @@ describe('SessionService', () => {
     closeClientGroup: jest.fn(),
   };
 
+  let hostTeacher = generateTeacherMock();
+
   const questionnary: Questionnary = {
     id: 15,
     title: 'morocco',
-    author: 'malias',
+    author: hostTeacher,
     questions: [],
   };
   const questions: Question[] = [
@@ -170,10 +174,13 @@ describe('SessionService', () => {
   let questionnaryTest = new Questionnary();
   questionnaryTest.questions = questions;
   questionnaryTest.id = 15;
-  questionnaryTest.author = 'malias';
+  questionnaryTest.author = hostTeacher;
   questionnaryTest.title = 'morocco';
 
   const session: SessionTemp = {
+    hasUser(user: ParticipantInterface): boolean {
+      return false;
+    },
     id: '111111',
     questionnaryList: [],
     questionnaryNumber: 0,
@@ -181,6 +188,7 @@ describe('SessionService', () => {
     connectedUser: null,
     userAnswers: null,
     endSession: false,
+    host: hostTeacher,
   };
   session.questionnaryList.push(questionnary);
 
@@ -227,7 +235,9 @@ describe('SessionService', () => {
       expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
-      const testSession = await service.initializeSession([questionnary.id]);
+      const testSession = await service.initializeSession(hostTeacher, [
+        questionnary.id,
+      ]);
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(SessionTemp);
       expect(testSession.id).not.toBeNull();
@@ -237,13 +247,16 @@ describe('SessionService', () => {
 
   describe('CreateSession', () => {
     it('should create a session and return a Session', async () => {
-      let test = await service.createSession(service.generateIdSession(), [
-        questionnary,
-      ]);
+      let test = await service.createSession(
+        service.generateIdSession(),
+        hostTeacher,
+        [questionnary],
+      );
       expect(test).toBeInstanceOf(SessionTemp);
       expect(typeof test.id).toBe('string');
     });
   });
+
 
   describe('nextQuestion', () => {
     it('should return the next question', async () => {

@@ -42,15 +42,17 @@ export class QuestionService {
     return question;
   }
 
-  async deleteQuestions(questionnary : Questionnary) {
+  async deleteQuestions(questionnary: Questionnary) {
     const questions = await this.questionRepository.find({
-      where: { questionnary },
+      where: { questionnary: { id: questionnary.id } },
     });
     if (!!questions) {
       for (const question of questions) {
-        await this.answerRepository.delete({ question });
+        await this.answerRepository.delete({ question: { id: question.id } });
       }
-      await this.questionRepository.delete({ questionnary });
+      await this.questionRepository.delete({
+        questionnary: { id: questionnary.id },
+      });
     }
     return !!questions;
   }
@@ -64,7 +66,7 @@ export class QuestionService {
 
   async findQuestions(questionnary: Questionnary) {
     return await this.questionRepository.find({
-      where: { questionnary },
+      where: { questionnary: { id: questionnary.id } },
     });
   }
 
@@ -83,24 +85,27 @@ export class QuestionService {
     });
   }
 
-  async deleteQuestion(questionnary : Questionnary, idQuestion: number) {
+  async deleteQuestion(questionnary: Questionnary, idQuestion: number) {
     const question = await this.questionRepository.findOne({
-      where: { questionnary, id: idQuestion },
+      where: { questionnary: { id: questionnary.id }, id: idQuestion },
     });
     if (question) {
-      await this.answerRepository.delete({ question });
-      await this.questionRepository.delete({ questionnary, id: idQuestion });
+      await this.answerRepository.delete({ question: { id: question.id } });
+      await this.questionRepository.delete({
+        questionnary: { id: questionnary.id },
+        id: idQuestion,
+      });
     }
     return !!question;
   }
 
   async modifyQuestion(
     question: Question,
-    questionnary : Questionnary,
+    questionnary: Questionnary,
     idQuestion: number,
   ) {
     const questionDB = await this.questionRepository.findOne({
-      where: { questionnary, id: idQuestion },
+      where: { questionnary: { id: questionnary.id }, id: idQuestion },
       relations: ['answers'],
     });
 
@@ -111,7 +116,7 @@ export class QuestionService {
         questionDB,
         questionWithoutId,
       );
-      await this.answerRepository.delete({ question: questionDB });
+      await this.answerRepository.delete({ question: { id: questionDB.id } });
       await this.questionRepository.save(newQuestion);
 
       for (const a of question.answers) {

@@ -6,7 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Question } from '../../question/entity/question.entity';
-import { Session } from '../../session/entity/session.entity';
+import { ManyToOne } from 'typeorm/decorator/relations/ManyToOne';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 @Entity()
 export class Questionnary {
@@ -16,8 +17,8 @@ export class Questionnary {
   @Column()
   title: string;
 
-  @Column() //TODO DEFINE AS A FOREIGN KEY
-  author: string;
+  @ManyToOne(() => Teacher, (teacher) => teacher.questionnaries)
+  author: Teacher;
 
   @OneToMany(() => Question, (question) => question.questionnary)
   questions: Question[];
