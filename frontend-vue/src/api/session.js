@@ -32,6 +32,7 @@ export async function sendAnswer(body) {
 }
 
 export async function createSession(body) {
+  console.log(body);
   return await fetch(import.meta.env.VITE_API_URL + '/session/create', {
     method: 'POST',
     headers: {
@@ -53,7 +54,7 @@ export async function getNextQuestion(body) {
 
 export async function getSessionResults(idSession) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/session/getMap?idsession=' + idSession,
+    import.meta.env.VITE_API_URL + '/session/endSession?idsession=' + idSession,
     {
       method: 'GET',
       headers: {

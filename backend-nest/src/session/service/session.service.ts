@@ -14,6 +14,7 @@ import { EventEnum } from '../../event/enum/event.enum';
 import { EventService } from '../../event/service/event.service';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
+import { CreateSessionDto } from '../dto/createSession.dto';
 
 @Injectable()
 export class SessionService {
@@ -25,13 +26,15 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(ids: number[]): Promise<SessionTemp> {
+  async initializeSession(
+    paramSession: CreateSessionDto,
+  ): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
     const questionnaries: Questionnary[] = [];
-    for (const id of ids) {
+    for (const id of paramSession.idsQuestionnarys) {
       questionnaries.push(await this.questionnaryService.findQuestionnary(id));
     }
     this.sessionMap.set(

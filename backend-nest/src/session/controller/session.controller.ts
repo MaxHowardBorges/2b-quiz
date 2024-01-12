@@ -18,6 +18,7 @@ import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { isLogLevelEnabled } from '@nestjs/common/services/utils';
+import { CreateSessionDto } from '../dto/createSession.dto';
 
 @Controller('session')
 export class SessionController {
@@ -28,9 +29,9 @@ export class SessionController {
 
   @Post('/create')
   async createSession(
-    @Body(new ValidationPipe()) ids: number[],
+    @Body(new ValidationPipe()) paramSession: CreateSessionDto,
   ): Promise<SessionTemp> {
-    return this.sessionService.initializeSession(ids);
+    return this.sessionService.initializeSession(paramSession);
   }
 
   @Post('/nextQuestion')
@@ -71,10 +72,11 @@ export class SessionController {
     );
   }
 
-  @Get('/getMap')
+  @Get('/endSession')
   async getMap(@Query('idsession') idSession: string) {
     const a = this.sessionService.getMapUser(idSession);
     this.sessionService.getMap();
+    //console.log('LA FIIIIIIIIIIIIIIN');
     return [
       await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
