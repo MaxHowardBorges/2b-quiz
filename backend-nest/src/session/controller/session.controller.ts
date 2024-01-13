@@ -49,7 +49,6 @@ export class SessionController {
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) body: NextQuestionDto,
   ) {
-    console.log(body, request.user);
     if (!this.sessionService.isHost(body.idSession, request.user as Teacher))
       throw new IsNotHostException();
     const question = await this.sessionService.nextQuestion(body.idSession);

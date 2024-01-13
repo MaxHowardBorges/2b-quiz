@@ -27,11 +27,13 @@ export class EventController {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
-
-    const client = await this.eventService.createClient(idSession, req.user.id);
+    const idUser = req.user.id;
+    const client = await this.eventService.createClient(idSession, idUser);
 
     req.on('close', () => {
-      this.eventService.removeClient(idSession, req.user.id);
+      try {
+        this.eventService.removeClient(idSession, idUser);
+      } catch (e) {}
     });
 
     client.subscribe((data) => {

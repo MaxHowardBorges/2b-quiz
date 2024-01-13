@@ -22,7 +22,9 @@ export const useSessionEventStore = defineStore('sessionEvent', {
         '/student?token=' +
         userStore.token;
       const eventSource = new EventSource(url);
-
+      eventSource.onerror = () => {
+        sessionStore.disconnectFromSession('Error on SSE');
+      };
       this.setEventSource(eventSource);
       this.listenToEvents();
     },
@@ -46,7 +48,11 @@ export const useSessionEventStore = defineStore('sessionEvent', {
     },
     async loadNextQuestion() {
       const sessionStore = useSessionStore();
-      await sessionStore.getQuestions();
+      try {
+        await sessionStore.getCurrentQuestions();
+      } catch (error) {
+        sessionStore.disconnectFromSession(error.message);
+      }
     },
     loadEnd() {
       const sessionStore = useSessionStore();

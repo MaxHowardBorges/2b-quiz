@@ -19,6 +19,7 @@ const routes = [
       expiredError: !!route.query.expiredError,
       serverError: !!route.query.serverError,
       ticket: route.query.ticket,
+      sessionError: route.query.sessionError,
     }),
     component: HomeView,
     meta: { public: true, inMenu: true },

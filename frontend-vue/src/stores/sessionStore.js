@@ -10,6 +10,7 @@ import {
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
 import { useUserStore } from '@/stores/userStore';
+import router from '@/router';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
@@ -47,21 +48,17 @@ export const useSessionStore = defineStore('session', {
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSE();
     },
-    async getQuestions() {
+    async getCurrentQuestions() {
       const userStore = useUserStore();
       userStore.reloadState();
       const body = { idSession: this.idSession };
-      try {
-        const response = await getCurrentQuestion(body, userStore.token);
-        if (!response.ok) {
-          response.text().then((text) => console.log(text));
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        this.setQuestion(await response.json());
-      } catch (error) {
-        console.error(error);
+      const response = await getCurrentQuestion(body, userStore.token);
+      if (!response.ok) {
+        response.text().then((text) => console.log(text));
+        throw new Error('Error on get current question');
       }
+      userStore.updateToken(response.headers.get('Authorization'));
+      this.setQuestion(await response.json());
     },
     async sendAnswer(idAnswer) {
       const userStore = useUserStore();
@@ -70,16 +67,14 @@ export const useSessionStore = defineStore('session', {
         idSession: this.idSession,
         answer: idAnswer,
       };
-      try {
-        const response = await sendAnswer(body, userStore.token);
-
-        if (!response.ok || response.status !== 204) {
-          throw new Error('Erreur de réponse:' + (await response.text())); // TODO manage error
+      const response = await sendAnswer(body, userStore.token);
+      if (!response.ok && response.status !== 408) {
+        await throwIfNotOK(response, 204);
+        if (response.status === 408) {
+          //TODO Show error for late answer
         }
-        userStore.updateToken(response.headers.get('Authorization'));
-      } catch (error) {
-        console.error(error);
       }
+      userStore.updateToken(response.headers.get('Authorization'));
     },
     async createSession() {
       this.setEnded(false);
@@ -93,6 +88,7 @@ export const useSessionStore = defineStore('session', {
       this.setIdSession(content.id);
     },
     async nextQuestion() {
+      //TODO separate to 2 function
       const userStore = useUserStore();
       userStore.reloadState();
       const body = { idSession: this.idSession };
@@ -119,20 +115,17 @@ export const useSessionStore = defineStore('session', {
     },
     async fetchResults() {
       const userStore = useUserStore();
-      userStore.reloadState();
-      try {
-        const response = await getSessionResults(
-          this.idSession,
-          userStore.token,
-        );
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        this.setTabResult(await response.json());
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await getSessionResults(this.idSession, userStore.token);
+      await throwIfNotOK(response);
+      userStore.updateToken(response.headers.get('Authorization'));
+      this.setTabResult(await response.json());
+    },
+    disconnectFromSession(error) {
+      const sessionEventStore = useSessionEventStore();
+      sessionEventStore.socketDisconnect();
+      this.setIdSession(null);
+      this.setQuestion({ content: '', answers: [], type: '' });
+      router.push({ path: 'Home', query: { sessionError: error } }).then();
     },
   },
 });

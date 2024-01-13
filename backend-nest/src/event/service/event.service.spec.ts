@@ -105,18 +105,6 @@ describe('EventService', () => {
       await service.createClient(idSession2, participant[0].id);
       await service.removeClient(idSession2, participant[0].id);
     });
-    it('should throw an error if user not found', async () => {
-      const idSession = '123456';
-      service.createSessionGroup(idSession, host.id, participant);
-      await expect(
-        service.removeClient(idSession, otherParticipant.id),
-      ).rejects.toThrow(UserUnauthorisedException);
-      const idSession2 = '123486';
-      service.createSessionGroup(idSession2, host.id);
-      await expect(
-        service.removeClient(idSession2, otherParticipant.id),
-      ).rejects.toThrow(UserUnauthorisedException);
-    });
   });
 
   //createObserver
@@ -153,13 +141,6 @@ describe('EventService', () => {
       await service.createObserver(idSession, host.id);
       await service.removeObserver(idSession, host.id);
     });
-    it('should throw an error if user not host', async () => {
-      const idSession = '123456';
-      service.createSessionGroup(idSession, host.id, participant);
-      await expect(
-        service.removeObserver(idSession, otherParticipant.id),
-      ).rejects.toThrow(UserUnauthorisedException);
-    });
   });
 
   //createHost
@@ -195,13 +176,6 @@ describe('EventService', () => {
       service.createSessionGroup(idSession, host.id, participant);
       await service.createHost(idSession, host.id);
       await service.removeHost(idSession, host.id);
-    });
-    it('should throw an error if user not host', async () => {
-      const idSession = '123456';
-      service.createSessionGroup(idSession, host.id, participant);
-      await expect(
-        service.removeHost(idSession, otherParticipant.id),
-      ).rejects.toThrow(UserUnauthorisedException);
     });
   });
 

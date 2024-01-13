@@ -1,4 +1,8 @@
 <template>
+  <error-dialog
+    ref="sessionErrorDialog"
+    :content="sessionErrorContent"
+    :title="sessionErrorTitle"></error-dialog>
   <login-block
     v-if="!userStore.isAuthenticated"
     :expiredError="expiredError"
@@ -24,11 +28,20 @@
   import LoginBlock from '@/components/user/LoginBlock.vue';
   import MenuTeacher from '@/components/home/MenuTeacherBlock.vue';
   import AdminBlock from '@/components/admin/AdminBlock.vue';
+  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
 
   export default {
     name: 'HomeView',
-    components: { AdminBlock, MenuTeacher, LoginBlock, NewUserBlock, JoinForm },
+    components: {
+      ErrorDialog,
+      AdminBlock,
+      MenuTeacher,
+      LoginBlock,
+      NewUserBlock,
+      JoinForm,
+    },
     props: {
+      sessionError: null,
       errorSnackbar: null,
       expiredError: Boolean,
       serverError: Boolean,
@@ -40,6 +53,21 @@
         userStore,
       };
     },
+    data() {
+      return {
+        sessionErrorTitle: 'sessionErrorTitle',
+        sessionErrorContent: 'sessionErrorContent',
+      };
+    },
+    mounted() {
+      if (this.sessionError) {
+        this.sessionErrorTitle = 'Error in the session';
+        this.sessionErrorContent =
+          'The following error occurred in the session:' +
+          this.sessionError +
+          '.\nPlease retry later.';
+        this.$refs.sessionErrorDialog.dialogError = true;
+      }
+    },
   };
 </script>
-

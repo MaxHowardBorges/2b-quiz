@@ -27,6 +27,7 @@
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
+  import { ValidationError } from '@/utils/valdiationError';
 
   export default {
     name: 'SessionActionsBlock',
@@ -54,7 +55,15 @@
           await this.sessionStore.sendAnswer(this.selectedValue);
           this.$emit('answer-sent');
         } catch (e) {
-          console.error(e); //TODO manage error
+          if (e instanceof ValidationError) {
+            this.sessionStore.disconnectFromSession(
+              'Error while sending answer: ' + e.message,
+            );
+          } else {
+            this.sessionStore.disconnectFromSession(
+              'Error while sending answer',
+            );
+          }
         }
       },
     },
