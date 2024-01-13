@@ -210,4 +210,36 @@ export class QuestionService {
       relations: ['answers', 'questionnary', 'tags'],
     });
   }
+
+  async questionExists(idQuestion: number) {
+    return !!(await this.findQuestion(idQuestion));
+  }
+
+  async tagExists(idTag: number) {
+    return !!(await this.getTag(idTag));
+  }
+
+  async isQuestionFromTeacher(idQuestion: number, teacher: Teacher) {
+    const question = await this.findOneQuestion(idQuestion, ['author']);
+    return question.author.id === teacher.id;
+  }
+
+  async findOneQuestion(idQuestion: number, relations: string[]) {
+    return await this.questionRepository.findOne({
+      where: { id: idQuestion },
+      relations: relations,
+    });
+  }
+
+  async isTagFromTeacher(idTag: number, teacher: Teacher) {
+    const tag = await this.findOneTag(idTag, ['author']);
+    return tag.author.id === teacher.id;
+  }
+
+  async findOneTag(idTag: number, relations: string[]) {
+    return await this.tagRepository.findOne({
+      where: { idTag: idTag },
+      relations: relations,
+    });
+  }
 }

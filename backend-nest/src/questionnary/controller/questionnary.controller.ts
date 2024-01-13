@@ -30,39 +30,6 @@ export class QuestionnaryController {
   ) {}
 
   @Roles([UserType.TEACHER])
-  @Post('/tag')
-  createTag(
-    @Req() request: UserRequest,
-    @Body(new ValidationPipe()) tagDto: TagDto,
-  ) {
-    return this.questionService.createTag(request.user as Teacher, tagDto);
-  }
-
-  @Patch('/tag/:id')
-  updateTag(
-    @Param('id', ParseIntPipe) id: number,
-    @Body(new ValidationPipe()) newTag: TagDto,
-  ) {
-    return this.questionService.updateTag(id, newTag);
-  }
-
-  @Delete('/tag/:id')
-  deleteTag(@Param('id', ParseIntPipe) id: number) {
-    return this.questionService.deleteTag(id);
-  }
-
-  @Get('/tag/:id')
-  getTag(@Param('id', ParseIntPipe) id: number) {
-    return this.questionService.getTag(id);
-  }
-
-  @Roles([UserType.TEACHER])
-  @Get('/tag/user/')
-  getTags(@Req() request: UserRequest) {
-    return this.questionService.getTags(request.user as Teacher);
-  }
-
-  @Roles([UserType.TEACHER])
   @Post('/create')
   createQuestionnary(
     @Req() request: UserRequest,
@@ -138,14 +105,6 @@ export class QuestionnaryController {
       request.user as Teacher,
       idQuestionnary,
       questionDto,
-    );
-  }
-
-  @Roles([UserType.TEACHER])
-  @Get('/user/:idUser/questions')
-  async getQuestionsPrivateBank(@Req() request: UserRequest) {
-    return await this.questionService.getQuestionPrivateBank(
-      request.user as Teacher,
     );
   }
 
