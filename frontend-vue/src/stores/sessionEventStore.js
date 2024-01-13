@@ -11,8 +11,7 @@ export const useSessionEventStore = defineStore('sessionEvent', {
     setEventSource(eventSource) {
       this.eventSource = eventSource;
     },
-    connectToSSE() {
-      //TODO catch error if SSE fails
+    connectToSSEStudent() {
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
       const url =
@@ -20,7 +19,23 @@ export const useSessionEventStore = defineStore('sessionEvent', {
         '/event/' +
         sessionStore.idSession +
         '/student?token=' +
-        userStore.token;
+        userStore.getToken();
+      const eventSource = new EventSource(url);
+      eventSource.onerror = () => {
+        sessionStore.disconnectFromSession('Error on SSE');
+      };
+      this.setEventSource(eventSource);
+      this.listenToEvents();
+    },
+    connectToSSEObserver() {
+      const sessionStore = useSessionStore();
+      const userStore = useUserStore();
+      const url =
+        import.meta.env.VITE_API_URL +
+        '/event/' +
+        sessionStore.idSession +
+        '/observer?token=' +
+        userStore.getToken();
       const eventSource = new EventSource(url);
       eventSource.onerror = () => {
         sessionStore.disconnectFromSession('Error on SSE');

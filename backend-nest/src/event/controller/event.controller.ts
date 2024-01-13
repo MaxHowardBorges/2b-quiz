@@ -49,14 +49,15 @@ export class EventController {
     @Res() res: Response,
     @Param('idSession') idSession: string,
   ) {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
+    console.log('observer', idSession, req.user.id);
     const client = await this.eventService.createObserver(
       idSession,
       req.user.id,
     );
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
     req.on('close', () => {
       this.eventService.removeObserver(idSession, req.user.id);

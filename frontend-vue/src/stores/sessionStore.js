@@ -31,8 +31,8 @@ export const useSessionStore = defineStore('session', {
     setEnded(ended) {
       this.ended = ended;
     },
-    setIsDisplay(oui) {
-      this.start = oui;
+    setIsDisplay(isDisplay) {
+      this.isDisplay = isDisplay;
     },
     setTabResult(results) {
       this.isDisplay = results;
@@ -41,18 +41,18 @@ export const useSessionStore = defineStore('session', {
       const userStore = useUserStore();
       userStore.reloadState();
       this.setEnded(false);
-      const response = await joinSession(body, userStore.token);
+      const response = await joinSession(body, userStore.getToken());
       await throwIfNotOK(response, 204);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setIdSession(body.idSession);
       const sessionEventStore = useSessionEventStore();
-      sessionEventStore.connectToSSE();
+      sessionEventStore.connectToSSEStudent();
     },
     async getCurrentQuestions() {
       const userStore = useUserStore();
       userStore.reloadState();
       const body = { idSession: this.idSession };
-      const response = await getCurrentQuestion(body, userStore.token);
+      const response = await getCurrentQuestion(body, userStore.getToken());
       if (!response.ok) {
         response.text().then((text) => console.log(text));
         throw new Error('Error on get current question');
@@ -67,7 +67,7 @@ export const useSessionStore = defineStore('session', {
         idSession: this.idSession,
         answer: idAnswer,
       };
-      const response = await sendAnswer(body, userStore.token);
+      const response = await sendAnswer(body, userStore.getToken());
       if (!response.ok && response.status !== 408) {
         await throwIfNotOK(response, 204);
         if (response.status === 408) {
@@ -81,7 +81,10 @@ export const useSessionStore = defineStore('session', {
       //this.setIsDisplay(true);
       const userStore = useUserStore();
       userStore.reloadState();
-      const response = await createSession(userStore.token, this.questionnary);
+      const response = await createSession(
+        userStore.getToken(),
+        this.questionnary,
+      );
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
@@ -91,7 +94,7 @@ export const useSessionStore = defineStore('session', {
       const userStore = useUserStore();
       userStore.reloadState();
       const body = { idSession: this.idSession };
-      const response = await getNextQuestion(body, userStore.token);
+      const response = await getNextQuestion(body, userStore.getToken());
       await throwIfNotOK(response, 201);
       userStore.updateToken(response.headers.get('Authorization'));
       return await response.json();
@@ -106,7 +109,10 @@ export const useSessionStore = defineStore('session', {
     },
     async fetchResults() {
       const userStore = useUserStore();
-      const response = await getSessionResults(this.idSession, userStore.token);
+      const response = await getSessionResults(
+        this.idSession,
+        userStore.getToken(),
+      );
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setTabResult(await response.json());
@@ -116,7 +122,14 @@ export const useSessionStore = defineStore('session', {
       sessionEventStore.socketDisconnect();
       this.setIdSession(null);
       this.setQuestion({ content: '', answers: [], type: '' });
-      router.push({ path: 'Home', query: { sessionError: error } }).then();
+      router.push({ path: '/', query: { sessionError: error } }).then();
+    },
+    connectToSessionAsObserver(idSession) {
+      this.setIsDisplay(true);
+      this.setIdSession(idSession);
+      this.setEnded(false);
+      const sessionEventStore = useSessionEventStore();
+      sessionEventStore.connectToSSEObserver();
     },
   },
 });

@@ -8,7 +8,9 @@
       class="mt-5 mb-6 px-6 py-8 w-100">
       <question-block
         @new-selected-value-relay="updateSelectedValue"
-        :disabled="userStore.isTeacher"></question-block>
+        :disabled="
+          userStore.isTeacher || sessionStore.isDisplay
+        "></question-block>
 
       <session-actions-block
         @answer-sent="relayEvent"

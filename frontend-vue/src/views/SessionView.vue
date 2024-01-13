@@ -1,6 +1,4 @@
 <template>
-
-
   <session-waiting-block-student
     v-if="waiting && !ended && userStore.isStudent"
     :id-session="sessionStore.idSession.toString()"
@@ -13,8 +11,6 @@
   <session-question-block
     @answer-sent-relay="waiting = true"
     v-if="!waiting && !ended" />
-
-
 
   <session-ended-block @reset="reset" v-if="ended" />
 </template>
@@ -50,11 +46,10 @@
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
 
-      let ended = ref(false)
+      let ended = ref(false);
       let waitingSessionStart = ref(true);
       let echoQuestion = ref(null);
       waiting = ref(true);
-
 
       sessionStore.$subscribe((mutation, state) => {
         if (state.ended !== ended.value) {
@@ -78,7 +73,6 @@
     },
     mounted() {
       if (!this.sessionStore.idSession) router.replace('/');
-
     },
     methods: {
       reset() {

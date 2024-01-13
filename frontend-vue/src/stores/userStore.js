@@ -104,8 +104,7 @@ export const useUserStore = defineStore('user', {
     },
     async fetchUserType() {
       try {
-        this.reloadState()
-        const response = await getUserType(this.token);
+        const response = await getUserType(this.getToken());
         if (!response.ok) await this.forceLogout();
         else {
           this.updateToken(response.headers.get('Authorization'));
@@ -149,7 +148,7 @@ export const useUserStore = defineStore('user', {
     async validateSelf(name, surname, userType) {
       const response = await validateSelf(
         { name, surname, userType },
-        this.token,
+        this.getToken(),
       );
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
@@ -163,11 +162,11 @@ export const useUserStore = defineStore('user', {
           page,
           nbItem,
           sort,
-          this.token,
+          this.getToken(),
           deleted,
         );
       } else {
-        response = await getAllUsers(page, nbItem, this.token, deleted);
+        response = await getAllUsers(page, nbItem, this.getToken(), deleted);
       }
       await throwIfNotOK(response, 200);
       this.updateToken(response.headers.get('Authorization'));
@@ -197,7 +196,7 @@ export const useUserStore = defineStore('user', {
       this.updateToken(response.headers.get('Authorization'));
     },
     async getSelf() {
-      const response = await getMe(this.token);
+      const response = await getMe(this.getToken());
       await throwIfNotOK(response, 200);
       this.updateToken(response.headers.get('Authorization'));
       return await response.json();
@@ -207,17 +206,17 @@ export const useUserStore = defineStore('user', {
         name,
         surname,
       };
-      const response = await updateMe(this.token, body);
+      const response = await updateMe(this.getToken(), body);
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
     async askDelete() {
-      const response = await askDelete(this.token);
+      const response = await askDelete(this.getToken());
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
     async rejectRequest(id) {
-      const response = await rejectRequest(id, this.token);
+      const response = await rejectRequest(id, this.getToken());
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
@@ -227,9 +226,13 @@ export const useUserStore = defineStore('user', {
     saveState() {
       localStorage.setItem('token', this.token);
     },
+    getToken() {
+      this.reloadState();
+      return this.token;
+    },
   },
   persist: {
-    strategies:[{storage: localStorage, paths: ['token']}],
+    strategies: [{ storage: localStorage, paths: ['token'] }],
     paths: ['token'],
   },
 });

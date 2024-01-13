@@ -23,6 +23,7 @@ export class EventService {
         .forEach((subject) => {
           subject.next(event);
         });
+      this.sessionMap.get(idSession).getObserverSubject().next(event);
     }
   }
 
