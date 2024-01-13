@@ -8,6 +8,7 @@
 
     <v-sheet class="list">
       <v-sheet
+        v-if="this.useQ.questionnaryList.length > 0"
         v-for="(questionnary, index) in this.useQ.questionnaryList"
         :key="index">
         <QuestionnaryItem
@@ -15,6 +16,7 @@
           :questionnaryId="questionnary.id"
           @nextQuestionE="edit"></QuestionnaryItem>
       </v-sheet>
+      <v-sheet v-else>No Questionnaries</v-sheet>
     </v-sheet>
 
     <v-card class="mt-25">
@@ -33,7 +35,6 @@
   import router from '@/router';
 
   export default {
-    //TODO Pas de questionnaire
     data() {
       return {};
     },

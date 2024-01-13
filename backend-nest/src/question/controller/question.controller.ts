@@ -36,11 +36,9 @@ export class QuestionController {
   @Roles([UserType.TEACHER])
   @Get('/tag')
   async getTags(@Req() request: UserRequest) {
-    return {
-      tag: this.tagMapper.entityToTagDtoTab(
-        await this.questionService.getTags(request.user as Teacher),
-      ),
-    };
+    return this.tagMapper.entityToTagDtoTab(
+      await this.questionService.getTags(request.user as Teacher),
+    );
   }
 
   @Roles([UserType.TEACHER])
