@@ -17,8 +17,9 @@
       </thead>
       <tbody>
       <tr class="ma-2">
-        <td class="text-center">2B QUIZ</td>
-        <td class="text-center">7</td>
+        <td class="text-center" @click='openDisplay'>2B QUIZ</td>
+        <td class="text-center" @click='openDisplay'>7</td>
+
         <td class="text-center">
           <v-btn @click="openAdd" icon="add"></v-btn>
           <v-btn @click="openLeave" icon="logout"></v-btn>
@@ -38,7 +39,7 @@
         <td class="text-center">2B QUIZ</td>
         <td class="text-center">7</td>
         <td class="text-center">
-          <v-btn @click="openAdd " icon="add"></v-btn>
+          <v-btn @click="openAdd" icon="add"></v-btn>
           <v-btn @click="openLeave" icon="logout"></v-btn>
           <v-btn @click="openDelete" icon="delete"></v-btn>
         </td>
@@ -51,8 +52,17 @@
         <v-card-title>
           Add User
         </v-card-title>
+        <v-card-text>
+          <v-text-field
+            label="Email"
+            required
+          ></v-text-field>
+
+        </v-card-text>
+
         <v-card-actions>
-          <v-btn @click="closeDialogs">Close</v-btn>
+          <v-btn @click="closeDialogs">Add</v-btn>
+          <v-btn @click="closeDialogs">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -62,8 +72,10 @@
         <v-card-title>
           Leave Group
         </v-card-title>
+        <v-card-text>Are you sure to leave this Group?</v-card-text>
         <v-card-actions>
-          <v-btn @click="closeDialogs">Close</v-btn>
+          <v-btn @click="closeDialogs">Yes</v-btn>
+          <v-btn @click="closeDialogs">No</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -81,11 +93,85 @@
       </v-card>
     </v-dialog>
 
-    <v-btn class="mt-5" color="primary">Create a group</v-btn>
+    <v-dialog v-model="CreateGroupDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          Create a group
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            label="Group name"
+            required
+          ></v-text-field>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn @click="closeDialogs">Create</v-btn>
+          <v-btn @click="closeDialogs">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="CreateGroupDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          Create a group
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            label="Group name"
+            required
+          ></v-text-field>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn @click="closeDialogs">Create</v-btn>
+          <v-btn @click="closeDialogs">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="DisplayGroupDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          Display group
+        </v-card-title>
+        <v-card-text> List of users in the group</v-card-text>
+
+        <table>
+          <thead>
+          <tr>
+            <th class="text-center">Name</th>
+            <th class="text-center">Surname</th>
+            <th class="text-center">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="ma-2">
+            <td class="text-center">Axel</td>
+            <td class="text-center">GUILLOU</td>
+            <td class="text-center">
+              <v-btn @click="openDelete" icon="delete"></v-btn>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <v-card-actions>
+          <v-btn @click="closeDialogs">Create</v-btn>
+          <v-btn @click="closeDialogs">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-btn class="mt-5" color="primary" @click='openCreate'>Create a group</v-btn>
+
+
   </v-sheet>
 </template>
 
 <script>
+
+  import { useUserStore } from '@/stores/userStore';
 
   export default {
     data() {
@@ -93,7 +179,28 @@
         addDialog: false,
         leaveDialog: false,
         deleteDialog: false,
+        CreateGroupDialog: false,
+        DisplayGroupDialog: false,
+
+        users: [
+          { id: 1, name: 'Élève 1' },
+          { id: 2, name: 'Élève 2' },
+        ],
+
       };
+    },
+    setup() {
+      const userStore = useUserStore();
+      return {
+        userStore,
+      };
+    },
+    computed: {
+      filteredUsers() {
+        return this.users.filter(user =>
+          user.name.toLowerCase().includes(this.search.toLowerCase())
+        );
+      },
     },
     methods: {
       openAdd() {
@@ -105,10 +212,18 @@
       openDelete() {
         this.deleteDialog = true;
       },
+      openDisplay() {
+        this.DisplayGroupDialog = true;
+      },
+      openCreate() {
+        this.CreateGroupDialog = true;
+      },
       closeDialogs() {
         this.addDialog = false;
         this.leaveDialog = false;
         this.deleteDialog = false;
+        this.CreateGroupDialog = false;
+        this.DisplayGroupDialog = false;
       },
     },
   };
