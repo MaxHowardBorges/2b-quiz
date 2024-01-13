@@ -15,6 +15,5 @@ export class Tag {
   author: Teacher;
 
   @ManyToMany(() => Question, (question) => question.tags)
-  //@JoinTable()
   questions: Question[];
 }

@@ -7,6 +7,10 @@ import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Tag } from '../entity/tag.entity';
 import { TagDto } from '../dto/tag.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
+import { QuestionCreateDto } from '../dto/questionCreate.dto';
+import { AnswerCreateDto } from '../dto/answerCreate.dto';
+import { QuestionDto } from '../dto/question.dto';
+import { AnswerDto } from '../dto/answer.dto';
 
 @Injectable()
 export class QuestionService {
@@ -241,5 +245,71 @@ export class QuestionService {
       where: { idTag: idTag },
       relations: relations,
     });
+  }
+
+  dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
+    const question = new Question();
+    question.id = null;
+    question.content = questionDto.content;
+    question.answers = [];
+    question.questionnary = questionnaryRef;
+    question.type = questionDto.type;
+    question.originalId = questionDto.id !== undefined ? questionDto.id : null;
+    question.tags = [];
+    for (const tagDto of questionDto.tags) {
+      question.tags.push(this.dtoToTag(tagDto));
+    }
+    for (const answerDto of questionDto.answers) {
+      question.answers.push(this.dtoToAnswer(answerDto, question));
+    }
+    return question;
+  }
+  dtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
+    const answer = new Answer();
+    answer.id = null;
+    answer.content = answerDto.content;
+    answer.isCorrect = answerDto.isCorrect;
+    answer.question = questionRef;
+    return answer;
+  }
+
+  dtoToTag(tagDto: TagDto) {
+    const tag = new Tag();
+    tag.idTag = tagDto.idTag;
+    tag.description = tagDto.description;
+    return tag;
+  }
+
+  entityToQuestionDto(question: Question) {
+    const questionDto = new QuestionDto();
+    questionDto.id = question.id;
+    questionDto.content = question.content;
+    questionDto.type = question.type;
+    questionDto.tags = [];
+    for (const tag of question.tags) {
+      questionDto.tags.push(this.entityToTagDto(tag));
+    }
+    questionDto.answers = [];
+    for (const answer of question.answers) {
+      questionDto.answers.push(this.entityToAnswerDto(answer));
+    }
+    questionDto.originalId =
+      question.originalId !== undefined ? questionDto.originalId : null;
+
+    return questionDto;
+  }
+  entityToAnswerDto(answer: Answer) {
+    const answerDto = new AnswerDto();
+    answerDto.id = answer.id;
+    answerDto.content = answer.content;
+    answerDto.isCorrect = answer.isCorrect;
+    return answerDto;
+  }
+
+  entityToTagDto(tag: Tag) {
+    const tagDto = new TagDto();
+    tagDto.idTag = tag.idTag;
+    tagDto.description = tag.description;
+    return tagDto;
   }
 }

@@ -245,7 +245,6 @@
           (option) => option.typeLabel === this.selectedType,
         ).typeCode;
         const tags = this.selectedTags;
-        console.log(tags);
 
         for (let i = 0; i < answers.length; i++) {
           answers[i].isCorrect = i === index;

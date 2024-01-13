@@ -11,6 +11,7 @@ import { TagDto } from '../../question/dto/tag.dto';
 import { Answer } from '../../question/entity/answer.entity';
 import { Tag } from '../../question/entity/tag.entity';
 import { Teacher } from '../../user/entity/teacher.entity';
+import { QuestionnaryDto } from '../dto/questionnary.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -79,7 +80,7 @@ export class QuestionnaryService {
     idQuestionnary: number,
     questionDto: QuestionCreateDto,
   ) {
-    const question = this.dtoToQuestion(
+    const question = this.questionService.dtoToQuestion(
       questionDto,
       await this.findQuestionnary(idQuestionnary),
     );
@@ -121,7 +122,7 @@ export class QuestionnaryService {
       where: { id: idQuestionnary },
     });
     if (questionnary) {
-      const question = this.dtoToQuestion(
+      const question = this.questionService.dtoToQuestion(
         questionDto,
         await this.findQuestionnary(idQuestionnary),
       );
@@ -160,42 +161,23 @@ export class QuestionnaryService {
     questionnary.questions = [];
     for (const questionDto of questionnaryDto.questions) {
       questionnary.questions.push(
-        this.dtoToQuestion(questionDto, questionnary),
+        this.questionService.dtoToQuestion(questionDto, questionnary),
       );
     }
     return questionnary;
   }
-  dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
-    const question = new Question();
-    question.id = null;
-    question.content = questionDto.content;
-    question.answers = [];
-    question.questionnary = questionnaryRef;
-    question.type = questionDto.type;
-    question.originalId = questionDto.id !== undefined ? questionDto.id : null;
-    question.tags = [];
-    for (const tagDto of questionDto.tags) {
-      question.tags.push(this.dtoToTag(tagDto));
-    }
-    for (const answerDto of questionDto.answers) {
-      question.answers.push(this.dtoToAnswer(answerDto, question));
-    }
-    return question;
-  }
-  dtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
-    const answer = new Answer();
-    answer.id = null;
-    answer.content = answerDto.content;
-    answer.isCorrect = answerDto.isCorrect;
-    answer.question = questionRef;
-    return answer;
-  }
 
-  dtoToTag(tagDto: TagDto) {
-    const tag = new Tag();
-    tag.idTag = tagDto.idTag;
-    tag.description = tagDto.description;
-    return tag;
+  entityToQuestionnaryDto(questionnary: Questionnary) {
+    const questionnaryDto = new QuestionnaryDto();
+    questionnaryDto.id = questionnary.id;
+    questionnaryDto.title = questionnary.title;
+    questionnaryDto.questions = [];
+    for (const question of questionnary.questions) {
+      questionnaryDto.questions.push(
+        this.questionService.entityToQuestionDto(question),
+      );
+    }
+    return questionnaryDto;
   }
 
   async isQuestionnaryFromTeacher(idQuestionnary: number, teacher: Teacher) {

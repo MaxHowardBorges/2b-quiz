@@ -2,11 +2,14 @@ import { AnswerDto } from './answer.dto';
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { QuestionType } from '../constants/questionType.constant';
+import { TagDto } from './tag.dto';
+import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 
 export class QuestionDto {
   @IsNumber()
@@ -17,11 +20,24 @@ export class QuestionDto {
   @IsNotEmpty()
   content: string;
 
+  @IsNotEmpty()
+  type: QuestionType;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => TagDto)
+  tags?: TagDto[];
+
   @IsNotEmpty({ each: true })
   @ValidateNested({ each: true })
   @Type(() => AnswerDto)
   answers: AnswerDto[];
 
-  @IsNotEmpty()
-  type: QuestionType;
+  @IsOptional()
+  @Type(() => QuestionnaryDto)
+  questionnary?: QuestionnaryDto;
+
+  @IsOptional()
+  @IsNumber()
+  originalId?: number;
 }
