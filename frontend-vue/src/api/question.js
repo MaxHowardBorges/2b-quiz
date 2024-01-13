@@ -37,7 +37,7 @@ export async function getAnswersFromQuestion(id, token) {
 
 //TODO error 401 Unauthorized
 export async function getTags(token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/question/tag/user/', {
+  return await fetch(import.meta.env.VITE_API_URL + '/question/tag', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export async function getTags(token) {
 }
 
 export async function createTag(tag, token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/question/tag/', {
+  return await fetch(import.meta.env.VITE_API_URL + '/question/tag', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

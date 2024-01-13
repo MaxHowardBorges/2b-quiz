@@ -175,7 +175,6 @@
     },
     async mounted() {
       if (this.useQ.isCreated) {
-        await this.useQ.getQuestionnary();
         this.questionnaryName = this.useQ.questionnary.title;
       } else this.questionnaryName = this.baseQuestionnaryName;
       await this.useQ.getTags();

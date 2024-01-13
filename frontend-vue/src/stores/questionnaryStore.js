@@ -99,7 +99,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
           userStore.updateToken(response.headers.get('Authorization'));
-          this.questionnary = JSON.parse(await response.text());
+          this.questionnary = await response.json();
         } catch (error) {
           console.error(error);
         }
@@ -256,9 +256,9 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
-        for (const t of JSON.parse(await response.text())) {
-          this.tagList.push(t);
-        }
+        const body = await response.json();
+        console.log(body.tag);
+        this.tagList = body.tag;
         userStore.updateToken(response.headers.get('Authorization'));
       } catch (error) {
         console.error(error);
