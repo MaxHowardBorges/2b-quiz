@@ -148,8 +148,7 @@
         let questionFromBank = this.questionnaryStore.privateQuestions.find(
           (question) => question.id === this.idQuestion,
         );
-        this.questionnaryStore.idQuestionnary =
-          questionFromBank.questionnary.id;
+        this.questionnaryStore.idQuestionnary = questionFromBank.questionnaryId;
         return questionFromBank;
       },
       getAnswers() {

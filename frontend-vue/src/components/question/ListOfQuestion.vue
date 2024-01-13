@@ -13,12 +13,9 @@
       };
     },
     data() {
-      this.questionnaryStore.getQuestionsFromUser();
-      let questions = this.questionnaryStore.privateQuestions;
-      this.questionnaryStore.getTags();
-      let tags = this.questionnaryStore.tagList;
+      this.loadData();
       return {
-        questions,
+        questions: [],
         selectedQuestion: null,
         dialogVisible: false,
         questionnaries: [],
@@ -28,7 +25,7 @@
         currentPage: 1,
         selectedType: [],
         selectedTags: [],
-        tags,
+        tags: [],
         typeOptions: [
           { typeLabel: 'Unique', typeCode: 'qcu' },
           { typeLabel: 'Multiple', typeCode: 'qcm' },
@@ -41,6 +38,13 @@
     emits: ['modifyQuestionFromBank', 'toggleVisibility'],
     computed: {},
     methods: {
+      async loadData() {
+        await this.questionnaryStore.getQuestionsFromUser();
+        this.questions = this.questionnaryStore.privateQuestions;
+
+        await this.questionnaryStore.getTags();
+        this.tags = this.questionnaryStore.tagList;
+      },
       toggleVisibility() {
         this.$emit('toggleVisibility');
       },
@@ -99,9 +103,7 @@
         if (this.selectedTags.length > 0) {
           filtered = filtered.filter((f) =>
             f.tags.some((t) =>
-              this.selectedTags
-                .map((st) => st.description)
-                .includes(t.description),
+              this.selectedTags.some((st) => st.description === t.description),
             ),
           );
         }

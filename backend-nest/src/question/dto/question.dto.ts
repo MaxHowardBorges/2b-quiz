@@ -34,8 +34,8 @@ export class QuestionDto {
   answers: AnswerDto[];
 
   @IsOptional()
-  @Type(() => QuestionnaryDto)
-  questionnary?: QuestionnaryDto;
+  @IsNumber()
+  questionnaryId?: number;
 
   @IsOptional()
   @IsNumber()

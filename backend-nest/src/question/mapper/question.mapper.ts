@@ -27,6 +27,8 @@ export class QuestionMapper {
         question.answers !== undefined
           ? this.answerMapper.entityToAnswerDtoTab(question.answers)
           : null,
+      questionnaryId:
+        question.questionnary !== undefined ? question.questionnary.id : null,
       originalId:
         question.originalId !== undefined ? question.originalId : null,
     };
