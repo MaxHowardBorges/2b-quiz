@@ -60,9 +60,7 @@ export class QuestionnaryService {
   async findQuestionnariesFromIdUser(teacher: Teacher) {
     // questionnaires without questions
     return await this.questionnaryRepository.find({
-      relations: {
-        author: true,
-      },
+      relations: ['author'],
       where: { author: { id: teacher.id } },
     });
   }

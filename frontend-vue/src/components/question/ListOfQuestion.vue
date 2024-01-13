@@ -13,9 +13,9 @@
       };
     },
     data() {
-      this.questionnaryStore.getQuestionsFromUser(); //TODO add user id
+      this.questionnaryStore.getQuestionsFromUser();
       let questions = this.questionnaryStore.privateQuestions;
-      this.questionnaryStore.getTags(111111); //TODO add user id
+      this.questionnaryStore.getTags();
       let tags = this.questionnaryStore.tagList;
       return {
         questions,
@@ -23,7 +23,6 @@
         dialogVisible: false,
         questionnaries: [],
         selectedQuestionnaries: [],
-        author: '111111', // TODO get id author
         searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
@@ -53,7 +52,7 @@
         this.selectedQuestionnaries = [];
         this.selectedQuestion = question;
 
-        await this.questionnaryStore.getQuestionnariesFromUser(); //TODO get id user
+        await this.questionnaryStore.getQuestionnariesFromUser();
         let questionnaries = this.questionnaryStore.questionnaryList;
         for (const questionnary of questionnaries) {
           this.questionnaryStore.idQuestionnary = questionnary.id;
@@ -83,7 +82,6 @@
       async AddQuestion() {
         for (const index of this.selectedQuestionnaries) {
           this.questionnaryStore.idQuestionnary = this.questionnaries[index].id;
-          this.selectedQuestion.author = this.author;
           await this.questionnaryStore.addQuestion(this.selectedQuestion);
         }
         this.questionnaryStore.idQuestionnary = null;

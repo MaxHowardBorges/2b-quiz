@@ -165,7 +165,6 @@
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
-        author: '111111', // TODO get id author
       };
     },
     setup() {
@@ -179,7 +178,7 @@
         await this.useQ.getQuestionnary();
         this.questionnaryName = this.useQ.questionnary.title;
       } else this.questionnaryName = this.baseQuestionnaryName;
-      await this.useQ.getTags(this.author);
+      await this.useQ.getTags();
       this.tagList = this.useQ.tagList;
       this.selectedTags = [];
     },
@@ -197,7 +196,6 @@
         ) {
           await this.useQ.createTag({
             description: tagToAdd,
-            author: Number.parseInt(this.author),
           });
           this.tagList = this.useQ.tagList;
           this.newTag = '';
@@ -256,14 +254,12 @@
         if (content && answers) {
           if (this.useQ.idQuestionnary == null && !this.isFromBank) {
             await this.useQ.createQuestionnary({
-              author: this.author,
               title: this.questionnaryName,
               questions: [],
             });
             await this.useQ.addQuestion({
               content: content,
               type: type,
-              author: this.author,
               answers: answers,
               tags: tags,
             });
@@ -271,7 +267,6 @@
             await this.useQ.modifyQuestion(this.idQuestion, {
               content: content,
               type: type,
-              author: this.author,
               answers: answers,
               tags: tags,
             });
@@ -280,7 +275,6 @@
             await this.useQ.addQuestion({
               content: content,
               type: type,
-              author: this.author,
               answers: answers,
               tags: tags,
             });

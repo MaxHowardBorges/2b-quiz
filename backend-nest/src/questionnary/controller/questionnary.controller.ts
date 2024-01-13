@@ -24,10 +24,7 @@ import { QuestionnaryNotFoundException } from '../exception/questionnaryNotFound
 
 @Controller('questionnary')
 export class QuestionnaryController {
-  constructor(
-    private readonly questionnaryService: QuestionnaryService,
-    private readonly questionService: QuestionService,
-  ) {}
+  constructor(private readonly questionnaryService: QuestionnaryService) {}
 
   @Roles([UserType.TEACHER])
   @Post('/create')
@@ -59,10 +56,22 @@ export class QuestionnaryController {
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
+  @Roles([UserType.TEACHER])
   @Get('/:id')
-  async selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
+  async selectQuestionnary(
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+    @Req() request: UserRequest,
+  ) {
     if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
       throw new QuestionnaryNotFoundException();
+    if (
+      !(await this.questionnaryService.isQuestionnaryFromTeacher(
+        idQuestionnary,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorException();
+
     return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
 
@@ -74,6 +83,7 @@ export class QuestionnaryController {
     );
   }
 
+  @Roles([UserType.TEACHER])
   @Get('/:id/question/')
   async selectQuestionsFromQuestionnary(
     @Param('id', ParseIntPipe) idQuestionnary: number,

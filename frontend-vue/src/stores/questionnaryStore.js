@@ -255,12 +255,11 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         const response = await getTags(userStore.token);
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
-        } else {
-          for (const t of JSON.parse(await response.text())) {
-            this.tagList.push(t);
-          }
-          userStore.updateToken(response.headers.get('Authorization'));
         }
+        for (const t of JSON.parse(await response.text())) {
+          this.tagList.push(t);
+        }
+        userStore.updateToken(response.headers.get('Authorization'));
       } catch (error) {
         console.error(error);
       }
