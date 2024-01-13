@@ -99,7 +99,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
             throw new Error('Erreur de réponse'); // TODO manage error
           }
           userStore.updateToken(response.headers.get('Authorization'));
-          this.questionnary = JSON.parse(await response.text());
+          this.questionnary = await response.json();
         } catch (error) {
           console.error(error);
         }
