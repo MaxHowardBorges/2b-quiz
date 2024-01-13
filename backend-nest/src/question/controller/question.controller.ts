@@ -26,47 +26,9 @@ export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Roles([UserType.TEACHER])
-  @Get('/:id/')
-  async selectQuestion(
-    @Param('id', ParseIntPipe) idQuestion: number,
-    @Req() request: UserRequest,
-  ) {
-    if (!(await this.questionService.questionExists(idQuestion)))
-      throw new QuestionNotFoundException();
-    if (
-      !(await this.questionService.isQuestionFromTeacher(
-        idQuestion,
-        request.user as Teacher,
-      ))
-    )
-      throw new NotAuthorQuestionException();
-    return this.questionService.findQuestion(idQuestion);
-  }
-
-  @Roles([UserType.TEACHER])
-  @Get('/user/questions')
-  async getQuestionsPrivateBank(@Req() request: UserRequest) {
-    return await this.questionService.getQuestionPrivateBank(
-      request.user as Teacher,
-    );
-  }
-
-  @Roles([UserType.TEACHER])
-  @Get('/:id/select-answers/')
-  async selectAnswersFromQuestion(
-    @Param('id', ParseIntPipe) idQuestion: number,
-    @Req() request: UserRequest,
-  ) {
-    if (!(await this.questionService.questionExists(idQuestion)))
-      throw new QuestionNotFoundException();
-    if (
-      !(await this.questionService.isQuestionFromTeacher(
-        idQuestion,
-        request.user as Teacher,
-      ))
-    )
-      throw new NotAuthorQuestionException();
-    return this.questionService.findAnswers(idQuestion);
+  @Get('/tag')
+  async getTags(@Req() request: UserRequest) {
+    return { tag: await this.questionService.getTags(request.user as Teacher) };
   }
 
   @Roles([UserType.TEACHER])
@@ -116,26 +78,46 @@ export class QuestionController {
   }
 
   @Roles([UserType.TEACHER])
-  @Get('/tag/:id')
-  async getTag(
-    @Param('id', ParseIntPipe) idTag: number,
-    @Req() request: UserRequest,
-  ) {
-    if (!(await this.questionService.tagExists(idTag)))
-      throw new TagNotFoundException();
-    if (
-      !(await this.questionService.isTagFromTeacher(
-        idTag,
-        request.user as Teacher,
-      ))
-    )
-      throw new NotAuthorTagException();
-    return this.questionService.getTag(idTag);
+  @Get('/user/questions')
+  async getQuestionsPrivateBank(@Req() request: UserRequest) {
+    return await this.questionService.getQuestionPrivateBank(
+      request.user as Teacher,
+    );
   }
 
   @Roles([UserType.TEACHER])
-  @Get('/tag/user/')
-  getTags(@Req() request: UserRequest) {
-    return this.questionService.getTags(request.user as Teacher);
+  @Get('/:id/')
+  async selectQuestion(
+    @Param('id', ParseIntPipe) idQuestion: number,
+    @Req() request: UserRequest,
+  ) {
+    if (!(await this.questionService.questionExists(idQuestion)))
+      throw new QuestionNotFoundException();
+    if (
+      !(await this.questionService.isQuestionFromTeacher(
+        idQuestion,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorQuestionException();
+    return this.questionService.findQuestion(idQuestion);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/:id/select-answers/')
+  async selectAnswersFromQuestion(
+    @Param('id', ParseIntPipe) idQuestion: number,
+    @Req() request: UserRequest,
+  ) {
+    if (!(await this.questionService.questionExists(idQuestion)))
+      throw new QuestionNotFoundException();
+    if (
+      !(await this.questionService.isQuestionFromTeacher(
+        idQuestion,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorQuestionException();
+    return this.questionService.findAnswers(idQuestion);
   }
 }
