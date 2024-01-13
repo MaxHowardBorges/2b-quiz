@@ -88,29 +88,20 @@ export const useSessionStore = defineStore('session', {
       this.setIdSession(content.id);
     },
     async nextQuestion() {
-      //TODO separate to 2 function
       const userStore = useUserStore();
       userStore.reloadState();
       const body = { idSession: this.idSession };
-      try {
-        console.log(body, userStore.token);
-        const response = await getNextQuestion(body, userStore.token);
-        console.log(response);
-        if (!response.ok) {
-          console.log(await response.text());
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        if (response.status === 204) {
-          await this.fetchResults();
-          this.setEnded(true);
-        } else {
-          const question = await response.json();
-          this.setQuestion(question);
-        }
-      } catch (error) {
-        console.error(error);
-        throw error;
+      const response = await getNextQuestion(body, userStore.token);
+      await throwIfNotOK(response, 201);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async getCurrentQuestionForTeacher(responseText) {
+      if (responseText.isEnded) {
+        await this.fetchResults();
+        this.setEnded(true);
+      } else {
+        await this.getCurrentQuestions();
       }
     },
     async fetchResults() {

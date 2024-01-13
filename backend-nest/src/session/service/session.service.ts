@@ -65,10 +65,10 @@ export class SessionService {
     return this.sessionMap.has(idSession);
   }
 
-  async nextQuestion(idSession: string) {
+  async nextQuestion(idSession: string): Promise<boolean> {
     const currentSession = this.sessionMap.get(idSession);
     // check for next question in the current questionnary
-    if (currentSession.endSession) return null;
+    if (currentSession.endSession) return false;
     if (
       currentSession.questionNumber + 1 <
       (
@@ -79,13 +79,7 @@ export class SessionService {
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        );
-      return await this.questionService.findQuestion(
-        questionTab[currentSession.questionNumber].id,
-      );
+      return true;
       // else check for next questionnary in the current session
     } else if (
       currentSession.questionnaryNumber + 1 <
@@ -94,18 +88,12 @@ export class SessionService {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        );
-      return await this.questionService.findQuestion(
-        questionTab[currentSession.questionNumber].id,
-      );
+      return true;
     }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
     this.eventService.closeSessionGroup(idSession);
-    return null;
+    return false;
   }
 
   getMap() {

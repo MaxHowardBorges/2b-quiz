@@ -12,7 +12,7 @@
     </div>
 
     <p>{{ participantsCount }} participant joined the session !</p>
-    <v-btn color="primary" class="mx-6 my-3" @click='launchWindows'>
+    <v-btn color="primary" class="mx-6 my-3" @click="launchWindows">
       <p class="text-white font-weight-bold pa-2">Launch 3rd screen</p>
     </v-btn>
     <div>
@@ -26,7 +26,6 @@
         @click="handleLaunch">
         <p class="text-white font-weight-bold pa-2">Start session</p>
       </v-btn>
-
     </div>
   </v-sheet>
 </template>
@@ -58,20 +57,30 @@
         // this.$emit('session-start');
         // this.loading = false;
         try {
-          console.log(this.sessionStore);
-          await this.sessionStore.nextQuestion();
+          try {
+            const response = await this.sessionStore.nextQuestion();
+            await this.sessionStore.getCurrentQuestionForTeacher(response);
+          } catch (error) {
+            console.log('Error while launching session', error);
+            this.sessionStore.disconnectFromSession(
+              'Error while launching session',
+            );
+          }
           this.$emit('session-start');
         } catch (error) {
-          console.error("Erreur lors de la requête nextQuestion:", error);
+          console.error('Erreur lors de la requête nextQuestion:', error);
         } finally {
           this.loading = false;
         }
       },
       launchWindows() {
         console.log(this.sessionStore);
-        const routeData = router.resolve({name: 'public', query: {idSession: this.sessionStore.idSession}});
+        const routeData = router.resolve({
+          name: 'public',
+          query: { idSession: this.sessionStore.idSession },
+        });
         window.open(routeData.href, '_blank');
-      }
+      },
     },
   };
 </script>

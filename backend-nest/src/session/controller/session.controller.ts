@@ -26,6 +26,7 @@ import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { AccessDto } from '../dto/access.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { IsNotParticipantException } from '../exception/isNotParticipant.exception';
+import { NextQuestionReturnDto } from '../dto/nextQuestionReturn.dto';
 
 @Controller('session')
 export class SessionController {
@@ -48,14 +49,11 @@ export class SessionController {
   async nextQuestion(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) body: NextQuestionDto,
-  ) {
+  ): Promise<NextQuestionReturnDto> {
     if (!this.sessionService.isHost(body.idSession, request.user as Teacher))
       throw new IsNotHostException();
-    const question = await this.sessionService.nextQuestion(body.idSession);
-    if (question) {
-      return question;
-    }
-    return null;
+    const isEnded = !(await this.sessionService.nextQuestion(body.idSession));
+    return { isEnded };
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])

@@ -44,7 +44,14 @@
     emits: ['answer-sent'],
     methods: {
       async handleNextQuestion() {
-        await this.sessionStore.nextQuestion();
+        try {
+          const response = await this.sessionStore.nextQuestion();
+          await this.sessionStore.getCurrentQuestionForTeacher(response);
+        } catch (e) {
+          this.sessionStore.disconnectFromSession(
+            'Error handling next question: ' + e.message,
+          );
+        }
       },
       async handleStop() {
         await router.push('/');
