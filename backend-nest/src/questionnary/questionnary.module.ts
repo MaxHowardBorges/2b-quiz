@@ -4,11 +4,12 @@ import { QuestionnaryService } from './service/questionnary.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Questionnary } from './entity/questionnary.entity';
 import { QuestionModule } from '../question/question.module';
+import { QuestionnaryMapper } from './mapper/questionnary.mapper';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Questionnary]),QuestionModule],
-  exports: [TypeOrmModule, QuestionnaryService],
+  imports: [TypeOrmModule.forFeature([Questionnary]), QuestionModule],
+  exports: [TypeOrmModule, QuestionnaryService, QuestionnaryMapper],
   controllers: [QuestionnaryController],
-  providers: [QuestionnaryService],
+  providers: [QuestionnaryService, QuestionnaryMapper],
 })
 export class QuestionnaryModule {}

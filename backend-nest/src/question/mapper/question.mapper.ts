@@ -19,8 +19,14 @@ export class QuestionMapper {
       id: question.id,
       content: question.content,
       type: question.type,
-      tags: this.tagMapper.entityToTagDtoTab(question.tags),
-      answers: this.answerMapper.entityToAnswerDtoTab(question.answers),
+      tags:
+        question.tags !== undefined
+          ? this.tagMapper.entityToTagDtoTab(question.tags)
+          : null,
+      answers:
+        question.answers !== undefined
+          ? this.answerMapper.entityToAnswerDtoTab(question.answers)
+          : null,
       originalId:
         question.originalId !== undefined ? question.originalId : null,
     };

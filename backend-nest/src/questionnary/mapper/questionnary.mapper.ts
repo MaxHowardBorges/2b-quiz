@@ -18,9 +18,10 @@ export class QuestionnaryMapper {
     return {
       id: questionnary.id,
       title: questionnary.title,
-      questions: this.questionMapper.entityToQuestionDtoTab(
-        questionnary.questions,
-      ),
+      questions:
+        questionnary.questions !== undefined
+          ? this.questionMapper.entityToQuestionDtoTab(questionnary.questions)
+          : null,
     };
   }
 }

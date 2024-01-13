@@ -45,10 +45,10 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
+        userStore.updateToken(response.headers.get('Authorization'));
         for (const q of JSON.parse(await response.text())) {
           this.questionnaryList.push(q);
         }
-        userStore.updateToken(response.headers.get('Authorization'));
       } catch (error) {
         console.error(error);
       }
@@ -61,10 +61,10 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
+          userStore.updateToken(response.headers.get('Authorization'));
           for (const q of JSON.parse(await response.text())) {
             this.privateQuestions.push(q);
           }
-          userStore.updateToken(response.headers.get('Authorization'));
         }
       } catch (error) {
         console.error(error);
@@ -256,10 +256,9 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
-        const body = await response.json();
-        console.log(body.tag);
-        this.tagList = body.tag;
         userStore.updateToken(response.headers.get('Authorization'));
+        const body = await response.json();
+        this.tagList = body.tag;
       } catch (error) {
         console.error(error);
       }
@@ -271,8 +270,8 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 201) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
-          await this.getTags();
           userStore.updateToken(response.headers.get('Authorization'));
+          await this.getTags();
         }
       } catch (error) {
         console.error(error);
@@ -285,8 +284,8 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
-          await this.getTags();
           userStore.updateToken(response.headers.get('Authorization'));
+          await this.getTags();
         }
       } catch (error) {
         console.error(error);
@@ -299,8 +298,8 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         if (!response.ok || response.status !== 200) {
           throw new Error('Erreur de réponse'); // TODO manage error
         } else {
-          await this.getTags();
           userStore.updateToken(response.headers.get('Authorization'));
+          await this.getTags();
         }
       } catch (error) {
         console.error(error);
