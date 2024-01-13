@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   ValidationPipe,
@@ -208,9 +209,37 @@ export class UserController {
   async rejectAskDeleteUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.rejectAskDeleteUser(idUser);
   }
-
+  //@Roles([UserType.TEACHER]) //TODO uncomment line
   @Post('/createGroup')
-  createGroup(@Body() name: string, teacher: Teacher) {
+  async createGroup(@Body() name: string, teacher: Teacher) {
     return this.userService.createGroup(name, teacher);
   }
+  @Delete('/:id/deleteGroup')
+  async deleteGroup(@Param('id', ParseIntPipe) idGroup: number) {
+    return this.userService.deleteGroup(idGroup);
+  }
+
+  @Get('/:id/getGroup')
+  async getGroup(@Param('id', ParseIntPipe) idGroup: number) {
+    return this.userService.getGroup(idGroup);
+  }
+
+  @Put('/:id/addStudentToGroup')
+  async addStudentToGroup(
+    @Param('id', ParseIntPipe) idGroup: number,
+    idStudent: number,
+  ) {
+    return this.userService.addStudentToGroup(idGroup, idStudent);
+  }
+
+  @Patch('/:id/removeStudentFromGroup')
+  async removeStudentFromGroup(
+    @Param('id', ParseIntPipe) idGroup: number,
+    idStudent: number,
+  ) {
+    return this.userService.removeStudentFromGroup(idGroup, idStudent);
+  }
+
+  @Put('/:id/addTeacherToGroup')
+  async addTeacherToGroup() {}
 }

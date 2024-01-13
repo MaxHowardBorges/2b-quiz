@@ -12,12 +12,14 @@ import { NotValidatedUserException } from '../exception/notValidatedUser.excepti
 import { SortUserParam } from '../constants/sortUserParam.enum';
 import { SortOrder } from '../../constants/sortOrder.enum';
 import { Group } from '../entity/group.entity';
+import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly groupRepository: Repository<Group>,
   ) {}
   async createUser(
     username: string,
@@ -176,9 +178,93 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  createGroup(name: string, teacher: Teacher) {
+  async createGroup(name: string, teacher: Teacher) {
     let group: Group;
     group.teacher = teacher;
     group.groupName = name;
+    return await this.groupRepository.save(group);
+  }
+
+  async deleteGroup(idGroup: number) {
+    const group = this.groupRepository.findOne({
+      where: { id: idGroup },
+    });
+
+    if (group) {
+      await this.groupRepository.delete(idGroup);
+    } else {
+      throw new GroupNotFoundException();
+    }
+    return !!group;
+  }
+
+  async getGroup(idGroup: number) {
+    const group = this.groupRepository.findOne({
+      where: { id: idGroup },
+    });
+
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    return group;
+  }
+
+  async addStudentToGroup(idGroup: number, idStudent: number) {
+    //TODO add already in group exception
+    const group = await this.groupRepository.findOne({
+      where: { id: idGroup },
+    });
+
+    const student: Student = <Student>await this.userRepository.findOne({
+      where: { id: idStudent },
+    });
+    console.log(student);
+
+    if (group && student) {
+      student.groups.push(group);
+      group.tabStudents.push(student);
+      await this.userRepository.save(student);
+      await this.groupRepository.save(group);
+    }
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    if (!student) {
+      throw new UserNotFoundException();
+    }
+
+    return !!(group && student);
+  }
+
+  async removeStudentFromGroup(idGroup: number, idStudent: number) {
+    //TODO add student not in group
+    /*
+    const group = await this.groupRepository.findOne({
+      where: { id: idGroup },
+    });
+
+    const student: Student = <Student>await this.userRepository.findOne({
+      where: { id: idStudent },
+    });
+
+    if (group && student) {
+      if (
+        group.tabStudents.includes(student) &&
+        student.groups.includes(group)
+      ) {
+        student.groups.push(group);
+        group.tabStudents.push(student);
+        await this.userRepository.save(student);
+        await this.groupRepository.save(group);
+      }
+    }
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    if (!student) {
+      throw new UserNotFoundException();
+    }
+
+    return !!(group && student); */
   }
 }
