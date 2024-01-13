@@ -6,6 +6,7 @@ import { Answer } from '../entity/answer.entity';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Tag } from '../entity/tag.entity';
 import { TagDto } from '../dto/tag.dto';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 @Injectable()
 export class QuestionService {
@@ -18,10 +19,10 @@ export class QuestionService {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
-  async createTag(tagDto: TagDto) {
+  async createTag(teacher: Teacher, tagDto: TagDto) {
     const tag = new Tag();
     tag.description = tagDto.description;
-    tag.author = tagDto.author;
+    tag.author = teacher;
     tag.questions = [];
     await this.tagRepository.save(tag);
     return tag;
@@ -52,9 +53,9 @@ export class QuestionService {
     }
   }
 
-  async getTags(id: number) {
+  async getTags(teacher: Teacher) {
     return await this.tagRepository.find({
-      where: { author: id },
+      where: { author: { id: teacher.id } },
     });
   }
 
@@ -71,7 +72,7 @@ export class QuestionService {
     question.questionnary = questionnary;
     question.content = q.content;
     question.type = q.type;
-    question.idAuthor = q.idAuthor;
+    question.author = q.author;
     question.originalId = q.originalId;
     if (q.type == 'ouv') {
       q.answers = [];
@@ -203,11 +204,9 @@ export class QuestionService {
     return !!questionDB;
   }
 
-  async getQuestionPrivateBank(
-    idUser: number = 111111, //TODO implement User
-  ) {
+  async getQuestionPrivateBank(teacher: Teacher) {
     return await this.questionRepository.find({
-      where: { idAuthor: idUser, originalId: IsNull() },
+      where: { author: { id: teacher.id }, originalId: IsNull() },
       relations: ['answers', 'questionnary', 'tags'],
     });
   }

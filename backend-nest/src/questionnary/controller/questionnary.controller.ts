@@ -28,9 +28,14 @@ export class QuestionnaryController {
     private readonly questionnaryService: QuestionnaryService,
     private readonly questionService: QuestionService,
   ) {}
+
+  @Roles([UserType.TEACHER])
   @Post('/tag')
-  createTag(@Body(new ValidationPipe()) tagDto: TagDto) {
-    return this.questionService.createTag(tagDto);
+  createTag(
+    @Req() request: UserRequest,
+    @Body(new ValidationPipe()) tagDto: TagDto,
+  ) {
+    return this.questionService.createTag(request.user as Teacher, tagDto);
   }
 
   @Patch('/tag/:id')
@@ -51,9 +56,10 @@ export class QuestionnaryController {
     return this.questionService.getTag(id);
   }
 
-  @Get('/tag/user/:id')
-  getTags(@Param('id', ParseIntPipe) id: number) {
-    return this.questionService.getTags(id);
+  @Roles([UserType.TEACHER])
+  @Get('/tag/user/')
+  getTags(@Req() request: UserRequest) {
+    return this.questionService.getTags(request.user as Teacher);
   }
 
   @Roles([UserType.TEACHER])
@@ -128,12 +134,19 @@ export class QuestionnaryController {
       ))
     )
       throw new NotAuthorException();
-    return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
+    return this.questionnaryService.addQuestion(
+      request.user as Teacher,
+      idQuestionnary,
+      questionDto,
+    );
   }
 
+  @Roles([UserType.TEACHER])
   @Get('/user/:idUser/questions')
-  async getQuestionsPrivateBank(@Param('idUser', ParseIntPipe) idUser: number) {
-    return await this.questionService.getQuestionPrivateBank(idUser);
+  async getQuestionsPrivateBank(@Req() request: UserRequest) {
+    return await this.questionService.getQuestionPrivateBank(
+      request.user as Teacher,
+    );
   }
 
   @Roles([UserType.TEACHER])

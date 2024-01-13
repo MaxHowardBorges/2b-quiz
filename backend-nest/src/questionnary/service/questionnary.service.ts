@@ -59,8 +59,6 @@ export class QuestionnaryService {
 
   async findQuestionnariesFromIdUser(teacher: Teacher) {
     // questionnaires without questions
-    //TODO get from user questionnary bank
-
     return await this.questionnaryRepository.find({
       relations: {
         author: true,
@@ -78,11 +76,16 @@ export class QuestionnaryService {
     );
   }
 
-  async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
+  async addQuestion(
+    teacher: Teacher,
+    idQuestionnary: number,
+    questionDto: QuestionCreateDto,
+  ) {
     const question = this.dtoToQuestion(
       questionDto,
       await this.findQuestionnary(idQuestionnary),
     );
+    question.author = teacher;
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
@@ -172,7 +175,6 @@ export class QuestionnaryService {
     question.questionnary = questionnaryRef;
     question.type = questionDto.type;
     question.originalId = questionDto.id !== undefined ? questionDto.id : null;
-    question.idAuthor = questionDto.author;
     question.tags = [];
     for (const tagDto of questionDto.tags) {
       question.tags.push(this.dtoToTag(tagDto));

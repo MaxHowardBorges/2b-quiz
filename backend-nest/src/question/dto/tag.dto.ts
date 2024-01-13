@@ -8,8 +8,4 @@ export class TagDto {
   @IsString()
   @IsNotEmpty()
   description: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  author: number;
 }

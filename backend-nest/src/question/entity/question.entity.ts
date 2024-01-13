@@ -48,7 +48,6 @@ export class Question {
   @Column({ nullable: true })
   originalId?: number;
 
-  //TODO ADD ID AUTHOR
   @ManyToOne(() => Teacher, (teacher) => teacher.questions)
   author: Teacher;
 }

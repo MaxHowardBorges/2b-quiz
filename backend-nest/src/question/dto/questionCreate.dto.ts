@@ -24,9 +24,6 @@ export class QuestionCreateDto {
   @IsNotEmpty()
   type: QuestionType;
 
-  @IsNotEmpty()
-  author: number = 111111; //TODO IMPLEMENT USER ENTITY
-
   @IsNotEmpty({ each: true })
   @ValidateNested({ each: true })
   @Type(() => AnswerCreateDto)

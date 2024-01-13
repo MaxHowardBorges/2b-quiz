@@ -11,7 +11,6 @@ export class Tag {
   @Column()
   description: string;
 
-  //TODO ADD ID AUTHOR
   @ManyToOne(() => Teacher, (teacher) => teacher.tags)
   author: Teacher;
 
