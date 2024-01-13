@@ -16,6 +16,10 @@ import { Teacher } from '../../user/entity/teacher.entity';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
+import { AccessTypeEnum } from '../enum/accessType.enum';
+import { AccessDto } from '../dto/access.dto';
+import { SessionClosedException } from '../exception/sessionClosed.exception';
+import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
 
 @Injectable()
 export class SessionService {
@@ -40,7 +44,7 @@ export class SessionService {
       idSession,
       await this.createSession(idSession, teacher, questionnaries),
     );
-    this.eventService.createClientGroup(idSession);
+    this.eventService.createSessionGroup(idSession, teacher.id);
     return this.sessionMap.get(idSession);
   }
 
@@ -100,7 +104,7 @@ export class SessionService {
     }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
-    this.eventService.closeClientGroup(idSession);
+    this.eventService.closeSessionGroup(idSession);
     return null;
   }
 
@@ -134,11 +138,30 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
-    if (session.connectedUser.has(user)) {
-      throw new UserAlreadyJoinedException();
+
+    if (session.accessType == AccessTypeEnum.Public) {
+      if (session.connectedUser.has(user)) {
+        throw new UserAlreadyJoinedException();
+      }
+      session.connectedUser.add(user);
+      session.userAnswers.set(user.id, new Map<Question, Answer>());
+    } else if (
+      session.accessType == AccessTypeEnum.Private &&
+      session.whitelist.includes(user.id)
+    ) {
+      if (session.connectedUser.has(user)) {
+        throw new UserAlreadyJoinedException();
+      }
+      session.connectedUser.add(user);
+      session.userAnswers.set(user.id, new Map<Question, Answer>());
+    } else if (
+      session.accessType == AccessTypeEnum.Private &&
+      !session.whitelist.includes(user.id)
+    ) {
+      throw new UserNotInWhitelistException();
+    } else {
+      throw new SessionClosedException();
     }
-    session.connectedUser.add(user);
-    session.userAnswers.set(user.id, new Map<Question, Answer>());
   }
 
   async currentQuestion(idSession: string) {
@@ -211,6 +234,13 @@ export class SessionService {
     );
   }
 
+  isParticipant(idSession: string, user: ParticipantInterface): boolean {
+    return (
+      this.sessionMap.get(idSession) != undefined &&
+      this.sessionMap.get(idSession).hasUser(user)
+    );
+  }
+
   async getCurrentQuestion(session: Session) {
     const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
@@ -226,5 +256,15 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     return this.sessionMap.get(idSession);
+  }
+
+  setSettings(access: AccessDto, idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.accessType = access.accesType;
+      session.whitelist = access.whitelist;
+    }
+
+    return !!session;
   }
 }

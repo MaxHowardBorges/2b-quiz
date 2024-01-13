@@ -3,6 +3,7 @@ import { Question } from '../question/entity/question.entity';
 import { Answer } from '../question/entity/answer.entity';
 import { Teacher } from '../user/entity/teacher.entity';
 import { ParticipantInterface } from '../user/interface/participant.interface';
+import { AccessTypeEnum } from './enum/accessType.enum';
 
 export class Session {
   id: string;
@@ -21,6 +22,10 @@ export class Session {
 
   host: Teacher;
 
+  accessType: AccessTypeEnum;
+
+  whitelist: number[];
+
   constructor(
     idSession: string,
     tabQuestionnary: Questionnary[],
@@ -36,6 +41,8 @@ export class Session {
       Map<Question, Answer | string | Answer[]>
     >();
     this.endSession = false;
+    this.accessType = AccessTypeEnum.Public;
+    this.whitelist = [];
     this.host = host;
   }
 

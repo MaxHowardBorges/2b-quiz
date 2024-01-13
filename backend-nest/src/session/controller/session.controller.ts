@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   Req,
@@ -22,7 +23,9 @@ import { IsHostException } from '../exception/isHost.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
+import { AccessDto } from '../dto/access.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
+import { IsNotParticipantException } from '../exception/isNotParticipant.exception';
 
 @Controller('session')
 export class SessionController {
@@ -41,7 +44,7 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER])
-  @Post('/nextQuestion')
+  @Post('/nextQuestion') //TODO replace with /:idSession/
   async nextQuestion(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) body: NextQuestionDto,
@@ -57,7 +60,7 @@ export class SessionController {
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/join')
+  @Post('/join') //TODO replace with /:idSession/
   @HttpCode(HttpStatus.NO_CONTENT)
   joinSession(
     @Req() request: UserRequest,
@@ -72,22 +75,22 @@ export class SessionController {
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/question/current') //TODO go to get
+  @Post('/question/current') //TODO go to get & replace with /:idSession/
   async getCurrentQuestion(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
   ): Promise<CurrentQuestionDto> {
     if (
-      request.user instanceof Teacher &&
-      this.sessionService.isHost(body.idSession, request.user)
+      !this.sessionService.isParticipant(body.idSession, request.user) ||
+      !this.sessionService.isHost(body.idSession, request.user as Teacher)
     )
-      throw new IsHostException();
+      throw new IsNotParticipantException();
     const question = await this.sessionService.currentQuestion(body.idSession);
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/respond')
+  @Post('/respond') //TODO replace with /:idSession/
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
     @Req() request: UserRequest,
@@ -102,7 +105,7 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER])
-  @Get('/getMap')
+  @Get('/getMap') //TODO replace with /:idSession/
   async getMap(
     @Req() request: UserRequest,
     @Query('idsession') idSession: string,
@@ -115,5 +118,20 @@ export class SessionController {
       await this.sessionService.getQuestionList(idSession),
       this.sessionMapper.mapUserAnswerDto(a),
     ]; //TODO replace with a DTO
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/getMap2')
+  async getMap2() {
+    return this.sessionService.getMap();
+  }
+
+  @Roles([UserType.TEACHER])
+  @Post('/:idSession/settings')
+  async setSessionSettings(
+    @Param('idSession') idSession: string,
+    @Body(new ValidationPipe()) acces: AccessDto,
+  ) {
+    return this.sessionService.setSettings(acces, idSession);
   }
 }

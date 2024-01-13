@@ -49,9 +49,9 @@ describe('SessionService', () => {
   };
 
   const mockEventService = {
-    createClientGroup: jest.fn(),
+    createSessionGroup: jest.fn(),
     sendEvent: jest.fn(),
-    closeClientGroup: jest.fn(),
+    closeSessionGroup: jest.fn(),
   };
 
   let hostTeacher = generateTeacherMock();
@@ -189,6 +189,8 @@ describe('SessionService', () => {
     userAnswers: null,
     endSession: false,
     host: hostTeacher,
+    accessType: null,
+    whitelist: null,
   };
   session.questionnaryList.push(questionnary);
 

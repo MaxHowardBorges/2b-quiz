@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { Headerless } from '../../decorators/headerless.decorator';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
-import { Request } from 'express';
+import { UserRequest } from '../../auth/config/user.request';
 
 @Controller('event')
 export class EventController {
@@ -18,9 +18,9 @@ export class EventController {
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
   @Headerless()
-  @Get(':idSession')
+  @Get(':idSession/student')
   async sse(
-    @Req() req: Request,
+    @Req() req: UserRequest,
     @Res() res: Response,
     @Param('idSession') idSession: string,
   ) {
@@ -28,10 +28,59 @@ export class EventController {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    const client = this.eventService.createClient(idSession);
+    const client = await this.eventService.createClient(idSession, req.user.id);
 
     req.on('close', () => {
-      this.eventService.removeClient(idSession, client);
+      this.eventService.removeClient(idSession, req.user.id);
+    });
+
+    client.subscribe((data) => {
+      res.write(`data: ${data}\n\n`);
+    });
+  }
+
+  @Roles([UserType.TEACHER])
+  @Headerless()
+  @Get(':idSession/observer')
+  async sseObserver(
+    @Req() req: UserRequest,
+    @Res() res: Response,
+    @Param('idSession') idSession: string,
+  ) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const client = await this.eventService.createObserver(
+      idSession,
+      req.user.id,
+    );
+
+    req.on('close', () => {
+      this.eventService.removeObserver(idSession, req.user.id);
+    });
+
+    client.subscribe((data) => {
+      res.write(`data: ${data}\n\n`);
+    });
+  }
+
+  @Roles([UserType.TEACHER])
+  @Headerless()
+  @Get(':idSession/host')
+  async sseHost(
+    @Req() req: UserRequest,
+    @Res() res: Response,
+    @Param('idSession') idSession: string,
+  ) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const client = await this.eventService.createHost(idSession, req.user.id);
+
+    req.on('close', () => {
+      this.eventService.removeHost(idSession, req.user.id);
     });
 
     client.subscribe((data) => {
