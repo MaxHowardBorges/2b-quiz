@@ -12,8 +12,6 @@ import {
 import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
-import { QuestionService } from '../../question/service/question.service';
-import { TagDto } from '../../question/dto/tag.dto';
 import { Req } from '@nestjs/common/decorators/http/route-params.decorator';
 import { UserRequest } from '../../auth/config/user.request';
 import { UserType } from '../../user/constants/userType.constant';
@@ -21,20 +19,28 @@ import { Roles } from '../../decorators/roles.decorator';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { NotAuthorException } from '../exception/notAuthor.exception';
 import { QuestionnaryNotFoundException } from '../exception/questionnaryNotFound.exception';
+import { QuestionMapper } from '../../question/mapper/question.mapper';
+import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
 
 @Controller('questionnary')
 export class QuestionnaryController {
-  constructor(private readonly questionnaryService: QuestionnaryService) {}
+  constructor(
+    private readonly questionnaryService: QuestionnaryService,
+    private readonly questionnaryMapper: QuestionnaryMapper,
+    private readonly questionMapper: QuestionMapper,
+  ) {}
 
   @Roles([UserType.TEACHER])
   @Post('/create')
-  createQuestionnary(
+  async createQuestionnary(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
-    return this.questionnaryService.createQuestionnary(
-      questionnaryDto,
-      <Teacher>request.user,
+    return this.questionnaryMapper.entityToQuestionnaryDto(
+      await this.questionnaryService.createQuestionnary(
+        questionnaryDto,
+        <Teacher>request.user,
+      ),
     );
   }
 
@@ -53,7 +59,7 @@ export class QuestionnaryController {
       ))
     )
       throw new NotAuthorException();
-    return this.questionnaryService.deleteQuestionnary(idQuestionnary);
+    return await this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
   @Roles([UserType.TEACHER])
@@ -72,14 +78,18 @@ export class QuestionnaryController {
     )
       throw new NotAuthorException();
 
-    return this.questionnaryService.findQuestionnary(idQuestionnary);
+    return this.questionnaryMapper.entityToQuestionnaryDto(
+      await this.questionnaryService.findQuestionnary(idQuestionnary),
+    );
   }
 
   @Roles([UserType.TEACHER])
   @Get()
-  selectQuestionnaryList(@Req() request: UserRequest) {
-    return this.questionnaryService.findQuestionnariesFromIdUser(
-      request.user as Teacher,
+  async selectQuestionnaryList(@Req() request: UserRequest) {
+    return this.questionnaryMapper.entityToQuestionnaryDtoTab(
+      await this.questionnaryService.findQuestionnariesFromIdUser(
+        request.user as Teacher,
+      ),
     );
   }
 
@@ -90,8 +100,10 @@ export class QuestionnaryController {
   ) {
     if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
       throw new QuestionnaryNotFoundException();
-    return this.questionnaryService.findQuestionsFromIdQuestionnary(
-      idQuestionnary,
+    return this.questionMapper.entityToQuestionDtoTab(
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        idQuestionnary,
+      ),
     );
   }
 
@@ -111,10 +123,12 @@ export class QuestionnaryController {
       ))
     )
       throw new NotAuthorException();
-    return this.questionnaryService.addQuestion(
-      request.user as Teacher,
-      idQuestionnary,
-      questionDto,
+    return this.questionMapper.entityToQuestionDto(
+      await this.questionnaryService.addQuestion(
+        request.user as Teacher,
+        idQuestionnary,
+        questionDto,
+      ),
     );
   }
 

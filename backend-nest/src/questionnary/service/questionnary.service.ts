@@ -3,15 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionService } from '../../question/service/question.service';
-import { Question } from '../../question/entity/question.entity';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
-import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
-import { TagDto } from '../../question/dto/tag.dto';
-import { Answer } from '../../question/entity/answer.entity';
-import { Tag } from '../../question/entity/tag.entity';
 import { Teacher } from '../../user/entity/teacher.entity';
-import { QuestionnaryDto } from '../dto/questionnary.dto';
 
 @Injectable()
 export class QuestionnaryService {
@@ -82,7 +76,9 @@ export class QuestionnaryService {
   ) {
     const question = this.questionService.dtoToQuestion(
       questionDto,
-      await this.findQuestionnary(idQuestionnary),
+      await this.questionnaryRepository.findOne({
+        where: { id: idQuestionnary },
+      }),
     );
     question.author = teacher;
     const questionnary = await this.questionnaryRepository.findOne({
@@ -91,7 +87,6 @@ export class QuestionnaryService {
     if (questionnary) {
       return await this.questionService.createQuestion(question, questionnary);
     }
-    return !!questionnary;
   }
 
   async deleteQuestion(idQuestionnary: number, idQuestion: number) {
@@ -124,7 +119,9 @@ export class QuestionnaryService {
     if (questionnary) {
       const question = this.questionService.dtoToQuestion(
         questionDto,
-        await this.findQuestionnary(idQuestionnary),
+        await this.questionnaryRepository.findOne({
+          where: { id: idQuestionnary },
+        }),
       );
       if (question.originalId === null) {
         await this.questionService.modifyQuestionsOriginalId(idQuestion);
@@ -165,19 +162,6 @@ export class QuestionnaryService {
       );
     }
     return questionnary;
-  }
-
-  entityToQuestionnaryDto(questionnary: Questionnary) {
-    const questionnaryDto = new QuestionnaryDto();
-    questionnaryDto.id = questionnary.id;
-    questionnaryDto.title = questionnary.title;
-    questionnaryDto.questions = [];
-    for (const question of questionnary.questions) {
-      questionnaryDto.questions.push(
-        this.questionService.entityToQuestionDto(question),
-      );
-    }
-    return questionnaryDto;
   }
 
   async isQuestionnaryFromTeacher(idQuestionnary: number, teacher: Teacher) {

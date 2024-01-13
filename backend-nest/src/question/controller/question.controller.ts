@@ -20,24 +20,38 @@ import { NotAuthorQuestionException } from '../exception/notAuthorQuestion.excep
 import { QuestionNotFoundException } from '../exception/questionNotFound.exception';
 import { TagNotFoundException } from '../exception/tagNotFound.exception';
 import { NotAuthorTagException } from '../exception/notAuthorTag.exception';
+import { QuestionMapper } from '../mapper/question.mapper';
+import { AnswerMapper } from '../mapper/answer.mapper';
+import { TagMapper } from '../mapper/tag.mapper';
 
 @Controller('question')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService) {}
+  constructor(
+    private readonly questionService: QuestionService,
+    private readonly questionMapper: QuestionMapper,
+    private readonly answerMapper: AnswerMapper,
+    private readonly tagMapper: TagMapper,
+  ) {}
 
   @Roles([UserType.TEACHER])
   @Get('/tag')
   async getTags(@Req() request: UserRequest) {
-    return { tag: await this.questionService.getTags(request.user as Teacher) };
+    return {
+      tag: this.tagMapper.entityToTagDtoTab(
+        await this.questionService.getTags(request.user as Teacher),
+      ),
+    };
   }
 
   @Roles([UserType.TEACHER])
   @Post('/tag')
-  createTag(
+  async createTag(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) tagDto: TagDto,
   ) {
-    return this.questionService.createTag(request.user as Teacher, tagDto);
+    return this.tagMapper.entityToTagDto(
+      await this.questionService.createTag(request.user as Teacher, tagDto),
+    );
   }
 
   @Roles([UserType.TEACHER])
@@ -80,8 +94,10 @@ export class QuestionController {
   @Roles([UserType.TEACHER])
   @Get('/user/questions')
   async getQuestionsPrivateBank(@Req() request: UserRequest) {
-    return await this.questionService.getQuestionPrivateBank(
-      request.user as Teacher,
+    return this.questionMapper.entityToQuestionDtoTab(
+      await this.questionService.getQuestionPrivateBank(
+        request.user as Teacher,
+      ),
     );
   }
 
@@ -100,7 +116,9 @@ export class QuestionController {
       ))
     )
       throw new NotAuthorQuestionException();
-    return this.questionService.findQuestion(idQuestion);
+    return this.questionMapper.entityToQuestionDto(
+      await this.questionService.findQuestion(idQuestion),
+    );
   }
 
   @Roles([UserType.TEACHER])
@@ -118,6 +136,8 @@ export class QuestionController {
       ))
     )
       throw new NotAuthorQuestionException();
-    return this.questionService.findAnswers(idQuestion);
+    return this.answerMapper.entityToAnswerDtoTab(
+      await this.questionService.findAnswers(idQuestion),
+    );
   }
 }

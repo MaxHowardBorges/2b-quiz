@@ -9,8 +9,6 @@ import { TagDto } from '../dto/tag.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { QuestionCreateDto } from '../dto/questionCreate.dto';
 import { AnswerCreateDto } from '../dto/answerCreate.dto';
-import { QuestionDto } from '../dto/question.dto';
-import { AnswerDto } from '../dto/answer.dto';
 
 @Injectable()
 export class QuestionService {
@@ -278,38 +276,5 @@ export class QuestionService {
     tag.idTag = tagDto.idTag;
     tag.description = tagDto.description;
     return tag;
-  }
-
-  entityToQuestionDto(question: Question) {
-    const questionDto = new QuestionDto();
-    questionDto.id = question.id;
-    questionDto.content = question.content;
-    questionDto.type = question.type;
-    questionDto.tags = [];
-    for (const tag of question.tags) {
-      questionDto.tags.push(this.entityToTagDto(tag));
-    }
-    questionDto.answers = [];
-    for (const answer of question.answers) {
-      questionDto.answers.push(this.entityToAnswerDto(answer));
-    }
-    questionDto.originalId =
-      question.originalId !== undefined ? questionDto.originalId : null;
-
-    return questionDto;
-  }
-  entityToAnswerDto(answer: Answer) {
-    const answerDto = new AnswerDto();
-    answerDto.id = answer.id;
-    answerDto.content = answer.content;
-    answerDto.isCorrect = answer.isCorrect;
-    return answerDto;
-  }
-
-  entityToTagDto(tag: Tag) {
-    const tagDto = new TagDto();
-    tagDto.idTag = tag.idTag;
-    tagDto.description = tag.description;
-    return tagDto;
   }
 }

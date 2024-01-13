@@ -18,8 +18,8 @@ export class QuestionnaryDto {
   title: string;
 
   @IsString()
-  @IsNotEmpty()
-  author: string;
+  @IsOptional()
+  author?: string;
 
   @IsOptional({ each: true })
   @ValidateNested({ each: true })
