@@ -81,8 +81,10 @@ export class SessionController {
     @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
   ): Promise<CurrentQuestionDto> {
     if (
-      !this.sessionService.isParticipant(body.idSession, request.user) ||
-      !this.sessionService.isHost(body.idSession, request.user as Teacher)
+      !(
+        this.sessionService.isParticipant(body.idSession, request.user) ||
+        this.sessionService.isHost(body.idSession, request.user as Teacher)
+      )
     )
       throw new IsNotParticipantException();
     const question = await this.sessionService.currentQuestion(body.idSession);

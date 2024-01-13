@@ -19,7 +19,7 @@ export const useSessionEventStore = defineStore('sessionEvent', {
         import.meta.env.VITE_API_URL +
         '/event/' +
         sessionStore.idSession +
-        '?token=' +
+        '/student?token=' +
         userStore.token;
       const eventSource = new EventSource(url);
 

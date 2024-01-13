@@ -30,7 +30,7 @@ export const useSessionStore = defineStore('session', {
     setEnded(ended) {
       this.ended = ended;
     },
-    setIsDisplay(oui){
+    setIsDisplay(oui) {
       this.start = oui;
     },
     setTabResult(results) {
@@ -54,6 +54,7 @@ export const useSessionStore = defineStore('session', {
       try {
         const response = await getCurrentQuestion(body, userStore.token);
         if (!response.ok) {
+          response.text().then((text) => console.log(text));
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
         userStore.updateToken(response.headers.get('Authorization'));
