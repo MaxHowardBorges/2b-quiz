@@ -234,6 +234,13 @@ export class SessionService {
     );
   }
 
+  isParticipant(idSession: string, user: ParticipantInterface): boolean {
+    return (
+      this.sessionMap.get(idSession) != undefined &&
+      this.sessionMap.get(idSession).hasUser(user)
+    );
+  }
+
   async getCurrentQuestion(session: Session) {
     const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
