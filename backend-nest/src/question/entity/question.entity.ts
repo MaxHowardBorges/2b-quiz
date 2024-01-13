@@ -12,6 +12,7 @@ import { Answer } from './answer.entity';
 import { QuestionType } from '../constants/questionType.constant';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { Tag } from './tag.entity';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 @Entity()
 export class Question {
@@ -48,7 +49,6 @@ export class Question {
   originalId?: number;
 
   //TODO ADD ID AUTHOR
-  /*@ManyToOne(()=> )*/
-  @Column()
-  idAuthor: number;
+  @ManyToOne(() => Teacher, (teacher) => teacher.questions)
+  author: Teacher;
 }

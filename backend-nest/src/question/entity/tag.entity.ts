@@ -1,5 +1,7 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './question.entity';
+import { ManyToOne } from 'typeorm/decorator/relations/ManyToOne';
+import { Teacher } from '../../user/entity/teacher.entity';
 
 @Entity()
 export class Tag {
@@ -10,8 +12,8 @@ export class Tag {
   description: string;
 
   //TODO ADD ID AUTHOR
-  @Column()
-  author: number;
+  @ManyToOne(() => Teacher, (teacher) => teacher.tags)
+  author: Teacher;
 
   @ManyToMany(() => Question, (question) => question.tags)
   //@JoinTable()
