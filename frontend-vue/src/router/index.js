@@ -4,8 +4,15 @@ import SessionView from '@/views/SessionView.vue';
 import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 import SessionHistoryView from '@/views/SessionHistoryView.vue';
+import SessionHandleResults from '@/components/session/SessionHandleResults.vue';
 
 const routes = [
+
+  {
+    path: '/session-handle-results',
+    name : SessionHandleResults,
+    component: SessionHandleResults, //
+  },
   {
     path: '/session-history',
     name: 'SessionHistory',

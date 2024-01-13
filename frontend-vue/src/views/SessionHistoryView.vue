@@ -1,5 +1,6 @@
 <script setup>
   import QuestionItem from '@/components/question/QuestionItem.vue';
+
 </script>
 
 <template>
@@ -7,7 +8,8 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
-    elevation="5">
+    elevation="5"
+  >
     <div style="display: flex">
       <div style="align-self: start" id="divButton">
         <v-btn id="ic" icon="undo" @click=""></v-btn>
@@ -16,43 +18,28 @@
     </div>
 
     <v-sheet class="list">
-      <!--<v-sheet
-       v-for="(questionnary, index) in this.useQ.questionnaryList"
-       :key="index">-->
       <QuestionItem
         :questionName="questionnary"
         :questionnaryId="1"
-        @nextQuestionE="emitNextQuestion"></QuestionItem>
-      <QuestionItem
-        :questionName="questionnary"
-        :questionnaryId="1"
-        @nextQuestionE="emitNextQuestion"></QuestionItem>
-      <QuestionItem
-        :questionName="questionnary"
-        :questionnaryId="1"
-        @nextQuestionE="emitNextQuestion"></QuestionItem>
-      <!--</v-sheet>-->
+        @nextQuestionE="emitNextQuestion"
+      ></QuestionItem>
     </v-sheet>
 
-    <v-card class="mt-25">
-      <!--<v-btn @click="">Done</v-btn>-->
-    </v-card>
+
   </v-sheet>
 </template>
+
+
+  const handleManageResults = () => {
+    // Ajoutez ici la logique pour gérer les résultats
+    // Par exemple, rediriger vers une nouvelle page
+    router.push('/chemin-de-gestion-des-resultats');
+  };
+
 
 <style scoped>
   #divButton {
     position: absolute;
     left: 18%;
-  }
-
-  #divDrop1 {
-    position: absolute;
-    left: 75%;
-  }
-
-  #divDrop2 {
-    position: absolute;
-    right: 75%;
   }
 </style>

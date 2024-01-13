@@ -22,10 +22,15 @@
       </div>
       <span class="spacer"></span>
       <span class="spacer"></span>
-
-        <!-- Un seul bouton pour gérer les résultats -->
-        <v-btn @click="handleManageResults">Gérer les résultats</v-btn>
-
+      <v-btn id="ic" @click="showGlobalResults" text>
+        Voir les résultats globaux
+      </v-btn>
+      <v-btn id="ic" @click="toggleDropdown" text>
+        Voir les réponses correctes
+      </v-btn>
+      <v-btn id="ic" @click="showStudentResponses" text>
+        Voir les réponses des étudiants
+      </v-btn>
     </div>
 
     <v-sheet class="list">
@@ -76,6 +81,26 @@
         </v-data-table>
       </v-sheet>
     </v-sheet>
+    <!-- New switches added below -->
+    <v-switch
+      label="Visibility Results"
+      class="mx-2 my-3"
+      v-model="switch1Value"
+      @change="handleSwitchChange"
+    ></v-switch>
+    <v-switch
+      label="Visibility Responses"
+      class="mx-2 my-3"
+      v-model="switch2Value"
+      @change="handleSwitchChange"
+    ></v-switch>
+    <v-switch
+      label="Visibility Globals"
+      class="mx-2 my-3"
+      v-model="switch3Value"
+      @change="handleSwitchChange"
+    ></v-switch>
+
   </v-sheet>
 </template>
 
@@ -123,10 +148,6 @@
       };
     },
     methods: {
-      handleManageResults(){
-        router.push('/session-handle-results')
-
-      },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;
       },

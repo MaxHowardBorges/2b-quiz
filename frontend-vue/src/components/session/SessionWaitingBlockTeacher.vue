@@ -52,7 +52,7 @@
 
 <script>
   import { ref } from 'vue';
-  import router from '@/router';
+
   import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
