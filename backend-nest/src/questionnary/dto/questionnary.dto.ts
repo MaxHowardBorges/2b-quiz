@@ -17,10 +17,6 @@ export class QuestionnaryDto {
   @IsNotEmpty()
   title: string;
 
-  @IsString()
-  @IsOptional()
-  author?: string;
-
   @IsOptional({ each: true })
   @ValidateNested({ each: true })
   @Type(() => QuestionDto)
