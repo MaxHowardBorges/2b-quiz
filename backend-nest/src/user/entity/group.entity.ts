@@ -24,8 +24,6 @@ export class Group {
   @IsNotEmpty()
   teacher: Teacher;
 
-  @Column()
-  @IsArray()
   @ManyToMany(() => Student, (student) => student.groups)
   tabStudents: Student[];
 }
