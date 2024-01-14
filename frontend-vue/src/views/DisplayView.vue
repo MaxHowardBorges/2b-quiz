@@ -6,6 +6,7 @@
       :id-session="idSession"
       :waitingSessionStart="true" />
     <session-question-block v-if="!waiting && !ended" />
+<!--    <ActionTeacher></ActionTeacher>-->
   </div>
 </template>
 
@@ -15,10 +16,11 @@
   import SessionWaitingBlockStudent from '@/components/session/SessionWaitingBlockStudent.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
+  import ActionTeacher from '@/components/public/ActionTeacher.vue';
 
   export default {
     name: 'DisplayView',
-    components: { SessionWaitingBlockStudent, SessionQuestionBlock, WaitForm },
+    components: { ActionTeacher, SessionWaitingBlockStudent, SessionQuestionBlock, WaitForm },
     props: {
       idSession: String,
     },

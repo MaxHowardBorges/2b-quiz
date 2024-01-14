@@ -1,4 +1,5 @@
 <template>
+  <div class='gaucheDroite'>
   <session-waiting-block-student
     v-if="waiting && !ended && userStore.isStudent"
     :id-session="sessionStore.idSession.toString()"
@@ -13,6 +14,12 @@
     v-if="!waiting && !ended" />
 
   <session-ended-block @reset="reset" v-if="ended" />
+
+    <ActionTeacher v-if="userStore.isTeacher && !waiting" ></ActionTeacher>
+
+  <EventSession v-if="userStore.isTeacher && !waiting" ></EventSession>
+
+  </div>
 </template>
 
 <script>
@@ -24,6 +31,8 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
   import router from '@/router';
+  import EventSession from '@/components/public/EventSession.vue';
+  import ActionTeacher from '@/components/public/ActionTeacher.vue';
 
   let waiting;
   export default {
@@ -37,10 +46,12 @@
     },
     name: 'SessionView',
     components: {
+      EventSession,
       SessionEndedBlock,
       SessionQuestionBlock,
       SessionWaitingBlockStudent,
       SessionWaitingBlockTeacher,
+      ActionTeacher,
     },
     setup() {
       const sessionStore = useSessionStore();
@@ -71,6 +82,7 @@
         waitingSessionStart,
       };
     },
+
     mounted() {
       if (!this.sessionStore.idSession) router.replace('/');
     },
@@ -84,3 +96,20 @@
     },
   };
 </script>
+
+<style scoped>
+
+
+
+  .gaucheDroite {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  * {
+    color: #007ea1;
+  }
+
+</style>
