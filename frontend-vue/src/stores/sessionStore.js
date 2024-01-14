@@ -103,6 +103,7 @@ export const useSessionStore = defineStore('session', {
       if (responseText.isEnded) {
         await this.fetchResults();
         this.setEnded(true);
+        this.sessionEnd(); //TODO adapt to session result
       } else {
         await this.getCurrentQuestions();
       }
@@ -130,6 +131,9 @@ export const useSessionStore = defineStore('session', {
       this.setEnded(false);
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEObserver();
+    },
+    sessionEnd() {
+      this.setIdSession(null);
     },
   },
 });

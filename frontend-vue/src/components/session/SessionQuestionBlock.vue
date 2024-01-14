@@ -13,6 +13,7 @@
         "></question-block>
 
       <session-actions-block
+        v-if="!sessionStore.isDisplay"
         @answer-sent="relayEvent"
         ref="session-actions-block"></session-actions-block>
     </v-card>

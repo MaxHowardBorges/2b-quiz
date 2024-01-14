@@ -1,6 +1,6 @@
 <template>
   <h1>Public screen</h1>
-  <div class="h-10 d-flex align-center justify-center ma-2">
+  <div class="h-75 d-flex align-center justify-center ma-2">
     <session-waiting-block-student
       v-if="waiting && !ended"
       :id-session="idSession"
