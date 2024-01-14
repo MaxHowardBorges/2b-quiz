@@ -1,5 +1,7 @@
 <template>
-  <div class='gaucheDroite'>
+  <div class='displayNormal'>
+  <div class="left-panel">
+  <div class='gaucheDroite mt-5'>
   <session-waiting-block-student
     v-if="waiting && !ended && userStore.isStudent"
     :id-session="sessionStore.idSession.toString()"
@@ -11,13 +13,21 @@
 
   <session-question-block
     @answer-sent-relay="waiting = true"
-    v-if="!waiting && !ended" />
+    v-if="!waiting && !ended && userStore.isStudent" />
+
+    <session-question-block
+      class='w-75'
+      @answer-sent-relay="waiting = true"
+      v-if="!waiting && !ended && userStore.isTeacher" />
 
   <session-ended-block @reset="reset" v-if="ended" />
 
     <ActionTeacher v-if="userStore.isTeacher && !waiting" ></ActionTeacher>
-
-  <EventSession v-if="userStore.isTeacher && !waiting" ></EventSession>
+  </div>
+  </div>
+  <div class="right-panel">
+  <EventSession class='w-100' v-if="userStore.isTeacher && !waiting" ></EventSession>
+  </div>
 
   </div>
 </template>
@@ -109,8 +119,24 @@
     align-items: center;
   }
 
+  .displayNormal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+
   * {
     color: #007ea1;
+  }
+
+  .left-panel {
+    flex-basis: 75%;
+  }
+
+  .right-panel {
+    flex-basis: 25%;
   }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-inline-flex w-100 align-center flex-column px-6">
+  <div class="d-inline-flex align-center flex-column px-6 widthQuest">
     <v-card
       min-width="200px"
       max-width="1000px"
@@ -65,4 +65,8 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .widthQuest {
+    width: 100%;
+  }
+</style>

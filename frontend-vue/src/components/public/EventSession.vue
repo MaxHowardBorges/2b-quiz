@@ -1,6 +1,8 @@
 <template>
+  <div class='allY'>
   <div class="event-column">
     <div v-for="(event, index) in events" :key="index">{{ event }}</div>
+  </div>
   </div>
 </template>
 
@@ -26,7 +28,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    max-width: 100%;
+    width: 100%;
     height: 100%;
     background-color: #f5f5f5;
     border-radius: 5px;
@@ -37,5 +39,9 @@
 
   * {
     color: #007ea1;
+  }
+
+  .allY{
+    height: 100%;
   }
 </style>
