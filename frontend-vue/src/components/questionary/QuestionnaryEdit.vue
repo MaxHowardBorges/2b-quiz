@@ -36,11 +36,11 @@
       outlined
       readonly=""></v-select>
 
-    <v-btn color="primary" class="mx-0 my-5" max-width="250px">
-      <p class="text-white font-weight-bold pa-2">Tags</p>
-    </v-btn>
-
-    <ListTags v-if="voir"></ListTags>
+    <v-btn
+      style="margin-bottom: 30px"
+      text="Tags"
+      class="mt-5"
+      @click="toggleVoirVisibility"></v-btn>
 
     <v-select
       v-if="!OnList"
@@ -48,7 +48,7 @@
       :items="tagOptions"
       label="Select Tags"
       style="width: 200px"
-      multiple
+      multiple="true"
       outlined
       dense></v-select>
 
@@ -147,6 +147,8 @@
 
     <v-btn text="done" class="mt-5" @click="EmitGoList"></v-btn>
   </v-sheet>
+
+  <ListTags v-if="voir"></ListTags>
 </template>
 
 <script>
@@ -154,7 +156,6 @@
   import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
   import ListTags from '@/components/questionary/ListTags.vue';
-  import ListOfQuestion from '@/components/question/ListOfQuestion.vue';
 
   export default {
     data() {
@@ -192,7 +193,6 @@
     },
     name: 'QuestionnaryEdit',
     components: {
-      ListOfQuestion,
       ListTags,
       CreateQuestionnary,
       QuestionnaryListOne,

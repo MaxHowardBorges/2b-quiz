@@ -1,9 +1,20 @@
-<script setup></script>
+<script>
+  export default {
+    name: 'TagItem',
+    props: {
+      tags: {
+        type: String,
+        required: true,
+      },
+    },
+  }
+
+</script>
 
 <template>
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-5 pa-3">
     <div>
-      <b style="margin-right: 10px">Tags</b>
+      <b style="margin-right: 10px">{{tags}}</b>
       <v-btn id="ic" icon="edit" size="30" style="margin-right: 10px"></v-btn>
       <v-btn id="ic" icon="delete" size="30"></v-btn>
     </div>

@@ -57,11 +57,9 @@
 
 <script>
   import QuestionItem from '@/components/question/QuestionItem.vue';
-  import TagItem from '@/components/questionary/TagItem.vue';
 
   export default {
     components: {
-      TagItem,
       QuestionItem,
     },
     data() {
@@ -92,16 +90,15 @@
     },
     computed: {
       filteredQuestions() {
-        let filtered = this.questions;
 
         // Filtrer par type
         if (this.selectedType) {
-          filtered = filtered.filter((q) => q.type === this.selectedType);
+          this.questions.filter((q) => q.type === this.selectedType);
         }
 
         // Filtrer par tag
-        if (this.selectedTag) {
-          filtered = filtered.filter((q) => q.tags.includes(this.selectedTags));
+        if (this.selectedTags) {
+          this.questions.filter((q) => q.tags.includes(this.selectedTags));
         }
 
         //Recherche par nom
