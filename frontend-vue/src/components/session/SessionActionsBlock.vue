@@ -54,6 +54,7 @@
         }
       },
       async handleStop() {
+        this.sessionStore.sessionEnd();
         await router.push('/');
         //TODO to finish
       },

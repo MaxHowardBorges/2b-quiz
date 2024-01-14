@@ -54,6 +54,7 @@
       sessionStore.$subscribe((mutation, state) => {
         if (state.ended !== ended.value) {
           ended.value = true;
+          this.sessionStore.sessionEnd();
         } else if (
           echoQuestion.value !== state.question &&
           userStore.isStudent
