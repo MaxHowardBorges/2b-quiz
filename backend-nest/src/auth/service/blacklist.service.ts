@@ -14,17 +14,17 @@ export class BlacklistService {
     return this.blacklist.some((blacklistToken) => {
       return (
         blacklistToken.getToken() === token &&
-        this.isOlderThanOneMinute(blacklistToken.getTimestamp())
+        !this.isNewerThanOneMinute(blacklistToken.getTimestamp())
       );
     });
   }
 
-  isOlderThanOneMinute(timestamp: number): boolean {
-    return timestamp < Date.now() - 1000 * 60;
+  isNewerThanOneMinute(timestamp: number): boolean {
+    return Date.now() - timestamp < 1000 * 60;
   }
 
   isOlderThanOneHour(timestamp: number): boolean {
-    return timestamp < Date.now() - 1000 * 60 * 60;
+    return Date.now() - timestamp > 1000 * 60 * 60;
   }
 
   removeOldTokens() {
