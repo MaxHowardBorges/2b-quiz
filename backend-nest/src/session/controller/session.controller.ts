@@ -23,10 +23,12 @@ import { IsHostException } from '../exception/isHost.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
 import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
-import { AccessDto } from '../dto/access.dto';
+import { WhitelistDto } from '../dto/whitelist.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { IsNotParticipantException } from '../exception/isNotParticipant.exception';
 import { NextQuestionReturnDto } from '../dto/nextQuestionReturn.dto';
+import { SettingsDto } from '../dto/settings.dto';
+import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 
 @Controller('session')
 export class SessionController {
@@ -128,9 +130,28 @@ export class SessionController {
   @Roles([UserType.TEACHER])
   @Post('/:idSession/settings')
   async setSessionSettings(
+    @Req() request: UserRequest,
     @Param('idSession') idSession: string,
-    @Body(new ValidationPipe()) acces: AccessDto,
+    @Body(new ValidationPipe()) settings: SettingsDto,
   ) {
-    return this.sessionService.setSettings(acces, idSession);
+    if (!this.sessionService.isSessionExists(idSession))
+      throw new IdSessionNoneException();
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    this.sessionService.setSettings(idSession, settings);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Post('/:idSession/whitelist/add')
+  async addWhitelist(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: string,
+    @Body(new ValidationPipe()) body: WhitelistDto,
+  ) {
+    if (!this.sessionService.isSessionExists(idSession))
+      throw new IdSessionNoneException();
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    this.sessionService.addToWhitelist(idSession, body.whitelist);
   }
 }

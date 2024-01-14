@@ -17,10 +17,11 @@ import { ParticipantInterface } from '../../user/interface/participant.interface
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
 import { AccessTypeEnum } from '../enum/accessType.enum';
-import { AccessDto } from '../dto/access.dto';
 import { SessionClosedException } from '../exception/sessionClosed.exception';
 import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
 import { EventHostEnum } from '../../event/enum/eventHost.enum';
+import { SettingsObject } from '../object/settings.object';
+import { SettingsDto } from '../dto/settings.dto';
 
 @Injectable()
 export class SessionService {
@@ -32,7 +33,11 @@ export class SessionService {
     private eventService: EventService,
   ) {}
 
-  async initializeSession(teacher: Teacher, ids: number[]): Promise<Session> {
+  async initializeSession(
+    teacher: Teacher,
+    ids: number[],
+    settings: SettingsObject = new SettingsObject(),
+  ): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
@@ -43,7 +48,7 @@ export class SessionService {
     }
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, teacher, questionnaries),
+      await this.createSession(idSession, teacher, questionnaries, settings),
     );
     this.eventService.createSessionGroup(idSession, teacher.id);
     return this.sessionMap.get(idSession);
@@ -58,8 +63,13 @@ export class SessionService {
     idSession: string,
     teacher: Teacher,
     questionnaryTab: Questionnary[],
+    settings: SettingsObject,
   ): Promise<Session> {
-    return new Session(idSession, questionnaryTab, teacher);
+    return new Session(idSession, questionnaryTab, teacher, settings);
+  }
+
+  isSessionExists(idSession: string): boolean {
+    return this.sessionMap.has(idSession);
   }
 
   startSession(idSession: string): boolean {
@@ -134,13 +144,13 @@ export class SessionService {
     }
     const session = this.sessionMap.get(idSession);
 
-    if (session.accessType == AccessTypeEnum.Public) {
+    if (session.settings.accessType == AccessTypeEnum.Public) {
       if (session.connectedUser.has(user)) {
         throw new UserAlreadyJoinedException();
       }
       this.joinParticipant(session, user);
     } else if (
-      session.accessType == AccessTypeEnum.Private &&
+      session.settings.accessType == AccessTypeEnum.Private &&
       session.whitelist.includes(user.id)
     ) {
       if (session.connectedUser.has(user)) {
@@ -148,7 +158,7 @@ export class SessionService {
       }
       this.joinParticipant(session, user);
     } else if (
-      session.accessType == AccessTypeEnum.Private &&
+      session.settings.accessType == AccessTypeEnum.Private &&
       !session.whitelist.includes(user.id)
     ) {
       throw new UserNotInWhitelistException();
@@ -273,13 +283,28 @@ export class SessionService {
     return this.sessionMap.get(idSession);
   }
 
-  setSettings(access: AccessDto, idSession: string) {
+  setSettings(idSession: string, settings: SettingsDto) {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
-      session.accessType = access.accesType;
-      session.whitelist = access.whitelist;
+      session.settings.accessType = settings.accessType;
+      session.settings.isDisplayAnswer = settings.isDisplayAnswer;
     }
+    return !!session;
+  }
 
+  setWhitelist(idSession: string, whitelist: number[]) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.whitelist = whitelist;
+    }
+    return !!session;
+  }
+
+  addToWhitelist(idSession: string, whitelist: number[]) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.whitelist = session.whitelist.concat(whitelist);
+    }
     return !!session;
   }
 }
