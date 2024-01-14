@@ -107,7 +107,7 @@ export class SessionController {
     );
   }
 
-  @Roles([UserType.TEACHER])
+  @Roles([UserType.TEACHER, UserType.STUDENT])
   @Get('/endSession')
   async getMap(
     @Req() request: UserRequest,
@@ -118,9 +118,26 @@ export class SessionController {
     const a = this.sessionService.getMapUser(idSession); //TODO refactor
     this.sessionService.getMap();
     //console.log('LA FIIIIIIIIIIIIIIN');
-    return [
-      await this.sessionService.getQuestionList(idSession),
-      this.sessionMapper.mapUserAnswerDto(a),
-    ]; //TODO replace with a DTO
+    if (this.sessionService.isHost(idSession, request.user as Teacher)) {
+      return [
+        await this.sessionService.getQuestionList(idSession),
+        this.sessionMapper.mapUserAnswerDto(a),
+      ]; //TODO replace with a DTO
+    } else {
+      if (this.sessionService.getSessionOrThrow(idSession).isResult) {
+        //TODO
+      }
+      if (
+        this.sessionService.getSessionOrThrow(idSession).isResult &&
+        this.sessionService.getSessionOrThrow(idSession).isResponses
+      ) {
+        //TODO
+      }
+      if (this.sessionService.getSessionOrThrow(idSession).isGlobal) {
+        //TODO
+      } else {
+        //TODO RETURN ONLY NOTE FOR STUDENT
+      }
+    }
   }
 }
