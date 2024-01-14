@@ -12,5 +12,5 @@ export class CreateSessionDto {
   isGlobal: boolean;
   @IsBoolean()
   @IsNotEmpty()
-  isAvailableAfter: boolean;
+  isResponses: boolean;
 }

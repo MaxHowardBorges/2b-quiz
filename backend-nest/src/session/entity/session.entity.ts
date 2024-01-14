@@ -32,7 +32,7 @@ export class Session {
   @Column()
   isGlobal: boolean;
   @Column()
-  isAvailableAfter: boolean;
+  isResponses: boolean;
 
   @Column({ type: 'timestamp', default: () => 'NOW()' })
   date: Date;

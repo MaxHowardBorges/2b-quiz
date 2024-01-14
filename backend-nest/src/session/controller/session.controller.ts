@@ -43,7 +43,7 @@ export class SessionController {
       paramSession.idsQuestionnarys,
       paramSession.isResult,
       paramSession.isGlobal,
-      paramSession.isAvailableAfter,
+      paramSession.isResponses,
     );
   }
 

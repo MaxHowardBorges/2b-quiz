@@ -33,7 +33,7 @@ export class SessionService {
     idsQuestionnarys: number[],
     isResult: boolean,
     isGlobal: boolean,
-    isAvailableAfter: boolean,
+    isResponses: boolean,
   ): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
@@ -51,7 +51,7 @@ export class SessionService {
         questionnaries,
         isResult,
         isGlobal,
-        isAvailableAfter,
+        isResponses,
       ),
     );
     this.eventService.createClientGroup(idSession);
@@ -69,14 +69,14 @@ export class SessionService {
     questionnaryTab: Questionnary[],
     isResult: boolean,
     isGlobal: boolean,
-    isAvailableAfter: boolean,
+    isResponses: boolean,
   ): Promise<SessionTemp> {
     return new SessionTemp(
       idSession,
       questionnaryTab,
       isResult,
       isGlobal,
-      isAvailableAfter,
+      isResponses,
       teacher,
     );
   }

@@ -24,7 +24,7 @@ export class SessionTemp {
 
   isGlobal: boolean;
 
-  isAvailableAfter: boolean;
+  isResponses: boolean;
 
   host: Teacher;
 
@@ -33,7 +33,7 @@ export class SessionTemp {
     tabQuestionnary: Questionnary[],
     isResult: boolean,
     isGlobal: boolean,
-    isAvailableAfter: boolean,
+    isResponses: boolean,
     host: Teacher,
   ) {
     this.id = idSession;
@@ -43,7 +43,7 @@ export class SessionTemp {
     this.connectedUser = new Set<ParticipantInterface>();
     this.isResult = isResult;
     this.isGlobal = isGlobal;
-    this.isAvailableAfter = isAvailableAfter;
+    this.isResponses = isResponses;
     this.userAnswers = new Map<
       number,
       Map<Question, Answer | string | Answer[]>
