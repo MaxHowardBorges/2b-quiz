@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { EventEnum } from '../enum/event.enum';
+import { EventParticipantEnum } from '../enum/eventParticipant.enum';
 import { Subject } from 'rxjs';
 import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
 import { UserUnauthorisedException } from '../exception/userUnauthorised.exception';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { ParticipantSessionObject } from '../object/participantSession.object';
+import { EventHostEnum } from '../enum/eventHost.enum';
 
 @Injectable()
 export class EventService {
@@ -15,7 +16,7 @@ export class EventService {
     ParticipantSessionObject
   >();
 
-  sendEvent(event: EventEnum, idSession: string): void {
+  sendEvent(event: EventParticipantEnum, idSession: string): void {
     if (this.sessionMap.get(idSession)) {
       this.sessionMap
         .get(idSession)
@@ -24,6 +25,19 @@ export class EventService {
           subject.next(event);
         });
       this.sessionMap.get(idSession).getObserverSubject().next(event);
+    }
+  }
+
+  sendHostEventWithPayload(
+    event: EventHostEnum,
+    idSession: string,
+    payload: any,
+  ): void {
+    if (this.sessionMap.get(idSession)) {
+      this.sessionMap
+        .get(idSession)
+        .getHostSubject()
+        .next(JSON.stringify({ event, payload: payload }));
     }
   }
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import { EventService } from '../service/event.service';
-import { EventEnum } from '../enum/event.enum';
+import { EventParticipantEnum } from '../enum/eventParticipant.enum';
 import { Response } from 'express';
 import { Headerless } from '../../decorators/headerless.decorator';
 import { Roles } from '../../decorators/roles.decorator';
@@ -13,7 +13,7 @@ export class EventController {
 
   @Get('/next-question/:idSession')
   getCurrentQuestion(@Param('idSession') idSession: string): void {
-    this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+    this.eventService.sendEvent(EventParticipantEnum.NEXT_QUESTION, idSession);
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])

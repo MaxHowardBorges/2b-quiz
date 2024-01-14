@@ -10,7 +10,7 @@ import { AnswersNoneException } from '../exception/answersNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
-import { EventEnum } from '../../event/enum/event.enum';
+import { EventParticipantEnum } from '../../event/enum/eventParticipant.enum';
 import { EventService } from '../../event/service/event.service';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
@@ -78,7 +78,10 @@ export class SessionService {
       ).length
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+      this.eventService.sendEvent(
+        EventParticipantEnum.NEXT_QUESTION,
+        idSession,
+      );
       return true;
       // else check for next questionnary in the current session
     } else if (
@@ -87,10 +90,13 @@ export class SessionService {
     ) {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+      this.eventService.sendEvent(
+        EventParticipantEnum.NEXT_QUESTION,
+        idSession,
+      );
       return true;
     }
-    this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
+    this.eventService.sendEvent(EventParticipantEnum.END_SESSION, idSession);
     currentSession.endSession = true;
     this.eventService.closeSessionGroup(idSession);
     return false;

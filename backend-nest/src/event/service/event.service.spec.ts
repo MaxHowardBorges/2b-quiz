@@ -6,7 +6,7 @@ import {
   generateRandomParticipantMockList,
   generateTeacherMock,
 } from '../../../test/mock/user.mock';
-import { EventEnum } from '../enum/event.enum';
+import { EventParticipantEnum } from '../enum/eventParticipant.enum';
 import { Subject } from 'rxjs';
 import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
 import { UserUnauthorisedException } from '../exception/userUnauthorised.exception';
@@ -36,7 +36,7 @@ describe('EventService', () => {
     it('should send event to all participants', () => {
       const idSession = '123456';
       service.createSessionGroup(idSession, host.id, participant);
-      service.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+      service.sendEvent(EventParticipantEnum.NEXT_QUESTION, idSession);
       expect(service.getSession(idSession)).toBeDefined();
       expect(
         service.getSession(idSession).getParticipantSubjectList().length,
