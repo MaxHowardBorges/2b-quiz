@@ -203,18 +203,30 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers
-      .get(user.id)
-      .set(
-        question,
-        Array.isArray(idAnswer)
-          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-          : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : question.type === QuestionType.QOC
-          ? idAnswer.split(/[ _]/)[0]
-          : idAnswer,
-      );
+    const answer = Array.isArray(idAnswer)
+      ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+      : typeof idAnswer === 'number'
+      ? question.answers.find((answer) => answer.id === idAnswer)
+      : question.type === QuestionType.QOC
+      ? idAnswer.split(/[ _]/)[0]
+      : idAnswer;
+    session.userAnswers.get(user.id).set(question, answer);
+    this.sendSaveAnswerEvent(session, answer, user);
+  }
+
+  sendSaveAnswerEvent(
+    session: Session,
+    answer: string | Answer | Answer[],
+    user: ParticipantInterface,
+  ) {
+    this.eventService.sendHostEventWithPayload(
+      EventHostEnum.NEW_ANSWER,
+      session.id,
+      {
+        user: user,
+        answer: answer,
+      },
+    );
   }
 
   getMapUser(idSession: string) {
