@@ -32,6 +32,7 @@ import { UsernamesAlreadyUsedException } from '../exception/usernamesAlreadyUsed
 import { UsernamesDuplicatedUsedException } from '../exception/usernamesDuplicatedUsed.exception';
 import { UserDataRestoreDto } from '../dto/userDataRestore.dto';
 import { Teacher } from '../entity/teacher.entity';
+import { CreateGroupDto } from '../dto/createGroup.dto';
 
 @Controller('user')
 export class UserController {
@@ -209,37 +210,39 @@ export class UserController {
   async rejectAskDeleteUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.rejectAskDeleteUser(idUser);
   }
-  //@Roles([UserType.TEACHER]) //TODO uncomment line
+  @Roles([UserType.TEACHER])
   @Post('/createGroup')
-  async createGroup(@Body() name: string, teacher: Teacher) {
-    return this.userService.createGroup(name, teacher);
+  async createGroup(@Body() dto: CreateGroupDto) {
+    console.log();
+    return this.userService.createGroup(dto);
   }
+  @Roles([UserType.TEACHER])
   @Delete('/:id/deleteGroup')
   async deleteGroup(@Param('id', ParseIntPipe) idGroup: number) {
     return this.userService.deleteGroup(idGroup);
   }
-
+  @Roles([UserType.TEACHER, UserType.STUDENT])
   @Get('/:id/getGroup')
   async getGroup(@Param('id', ParseIntPipe) idGroup: number) {
     return this.userService.getGroup(idGroup);
   }
-
+  @Roles([UserType.TEACHER])
   @Put('/:id/addStudentToGroup')
   async addStudentToGroup(
     @Param('id', ParseIntPipe) idGroup: number,
-    idStudent: number,
+    @Body(new ValidationPipe()) idStudent: number,
   ) {
     return this.userService.addStudentToGroup(idGroup, idStudent);
   }
-
+  @Roles([UserType.TEACHER, UserType.STUDENT])
   @Patch('/:id/removeStudentFromGroup')
   async removeStudentFromGroup(
     @Param('id', ParseIntPipe) idGroup: number,
-    idStudent: number,
+    @Body(new ValidationPipe()) idStudent: number,
   ) {
     return this.userService.removeStudentFromGroup(idGroup, idStudent);
   }
-
+  @Roles([UserType.TEACHER])
   @Put('/:id/addTeacherToGroup')
   async addTeacherToGroup() {}
 }

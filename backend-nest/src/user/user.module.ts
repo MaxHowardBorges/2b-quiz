@@ -7,10 +7,11 @@ import { Admin } from './entity/admin.entity';
 import { UserController } from './controller/user.controller';
 import { UserService } from './service/user.service';
 import { UserMapper } from './mapper/user.mapper';
+import { Group } from './entity/group.entity';
 
 @Module({
   providers: [UserService, UserMapper],
-  imports: [TypeOrmModule.forFeature([User, Teacher, Student, Admin])],
+  imports: [TypeOrmModule.forFeature([User, Teacher, Student, Admin, Group])],
   exports: [UserService],
   controllers: [UserController],
 })

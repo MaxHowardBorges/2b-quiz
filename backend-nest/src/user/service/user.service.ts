@@ -13,12 +13,16 @@ import { SortUserParam } from '../constants/sortUserParam.enum';
 import { SortOrder } from '../../constants/sortOrder.enum';
 import { Group } from '../entity/group.entity';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
+import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJoined.exception';
+import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
+import { CreateGroupDto } from '../dto/createGroup.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
   ) {}
   async createUser(
@@ -178,20 +182,33 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async createGroup(name: string, teacher: Teacher) {
-    let group: Group;
-    group.teacher = teacher;
-    group.groupName = name;
+  async createGroup(dto: CreateGroupDto) {
+    const group: Group = new Group();
+    group.groupName = dto.name;
+    group.teacher = <Teacher>await this.userRepository.findOne({
+      where: { id: dto.idTeacher },
+    });
     return await this.groupRepository.save(group);
   }
 
   async deleteGroup(idGroup: number) {
-    const group = this.groupRepository.findOne({
+    const group = await this.groupRepository.findOne({
       where: { id: idGroup },
     });
 
     if (group) {
-      await this.groupRepository.delete(idGroup);
+      if (group.tabStudents == undefined) {
+        await this.groupRepository.delete(idGroup);
+      } else {
+        for (let i = 0; i < group.tabStudents.length; i++) {
+          const id = group.tabStudents[i].groups.findIndex((g) => {
+            return g.id === idGroup;
+          });
+          group.tabStudents[i].groups.splice(id);
+          //await this.userRepository.save(group.tabStudents[i]); //TODO uncomment this line
+        }
+        //await this.groupRepository.delete(idGroup);
+      }
     } else {
       throw new GroupNotFoundException();
     }
@@ -210,7 +227,6 @@ export class UserService {
   }
 
   async addStudentToGroup(idGroup: number, idStudent: number) {
-    //TODO add already in group exception
     const group = await this.groupRepository.findOne({
       where: { id: idGroup },
     });
@@ -221,6 +237,11 @@ export class UserService {
     console.log(student);
 
     if (group && student) {
+      for (let i = 0; i < group.tabStudents.length; i++) {
+        if (group.tabStudents[i].id == student.id) {
+          throw new UserAlreadyJoinedException();
+        }
+      }
       student.groups.push(group);
       group.tabStudents.push(student);
       await this.userRepository.save(student);
@@ -237,27 +258,35 @@ export class UserService {
   }
 
   async removeStudentFromGroup(idGroup: number, idStudent: number) {
-    //TODO add student not in group
-    /*
     const group = await this.groupRepository.findOne({
       where: { id: idGroup },
     });
-
     const student: Student = <Student>await this.userRepository.findOne({
       where: { id: idStudent },
     });
 
     if (group && student) {
-      if (
-        group.tabStudents.includes(student) &&
-        student.groups.includes(group)
-      ) {
-        student.groups.push(group);
-        group.tabStudents.push(student);
+      const groupTabStudent = group.tabStudents;
+      const studentGroup = student.groups;
+
+      if (groupTabStudent.includes(student)) {
+        let index = groupTabStudent.findIndex((s) => {
+          s.id === student.id;
+        });
+        groupTabStudent.splice(index);
+
+        index = student.groups.findIndex((g) => {
+          return g.id === group.id;
+        });
+        studentGroup.splice(index);
+
         await this.userRepository.save(student);
         await this.groupRepository.save(group);
+      } else {
+        throw new StudentNotInGroupException();
       }
     }
+
     if (!group) {
       throw new GroupNotFoundException();
     }
@@ -265,6 +294,6 @@ export class UserService {
       throw new UserNotFoundException();
     }
 
-    return !!(group && student); */
+    return !!(group && student);
   }
 }
