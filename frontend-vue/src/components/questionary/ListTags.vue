@@ -4,6 +4,7 @@
     width="70%"
     class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
     elevation="5">
+    <v-btn id="ic" icon="undo" @click="returnToEdit"></v-btn>
     <h1>Tags list</h1>
 
     <div style="display: flex; margin: 20px 0; width: 50%">
@@ -43,6 +44,7 @@
         required: true,
       },
     },
+    emits: ['toggleTagPanel'],
     data() {
       return {
         searchQuery: '',
@@ -72,7 +74,7 @@
       totalPages() {
         return Math.ceil(this.filteredTags().length / this.itemsPerPage);
       },
-      toggleTagPanel() {
+      returnToEdit() {
         this.$emit('toggleTagPanel');
       },
     },

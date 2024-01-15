@@ -5,7 +5,7 @@
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
     elevation="5">
     <input
-      v-if="OnList"
+      v-if="OnListQuestionnary"
       id="title"
       type="text"
       v-model="questionnaryName"
@@ -35,15 +35,14 @@
       outlined></v-select>
 
     <v-btn
-      v-if="!OnList"
+      v-if="OnListQuestion"
       style="margin-bottom: 30px"
       text="Tags"
       class="mt-5"
-      @click="toggleTagPanel"
-      @toggleTagPanel="toggleTagPanel"></v-btn>
+      @click="toggleTagPanel"></v-btn>
 
     <v-select
-      v-if="!OnList"
+      v-if="OnListQuestion"
       v-model="selectedTags"
       :items="this.tagList"
       item-title="description"
@@ -54,7 +53,7 @@
       outlined
       dense></v-select>
 
-    <v-row v-if="!OnList" class="mt-3">
+    <v-row v-if="OnListQuestion" class="mt-3">
       <v-col>
         <v-text-field
           v-model="newTag"
@@ -68,30 +67,29 @@
       </v-col>
     </v-row>
 
-    <div>
-      <v-btn
-        class="mb-5"
-        v-if="OnList"
-        icon="add"
-        @click="toggleTypeSelector"></v-btn>
-
-      <v-btn class="mb-5" v-if="OnList" icon="quiz" @click="toggleBank"></v-btn>
+    <div v-if="OnListQuestionnary">
+      <v-btn class="mb-5" icon="add" @click="toggleTypeSelector"></v-btn>
+      <v-btn class="mb-5" icon="quiz" @click="toggleBank"></v-btn>
     </div>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
       id="quest"
-      v-if="!OnList"
+      v-if="OnListQuestion"
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
 
-    <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
+    <div
+      class="blocklist"
+      v-if="!this.useQ.isCreated && this.OnListQuestionnary">
       <b>
         Pas encore de questions.. Cliquez sur le + pour ajouter une question
       </b>
     </div>
 
-    <v-sheet class="questions" v-if="this.OnList && this.useQ.isCreated">
+    <v-sheet
+      class="questions"
+      v-if="this.OnListQuestionnary && this.useQ.isCreated">
       <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <QuestionnaryListOne
           :numberLabel="question.content"
@@ -101,7 +99,7 @@
       </v-sheet>
     </v-sheet>
 
-    <div v-if="!OnList" class="button-container">
+    <div v-if="OnListQuestion" class="button-container">
       <v-btn icon="done" @click="validQuestion"></v-btn>
       <v-btn icon="reply" @click="showConfirmationDialog"></v-btn>
     </div>
@@ -120,13 +118,16 @@
     </v-dialog>
 
     <v-btn
-      v-if="OnList"
+      v-if="OnListQuestionnary"
       text="return to questionnary list"
       class="mt-5"
       @click="EmitGoList"></v-btn>
   </v-sheet>
 
-  <ListTags v-if="showingTagPanel" :tags="this.tagList"></ListTags>
+  <ListTags
+    v-if="showTagPanel"
+    :tags="this.tagList"
+    @toggleTagPanel="toggleTagPanel"></ListTags>
 </template>
 
 <script>
@@ -142,10 +143,14 @@
     emits: ['returnToBank', 'GoList'],
     data() {
       return {
-        newTag: '',
-        OnList: true,
-        showTypeSelector: false,
+        // questionnary
+        baseQuestionnaryName: '[Questionnary name]',
+        questionnaryName: '',
+        // question
+        statusQ: 'add',
+        idQuestion: null,
         isFromBank: false,
+        // type
         selectedType: 'Unique',
         typeOptions: [
           { typeLabel: 'Unique', typeCode: 'qcu' },
@@ -154,16 +159,18 @@
           { typeLabel: 'True-False', typeCode: 'tof' },
           { typeLabel: 'Open-Ended-Constraint', typeCode: 'qoc' },
         ],
-        confirmationDialog: false,
-        baseQuestionnaryName: '[Questionnary name]',
-        questionnaryName: '',
+        // tag
+        newTag: '',
         tagList: [],
         selectedTags: [],
-        statusQ: 'add',
-        idQuestion: null,
-        alertQuestionnaryNull: false,
+        // show attribute
+        OnListQuestionnary: true,
+        OnListQuestion: false,
+        showTypeSelector: false,
+        showTagPanel: false,
         dialogVisible: false,
-        showingTagPanel: false,
+        alertQuestionnaryNull: false,
+        confirmationDialog: false,
       };
     },
     setup() {
@@ -211,7 +218,8 @@
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
-        this.OnList = !this.OnList;
+        this.OnListQuestionnary = !this.OnListQuestionnary;
+        this.OnListQuestion = !this.OnListQuestion;
       },
       toggleBank() {
         this.returnToBank();
@@ -220,7 +228,8 @@
         this.isFromBank = fromBank;
         this.isFromBank ? (this.questionnaryName = '') : '';
         this.showTypeSelector = !this.showTypeSelector;
-        this.OnList = !this.OnList;
+        this.OnListQuestionnary = !this.OnListQuestionnary;
+        this.OnListQuestion = !this.OnListQuestion;
         this.statusQ = 'modify';
         this.idQuestion = idQuestion;
         this.selectedType = this.typeOptions.filter(
@@ -278,7 +287,8 @@
             });
           }
           this.showTypeSelector = !this.showTypeSelector;
-          this.OnList = !this.OnList;
+          this.OnListQuestionnary = !this.OnListQuestionnary;
+          this.OnListQuestion = !this.OnListQuestion;
           this.selectedType = 'Unique';
           this.isFromBank ? this.returnToBank() : '';
         } else alert('Remplissez les champs vide avant de valider');
@@ -289,7 +299,8 @@
       leaveWithoutSaving() {
         this.selectedType = 'Unique';
         this.idQuestion = null;
-        this.OnList = !this.OnList;
+        this.OnListQuestionnary = !this.OnListQuestionnary;
+        this.OnListQuestion = !this.OnListQuestion;
         this.confirmationDialog = false;
         this.showTypeSelector = !this.showTypeSelector;
         this.isFromBank ? this.returnToBank() : '';
@@ -323,8 +334,8 @@
       },
       toggleTagPanel() {
         this.showTypeSelector = !this.showTypeSelector;
-        this.OnList = !this.OnList;
-        this.showingTagPanel = !this.showingTagPanel;
+        this.OnListQuestion = !this.OnListQuestion;
+        this.showTagPanel = !this.showTagPanel;
       },
     },
   };
