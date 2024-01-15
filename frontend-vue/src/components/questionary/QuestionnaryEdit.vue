@@ -3,14 +3,16 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
-    elevation="5">
+    elevation="5"
+  >
     <input
       v-if="OnList"
       id="title"
       type="text"
       v-model="questionnaryName"
       @change="changeName"
-      required />
+      required
+    />
     <div v-else id="title">
       {{ this.questionnaryName }}
       <br />
@@ -32,7 +34,14 @@
       label="Select Question Type"
       class="custom-select"
       dense
-      outlined></v-select>
+      outlined
+    ></v-select>
+
+    <v-btn
+      style="margin-bottom: 30px"
+      text="Tags"
+      class="mt-5"
+      @click="toggleVoirVisibility"></v-btn>
 
     <v-select
       v-if="!OnList"
@@ -44,53 +53,48 @@
       style="width: 200px"
       multiple=""
       outlined
-      dense></v-select>
+      dense
+    ></v-select>
 
     <v-row v-if="!OnList" class="mt-3">
       <v-col>
         <v-text-field
           v-model="newTag"
           label="New Tag"
-          style="width: 200px"
+          style="width: 200px;"
           outlined
-          dense></v-text-field>
+          dense
+        ></v-text-field>
       </v-col>
       <v-col>
-        <v-btn @click="createNewTag" icon="done"></v-btn>
+        <v-btn @click="createNewTag"  icon="done">
+        </v-btn>
       </v-col>
     </v-row>
 
     <div>
-      <v-btn
-        class="mb-5"
-        v-if="OnList"
-        icon="add"
-        @click="toggleTypeSelector"></v-btn>
+    <v-btn
+      class="mb-5"
+      v-if="OnList"
+      icon="add"
+      @click="toggleTypeSelector"
+    ></v-btn>
 
-      <v-btn class="mb-5" v-if="OnList" icon="quiz" @click="toggleBank"></v-btn>
+    <v-btn
+      class="mb-5"
+      v-if="OnList"
+      icon="quiz"
+      @click="toggleBank"
+    ></v-btn>
     </div>
 
     <CreateQuestionnary
       ref="questionnaryComponent"
       id="quest"
       v-if="!OnList"
-      :is-from-bank="isFromBank"
       :selectedQuestionType="selectedType"
-      :idQuestion="idQuestion" />
-
-    <v-dialog v-model="alertQuestionnaryNull" max-width="600">
-      <v-card>
-        <v-card-title class="headline">Confirmation</v-card-title>
-        <v-card-text>
-          Please note that your questionnary has no questions if you leave it
-          will not be saved.
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
-          <v-btn @click="EmitGoList">confirm</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      :idQuestion="idQuestion"
+    />
 
     <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
       <b>
@@ -132,12 +136,15 @@
       class="mt-5"
       @click="EmitGoList"></v-btn>
   </v-sheet>
+
+  <ListTags v-if="voir"></ListTags>
 </template>
 
 <script>
   import QuestionnaryListOne from '@/components/questionary/QuestionnaryList.vue';
   import CreateQuestionnary from '@/components/questionary/CreateQuestionary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+  import ListTags from '@/components/questionary/ListTags.vue';
 
   export default {
     /*props: {
@@ -165,6 +172,11 @@
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
+        dialogVisible: false,
+        voir: false,
+
+        questions: ['Question 1', 'Question 2', 'Question 3'],
+        selectedQuestions: [],
       };
     },
     setup() {
@@ -183,6 +195,7 @@
     },
     name: 'QuestionnaryEdit',
     components: {
+      ListTags,
       CreateQuestionnary,
       QuestionnaryListOne,
     },
@@ -324,6 +337,9 @@
       returnToBank() {
         this.useQ.idQuestionnary = null;
         this.$emit('returnToBank');
+      },
+      toggleVoirVisibility() {
+        this.voir = !this.voir;
       },
     },
   };
