@@ -4,7 +4,6 @@
     width="70%"
     class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
     elevation="5">
-
     <h1>Tags list</h1>
 
     <div style="display: flex; margin: 20px 0; width: 50%">
@@ -12,27 +11,25 @@
         id="search"
         v-model="searchQuery"
         label="Search"
-        @input="filterTags"></v-text-field>
+        @input="filterTags()"></v-text-field>
     </div>
 
-
     <v-pagination
-      v-if="totalPages > 1"
+      v-if="totalPages() > 1"
       v-model="currentPage"
-      :length="totalPages"></v-pagination>
+      :length="totalPages()"></v-pagination>
 
     <v-sheet class="list">
       <TagItem
-        v-for="(q, index) in paginatedTags"
+        v-for="(q, index) in paginatedTags()"
         :key="index"
         :tags="q"></TagItem>
     </v-sheet>
 
     <v-pagination
-      v-if="totalPages > 1"
+      v-if="totalPages() > 1"
       v-model="currentPage"
-      :length="totalPages"></v-pagination>
-
+      :length="totalPages()"></v-pagination>
   </v-sheet>
 </template>
 
@@ -43,9 +40,14 @@
     components: {
       TagItem,
     },
+    // props: {
+    //   tags: {
+    //     type: Array,
+    //     required: true,
+    //   },
+    // },
     data() {
       return {
-        searchQuery: '',
         tags: [
           'Maths',
           'Dev',
@@ -62,14 +64,22 @@
           'Comédie',
           'Cinéma',
         ],
+        searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
       };
     },
-    computed: {
+    methods: {
+      filterTags() {
+        this.currentPage = 1;
+      },
       filteredTags() {
-        //Recherche par nom
         const query = this.searchQuery.toLowerCase();
+        // let filtered = this.tags;
+        // if (this.query !== '') {
+        //   filtered = filtered.filter((q) => q.toLowerCase().includes(query));
+        // }
+        // return filtered;
         if (query.trim() === '') {
           return this.tags;
         } else {
@@ -79,16 +89,10 @@
       paginatedTags() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
-        return this.filteredTags.slice(startIndex, endIndex);
+        return this.filteredTags().slice(startIndex, endIndex);
       },
       totalPages() {
         return Math.ceil(this.filteredTags.length / this.itemsPerPage);
-      },
-    },
-    methods: {
-      filterTags() {
-        // Reset current page to 1 when the search query changes
-        this.currentPage = 1;
       },
     },
   };

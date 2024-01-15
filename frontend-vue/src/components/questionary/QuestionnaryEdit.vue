@@ -3,16 +3,14 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
-    elevation="5"
-  >
+    elevation="5">
     <input
       v-if="OnList"
       id="title"
       type="text"
       v-model="questionnaryName"
       @change="changeName"
-      required
-    />
+      required />
     <div v-else id="title">
       {{ this.questionnaryName }}
       <br />
@@ -34,14 +32,13 @@
       label="Select Question Type"
       class="custom-select"
       dense
-      outlined
-    ></v-select>
+      outlined></v-select>
 
     <v-btn
       style="margin-bottom: 30px"
       text="Tags"
       class="mt-5"
-      @click="toggleVoirVisibility"></v-btn>
+      @click="toggleTagPanel"></v-btn>
 
     <v-select
       v-if="!OnList"
@@ -53,39 +50,30 @@
       style="width: 200px"
       multiple=""
       outlined
-      dense
-    ></v-select>
+      dense></v-select>
 
     <v-row v-if="!OnList" class="mt-3">
       <v-col>
         <v-text-field
           v-model="newTag"
           label="New Tag"
-          style="width: 200px;"
+          style="width: 200px"
           outlined
-          dense
-        ></v-text-field>
+          dense></v-text-field>
       </v-col>
       <v-col>
-        <v-btn @click="createNewTag"  icon="done">
-        </v-btn>
+        <v-btn @click="createNewTag" icon="done"></v-btn>
       </v-col>
     </v-row>
 
     <div>
-    <v-btn
-      class="mb-5"
-      v-if="OnList"
-      icon="add"
-      @click="toggleTypeSelector"
-    ></v-btn>
+      <v-btn
+        class="mb-5"
+        v-if="OnList"
+        icon="add"
+        @click="toggleTypeSelector"></v-btn>
 
-    <v-btn
-      class="mb-5"
-      v-if="OnList"
-      icon="quiz"
-      @click="toggleBank"
-    ></v-btn>
+      <v-btn class="mb-5" v-if="OnList" icon="quiz" @click="toggleBank"></v-btn>
     </div>
 
     <CreateQuestionnary
@@ -93,8 +81,7 @@
       id="quest"
       v-if="!OnList"
       :selectedQuestionType="selectedType"
-      :idQuestion="idQuestion"
-    />
+      :idQuestion="idQuestion" />
 
     <div class="blocklist" v-if="!this.useQ.isCreated && this.OnList">
       <b>
@@ -137,7 +124,7 @@
       @click="EmitGoList"></v-btn>
   </v-sheet>
 
-  <ListTags v-if="voir"></ListTags>
+  <ListTags v-if="showingTagPanel"></ListTags>
 </template>
 
 <script>
@@ -173,10 +160,7 @@
         idQuestion: null,
         alertQuestionnaryNull: false,
         dialogVisible: false,
-        voir: false,
-
-        questions: ['Question 1', 'Question 2', 'Question 3'],
-        selectedQuestions: [],
+        showingTagPanel: false,
       };
     },
     setup() {
@@ -296,10 +280,6 @@
           this.isFromBank ? this.returnToBank() : '';
         } else alert('Remplissez les champs vide avant de valider');
       },
-      changeTags() {
-        // Traitez les tags sélectionnés ici
-        console.log('Selected Tags:', this.selectedTags);
-      },
       showConfirmationDialog() {
         this.confirmationDialog = true;
       },
@@ -338,8 +318,8 @@
         this.useQ.idQuestionnary = null;
         this.$emit('returnToBank');
       },
-      toggleVoirVisibility() {
-        this.voir = !this.voir;
+      toggleTagPanel() {
+        this.showingTagPanel = !this.showingTagPanel;
       },
     },
   };

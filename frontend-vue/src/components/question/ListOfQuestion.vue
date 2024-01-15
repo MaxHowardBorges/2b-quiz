@@ -1,3 +1,100 @@
+<template>
+  <v-sheet
+    rounded="lg"
+    width="70%"
+    class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
+    elevation="5">
+    <div style="display: flex">
+      <div style="align-self: start" id="divButton">
+        <v-btn id="ic" icon="undo" @click="toggleVisibility"></v-btn>
+      </div>
+      <h1>Private Question Bank</h1>
+    </div>
+
+    <div style="display: flex; margin: 20px 0; width: 50%">
+      <div id="divDrop1">
+        <v-select
+          v-model="selectedType"
+          :items="typeOptions"
+          item-title="typeLabel"
+          item-value="typeCode"
+          label="Types"
+          :multiple="true"
+          style="width: 180%"
+          @change="filteredQuestions"></v-select>
+      </div>
+      <v-text-field
+        id="search"
+        v-model="this.searchQuery"
+        label="Search"
+        @input="filteredQuestions"></v-text-field>
+
+      <div id="divDrop2">
+        <v-select
+          v-model="selectedTags"
+          :items="tags"
+          item-title="description"
+          multiple=""
+          return-object
+          label="Tags"
+          style="width: 180%"
+          @change="filteredQuestions"></v-select>
+      </div>
+    </div>
+
+    <v-pagination
+      v-if="this.totalPages() > 1"
+      v-model="currentPage"
+      :length="this.totalPages()"></v-pagination>
+
+    <v-sheet
+      class="list"
+      v-for="(q, index) in this.paginatedQuestions()"
+      :key="index">
+      <QuestionItem
+        :question="q"
+        @modifyQuestionFromBank="modifyQuestionFromBank"
+        @showQuestionnaryList="showQuestionnaryList"></QuestionItem>
+    </v-sheet>
+
+    <!-- Pagination controls -->
+    <v-pagination
+      v-if="this.totalPages() > 1"
+      v-model="currentPage"
+      :length="this.totalPages()"></v-pagination>
+
+    <v-card class="mt-25">
+      <!--<v-btn @click="">Done</v-btn>-->
+    </v-card>
+  </v-sheet>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Bank Private Questions</v-card-title>
+
+      <v-card-text>
+        <v-list>
+          <v-list-item v-if="this.questionnaries.length < 1">
+            No questionnaries
+          </v-list-item>
+          <v-list-item
+            v-else
+            v-for="(questionnary, index) in questionnaries"
+            :key="index"
+            @click="toggleQuestion(index)"
+            :class="{
+              'selected-question': selectedQuestionnaries.includes(index),
+            }">
+            <v-list-item-title>{{ questionnary.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="AddQuestion">Add</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
 <script>
   import QuestionItem from '@/components/question/QuestionItem.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
@@ -128,103 +225,6 @@
     },
   };
 </script>
-
-<template>
-  <v-sheet
-    rounded="lg"
-    width="70%"
-    class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
-    elevation="5">
-    <div style="display: flex">
-      <div style="align-self: start" id="divButton">
-        <v-btn id="ic" icon="undo" @click="toggleVisibility"></v-btn>
-      </div>
-      <h1>Private Question Bank</h1>
-    </div>
-
-    <div style="display: flex; margin: 20px 0; width: 50%">
-      <div id="divDrop1">
-        <v-select
-          v-model="selectedType"
-          :items="typeOptions"
-          item-title="typeLabel"
-          item-value="typeCode"
-          label="Types"
-          :multiple="true"
-          style="width: 180%"
-          @change="filteredQuestions"></v-select>
-      </div>
-      <v-text-field
-        id="search"
-        v-model="this.searchQuery"
-        label="Search"
-        @input="filteredQuestions"></v-text-field>
-
-      <div id="divDrop2">
-        <v-select
-          v-model="selectedTags"
-          :items="tags"
-          item-title="description"
-          multiple=""
-          return-object
-          label="Tags"
-          style="width: 180%"
-          @change="filteredQuestions"></v-select>
-      </div>
-    </div>
-
-    <v-pagination
-      v-if="this.totalPages() > 1"
-      v-model="currentPage"
-      :length="this.totalPages()"></v-pagination>
-
-    <v-sheet
-      class="list"
-      v-for="(q, index) in this.paginatedQuestions()"
-      :key="index">
-      <QuestionItem
-        :question="q"
-        @modifyQuestionFromBank="modifyQuestionFromBank"
-        @showQuestionnaryList="showQuestionnaryList"></QuestionItem>
-    </v-sheet>
-
-    <!-- Pagination controls -->
-    <v-pagination
-      v-if="this.totalPages() > 1"
-      v-model="currentPage"
-      :length="this.totalPages()"></v-pagination>
-
-    <v-card class="mt-25">
-      <!--<v-btn @click="">Done</v-btn>-->
-    </v-card>
-  </v-sheet>
-  <v-dialog v-model="dialogVisible" max-width="500">
-    <v-card>
-      <v-card-title>Bank Private Questions</v-card-title>
-
-      <v-card-text>
-        <v-list>
-          <v-list-item v-if="this.questionnaries.length < 1">
-            No questionnaries
-          </v-list-item>
-          <v-list-item
-            v-else
-            v-for="(questionnary, index) in questionnaries"
-            :key="index"
-            @click="toggleQuestion(index)"
-            :class="{
-              'selected-question': selectedQuestionnaries.includes(index),
-            }">
-            <v-list-item-title>{{ questionnary.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card-text>
-      <v-card-actions class="text-center">
-        <v-btn @click="AddQuestion">Add</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-</template>
 
 <style scoped>
   #divButton {
