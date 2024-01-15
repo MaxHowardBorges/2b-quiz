@@ -35,10 +35,12 @@
       outlined></v-select>
 
     <v-btn
+      v-if="!OnList"
       style="margin-bottom: 30px"
       text="Tags"
       class="mt-5"
-      @click="toggleTagPanel"></v-btn>
+      @click="toggleTagPanel"
+      @toggleTagPanel="toggleTagPanel"></v-btn>
 
     <v-select
       v-if="!OnList"
@@ -124,7 +126,7 @@
       @click="EmitGoList"></v-btn>
   </v-sheet>
 
-  <ListTags v-if="showingTagPanel"></ListTags>
+  <ListTags v-if="showingTagPanel" :tags="this.tagList"></ListTags>
 </template>
 
 <script>
@@ -137,6 +139,7 @@
     /*props: {
       ChangeStatus: String,
     },*/ //USE IF WARNING IN CONSOLE
+    emits: ['returnToBank', 'GoList'],
     data() {
       return {
         newTag: '',
@@ -319,6 +322,8 @@
         this.$emit('returnToBank');
       },
       toggleTagPanel() {
+        this.showTypeSelector = !this.showTypeSelector;
+        this.OnList = !this.OnList;
         this.showingTagPanel = !this.showingTagPanel;
       },
     },

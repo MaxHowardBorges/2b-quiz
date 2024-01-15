@@ -19,11 +19,8 @@
       v-model="currentPage"
       :length="totalPages()"></v-pagination>
 
-    <v-sheet class="list">
-      <TagItem
-        v-for="(q, index) in paginatedTags()"
-        :key="index"
-        :tags="q"></TagItem>
+    <v-sheet class="list" v-for="(tag, index) in paginatedTags()" :key="index">
+      <TagItem :tag="tag"></TagItem>
     </v-sheet>
 
     <v-pagination
@@ -40,30 +37,14 @@
     components: {
       TagItem,
     },
-    // props: {
-    //   tags: {
-    //     type: Array,
-    //     required: true,
-    //   },
-    // },
+    props: {
+      tags: {
+        type: Array,
+        required: true,
+      },
+    },
     data() {
       return {
-        tags: [
-          'Maths',
-          'Dev',
-          'BDD',
-          'Culture',
-          'Sport',
-          'Arts',
-          'Politique',
-          'Histoire',
-          'Logique',
-          'Science',
-          'Geographie',
-          'Gastronomie',
-          'Comédie',
-          'Cinéma',
-        ],
         searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
@@ -75,16 +56,13 @@
       },
       filteredTags() {
         const query = this.searchQuery.toLowerCase();
-        // let filtered = this.tags;
-        // if (this.query !== '') {
-        //   filtered = filtered.filter((q) => q.toLowerCase().includes(query));
-        // }
-        // return filtered;
-        if (query.trim() === '') {
-          return this.tags;
-        } else {
-          return this.tags.filter((q) => q.toLowerCase().includes(query));
+        let filtered = this.tags;
+        if (query !== '') {
+          filtered = filtered.filter((tag) =>
+            tag.description.toLowerCase().includes(query),
+          );
         }
+        return filtered;
       },
       paginatedTags() {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -92,7 +70,10 @@
         return this.filteredTags().slice(startIndex, endIndex);
       },
       totalPages() {
-        return Math.ceil(this.filteredTags.length / this.itemsPerPage);
+        return Math.ceil(this.filteredTags().length / this.itemsPerPage);
+      },
+      toggleTagPanel() {
+        this.$emit('toggleTagPanel');
       },
     },
   };
