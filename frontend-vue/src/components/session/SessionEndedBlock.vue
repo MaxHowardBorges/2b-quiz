@@ -34,7 +34,8 @@
         <p class="text-white font-weight-bold">Settings</p>
       </v-btn>
     </div>
-    <result-table v-if="userStore.isTeacher" />
+    <!--    <result-table v-if="userStore.isTeacher" />-->
+    <!--    TODO DELETE RESULT TABLE-->
   </v-sheet>
 </template>
 

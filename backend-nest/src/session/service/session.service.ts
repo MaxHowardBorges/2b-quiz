@@ -17,6 +17,9 @@ import { ParticipantInterface } from '../../user/interface/participant.interface
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
 import { CreateSessionDto } from '../dto/createSession.dto';
+import { Session } from '../entity/session.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SessionService {
@@ -26,6 +29,8 @@ export class SessionService {
     private questionnaryService: QuestionnaryService,
     private answerMapper: AnswerMapper,
     private eventService: EventService,
+    @InjectRepository(Session)
+    private readonly sessionRepository: Repository<Session>,
   ) {}
 
   async initializeSession(
@@ -213,6 +218,22 @@ export class SessionService {
           ? idAnswer.split(/[ _]/)[0]
           : idAnswer,
       );
+  }
+
+  //TODO
+  //Save session into entity
+  async saveSession(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    //save session into entity
+    const sessionEntity = new Session();
+    //Define all sessionEntity's attributes
+    sessionEntity.isGlobal = session.isGlobal;
+    sessionEntity.isResult = session.isResult;
+    sessionEntity.isResponses = session.isResponses;
+    sessionEntity.date = new Date();
+    sessionEntity.teacher = session.host;
+    //Save session into entity
+    await this.sessionRepository.save(sessionEntity);
   }
 
   getMapUser(idSession: string) {

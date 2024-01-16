@@ -3,7 +3,7 @@ import {
   createSession,
   getCurrentQuestion,
   getNextQuestion,
-  getSessionResults,
+  startEndingSession,
   joinSession,
   sendAnswer,
 } from '@/api/session';
@@ -78,13 +78,13 @@ export const useSessionStore = defineStore('session', {
       this.setEnded(false);
       const isResult = true;
       const isGlobal = true;
-      const isAvailableAfter = true;
+      const isResponses = true;
       const response = await createSession(userStore.token, {
         ...this.questionnary,
         idsQuestionnarys: this.questionnary,
         isResult,
         isGlobal,
-        isAvailableAfter,
+        isResponses,
       });
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
@@ -102,7 +102,7 @@ export const useSessionStore = defineStore('session', {
         console.log(response);
         userStore.updateToken(response.headers.get('Authorization'));
         if (response.status === 204) {
-          await this.fetchResults();
+          await this.endSession();
           this.setEnded(true);
         } else {
           const question = await response.json();
@@ -113,13 +113,14 @@ export const useSessionStore = defineStore('session', {
         throw error;
       }
     },
-    async fetchResults() {
+    async endSession() {
       const userStore = useUserStore();
       try {
-        const response = await getSessionResults(
+        const response = await startEndingSession(
           this.idSession,
           userStore.token,
         );
+
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }

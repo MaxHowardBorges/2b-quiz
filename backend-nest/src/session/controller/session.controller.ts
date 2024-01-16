@@ -108,18 +108,30 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/getResults')
+  async getResults(
+    @Req() request: UserRequest,
+    @Query('idsession') idSession: string,
+  ) {
+    //Return the results of the session
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+  }
+
+  @Roles([UserType.TEACHER, UserType.STUDENT])
   @Get('/endSession')
-  async getMap(
+  async saveSession(
     @Req() request: UserRequest,
     @Query('idsession') idSession: string,
   ) {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
-    const a = this.sessionService.getMapUser(idSession); //TODO refactor
-    this.sessionService.getMap();
-    //console.log('LA FIIIIIIIIIIIIIIN');
+    //TODO IMPLEMENTS
+    //await this.sessionService.saveSession(idSession);
+    console.log('LA FIIIIIIIIIIIIIIN');
     if (this.sessionService.isHost(idSession, request.user as Teacher)) {
-      return [
+      return HttpStatus.NO_CONTENT;
+      /*return [
         await this.sessionService.getQuestionList(idSession),
         this.sessionMapper.mapUserAnswerDto(a),
       ]; //TODO replace with a DTO
@@ -137,7 +149,7 @@ export class SessionController {
         //TODO
       } else {
         //TODO RETURN ONLY NOTE FOR STUDENT
-      }
+      }*/
     }
   }
 }
