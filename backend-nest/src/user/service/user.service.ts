@@ -347,7 +347,6 @@ export class UserService {
     if (!user) {
       throw new UserNotFoundException();
     }
-
     return !!(group && user);
   }
 }
