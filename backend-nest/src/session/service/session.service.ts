@@ -16,13 +16,13 @@ import { Teacher } from '../../user/entity/teacher.entity';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
-import { CreateSessionDto } from '../dto/createSession.dto';
 import { Session } from '../entity/session.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserSession } from '../entity/userSession.entity';
 import { Student } from '../../user/entity/student.entity';
 import { SessionMapper } from '../mapper/session.mapper';
+import { User } from '../../user/entity/user.entity';
 
 @Injectable()
 export class SessionService {
@@ -314,5 +314,32 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     return this.sessionMap.get(idSession);
+  }
+
+  async getListSession(user: User) {
+    if (user instanceof Teacher) {
+      return this.sessionRepository.find({
+        //Find all session where student is connected
+        relations: [
+          'userSession',
+          'userSession.student',
+          'userSession.teacher',
+        ],
+        where: {
+          userSession: { teacher: { id: user.id } },
+          teacher: { id: user.id },
+        },
+      });
+    } else if (user instanceof Student) {
+      return this.sessionRepository.find({
+        //Find all session where student is connected
+        relations: [
+          'userSession',
+          'userSession.student',
+          'userSession.teacher',
+        ],
+        where: { userSession: { student: { id: user.id } } },
+      });
+    }
   }
 }

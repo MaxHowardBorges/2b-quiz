@@ -24,6 +24,7 @@ import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { CreateSessionDto } from '../dto/createSession.dto';
+import { Student } from '../../user/entity/student.entity';
 
 @Controller('session')
 export class SessionController {
@@ -116,6 +117,7 @@ export class SessionController {
     //Return the results of the session
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
+    return await this.sessionService.getListSession(request.user);
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
@@ -128,9 +130,6 @@ export class SessionController {
       throw new IsNotHostException();
     //TODO IMPLEMENTS
     await this.sessionService.saveSession(idSession, this.sessionMapper);
-    console.log('LA FIIIIIIIIIIIIIIN');
-    if (this.sessionService.isHost(idSession, request.user as Teacher)) {
-      return HttpStatus.NO_CONTENT;
-    }
+    return HttpStatus.NO_CONTENT;
   }
 }
