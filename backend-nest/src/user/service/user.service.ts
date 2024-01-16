@@ -185,6 +185,7 @@ export class UserService {
   async createGroup(dto: CreateGroupDto) {
     const group: Group = new Group();
     group.groupName = dto.name;
+    group.tabStudents = [];
     const t = <Teacher>await this.userRepository.findOne({
       where: { id: dto.idTeacher },
     });
@@ -232,7 +233,7 @@ export class UserService {
 
   async getGroup(idGroup: number) {
     const group = await this.groupRepository.findOne({
-      relations: ['teacher'],
+      relations: ['teacher', 'tabStudents'],
       where: { id: idGroup },
     });
 
@@ -242,47 +243,51 @@ export class UserService {
     return group;
   }
 
-  // async addStudentToGroup(idGroup: number, idStudent: number) {
-  //   const group = await this.groupRepository.findOne({
-  //     relations: ['teacher'],
-  //     where: { id: idGroup },
-  //   });
-  //
-  //   console.log(idStudent);
-  //   const student: Student = <Student>await this.userRepository.findOne({
-  //     where: { id: idStudent },
-  //   });
-  //   console.log(student);
-  //
-  //   if (group && student) {
-  //     for (let i = 0; i < group.tabStudents.length; i++) {
-  //       if (group.tabStudents[i].id == student.id) {
-  //         throw new UserAlreadyJoinedException();
-  //       }
-  //     }
-  //     student.groups.push(group);
-  //     group.tabStudents.push(student);
-  //
-  //     console.log(student.groups);
-  //     console.log(group.tabStudents);
-  //     //await this.userRepository.save(student);
-  //     //await this.groupRepository.save(group);
-  //   }
-  //   if (!group) {
-  //     throw new GroupNotFoundException();
-  //   }
-  //   if (!student) {
-  //     throw new UserNotFoundException();
-  //   }
-  //
-  //   return !!(group && student);
-  // }
+  async addStudentToGroup(idGroup: number, idStudent: number) {
+    const group = await this.groupRepository.findOne({
+      relations: ['teacher', 'tabStudents'],
+      where: { id: idGroup },
+    });
+
+    const student: Student = <Student>await this.userRepository.findOne({
+      relations: ['groups'],
+      where: { id: idStudent },
+    });
+
+    if (group && student) {
+      if (group.tabStudents.length != 0) {
+        for (let i = 0; i < group.tabStudents.length; i++) {
+          if (group.tabStudents[i].id == student.id) {
+            throw new UserAlreadyJoinedException();
+          }
+        }
+      }
+
+      student.groups.push(group);
+      group.tabStudents.push(student);
+
+      // console.log(student);
+      // console.log(group);
+      await this.userRepository.save(student);
+      await this.groupRepository.save(group);
+    }
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    if (!student) {
+      throw new UserNotFoundException();
+    }
+
+    return !!(group && student);
+  }
 
   async removeStudentFromGroup(idGroup: number, idStudent: number) {
     const group = await this.groupRepository.findOne({
+      relations: ['tabStudents'],
       where: { id: idGroup },
     });
     const student: Student = <Student>await this.userRepository.findOne({
+      relations: ['groups'],
       where: { id: idStudent },
     });
 
@@ -290,9 +295,16 @@ export class UserService {
       const groupTabStudent = group.tabStudents;
       const studentGroup = student.groups;
 
-      if (groupTabStudent.includes(student)) {
+      let isIn = false;
+      for (const s of groupTabStudent) {
+        if (s.id == idStudent) {
+          isIn = true;
+        }
+      }
+
+      if (isIn) {
         let index = groupTabStudent.findIndex((s) => {
-          s.id === student.id;
+          s.id = student.id;
         });
         groupTabStudent.splice(index);
 
