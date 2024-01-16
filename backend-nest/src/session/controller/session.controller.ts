@@ -127,7 +127,7 @@ export class SessionController {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
     //TODO IMPLEMENTS
-    //await this.sessionService.saveSession(idSession);
+    await this.sessionService.saveSession(idSession);
     console.log('LA FIIIIIIIIIIIIIIN');
     if (this.sessionService.isHost(idSession, request.user as Teacher)) {
       return HttpStatus.NO_CONTENT;
