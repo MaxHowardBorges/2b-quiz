@@ -325,6 +325,7 @@
         this.$emit('returnToBank');
       },
       toggleTagPanel() {
+        this.tagList = this.useQ.tagList;
         this.showTypeSelector = !this.showTypeSelector;
         this.OnListQuestion = !this.OnListQuestion;
         this.showTagPanel = !this.showTagPanel;

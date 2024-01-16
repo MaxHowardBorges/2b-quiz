@@ -89,9 +89,11 @@
       },
       async UpdateTag(tag) {
         await this.questionnaryStore.updateTag(tag);
+        this.tags = this.questionnaryStore.tagList;
       },
       async DeleteTag(tag) {
         await this.questionnaryStore.deleteTag(tag);
+        this.tags = this.questionnaryStore.tagList;
       },
     },
   };

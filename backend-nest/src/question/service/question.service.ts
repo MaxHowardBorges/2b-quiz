@@ -39,9 +39,20 @@ export class QuestionService {
   }
 
   async deleteTag(id: number) {
-    const tag = await this.tagRepository.findOne({ where: { idTag: id } });
+    const tag = await this.tagRepository.findOne({
+      where: { idTag: id },
+      relations: ['questions', 'author'],
+    });
     if (tag) {
-      await this.tagRepository.delete({ idTag: id });
+      for (let question of tag.questions) {
+        question = await this.findQuestion(question.id);
+        question.tags = question.tags.filter(
+          (questionTag) => questionTag.idTag !== tag.idTag,
+        );
+        await this.questionRepository.save(question);
+      }
+
+      await this.tagRepository.delete({ idTag: tag.idTag });
     }
     return !!tag;
   }

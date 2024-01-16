@@ -58,7 +58,6 @@ export async function createTag(tag, token) {
 }
 
 export async function updateTag(tag, token) {
-  console.log(tag);
   return await fetch(
     import.meta.env.VITE_API_URL + '/question/tag/' + tag.idTag,
     {
