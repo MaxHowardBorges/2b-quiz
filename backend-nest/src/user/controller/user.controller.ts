@@ -213,7 +213,6 @@ export class UserController {
   @Roles([UserType.TEACHER])
   @Post('/createGroup')
   async createGroup(@Body() dto: CreateGroupDto) {
-    console.log();
     return this.userService.createGroup(dto);
   }
   @Roles([UserType.TEACHER])
@@ -221,6 +220,7 @@ export class UserController {
   async deleteGroup(@Param('id', ParseIntPipe) idGroup: number) {
     return this.userService.deleteGroup(idGroup);
   }
+
   @Roles([UserType.TEACHER, UserType.STUDENT])
   @Get('/:id/getGroup')
   async getGroup(@Param('id', ParseIntPipe) idGroup: number) {
@@ -232,7 +232,7 @@ export class UserController {
     @Param('id', ParseIntPipe) idGroup: number,
     @Body(new ValidationPipe()) idStudent: number,
   ) {
-    return this.userService.addStudentToGroup(idGroup, idStudent);
+    //return this.userService.addStudentToGroup(idGroup, idStudent);
   }
   @Roles([UserType.TEACHER, UserType.STUDENT])
   @Patch('/:id/removeStudentFromGroup')
