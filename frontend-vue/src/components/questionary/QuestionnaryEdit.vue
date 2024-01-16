@@ -14,7 +14,7 @@
     <div v-else id="title">
       {{ this.questionnaryName }}
       <br />
-      Question N°{{
+      {{$t('questionnary.question')}} N°{{
         this.idQuestion
           ? this.useQ.questions.findIndex(
               (question) => question.id === this.idQuestion,
@@ -49,13 +49,12 @@
 
     <v-dialog v-model="alertQuestionnaryNull" max-width="600">
       <v-card>
-        <v-card-title class="headline">Confirmation</v-card-title>
+        <v-card-title class="headline">{{$t('questionnary.confirmation')}}</v-card-title>
         <v-card-text>
-          Please note that your questionnary has no questions if you leave it
-          will not be saved.
+          {{$t('questionnary.NoQuestion')}}
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="alertQuestionnaryNull = false">Cancel</v-btn>
+          <v-btn @click="alertQuestionnaryNull = false">{{$t('user.cancel')}}</v-btn>
           <v-btn @click="EmitGoList">{{$t('questionnary.confirmquestionnary')}}</v-btn>
         </v-card-actions>
       </v-card>
@@ -84,13 +83,13 @@
 
     <v-dialog v-model="confirmationDialog" max-width="600">
       <v-card>
-        <v-card-title class="headline">Confirmation</v-card-title>
+        <v-card-title class="headline">{{$t('questionnary.Confirmation')}}</v-card-title>
         <v-card-text>
-          Are you sure you want to leave without saving?
+          {{$t('questionnary.confirmLeave')}}
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="confirmationDialog = false">Cancel</v-btn>
-          <v-btn @click="leaveWithoutSaving">confirm</v-btn>
+          <v-btn @click="confirmationDialog = false">{{$t('user.cancel')}}</v-btn>
+          <v-btn @click="leaveWithoutSaving">{{$t('user.confirm')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

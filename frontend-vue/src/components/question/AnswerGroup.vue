@@ -22,7 +22,7 @@
   <v-text-field
     id='NewAnswer'
     v-model="selected"
-    label="Write an answer"
+    :label="$t('question.writeAnswer')"
     :disabled="disabled"
     :rules="[rules.required]"
     v-if="this.type === 'ouv' && !disabled"></v-text-field>
@@ -30,7 +30,7 @@
   <v-text-field
     id="NewAnswer"
     v-model="selected"
-    label="Write a word"
+    :label="$t('question.writeWord')"
     :disabled="disabled"
     v-if="this.type === 'qoc' && !disabled"
     :rules="[rules.notContainsSpace, rules.required]"></v-text-field>

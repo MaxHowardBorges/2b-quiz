@@ -31,7 +31,18 @@
     "question": "Question :",
     "addAnswer":"Add an answer",
     "deleteAnswer": "Delete an answer",
-    "done": "Done"
+    "done": "Done",
+    "confirmLeave": "Are you sure you want to leave without saving?",
+    "confirmation": "Confirmation",
+    "NoQuestion": "Please note that your questionnary has no questions if you leave it will not be saved.",
+    "confirmDelete": "Are you sure you want to delete this questionnary?"
+  },
+
+  "question": {
+    "writeAnswer": "Write your answer here",
+    "writeWord": "Write your word here",
+    "answer": "Answer",
+    "correct": "Correct"
   },
 
   "session": {
@@ -65,6 +76,7 @@
     "modify": "Modify",
     "cancel": "Cancel",
     "validate": "Validate",
-    "userPage": "User page"
+    "userPage": "User page",
+    "comfirm": "Confirm"
   }
 }

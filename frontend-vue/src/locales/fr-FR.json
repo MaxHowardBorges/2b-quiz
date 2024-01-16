@@ -31,7 +31,18 @@
     "question": "Question :",
     "addAnswer": "Ajouter une réponse",
     "deleteAnswer": "Supprimer une réponse",
-    "done": "Valider"
+    "done": "Valider",
+    "confirmLeave": "Êtes-vous sûr de quitter sans sauvegarder ?",
+    "Confirmation": "Confirmation",
+    "NoQuestion": "Veuillez noter que votre questionnaire ne comporte aucune question. Si vous le quittez, il ne sera pas sauvegardé.",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce questionnaire ?"
+  },
+
+  "question": {
+    "writeAnswer": "Écrivez votre réponse ici",
+    "writeWord": "Écrivez votre mot ici",
+    "answer": "Réponse",
+    "correct": "Correct"
   },
 
 
@@ -66,6 +77,7 @@
     "modify": "Modifier",
     "cancel": "Annuler",
     "validate": "Valider",
-    "userPage": "Page utilisateur"
+    "userPage": "Page utilisateur",
+    "confirm": "Confirmer"
   }
 }

@@ -20,7 +20,7 @@
           class="d-flex"
           id="tabCorrect">
           <v-text-field
-            :label="'Answer ' + (index + 1) + ' :'"
+            :label="$t('question.answer') + (index + 1) + ' :'"
             :id="'answer-' + index"
             :value="answer.content"
             v-model="answer.content"
@@ -29,7 +29,7 @@
             <v-radio-group v-model="correct">
               <v-radio
                 :id="'correct-answer-' + index"
-                :label="'Correct'"
+                :label="$t('question.correct')"
                 :value="index"></v-radio>
             </v-radio-group>
           </div>
