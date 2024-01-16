@@ -3,8 +3,6 @@
     v-if="iflist"
     @nextQuestion="iflist = false"></ListOfQuestionnary>
   <QuestionnaryEdit v-if="!iflist" @GoList="iflist = true"></QuestionnaryEdit>
-
-  <QuestionResult></QuestionResult>
 </template>
 
 <script>
