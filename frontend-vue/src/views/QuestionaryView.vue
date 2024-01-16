@@ -3,6 +3,8 @@
     v-if="iflist"
     @nextQuestion="iflist = false"></ListOfQuestionnary>
   <QuestionnaryEdit v-if="!iflist" @GoList="iflist = true"></QuestionnaryEdit>
+
+  <QuestionResult></QuestionResult>
 </template>
 
 <script>
@@ -10,6 +12,7 @@
   import QuestionnaryEdit from '@/components/questionary/QuestionnaryEdit.vue';
   import ListOfQuestionnary from '@/components/questionary/ListOfQuestionnary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+  import QuestionResult from '@/components/results/QuestionResult.vue';
 
   export default {
     data() {
@@ -28,6 +31,7 @@
     },
     name: 'QuestionaryView',
     components: {
+      QuestionResult,
       QuestionnaryEdit,
       ListOfQuestionnary,
     },
