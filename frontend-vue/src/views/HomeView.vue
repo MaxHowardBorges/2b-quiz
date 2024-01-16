@@ -8,13 +8,6 @@
     v-if="userStore.isAuthenticated"
     class="h-100 d-flex align-center justify-center ma-2">
     <join-form v-if="userStore.isStudent" />
-    <v-btn
-      @click="redirectToSessionHistory"
-      color="primary"
-      class="mx-6 my-3"
-      max-width="250px">
-      <p class="text-white font-weight-bold pa-2">Session history</p>
-    </v-btn>
     <new-user-block v-if="userStore.isNotChoose" />
     <menu-teacher
       v-if="userStore.isTeacher"
@@ -47,11 +40,6 @@
       return {
         userStore,
       };
-    },
-    methods: {
-      redirectToSessionHistory() {
-        router.push('/session-history');
-      },
     },
   };
 </script>
