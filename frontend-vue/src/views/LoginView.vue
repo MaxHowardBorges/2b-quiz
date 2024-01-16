@@ -71,17 +71,17 @@
 
 <template>
   <error-dialog
-    title="The Server is offline"
+    :title="$t('login.ServerOffline')"
     content="Please, try later."
     ref="dialogServerError"></error-dialog>
 
   <error-dialog
-    title="Session expired"
+    :title="$t('login.SessionExpired')"
     content="Please, reconnect yourself."
     ref="dialogExpiredError"></error-dialog>
 
   <error-snackbar
-    title="Error while login"
+    :title="$t('login.ErrorLogin')"
     :content="errorSnackbarContent"
     ref="errorSnackbar"></error-snackbar>
 
@@ -93,12 +93,12 @@
     elevation="5">
     <div class="logo ma-2 pa-2">Two Bee Quizz</div>
 
-    <div class="errrmes ma-5 pa-2"><b>Votre session est échue. Veuillez vous reconnecter.</b></div>
+    <div class="errrmes ma-5 pa-2"><b>{{ $t('login.sessionError') }}</b></div>
 
     <h2><b>Login with your account : </b></h2>
     <v-form @submit.prevent="login" class="ma-2" max-width="500px">
       <v-btn width='100%' color="primary" type="submit">
-        <p class="text-white font-weight-bold">Login</p>
+        <p class="text-white font-weight-bold">{{ $t('login.login') }}</p>
       </v-btn>
     </v-form>
   </v-sheet>

@@ -79,5 +79,17 @@
     "validate": "Valider",
     "userPage": "Page utilisateur",
     "confirm": "Confirmer"
+  },
+
+  "login": {
+    "login": "Connexion",
+    "sessionError": "Votre session est échue. Veuillez vous reconnecter.",
+    "ServerOffline": "Le serveur est hors ligne",
+    "SessionExpired": "Votre session à expiré. Veuillez vous reconnecter.",
+    "ErrorLogin": "Erreur lors de la connexion ",
+    "LoginWithAccount": "Se connecter avec votre compte :",
+    "Register": "S'inscrire",
+    "ImportCSV": "Import CSV",
+    "ImportFromCSV": "Importer depuis un fichier CSV"
   }
 }

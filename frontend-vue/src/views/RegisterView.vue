@@ -15,7 +15,7 @@
     width="70%"
     class="mt-5 mb-8 px-6 py-8 mx-auto"
     elevation="5">
-    <p class="text-lg-h2 text-sm-h3 text-h4 mb-5">Register</p>
+    <p class="text-lg-h2 text-sm-h3 text-h4 mb-5">{{ $t('login.Register') }}</p>
     <register-form @error-register="errorCaught" />
   </v-sheet>
 </template>

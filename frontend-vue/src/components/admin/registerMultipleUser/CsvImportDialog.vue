@@ -5,7 +5,7 @@
     </template>
     <v-card class="pa-2">
       <v-card-title>
-        <span>Import CSV</span>
+        <span> {{ $t('login.ImportCSV') }}</span>
       </v-card-title>
       <v-card-text>
         <v-alert color="info" icon="$info" class="mb-5 mx-5">

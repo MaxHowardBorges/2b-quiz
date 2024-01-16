@@ -78,5 +78,17 @@
     "validate": "Validate",
     "userPage": "User page",
     "comfirm": "Confirm"
+  },
+
+  "login": {
+    "login": "Login",
+    "sessionError": "Your session has expired. Please log in again.",
+    "ServerOffline": "The Server is offline",
+    "SessionExpired": "Session expired",
+    "ErrorLogin": "Error while logging in",
+    "LoginWithAccount": "Login with your account :",
+    "Register": "Register",
+    "ImportCSV": "Import CSV",
+    "ImportFromCSV": "Import from CSV"
   }
 }
