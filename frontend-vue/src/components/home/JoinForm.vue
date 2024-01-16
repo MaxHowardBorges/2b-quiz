@@ -29,6 +29,13 @@
         :loading="loading">
         <p class="text-white font-weight-bold">Join</p>
       </v-btn>
+      <v-btn
+        @click="redirectToSessionHistory"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Session history</p>
+      </v-btn>
     </v-form>
   </v-sheet>
 </template>
@@ -75,6 +82,9 @@
           }
         }
         this.loading = false;
+      },
+      redirectToSessionHistory() {
+        router.push('/session-history');
       },
     },
   };

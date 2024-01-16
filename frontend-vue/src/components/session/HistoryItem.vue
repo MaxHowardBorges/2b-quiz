@@ -132,7 +132,7 @@
         router.push('/session-handle-results');
       },
       SeeResults() {
-        router.push('/');
+        router.push('/session-question-results');
       },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;

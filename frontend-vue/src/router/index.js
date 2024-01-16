@@ -6,6 +6,7 @@ import QuestionaryView from '@/views/QuestionaryView.vue';
 import SessionHistoryView from '@/views/SessionHistoryView.vue';
 import SessionHandleResults from '@/components/session/SessionHandleResults.vue';
 import SeeResultsStudents from '@/views/SeeResultsStudents.vue';
+import SessionQuestionResults from '@/components/session/SessionQuestionResults.vue';
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/session-handle-results',
     name: SessionHandleResults,
     component: SessionHandleResults, //
+  },
+  {
+    path: '/session-question-results',
+    name: SessionQuestionResults,
+    component: SessionQuestionResults, //
   },
   {
     path: '/session-history',
