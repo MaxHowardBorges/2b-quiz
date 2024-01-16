@@ -69,7 +69,7 @@
   </v-sheet>
   <v-dialog v-model="dialogVisible" max-width="500">
     <v-card>
-      <v-card-title>Bank Private Questions</v-card-title>
+      <v-card-title>Questionnary list</v-card-title>
 
       <v-card-text>
         <v-list>

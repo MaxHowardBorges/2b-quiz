@@ -138,8 +138,9 @@
     /*props: {
       ChangeStatus: String,
     },*/ //USE IF WARNING IN CONSOLE
-    emits: ['returnToBank', 'GoList'],
+    emits: ['returnToBank', 'GoList', 'child-mounted'],
     data() {
+      this.loadData();
       return {
         // questionnary
         baseQuestionnaryName: '[Questionnary name]',
@@ -177,14 +178,6 @@
         useQ,
       };
     },
-    async mounted() {
-      if (this.useQ.isCreated) {
-        this.questionnaryName = this.useQ.questionnary.title;
-      } else this.questionnaryName = this.baseQuestionnaryName;
-      await this.useQ.getTags();
-      this.tagList = this.useQ.tagList;
-      this.selectedTags = [];
-    },
     name: 'QuestionnaryEdit',
     components: {
       ListTags,
@@ -192,6 +185,11 @@
       QuestionnaryListOne,
     },
     methods: {
+      async loadData() {
+        if (this.useQ.isCreated) {
+          this.questionnaryName = this.useQ.questionnary.title;
+        } else this.questionnaryName = this.baseQuestionnaryName;
+      },
       async createNewTag() {
         const tagToAdd = this.newTag.trim();
         if (
@@ -216,26 +214,33 @@
       toggleBank() {
         this.returnToBank();
       },
-      changeStatus(idQuestion, typeL, fromBank = false) {
+      async changeStatus(idQuestion, typeL, fromBank = false) {
         this.isFromBank = fromBank;
         this.isFromBank ? (this.questionnaryName = '') : '';
-        this.showTypeSelector = !this.showTypeSelector;
-        this.OnListQuestionnary = !this.OnListQuestionnary;
-        this.OnListQuestion = !this.OnListQuestion;
-        this.statusQ = 'modify';
-        this.idQuestion = idQuestion;
         this.selectedType = this.typeOptions.filter(
           (type) => type.typeCode === typeL,
         )[0].typeLabel;
+        this.statusQ = 'modify';
+        this.idQuestion = idQuestion;
+        !this.isFromBank ? this.useQ.getAnswers(idQuestion) : '';
 
+        this.showTypeSelector = !this.showTypeSelector;
+        this.OnListQuestionnary = !this.OnListQuestionnary;
+        this.OnListQuestion = !this.OnListQuestion;
+
+        await this.useQ.getTags();
+        this.tagList = this.useQ.tagList;
+        this.selectedTags = [];
+
+        const questionsList = this.isFromBank
+          ? this.useQ.privateQuestions
+          : this.useQ.questions;
         this.selectedTags = this.tagList.filter((tl) =>
-          this.useQ.questions
+          questionsList
             .find((q) => q.id === this.idQuestion)
             .tags.map((t) => t.description)
             .some((questionTag) => questionTag === tl.description),
         );
-
-        !this.isFromBank ? this.useQ.getAnswers(idQuestion) : '';
       },
       async validQuestion() {
         const index = this.$refs.questionnaryComponent.correct;
@@ -326,8 +331,11 @@
       },
       toggleTagPanel() {
         this.tagList = this.useQ.tagList;
+        const questionsList = this.isFromBank
+          ? this.useQ.privateQuestions
+          : this.useQ.questions;
         this.selectedTags = this.tagList.filter((tl) =>
-          this.useQ.questions
+          questionsList
             .find((q) => q.id === this.idQuestion)
             .tags.map((t) => t.description)
             .some((questionTag) => questionTag === tl.description),

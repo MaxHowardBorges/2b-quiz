@@ -49,7 +49,6 @@
     methods: {
       triggerChangeStatus(questionId, questionType) {
         this.toggleVisibilityfromBank(false);
-        //console.log(this.$refs.questionnaryEditRef + ' DO NOT DELETE'); //DO NOT DELETE
         this.$nextTick(() => {
           this.$refs.questionnaryEditRef.changeStatus(
             questionId,
