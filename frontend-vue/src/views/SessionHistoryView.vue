@@ -24,10 +24,6 @@
   </v-sheet>
 </template>
 
-const handleManageResults = () => { // Ajoutez ici la logique pour gérer les
-résultats // Par exemple, rediriger vers une nouvelle page
-router.push('/chemin-de-gestion-des-resultats'); };
-
 <style scoped>
   #divButton {
     position: absolute;

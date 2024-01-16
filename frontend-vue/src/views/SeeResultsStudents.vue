@@ -6,64 +6,24 @@
         <v-row>
           <v-col>
             <span>
-              <b>Date de création:</b>
-              {{ creationDate }}
+              <b>Voici ta note : 190/400</b>
+              {{ studentGrade }}
             </span>
           </v-col>
           <v-col>
             <span>
-              <b>Créé par:</b>
-              {{ createdBy }}
+              <b>La moyenne de cette session est de : 150/400</b>
+              {{ sessionAverage }}
             </span>
           </v-col>
         </v-row>
       </div>
       <span class="spacer"></span>
       <span class="spacer"></span>
-      <v-btn id="ic" @click="showGlobalResults" text>
-        Voir les résultats globaux
-      </v-btn>
-      <v-btn id="ic" @click="toggleDropdown" text>
-        Voir les réponses correctes
-      </v-btn>
-      <v-btn id="ic" @click="showStudentResponses" text>
-        Voir les réponses des étudiants
-      </v-btn>
     </div>
 
     <v-sheet class="list">
-      <!-- Dropdown menu -->
-      <v-list v-if="showDropdown" id="dropdown" class="mt-2">
-        <v-list-item-group>
-          <v-list-item v-for="(answer, index) in answers" :key="index">
-            <template #default>
-              <v-list-item-content>
-                <v-list-item-title class="text-h6">
-                  Question {{ index + 1 }}
-                </v-list-item-title>
-                {{ answer }}
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-
-      <!-- Global Results -->
-      <v-sheet v-if="showGlobal" class="mt-2">
-        <v-list-item-group>
-          <v-list-item v-for="(answer, index) in answers2" :key="index">
-            <template #default>
-              <v-list-item-content>
-                <v-list-item-title class="text-h6">
-                  Question {{ index + 1 }}
-                </v-list-item-title>
-                {{ answer }}
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group>
-      </v-sheet>
-
+      <!-- ... (rest of your code) ... -->
       <!-- Tableau des réponses des étudiants -->
       <v-sheet v-if="showStudentResponsesTable" class="mt-2">
         <v-data-table
@@ -85,39 +45,9 @@
         </v-data-table>
       </v-sheet>
 
-      <!-- Average Grade -->
-      <v-row v-if="showStudentResponsesTable" class="mt-2">
-        <v-col>
-          <v-text-field
-            v-model="averageGrade"
-            label="Average Grade"
-            readonly
-            outlined></v-text-field>
-        </v-col>
-      </v-row>
-
       <!-- Button for the First Question -->
-      <v-btn @click="handleFirstQuestionClick" class="mt-2">
-        Go to First Question
-      </v-btn>
+      <v-btn @click="handleFirstQuestionClick" class="mt-2">Question 1</v-btn>
     </v-sheet>
-
-    <!-- New switches added below -->
-    <v-switch
-      label="Visibility Results"
-      class="mx-2 my-3"
-      v-model="switch1Value"
-      @change="handleSwitchChange"></v-switch>
-    <v-switch
-      label="Visibility Responses"
-      class="mx-2 my-3"
-      v-model="switch2Value"
-      @change="handleSwitchChange"></v-switch>
-    <v-switch
-      label="Visibility Globals"
-      class="mx-2 my-3"
-      v-model="switch3Value"
-      @change="handleSwitchChange"></v-switch>
   </v-sheet>
 </template>
 
@@ -128,6 +58,9 @@
   export default {
     name: 'QuestionItem',
     setup() {
+      const studentGrade = ref(''); // Note de l'étudiant
+      const sessionAverage = ref(''); // Moyenne de la session
+
       return {
         switch1Value: ref(false),
         switch2Value: ref(false),
@@ -167,30 +100,13 @@
           },
           // Ajoutez d'autres lignes d'étudiants avec leurs réponses
         ],
-        averageGrade: 0,
+        studentGrade,
+        sessionAverage,
       };
     },
     methods: {
-      toggleDropdown() {
-        this.showDropdown = !this.showDropdown;
-      },
-      showGlobalResults() {
-        this.showGlobal = !this.showGlobal;
-      },
-      showStudentResponses() {
-        this.showStudentResponsesTable = !this.showStudentResponsesTable;
-        this.calculateAverageGrade();
-      },
-      handleSwitchChange() {
-        // Handle switch changes here
-        console.log('Switch 1:', this.switch1Value);
-        console.log('Switch 2:', this.switch2Value);
-        console.log('Switch 3:', this.switch3Value);
-      },
       handleFirstQuestionClick() {
-        // Handle the button click for the first question
-        // You can navigate to the first question or perform any other action here
-        console.log('Navigating to the first question...');
+        router.push('/');
       },
       calculateAverageGrade() {
         // Calculate the average grade of all students
@@ -198,7 +114,7 @@
           (total, student) => total + parseFloat(student.grade || 0),
           0,
         );
-        this.averageGrade =
+        this.sessionAverage =
           this.studentResponses.length > 0
             ? totalGrades / this.studentResponses.length
             : 0;
