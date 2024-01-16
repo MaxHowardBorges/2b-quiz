@@ -2,10 +2,11 @@
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
+    emits: ['ChangeStatuss'],
     data() {
-      return{
-        alertQuestionDelete: false
-      }
+      return {
+        alertQuestionDelete: false,
+      };
     },
     setup() {
       const useQ = useQuestionnaryStore();
@@ -20,17 +21,15 @@
     },
     methods: {
       deleteQuest() {
-        if(!this.alertQuestionDelete){
-          this.alertQuestionDelete=true;
-        }
-        else{
-          this.alertQuestionDelete=false;
+        if (!this.alertQuestionDelete) {
+          this.alertQuestionDelete = true;
+        } else {
+          this.alertQuestionDelete = false;
           this.useQ.deleteQuestion(this.idQuestion);
         }
-
       },
       modifyQuest() {
-        this.$emit('ChangeStatuss', this.idQuestion);
+        this.$emit('ChangeStatuss', this.idQuestion, this.typeLabel);
       },
     },
   };
@@ -50,7 +49,9 @@
     <v-card>
       <v-card-title class="headline">Confirmation</v-card-title>
       <v-card-text>
-        Are you sure to delete the question : <b> " {{numberLabel}} " </b> ?
+        Are you sure to delete the question :
+        <b>" {{ numberLabel }} "</b>
+        ?
       </v-card-text>
       <v-card-actions>
         <v-btn @click="alertQuestionDelete = false">Cancel</v-btn>

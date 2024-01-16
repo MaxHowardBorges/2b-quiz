@@ -43,8 +43,6 @@
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
-  import { useUserStore } from '@/stores/userStore';
-  import { UserRoles } from '@/utils/userRoles';
   import { ValidationError } from '@/utils/valdiationError';
 
   export default {
@@ -62,17 +60,14 @@
         idSession: ref(''),
         loading: false,
         snackbarError: ref(false),
-        username: ref(''),
       };
     },
     methods: {
       async handleJoinSession() {
         this.loading = true;
         try {
-          const body = { idSession: this.idSession, username: this.username };
+          const body = { idSession: this.idSession };
           await this.sessionStore.joinSession(body);
-          const userStore = useUserStore(); //TODO replace
-          userStore.setUserRoles(UserRoles.STUDENT);
           await router.push('/session');
         } catch (error) {
           if (error instanceof ValidationError) {

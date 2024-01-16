@@ -12,58 +12,129 @@ import {
 import { QuestionnaryService } from '../service/questionnary.service';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
+import { Req } from '@nestjs/common/decorators/http/route-params.decorator';
+import { UserRequest } from '../../auth/config/user.request';
+import { UserType } from '../../user/constants/userType.constant';
+import { Roles } from '../../decorators/roles.decorator';
+import { Teacher } from '../../user/entity/teacher.entity';
+import { NotAuthorException } from '../exception/notAuthor.exception';
+import { QuestionnaryNotFoundException } from '../exception/questionnaryNotFound.exception';
 
 @Controller('questionnary')
 export class QuestionnaryController {
   constructor(private readonly questionnaryService: QuestionnaryService) {}
+
+  @Roles([UserType.TEACHER])
   @Post('/create')
   createQuestionnary(
+    @Req() request: UserRequest,
     @Body(new ValidationPipe()) questionnaryDto: QuestionnaryCreateDto,
   ) {
     return this.questionnaryService.createQuestionnary(
-      questionnaryDto.title,
-      questionnaryDto.questions,
-      questionnaryDto.author,
+      questionnaryDto,
+      <Teacher>request.user,
     );
   }
 
+  @Roles([UserType.TEACHER])
   @Delete('/:id')
-  async deleteQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
+  async deleteQuestionnary(
+    @Req() request: UserRequest,
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+  ) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
+    if (
+      !(await this.questionnaryService.isQuestionnaryFromTeacher(
+        idQuestionnary,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorException();
     return this.questionnaryService.deleteQuestionnary(idQuestionnary);
   }
 
-  @Get('/:id/select')
-  selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
+  @Get('/:id')
+  async selectQuestionnary(@Param('id', ParseIntPipe) idQuestionnary: number) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
     return this.questionnaryService.findQuestionnary(idQuestionnary);
   }
 
-  @Get('/select/user/:id')
-  selectQuestionnaryFromUser(@Param('id', ParseIntPipe) idUser: number) {
-    return this.questionnaryService.findQuestionnaryFromUser(idUser);
+  @Roles([UserType.TEACHER])
+  @Get()
+  selectQuestionnaryList(@Req() request: UserRequest) {
+    return this.questionnaryService.findQuestionnariesFromIdUser(
+      request.user as Teacher,
+    );
   }
 
-  @Post('/:id/add-question')
-  addQuestion(
+  @Get('/:id/question/')
+  async selectQuestionsFromQuestionnary(
+    @Param('id', ParseIntPipe) idQuestionnary: number,
+  ) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
+    return this.questionnaryService.findQuestionsFromIdQuestionnary(
+      idQuestionnary,
+    );
+  }
+
+  @Roles([UserType.TEACHER])
+  @Post('/:id/question/')
+  async addQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
+    @Req() request: UserRequest,
   ) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
+    if (
+      !(await this.questionnaryService.isQuestionnaryFromTeacher(
+        idQuestionnary,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorException();
     return this.questionnaryService.addQuestion(idQuestionnary, questionDto);
   }
 
-  @Delete('/:id/remove-question/:idQ')
+  @Roles([UserType.TEACHER])
+  @Delete('/:id/question/:idQuestion')
   async deleteQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Param('idQ', ParseIntPipe) idQuestion: number,
+    @Param('idQuestion', ParseIntPipe) idQuestion: number,
+    @Req() request: UserRequest,
   ) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
+    if (
+      !(await this.questionnaryService.isQuestionnaryFromTeacher(
+        idQuestionnary,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorException();
     return this.questionnaryService.deleteQuestion(idQuestionnary, idQuestion);
   }
 
-  @Patch('/:id/modify-question/:idQ')
-  modifyQuestion(
+  @Roles([UserType.TEACHER])
+  @Patch('/:id/question/:idQuestion')
+  async modifyQuestion(
     @Param('id', ParseIntPipe) idQuestionnary: number,
-    @Param('idQ', ParseIntPipe) idQuestion: number,
+    @Param('idQuestion', ParseIntPipe) idQuestion: number,
     @Body(new ValidationPipe()) questionDto: QuestionCreateDto,
+    @Req() request: UserRequest,
   ) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
+    if (
+      !(await this.questionnaryService.isQuestionnaryFromTeacher(
+        idQuestionnary,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorException();
     return this.questionnaryService.modifyQuestion(
       idQuestionnary,
       idQuestion,
@@ -71,14 +142,26 @@ export class QuestionnaryController {
     );
   }
 
-  @Patch('/:id/modify-questionnary/')
-  modifyQuestionnary(
+  @Roles([UserType.TEACHER])
+  @Patch('/:id')
+  async modifyQuestionnary(
     @Param('id', ParseIntPipe) idQuestionnary: number,
     @Body() body: { questionnaryName: string },
+    @Req() request: UserRequest,
   ) {
+    if (!(await this.questionnaryService.questionnaryExists(idQuestionnary)))
+      throw new QuestionnaryNotFoundException();
+    if (
+      !(await this.questionnaryService.isQuestionnaryFromTeacher(
+        idQuestionnary,
+        request.user as Teacher,
+      ))
+    )
+      throw new NotAuthorException();
     return this.questionnaryService.modifyQuestionnary(
       idQuestionnary,
       body.questionnaryName,
+      request.user as Teacher,
     );
   }
 }

@@ -1,29 +1,45 @@
-import { QuestionnaryDto } from '../questionnary/dto/questionnary.dto';
-import { AnswerDto } from '../question/dto/answer.dto';
-import { QuestionDto } from '../question/dto/question.dto';
+import { Questionnary } from '../questionnary/entity/questionnary.entity';
+import { Question } from '../question/entity/question.entity';
+import { Answer } from '../question/entity/answer.entity';
+import { Teacher } from '../user/entity/teacher.entity';
+import { ParticipantInterface } from '../user/interface/participant.interface';
 
 export class Session {
   id: string;
 
-  questionnaryList: QuestionnaryDto[];
+  questionnaryList: Questionnary[];
 
-  questionnaryNumber : number;
+  questionnaryNumber: number;
 
   questionNumber: number;
 
-  connectedUser: Set<string>;
+  connectedUser: Set<ParticipantInterface>;
 
-  userAnswers: Map<string, Map<QuestionDto, AnswerDto>>;
+  userAnswers: Map<number, Map<Question, Answer | string | Answer[]>>;
 
   endSession: boolean;
 
-  constructor(idSession: string, tabQuestionnary: QuestionnaryDto[]) {
+  host: Teacher;
+
+  constructor(
+    idSession: string,
+    tabQuestionnary: Questionnary[],
+    host: Teacher,
+  ) {
     this.id = idSession;
     this.questionNumber = -1;
     this.questionnaryNumber = 0;
     this.questionnaryList = tabQuestionnary;
-    this.connectedUser = new Set<string>();
-    this.userAnswers = new Map<string, Map<QuestionDto, AnswerDto>>();
+    this.connectedUser = new Set<ParticipantInterface>();
+    this.userAnswers = new Map<
+      number,
+      Map<Question, Answer | string | Answer[]>
+    >();
     this.endSession = false;
+    this.host = host;
+  }
+
+  hasUser(user: ParticipantInterface): boolean {
+    return [...this.connectedUser].some((u) => u.equals(user));
   }
 }

@@ -1,94 +1,108 @@
-export async function createQuestionnary(body) {
+export async function createQuestionnary(body, token) {
   return await fetch(import.meta.env.VITE_API_URL + '/questionnary/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });
 }
 
-export async function addQuestion(body, id) {
+export async function addQuestion(body, id, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/add-question',
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question',
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     },
   );
 }
 
-export async function getQuestionnary(id) {
+export async function getQuestionnary(id, token) {
+  // return questionnary without questions
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/' + id, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getQuestionnariesFromUser(token) {
+  // return questionnaries without questions
+  return await fetch(import.meta.env.VITE_API_URL + '/questionnary/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getQuestionsFromQuestionnary(id, token) {
+  // return questions without answers
   return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/select/',
+    import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question/',
     {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     },
   );
 }
 
-export async function getQuestionnaryFromUser(id) {
-  return await fetch(
-    import.meta.env.VITE_API_URL + '/questionnary/select/user/' + id,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  );
-}
-
-export async function modifyQuestion(idQuestionnary, idQuestion, body) {
+export async function modifyQuestion(idQuestionnary, idQuestion, body, token) {
   return await fetch(
     import.meta.env.VITE_API_URL +
       '/questionnary/' +
       idQuestionnary +
-      '/modify-question/' +
+      '/question/' +
       idQuestion,
     {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     },
   );
 }
 
-export async function modifyQuestionnary(idQuestionnary, name) {
+export async function modifyQuestionnary(idQuestionnary, name, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL +
-      '/questionnary/' +
-      idQuestionnary +
-      '/modify-questionnary/',
+    import.meta.env.VITE_API_URL + '/questionnary/' + idQuestionnary,
     {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ questionnaryName: name }),
     },
   );
 }
 
-export async function deleteQuestion(idQuestionnary, idQuestion) {
+export async function deleteQuestion(idQuestionnary, idQuestion, token) {
   return await fetch(
     import.meta.env.VITE_API_URL +
       '/questionnary/' +
       idQuestionnary +
-      '/remove-question/' +
+      '/question/' +
       idQuestion,
     {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     },
   );

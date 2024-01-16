@@ -5,6 +5,7 @@ import { UserAnswerDto } from '../dto/userAnswer.dto';
 import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { AnswerDto } from '../../question/dto/answer.dto';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
 
 @Injectable()
 export class SessionMapper {
@@ -15,21 +16,31 @@ export class SessionMapper {
       id: question.id,
       content: question.content,
       answers: this.answerMapper.mapAnswersStudentDtos(question.answers),
+      type: question.type,
     };
   }
 
   mapUserAnswerDto(
-    userAnswers: Map<string, Map<QuestionDto, AnswerDto>>,
+    userAnswers: Map<ParticipantInterface, Map<QuestionDto, AnswerDto | string | AnswerDto[]>>,
   ): UserAnswerDto[] {
     const userAnswerDtos = [];
-    for (const [username, innerMap] of userAnswers.entries()) {
+    for (const [user, innerMap] of userAnswers.entries()) {
       const userAnswerDto = new UserAnswerDto();
-      userAnswerDto.username = username;
+      userAnswerDto.username = user.username;
       userAnswerDto.tab = [];
 
       for (const [question, answer] of innerMap.entries()) {
         const answerQuestion = new AnswerQuestionDto();
-        answerQuestion.idAnswer = answer.id;
+
+        if (Array.isArray(answer)) {
+          answerQuestion.idAnswer = answer.map((answer) =>
+            answer instanceof AnswerDto ? answer.id : answer,
+          );
+        } else {
+          answerQuestion.idAnswer =
+            answer instanceof AnswerDto ? answer.id : answer;
+        }
+        //answerQuestion.idAnswer = answer.id;
         answerQuestion.idQuestion = question.id;
         userAnswerDto.tab.push(answerQuestion);
       }

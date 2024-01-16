@@ -1,6 +1,7 @@
 import { Events } from '@/utils/events';
 import { defineStore } from 'pinia';
 import { useSessionStore } from '@/stores/sessionStore';
+import { useUserStore } from '@/stores/userStore';
 
 export const useSessionEventStore = defineStore('sessionEvent', {
   state: () => ({
@@ -13,9 +14,15 @@ export const useSessionEventStore = defineStore('sessionEvent', {
     connectToSSE() {
       //TODO catch error if SSE fails
       const sessionStore = useSessionStore();
+      const userStore = useUserStore();
       const url =
-        import.meta.env.VITE_API_URL + '/event/' + sessionStore.idSession;
+        import.meta.env.VITE_API_URL +
+        '/event/' +
+        sessionStore.idSession +
+        '?token=' +
+        userStore.token;
       const eventSource = new EventSource(url);
+
       this.setEventSource(eventSource);
       this.listenToEvents();
     },

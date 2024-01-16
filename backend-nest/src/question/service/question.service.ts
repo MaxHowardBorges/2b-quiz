@@ -3,9 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entity/question.entity';
 import { Repository } from 'typeorm';
 import { Answer } from '../entity/answer.entity';
-import { QuestionDto } from '../dto/question.dto';
-import { QuestionCreateDto } from '../dto/questionCreate.dto';
-import { AnswerDto } from '../dto/answer.dto';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 
 @Injectable()
@@ -17,7 +14,7 @@ export class QuestionService {
     private readonly answerRepository: Repository<Answer>,
   ) {}
 
-  async checkQuestionContainingAnswer(question: QuestionDto, idAnswer: number) {
+  async checkQuestionContainingAnswer(question: Question, idAnswer: number) {
     const answer = await this.answerRepository.findOne({
       where: { id: idAnswer },
       relations: ['question'],
@@ -25,10 +22,14 @@ export class QuestionService {
     return answer.question.id === question.id;
   }
 
-  async createQuestion(q: QuestionCreateDto, questionnary: Questionnary) {
+  async createQuestion(q: Question, questionnary: Questionnary) {
     const question = new Question();
     question.questionnary = questionnary;
     question.content = q.content;
+    question.type = q.type;
+    if (q.type == 'ouv') {
+      q.answers = [];
+    }
 
     await this.questionRepository.save(question);
     for (const a of q.answers) {
@@ -43,77 +44,90 @@ export class QuestionService {
 
   async deleteQuestions(questionnary: Questionnary) {
     const questions = await this.questionRepository.find({
-      where: { questionnary },
+      where: { questionnary: { id: questionnary.id } },
     });
-    for (const question of questions) {
-      await this.answerRepository.delete({ question });
+    if (!!questions) {
+      for (const question of questions) {
+        await this.answerRepository.delete({ question: { id: question.id } });
+      }
+      await this.questionRepository.delete({
+        questionnary: { id: questionnary.id },
+      });
     }
-    await this.questionRepository.delete({ questionnary });
+    return !!questions;
   }
 
-  async findQuestion(questionnary: Questionnary) {
-    const questions = await this.questionRepository.find({
-      where: { questionnary },
+  async findQuestion(idQuestion: number) {
+    return await this.questionRepository.findOne({
+      where: { id: idQuestion },
       relations: ['answers'],
     });
+  }
 
-    const questionDtos: QuestionDto[] = [];
-    for (const question of questions) {
-      const answerDtos = question.answers.map((answerEnt) => {
-        const answerDto = new AnswerDto();
-        answerDto.id = answerEnt.id;
-        answerDto.content = answerEnt.content;
-        answerDto.isCorrect = answerEnt.isCorrect;
-        return answerDto;
-      });
+  async findQuestions(questionnary: Questionnary) {
+    return await this.questionRepository.find({
+      where: { questionnary: { id: questionnary.id } },
+    });
+  }
 
-      const questionDto = {
-        id: question.id,
-        content: question.content,
-        answers: answerDtos,
-      };
-
-      questionDtos.push(questionDto);
-    }
-
-    return questionDtos;
+  async findAnswers(idQuestion: number) {
+    const questionsDB = await this.questionRepository.findOne({
+      where: { id: idQuestion },
+      relations: ['answers'],
+    });
+    return questionsDB.answers.map((answerEnt) => {
+      const answer = new Answer();
+      answer.id = answerEnt.id;
+      answer.content = answerEnt.content;
+      answer.isCorrect = answerEnt.isCorrect;
+      answer.question = null;
+      return answer;
+    });
   }
 
   async deleteQuestion(questionnary: Questionnary, idQuestion: number) {
     const question = await this.questionRepository.findOne({
-      where: { questionnary, id: idQuestion },
+      where: { questionnary: { id: questionnary.id }, id: idQuestion },
     });
     if (question) {
-      await this.answerRepository.delete({ question });
-      await this.questionRepository.delete({ questionnary, id: idQuestion });
+      await this.answerRepository.delete({ question: { id: question.id } });
+      await this.questionRepository.delete({
+        questionnary: { id: questionnary.id },
+        id: idQuestion,
+      });
     }
     return !!question;
   }
 
   async modifyQuestion(
-    questionDto: QuestionCreateDto,
+    question: Question,
     questionnary: Questionnary,
     idQuestion: number,
   ) {
-    const question = await this.questionRepository.findOne({
-      where: { questionnary, id: idQuestion },
+    const questionDB = await this.questionRepository.findOne({
+      where: { questionnary: { id: questionnary.id }, id: idQuestion },
       relations: ['answers'],
     });
 
-    if (question) {
-      Object.assign(question, questionDto);
-      await this.answerRepository.delete({ question });
-      await this.questionRepository.save(question);
+    if (questionDB) {
+      let { id, ...questionWithoutId } = question;
+      const newQuestion: Question = Object.assign(
+        {},
+        questionDB,
+        questionWithoutId,
+      );
+      await this.answerRepository.delete({ question: { id: questionDB.id } });
+      await this.questionRepository.save(newQuestion);
 
-      for (const a of questionDto.answers) {
+      for (const a of question.answers) {
         const answer = new Answer();
         answer.content = a.content;
         answer.isCorrect = a.isCorrect;
-        answer.question = question;
+        answer.question = newQuestion;
         await this.answerRepository.save(answer);
       }
     }
 
-    return !!question;
+    return !!questionDB;
   }
 }

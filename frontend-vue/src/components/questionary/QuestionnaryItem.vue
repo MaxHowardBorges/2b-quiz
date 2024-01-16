@@ -12,7 +12,9 @@
     <v-card>
       <v-card-title class="headline">Confirmation</v-card-title>
       <v-card-text>
-        Are you sure to delete the questionnary : <b> " {{questionnaryName.title}} " </b> ?
+        Are you sure to delete the questionnary :
+        <b>" {{ questionnaryName.title }} "</b>
+        ?
       </v-card-text>
       <v-card-actions>
         <v-btn @click="alertQuestionnaryDelete = false">Cancel</v-btn>
@@ -26,10 +28,11 @@
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
+    emits: ['nextQuestionE'],
     data() {
       return {
         iflist: true,
-        alertQuestionnaryDelete: false
+        alertQuestionnaryDelete: false,
       };
     },
     setup() {
@@ -41,20 +44,20 @@
     props: {
       questionnaryId: { type: Number, default: null },
       questionnaryName: {},
+      author: {},
     },
     methods: {
       deleteQuestionnary() {
-        if(!this.alertQuestionnaryDelete){
-          this.alertQuestionnaryDelete=true;
-        }
-        else{
+        if (!this.alertQuestionnaryDelete) {
+          this.alertQuestionnaryDelete = true;
+        } else {
           this.useQ.deleteQuestionnary(this.questionnaryId);
         }
-
       },
       modifyQuestionnary() {
         this.useQ.idQuestionnary = this.questionnaryName.id;
         this.useQ.getQuestionnary();
+        this.useQ.getQuestions();
         this.$emit('nextQuestionE');
       },
       startQuestionnary() {
