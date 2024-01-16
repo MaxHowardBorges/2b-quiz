@@ -7,9 +7,9 @@ import { IsArray } from 'class-validator';
 
 @ChildEntity()
 export class Student extends User implements ParticipantInterface {
-  @ManyToMany(() => Group, (group) => group.tabStudents)
+  @ManyToMany(() => Group, (group) => group.tabUsers)
   @JoinTable()
-  groups: Group[];
+  joinedGroups: Group[];
   constructor(username: string, validate: boolean) {
     super(username, validate);
   }

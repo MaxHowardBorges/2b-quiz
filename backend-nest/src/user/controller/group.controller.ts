@@ -38,12 +38,12 @@ export class GroupController {
     return this.userService.getGroup(idGroup);
   }
   @Roles([UserType.TEACHER])
-  @Put('/:id/addStudentToGroup')
-  async addStudentToGroup(
+  @Put('/:id/addUserToGroup')
+  async addUserToGroup(
     @Param('id', ParseIntPipe) idGroup: number,
     @Body(new ValidationPipe()) dto: AddStudentToGroupDto,
   ) {
-    return this.userService.addStudentToGroup(idGroup, dto.idStudent);
+    return this.userService.addUserToGroup(idGroup, dto.idStudent);
   }
   @Roles([UserType.TEACHER, UserType.STUDENT])
   @Patch('/:id/removeStudentFromGroup')
@@ -52,5 +52,10 @@ export class GroupController {
     @Body(new ValidationPipe()) dto: RemoveStudentFromGroupDto,
   ) {
     return this.userService.removeStudentFromGroup(idGroup, dto.idStudent);
+  }
+
+  @Get('/:id/getUser')
+  async getUser(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getUserWithGroup(id);
   }
 }

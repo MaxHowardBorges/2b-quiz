@@ -1,4 +1,4 @@
-import { ChildEntity } from 'typeorm';
+import { ChildEntity, JoinTable, ManyToMany } from 'typeorm';
 import { User } from './user.entity';
 import { UserType } from '../constants/userType.constant';
 import { ParticipantInterface } from '../interface/participant.interface';
@@ -13,8 +13,12 @@ export class Teacher extends User implements ParticipantInterface {
   questionnaries: Questionnary[];
 
   @OneToMany(() => Group, (group) => group.teacher)
-  @IsArray()
-  groups: Group[];
+  createdGroups: Group[];
+
+  @ManyToMany(() => Group, (group) => group.tabUsers)
+  @JoinTable()
+  joinedGroups: Group[];
+
   constructor(username: string, validate: boolean) {
     super(username, validate);
   }

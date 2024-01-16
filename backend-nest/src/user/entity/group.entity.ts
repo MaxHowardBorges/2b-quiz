@@ -8,6 +8,7 @@ import {
 import { Student } from './student.entity';
 import { IsInt } from 'class-validator';
 import { Teacher } from './teacher.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Group {
@@ -18,9 +19,9 @@ export class Group {
   @Column()
   groupName: string;
 
-  @ManyToOne(() => Teacher, (teacher) => teacher.groups)
+  @ManyToOne(() => Teacher, (teacher) => teacher.createdGroups)
   teacher: Teacher;
 
-  @ManyToMany(() => Student, (student) => student.groups)
-  tabStudents: Student[];
+  @ManyToMany(() => Student, (student) => student.joinedGroups)
+  tabUsers: User[];
 }
