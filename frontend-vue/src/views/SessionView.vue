@@ -1,35 +1,43 @@
 <template>
-  <div class='displayNormal'>
-  <div class="left-panel">
-  <div class='gaucheDroite mt-5'>
-  <session-waiting-block-student
-    v-if="waiting && !ended && userStore.isStudent"
-    :id-session="sessionStore.idSession.toString()"
-    :waiting-session-start="waitingSessionStart" />
-
-  <session-waiting-block-teacher
-    v-if="userStore.isTeacher && waiting"
-    @session-start="waiting = false" />
-
-  <session-question-block
-    @answer-sent-relay="waiting = true"
-    v-if="!waiting && !ended && userStore.isStudent" />
+  <template v-if="userStore.isStudent">
+    <session-waiting-block-student
+      v-if="waiting && !ended"
+      :id-session="sessionStore.idSession.toString()"
+      :waiting-session-start="waitingSessionStart" />
 
     <session-question-block
-      class='w-75'
       @answer-sent-relay="waiting = true"
-      v-if="!waiting && !ended && userStore.isTeacher" />
+      v-if="!waiting && !ended" />
 
-  <session-ended-block @reset="reset" v-if="ended" />
+    <session-ended-block @reset="reset" v-if="ended" />
+  </template>
 
-    <ActionTeacher v-if="userStore.isTeacher && !waiting" ></ActionTeacher>
-  </div>
-  </div>
-  <div class="right-panel">
-  <EventSession class='w-100' v-if="userStore.isTeacher && !waiting" ></EventSession>
-  </div>
+  <v-sheet
+    rounded="lg"
+    width="90%"
+    class="mt-5 px-6 py-8 mx-auto d-flex flex-row main-block"
+    elevation="5">
+    <div class="left-panel h-100">
+      <div class="leftRight mt-5">
+        <session-waiting-block-teacher
+          v-if="userStore.isTeacher && waiting"
+          @session-start="waiting = false" />
 
-  </div>
+        <session-question-block
+          class="w-75"
+          @answer-sent-relay="waiting = true"
+          v-if="!waiting && !ended" />
+
+        <session-ended-block @reset="reset" v-if="ended" />
+
+        <ActionTeacher v-if="!waiting"></ActionTeacher>
+      </div>
+    </div>
+    <v-divider vertical></v-divider>
+    <EventSession
+      class="w-100 right-panel h-100"
+      v-if="userStore.isTeacher"></EventSession>
+  </v-sheet>
 </template>
 
 <script>
@@ -109,34 +117,22 @@
 </script>
 
 <style scoped>
-
-
-
-  .gaucheDroite {
+  .leftRight {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
   }
 
-  .displayNormal {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-
-  * {
-    color: #007ea1;
-  }
-
   .left-panel {
-    flex-basis: 75%;
+    flex-basis: 70%;
   }
 
   .right-panel {
-    flex-basis: 25%;
+    flex-basis: 30%;
   }
 
+  .main-block {
+    height: 70vh;
+  }
 </style>
