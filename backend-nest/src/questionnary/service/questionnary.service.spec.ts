@@ -8,17 +8,20 @@ import { TestBed } from '@automock/jest';
 import { generateTeacherMock } from '../../../test/mock/user.mock';
 import { Repository } from 'typeorm';
 import { Teacher } from '../../user/entity/teacher.entity';
+import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 
 describe('QuestionnaryService', () => {
   let service: QuestionnaryService;
   let questionnaryRepository: jest.Mocked<Repository<Questionnary>>;
   let questionService: jest.Mocked<QuestionService>;
+  let mockTeacher: Teacher;
+  mockTeacher = generateTeacherMock();
 
   // TODO deplace questionnary/question generation in /test/mock
   const questionnary: Questionnary = {
     id: 15,
     title: 'morocco',
-    author: generateTeacherMock(),
+    author: mockTeacher,
     questions: [],
   };
   const questions: Question[] = [
@@ -29,7 +32,8 @@ describe('QuestionnaryService', () => {
       type: QuestionType.QCU,
       answers: [],
       tags: [],
-      author: null,
+      author: mockTeacher,
+      originalId: null,
     },
     {
       id: 37,
@@ -38,7 +42,8 @@ describe('QuestionnaryService', () => {
       type: QuestionType.QCU,
       answers: [],
       tags: [],
-      author: null,
+      author: mockTeacher,
+      originalId: null,
     },
     {
       id: 38,
@@ -47,7 +52,8 @@ describe('QuestionnaryService', () => {
       type: QuestionType.QCU,
       answers: [],
       tags: [],
-      author: null,
+      author: mockTeacher,
+      originalId: null,
     },
   ];
 
@@ -242,7 +248,9 @@ describe('QuestionnaryService', () => {
     it('should be returned a question', async () => {
       questionnaryRepository.findOne.mockResolvedValue(questionnary);
       questionService.createQuestion.mockResolvedValue(questions[0]);
-      const teacher = new Teacher('teacher name', true);
+      questionService.findQuestion.mockResolvedValue(questions[0]);
+      questionService.dtoToQuestion.mockReturnValue(questions[0]);
+      const teacher = generateTeacherMock();
       const test = await service.addQuestion(
         teacher,
         questionnary.id,
@@ -259,6 +267,7 @@ describe('QuestionnaryService', () => {
     it('should be returned a boolean and delete question', async () => {
       questionService.deleteQuestion.mockResolvedValue(true);
       questionnaryRepository.findOne.mockResolvedValue(questionnary);
+      questionService.dtoToQuestion.mockReturnValue(questions[0]);
       const test = await service.deleteQuestion(
         questionnary.id,
         questionnary.questions[0].id,
@@ -275,11 +284,13 @@ describe('QuestionnaryService', () => {
 
   describe('modifyQuestion', () => {
     it('should be returned a boolean and modify question', async () => {
+      questionnaryRepository.findOne.mockResolvedValue(questionnaryTest);
       questionService.modifyQuestion.mockResolvedValue(true);
+      questionService.dtoToQuestion.mockReturnValue(questions[0]);
       const test = await service.modifyQuestion(
         questionnary.id,
         questionnary.questions[0].id,
-        questionnary.questions[0],
+        new QuestionCreateDto(),
       );
       expect(test).toBeTruthy();
     });

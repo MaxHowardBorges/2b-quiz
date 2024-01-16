@@ -256,7 +256,10 @@ export class QuestionService {
     });
   }
 
-  dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
+  dtoToQuestion(
+    questionDto: QuestionCreateDto,
+    questionnaryRef: Questionnary,
+  ): Question {
     const question = new Question();
     question.id = null;
     question.content = questionDto.content;
