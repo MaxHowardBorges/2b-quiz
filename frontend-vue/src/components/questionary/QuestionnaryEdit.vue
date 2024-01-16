@@ -326,6 +326,12 @@
       },
       toggleTagPanel() {
         this.tagList = this.useQ.tagList;
+        this.selectedTags = this.tagList.filter((tl) =>
+          this.useQ.questions
+            .find((q) => q.id === this.idQuestion)
+            .tags.map((t) => t.description)
+            .some((questionTag) => questionTag === tl.description),
+        );
         this.showTypeSelector = !this.showTypeSelector;
         this.OnListQuestion = !this.OnListQuestion;
         this.showTagPanel = !this.showTagPanel;
