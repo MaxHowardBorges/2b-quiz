@@ -229,14 +229,16 @@ export class SessionService {
     //Define all sessionEntity's attributes
     sessionEntity.isGlobal = session.isGlobal;
     sessionEntity.isResult = session.isResult;
-    console.log('ici');
     sessionEntity.isResponses = session.isResponses;
-
     sessionEntity.date = new Date();
     sessionEntity.teacher = session.host;
+    sessionEntity.questionnary =
+      await this.questionnaryService.createQuestionnaryFromIdArray(
+        session.questionnaryList,
+        session.host,
+      );
     //Save session into entity
     await this.sessionRepository.save(sessionEntity);
-    console.log('la');
   }
 
   getMapUser(idSession: string) {

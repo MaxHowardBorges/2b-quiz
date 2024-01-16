@@ -32,6 +32,78 @@ export class QuestionnaryService {
     return questionnary;
   }
 
+  //Create new questionnary from Questionnary id array
+  async createQuestionnaryFromIdArray(
+    questionnarys: Questionnary[],
+    author: Teacher,
+  ) {
+    //QuestionnaryCreateDto array for save dto
+    const questionnaryDto: QuestionnaryCreateDto[] = [];
+    // for (const id of questionnarys) {
+    //   const questionnary = await this.questionnaryRepository.findOne({
+    //     where: { 'questionnarys.id': id },
+    //   });
+    for (const questionnary of questionnarys) {
+      const id = questionnary.id; // Assuming Questionnary has an 'id' property
+
+      const foundQuestionnary = await this.questionnaryRepository.findOne({
+        where: { id },
+      });
+      if (foundQuestionnary) {
+        //add questionnaryDto to questionnaryDto array
+        questionnaryDto.push(await this.questionnaryToDto(questionnary));
+      }
+    }
+    //Combine all questionnaryDto in one questionnaryDto
+    const questionnaryDtoCombined = new QuestionnaryCreateDto();
+    questionnaryDtoCombined.title = 'Questionnary Combined';
+    questionnaryDtoCombined.questions = [];
+    for (const q of questionnaryDto) {
+      for (const question of q.questions) {
+        questionnaryDtoCombined.questions.push(question);
+      }
+    }
+    //Create questionnary from questionnaryDtoCombined
+    const questionnary = await this.createQuestionnary(
+      questionnaryDtoCombined,
+      author,
+    );
+    return questionnary;
+  }
+
+  //Transform Questionnary to QuestionnaryCreateDto
+  async questionnaryToDto(questionnary: Questionnary) {
+    const questionnaryDto = new QuestionnaryCreateDto();
+    questionnaryDto.title = questionnary.title;
+    questionnaryDto.questions = [];
+    const questions = await this.questionService.findQuestions(questionnary);
+    for (const question of questions) {
+      questionnaryDto.questions.push(await this.questionToDto(question));
+    }
+    return questionnaryDto;
+  }
+
+  //Transform Question to QuestionCreateDto
+  async questionToDto(question: Question) {
+    const questionDto = new QuestionCreateDto();
+    questionDto.content = question.content;
+    questionDto.type = question.type;
+    questionDto.answers = [];
+    const answers = await this.questionService.findAnswers(question.id);
+    for (const answer of answers) {
+      questionDto.answers.push(this.answerToDto(answer));
+    }
+    return questionDto;
+  }
+
+  //Transform Answer to AnswerCreateDto
+  answerToDto(answer: Answer) {
+    const answerDto = new AnswerCreateDto();
+    answerDto.content = answer.content;
+    answerDto.isCorrect = answer.isCorrect;
+    return answerDto;
+  }
+
   async deleteQuestionnary(idQuestionnary: number) {
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
