@@ -76,6 +76,7 @@
       ref="questionnaryComponent"
       id="quest"
       v-if="OnListQuestion"
+      :is-from-bank="isFromBank"
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
 
@@ -124,10 +125,7 @@
       @click="EmitGoList"></v-btn>
   </v-sheet>
 
-  <ListTags
-    v-if="showTagPanel"
-    :tags="this.tagList"
-    @toggleTagPanel="toggleTagPanel"></ListTags>
+  <ListTags v-if="showTagPanel" @toggleTagPanel="toggleTagPanel"></ListTags>
 </template>
 
 <script>
@@ -208,12 +206,6 @@
         } else {
           alert('Le tag est vide ou existe déjà.');
         }
-      },
-      async UpdateTag() {
-        //TODO waiting front-end component
-      },
-      async DeleteTag() {
-        //TODO waiting front-end component
       },
       toggleTypeSelector() {
         this.statusQ = 'add';

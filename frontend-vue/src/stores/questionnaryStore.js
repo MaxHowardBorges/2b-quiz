@@ -17,8 +17,8 @@ import {
   getQuestionsFromUser,
   createTag,
   getTags,
-  UpdateTag,
-  DeleteTag,
+  updateTag,
+  deleteTag,
 } from '@/api/question';
 import { throwIfNotOK } from '@/utils/apiUtils';
 
@@ -187,16 +187,16 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       userStore.updateToken(response.headers.get('Authorization'));
       await this.getTags();
     },
-    async UpdateTag(tag) {
+    async updateTag(tag) {
       const userStore = useUserStore();
-      const response = await UpdateTag(tag, userStore.token);
+      const response = await updateTag(tag, userStore.token);
       await throwIfNotOK(response, 200);
       userStore.updateToken(response.headers.get('Authorization'));
       await this.getTags();
     },
-    async DeleteTag(tag) {
+    async deleteTag(tag) {
       const userStore = useUserStore();
-      const response = await DeleteTag(tag, userStore.token);
+      const response = await deleteTag(tag, userStore.token);
       await throwIfNotOK(response, 200);
       userStore.updateToken(response.headers.get('Authorization'));
       await this.getTags();

@@ -57,23 +57,30 @@ export async function createTag(tag, token) {
   });
 }
 
-export async function UpdateTag(tag, token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/question/tag/' + tag.id, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+export async function updateTag(tag, token) {
+  console.log(tag);
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/question/tag/' + tag.idTag,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(tag),
     },
-    body: JSON.stringify(tag),
-  });
+  );
 }
 
-export async function DeleteTag(id, token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/question/tag/' + id, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+export async function deleteTag(tag, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/question/tag/' + tag.idTag,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 }

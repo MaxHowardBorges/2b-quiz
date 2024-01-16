@@ -21,7 +21,10 @@
       :length="totalPages()"></v-pagination>
 
     <v-sheet class="list" v-for="(tag, index) in paginatedTags()" :key="index">
-      <TagItem :tag="tag"></TagItem>
+      <TagItem
+        :tag="tag"
+        @updateTag="UpdateTag"
+        @deleteTag="DeleteTag"></TagItem>
     </v-sheet>
 
     <v-pagination
@@ -33,26 +36,33 @@
 
 <script>
   import TagItem from '@/components/questionary/TagItem.vue';
+  import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
   export default {
     components: {
       TagItem,
     },
-    props: {
-      tags: {
-        type: Array,
-        required: true,
-      },
-    },
     emits: ['toggleTagPanel'],
-    data() {
+    setup() {
+      const questionnaryStore = useQuestionnaryStore();
       return {
+        questionnaryStore,
+      };
+    },
+    data() {
+      this.loadData();
+      return {
+        tags: [],
         searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
       };
     },
     methods: {
+      async loadData() {
+        await this.questionnaryStore.getTags();
+        this.tags = this.questionnaryStore.tagList;
+      },
       filterTags() {
         this.currentPage = 1;
       },
@@ -76,6 +86,12 @@
       },
       returnToEdit() {
         this.$emit('toggleTagPanel');
+      },
+      async UpdateTag(tag) {
+        await this.questionnaryStore.updateTag(tag);
+      },
+      async DeleteTag(tag) {
+        await this.questionnaryStore.deleteTag(tag);
       },
     },
   };
