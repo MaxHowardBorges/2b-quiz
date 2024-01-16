@@ -2,24 +2,27 @@
   <v-sheet
     rounded="lg"
     width="70%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
+    class="mt-5 px-6 py-8 mb-2 mx-auto d-flex flex-column align-center"
     elevation="5">
     <h1>View questionnary</h1>
 
     <v-sheet class="list">
       <v-sheet
+        v-if="this.useQ.questionnaryList.length > 0"
         v-for="(questionnary, index) in this.useQ.questionnaryList"
         :key="index">
         <QuestionnaryItem
           :questionnaryName="questionnary"
           :questionnaryId="questionnary.id"
-          @nextQuestionE="emitNextQuestion"></QuestionnaryItem>
+          @nextQuestionE="edit"></QuestionnaryItem>
       </v-sheet>
+      <v-sheet v-else>No Questionnaries</v-sheet>
     </v-sheet>
 
     <v-card class="mt-25">
       <v-btn @click="backHome">Back to home</v-btn>
-      <v-btn @click="emitNextQuestion">New Questionnary</v-btn>
+      <v-btn @click="bank">Private question bank</v-btn>
+      <v-btn @click="edit">New Questionnary</v-btn>
     </v-card>
   </v-sheet>
 </template>
@@ -32,7 +35,6 @@
   import router from '@/router';
 
   export default {
-    //TODO Pas de questionnaire
     data() {
       return {};
     },
@@ -44,12 +46,15 @@
       };
     },
     methods: {
-      emitNextQuestion() {
-        this.$emit('nextQuestion');
+      edit() {
+        this.$emit('edit');
       },
 
       backHome() {
         router.push('/');
+      },
+      bank() {
+        this.$emit('bank');
       },
     },
     name: 'ListOfQuestionnary',

@@ -54,7 +54,7 @@ describe('SessionService', () => {
     closeClientGroup: jest.fn(),
   };
 
-  let hostTeacher = generateTeacherMock();
+  const hostTeacher = generateTeacherMock();
 
   const questionnary: Questionnary = {
     id: 15,
@@ -69,6 +69,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 37,
@@ -76,6 +78,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 38,
@@ -83,6 +87,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
   ];
 
@@ -171,7 +177,7 @@ describe('SessionService', () => {
 
   questionnary.questions = questions;
 
-  let questionnaryTest = new Questionnary();
+  const questionnaryTest = new Questionnary();
   questionnaryTest.questions = questions;
   questionnaryTest.id = 15;
   questionnaryTest.author = hostTeacher;
@@ -247,7 +253,7 @@ describe('SessionService', () => {
 
   describe('CreateSession', () => {
     it('should create a session and return a Session', async () => {
-      let test = await service.createSession(
+      const test = await service.createSession(
         service.generateIdSession(),
         hostTeacher,
         [questionnary],
@@ -268,17 +274,17 @@ describe('SessionService', () => {
       mockSessionMap.set('111111', session);
       (service as any).sessionMap = mockSessionMap;
 
-      let test = await service.nextQuestion('111111');
+      const test = await service.nextQuestion('111111');
       expect(test).not.toBeNull();
       expect(test).not.toEqual(session);
-      let session2: Session = session;
-      let quest = new Question();
+      const session2: Session = session;
+      const quest = new Question();
       quest.answers = [];
 
       session2.questionNumber = 0;
       mockSessionMap.set('111111', session2);
       (service as any).sessionMap = mockSessionMap;
-      let test2 = await service.nextQuestion('111111');
+      const test2 = await service.nextQuestion('111111');
       expect(test2).not.toEqual(quest);
     });
   });

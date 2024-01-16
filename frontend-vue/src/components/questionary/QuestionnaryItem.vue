@@ -54,10 +54,10 @@
           this.useQ.deleteQuestionnary(this.questionnaryId);
         }
       },
-      modifyQuestionnary() {
+      async modifyQuestionnary() {
         this.useQ.idQuestionnary = this.questionnaryName.id;
-        this.useQ.getQuestionnary();
-        this.useQ.getQuestions();
+        await this.useQ.getQuestionnary();
+        await this.useQ.getQuestions();
         this.$emit('nextQuestionE');
       },
       startQuestionnary() {

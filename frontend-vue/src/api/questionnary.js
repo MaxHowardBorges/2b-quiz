@@ -23,6 +23,7 @@ export async function addQuestion(body, id, token) {
   );
 }
 
+//TODO error 401 Unauthorized
 export async function getQuestionnary(id, token) {
   // return questionnary without questions
   return await fetch(import.meta.env.VITE_API_URL + '/questionnary/' + id, {
@@ -34,6 +35,7 @@ export async function getQuestionnary(id, token) {
   });
 }
 
+//TODO error 401 Unauthorized
 export async function getQuestionnariesFromUser(token) {
   // return questionnaries without questions
   return await fetch(import.meta.env.VITE_API_URL + '/questionnary/', {
@@ -108,6 +110,7 @@ export async function deleteQuestion(idQuestionnary, idQuestion, token) {
   );
 }
 
+//TODO error 401 Unauthorized
 export async function deleteQuestionnary(idQuestionnary) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + idQuestionnary,

@@ -56,6 +56,8 @@ describe('QuestionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 37,
@@ -63,6 +65,8 @@ describe('QuestionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 38,
@@ -70,6 +74,8 @@ describe('QuestionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
   ];
 
@@ -158,7 +164,7 @@ describe('QuestionService', () => {
 
   questionnary.questions = questions;
 
-  let questionTest = new Question();
+  const questionTest = new Question();
   questionTest.answers = answers1;
   questionTest.id = 38;
   questionTest.questionnary = questionnary;
@@ -167,7 +173,7 @@ describe('QuestionService', () => {
 
   describe('createQuestion', () => {
     it('should create a question and return it', async () => {
-      let test = await service.createQuestion(
+      const test = await service.createQuestion(
         questions[0],
         questions[0].questionnary,
       );
@@ -178,7 +184,7 @@ describe('QuestionService', () => {
   describe('deleteQuestions', () => {
     it('should delete question and return a bool', async () => {
       expect(questionnary.questions[2]).toEqual(questions[2]);
-      let test = service.deleteQuestions(questionnary);
+      const test = service.deleteQuestions(questionnary);
       expect(test).toBeTruthy();
     });
   });
@@ -186,7 +192,7 @@ describe('QuestionService', () => {
   describe('findQuestion', () => {
     it('should search a question with id and return it', async () => {
       mockQuestionRepository.findOne.mockResolvedValue(questionTest);
-      let test: Question = await service.findQuestion(questions[0].id);
+      const test: Question = await service.findQuestion(questions[0].id);
       expect(test).not.toBeNull();
       expect(test).toBeInstanceOf(Question);
     });
@@ -195,7 +201,7 @@ describe('QuestionService', () => {
   describe('findQuestions', () => {
     it('should get all questions from a questionnary', async () => {
       mockQuestionRepository.find.mockResolvedValue(questions);
-      let test: Question[] = await service.findQuestions(questionnary);
+      const test: Question[] = await service.findQuestions(questionnary);
       expect(test).not.toBeNull();
       expect(test).toBeInstanceOf(Array);
     });
@@ -204,7 +210,7 @@ describe('QuestionService', () => {
   describe('findAnswers', () => {
     it('should get all answers from a question', async () => {
       mockQuestionRepository.findOne.mockResolvedValue(questionTest);
-      let test: Answer[] = await service.findAnswers(
+      const test: Answer[] = await service.findAnswers(
         questionnary.questions[0].id,
       );
       //console.log(test);
@@ -216,7 +222,7 @@ describe('QuestionService', () => {
   describe('deleteQuestion', () => {
     it('should delete question and return a bool', async () => {
       expect(questionnary.questions[2]).toEqual(questions[2]);
-      let test = service.deleteQuestion(
+      const test = service.deleteQuestion(
         questionnary,
         questionnary.questions[2].id,
       );
@@ -233,6 +239,8 @@ describe('QuestionService', () => {
         questionnary: questionnary,
         type: QuestionType.QCU,
         answers: [],
+        tags: [],
+        author: null,
       };
       modifiedQuestion.answers = [
         {
@@ -254,7 +262,7 @@ describe('QuestionService', () => {
           question: modifiedQuestion,
         },
       ];
-      let test = service.modifyQuestion(
+      const test = service.modifyQuestion(
         modifiedQuestion,
         questions[0].questionnary,
         questions[0].id,
