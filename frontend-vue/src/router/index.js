@@ -5,12 +5,18 @@ import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 import SessionHistoryView from '@/views/SessionHistoryView.vue';
 import SessionHandleResults from '@/components/session/SessionHandleResults.vue';
+import SeeResultsStudents from '@/views/SeeResultsStudents.vue';
 
 const routes = [
+  {
+    path: '/see-results-students',
+    name: SeeResultsStudents,
+    component: SeeResultsStudents, //
+  },
 
   {
     path: '/session-handle-results',
-    name : SessionHandleResults,
+    name: SessionHandleResults,
     component: SessionHandleResults, //
   },
   {

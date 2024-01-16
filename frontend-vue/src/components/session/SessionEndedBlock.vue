@@ -57,8 +57,8 @@
       <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
         Gérer les résultats
       </v-btn>
-      <v-btn v-if="userStore.isStudent" @click="SeeResults">
-        Voir les résultats
+      <v-btn @click="SeeResults">
+        //v-if="userStore.isStudent" Voir les résultats
       </v-btn>
     </div>
   </v-sheet>
@@ -92,7 +92,7 @@
         router.push('/session-handle-results');
       },
       SeeResults() {
-        router.push('/');
+        router.push('/see-results-students');
       },
       returnToMenu() {
         router.push('/');
