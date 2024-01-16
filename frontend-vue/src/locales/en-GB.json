@@ -108,6 +108,33 @@
 
   "admin": {
     "RegisterNew": "Register new user",
-    "close": "Close"
+    "close": "Close",
+    "UserAdded": "User added",
+    "Error": "Error",
+    "The": "The",
+    "usersHBadded": "users have been added",
+    "alreadyExist": "already exist",
+    "ErrorWAUsers:": "Error while adding users:",
+    "Usernames": "Usernames",
+    "AreTheSame": "are the same",
+    "alreadyTaken": "already taken",
+    "ErrorRestoringUserId:": "Error while restoring user id:",
+    "ErrorDeletingUserId:": "Error while deleting user id:",
+    "ErrorRejectingUserId:": "Error while rejecting user id:",
+    "AskedDeleteAccount": "This user asked to delete his account",
+    "DeleteRequest": "delete request.",
+    "info": "Info",
+    "check": "Check",
+    "ListUsers": "List of Users",
+    "ItemsPerPage": "Items per page",
+    "Page": "Page",
+    "of": "of",
+    "FirstName": "First name",
+    "LastName": "Last name",
+    "Username": "Username",
+    "UserType": "User type",
+    "Student": "Student",
+    "Teacher": "Teacher",
+    "save": "Save"
   }
 }

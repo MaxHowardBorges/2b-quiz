@@ -9,7 +9,7 @@
       required
       autocomplete="given-name"
       :rules="stringRules"
-      label="First name"></v-text-field>
+      :label="this.$t('admin.FirstName')"></v-text-field>
     <v-text-field
       class="my-2"
       validate-on="input"
@@ -19,7 +19,7 @@
       required
       autocomplete="family-name"
       :rules="stringRules"
-      label="Last name"></v-text-field>
+      :label="this.$t('admin.LastName')"></v-text-field>
     <v-text-field
       class="my-2"
       validate-on="input"
@@ -29,29 +29,29 @@
       required
       autocomplete="username"
       :rules="stringRules"
-      label="Username"></v-text-field>
+      :label="this.$t('admin.Username')"></v-text-field>
     <v-radio-group
       class="my-2"
       validate-on="input"
-      label="User type"
+      :label="this.$t('admin.UserType')"
       v-model="accountType"
       :inline="$vuetify.display.mdAndUp"
       required>
       <v-radio
         direction="horizontal"
         :value="UserRoles.STUDENT"
-        label="Student"></v-radio>
+        :label="this.$t('admin.Student')"></v-radio>
       <v-radio
         direction="horizontal"
         :value="UserRoles.TEACHER"
-        label="Teacher"></v-radio>
+        :label="this.$t('admin.Teacher')"></v-radio>
       <v-radio
         direction="horizontal"
         :value="UserRoles.ADMIN"
         label="Admin"></v-radio>
     </v-radio-group>
     <v-btn color="primary" type="submit" class="my-2">
-      <p class="text-white font-weight-bold">Register</p>
+      <p class="text-white font-weight-bold">{{ this.$t('login.Register') }}</p>
     </v-btn>
   </v-form>
 </template>

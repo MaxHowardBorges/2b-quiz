@@ -17,7 +17,7 @@
     <template v-slot:header="">
       <div
         class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
-        <div class="text-truncate">List of Users</div>
+        <div class="text-truncate">{{ this.$t('admin.ListUsers') }}</div>
         <v-spacer></v-spacer>
         <v-switch
           color="primary"
@@ -63,7 +63,7 @@
     </template>
     <template v-slot:footer="">
       <div class="d-flex align-sm-center justify-end pa-4">
-        <div>Items per page:</div>
+        <div>{{ this.$t('admin.ItemsPerPage') }}:</div>
         <v-select
           class="mt-6 mx-2 flex-0-1"
           id="lineSelector"
@@ -73,7 +73,7 @@
           :items="nbItemsOptions"
           variant="outlined"></v-select>
         <div class="d-inline-flex">
-          <div class="mx-2 my-auto">Page {{ indexPage }} of {{ nbPage }}</div>
+          <div class="mx-2 my-auto">{{ this.$t('admin.Page') }} {{ indexPage }} {{ this.$t('admin.of') }} {{ nbPage }}</div>
           <v-btn
             :disabled="indexPage.valueOf() === 1"
             icon="arrow_back"

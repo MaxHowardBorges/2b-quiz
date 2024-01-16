@@ -10,8 +10,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="error" variant="text" @click="close">Close</v-btn>
-        <v-btn color="success" variant="text" @click="save">Save</v-btn>
+        <v-btn color="error" variant="text" @click="close">{{ this.$t('admin.close') }}</v-btn>
+        <v-btn color="success" variant="text" @click="save">{{ this.$t('admin.save') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

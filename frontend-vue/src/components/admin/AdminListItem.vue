@@ -16,9 +16,9 @@
       <template v-if="user.askedDelete">
         <v-tooltip
           location="start"
-          text="This user asked to delete his account">
+          :text="this.$t('admin.AskedDeleteAccount')">
           <template v-slot:activator="{ props }">
-            <v-icon v-bind="props">info</v-icon>
+            <v-icon v-bind="props">{{ this.$t('admin.info') }}</v-icon>
           </template>
         </v-tooltip>
       </template>
@@ -52,7 +52,7 @@
             @click="removeUser"></v-btn>
         </div>
         <div v-else>
-          <v-icon class="mr-4">check</v-icon>
+          <v-icon class="mr-4">{{ this.$t('admin.check') }}</v-icon>
           <v-btn
             variant="outlined"
             density="comfortable"

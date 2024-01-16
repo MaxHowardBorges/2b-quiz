@@ -107,6 +107,33 @@
 
   "admin": {
     "RegisterNew": "Hongrois Register new user",
-    "close": "Hongrois Close"
+    "close": "Hongrois Close",
+    "UserAdded": "Hongrois User added",
+    "Error": "Hongrois Error",
+    "The": "Hongrois The",
+    "usersHBadded": "Hongrois users have been added",
+    "alreadyExist": "Hongrois already exist",
+    "ErrorWAUsers:": "Hongrois Error while adding users:",
+    "Usernames": "Hongrois Usernames",
+    "AreTheSame": "Hongrois are the same",
+    "alreadyTaken": "Hongrois already taken",
+    "ErrorRestoringUserId:": "Hongrois Error while restoring user id:",
+    "ErrorDeletingUserId:": "Hongrois Error while deleting user id:",
+    "ErrorRejectingUserId:": "Hongrois Error while rejecting user id:",
+    "AskedDeleteAccount": "Hongrois This user asked to delete his account",
+    "DeleteRequest": "Hongrois delete request.",
+    "info": "Hongrois Info",
+    "check": "Hongrois Check",
+    "ListUsers": "Hongrois List of Users",
+    "ItemsPerPage": "Hongrois Items per page",
+    "Page": "Hongrois Page",
+    "of": "Hongrois of",
+    "FirstName": "Hongrois First name",
+    "LastName": "Hongrois Last name",
+    "Username": "Hongrois Username",
+    "UserType": "Hongrois User type",
+    "Student": "Hongrois Student",
+    "Teacher": "Hongrois Teacher",
+    "save": "Hongrois Save"
   }
 }

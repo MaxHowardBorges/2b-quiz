@@ -108,6 +108,33 @@
 
   "admin": {
     "RegisterNew": "Enregistrer un nouvel utilisateur",
-    "close": "Fermer"
+    "close": "Fermer",
+    "UserAdded": "Utilisateur ajouté",
+    "Error": "Erreur",
+    "The": "Le",
+    "usersHBadded": "utilisateur a été ajouté",
+    "alreadyExist": "existe déjà",
+    "ErrorWAUsers:": "Erreur lors de l'ajout des utilisateurs :",
+    "Usernames": "Utilisateurs",
+    "AreTheSame": "sont identiques",
+    "alreadyTaken": "est déjà pris",
+    "ErrorRestoringUserId:": "Erreur lors de la restauration de l'identifiant utilisateur :",
+    "ErrorDeletingUserId:": "Erreur lors de la suppression de l'identifiant utilisateur :",
+    "ErrorRejectingUserId:": "Erreur lors du rejet de l'identifiant utilisateur :",
+    "AskedDeleteAccount": "L'utilisateur demande la suppression de son compte",
+    "DeleteRequest": "Demande de suppression",
+    "info": "Info",
+    "check": "Vérifier",
+    "ListUsers": "Liste des utilisateurs",
+    "ItemsPerPage": "Éléments par page",
+    "Page": "Page",
+    "of": "de",
+    "FirstName": "Prénom",
+    "LastName": "Nom",
+    "Username": "Nom d'utilisateur",
+    "UserType": "Type d'utilisateur",
+    "Student": "Étudiant",
+    "Teacher": "Enseignant",
+    "save": "Sauvegarder"
   }
 }

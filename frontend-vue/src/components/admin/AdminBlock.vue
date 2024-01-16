@@ -10,7 +10,7 @@
         class="ma-2"
         @user-registered="userAdded"
         @error-register="errorRegister" />
-      <v-btn @click="addUser = false">Close</v-btn>
+      <v-btn @click="addUser = false">{{ this.$t('admin.close') }}</v-btn>
     </v-card>
   </v-dialog>
   <v-dialog v-model="addMoreUser" width="auto" :persistent="true">
@@ -68,50 +68,49 @@
     methods: {
       userAdded(value) {
         this.addUser = false;
-        this.infoSnackbarTitle = 'User added';
-        this.infoSnackbarContent = `The ${value.accountType}: ${value.username} has been added`;
+        this.infoSnackbarTitle = this.$t('admin.UserAdded');
+        this.infoSnackbarContent = 'The '+this.$t('admin.UserAdded')+': '+`${value.username}`+' has been added';
         this.$refs.infoSnackbar.snackbarInfo = true;
       },
       userMoreAdded(value) {
         this.addMoreUser = false;
-        this.infoSnackbarTitle = 'Users added';
-        this.infoSnackbarContent = `${value.nbUsers} users have been added`;
+        this.infoSnackbarTitle = this.$t('admin.UserAdded');
+        this.infoSnackbarContent = `${value.nbUsers}`+this.$t('admin.usersHBadded');
         this.$refs.infoSnackbar.snackbarInfo = true;
       },
       errorRegister(username) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent = `Username ${username} already exist`;
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent = this.$t('user.username')+`${username}`+this.$t('admin.alreadyExist');
         this.$refs.errorSnackbar.snackbarError = true;
       },
       errorRegisterMultiple(error) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent = `Error while adding users: ${error}`;
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent = this.$t('admin.ErrorWAUsers')+`${error}`;
         this.$refs.errorSnackbar.snackbarError = true;
       },
       errorRegisterMultipleDuplicate(usernames) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent = `Usernames ${usernames.toString()} are the same`;
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent = this.$t('admin.Usernames')+` ${usernames.toString()}` +this.$t('admin.AreTheSame');
         this.$refs.errorSnackbar.snackbarError = true;
       },
       errorRegisterMultipleUsed(usernames) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent = `Usernames ${usernames.toString()} already taken`;
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent = this.$t('admin.Usernames')+` ${usernames.toString()}` + this.$t('admin.alreadyTaken');
         this.$refs.errorSnackbar.snackbarError = true;
       },
       errorRestore(id) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent = 'Error while restoring user id:' + id + '.';
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent = this.$t('admin.ErrorRestoringUserId') + id + '.';
         this.$refs.errorSnackbar.snackbarError = true;
       },
       errorDelete(id) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent = 'Error while deleting user id:' + id + '.';
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent = this.$t('admin.ErrorDeletingUserId') + id + '.';
         this.$refs.errorSnackbar.snackbarError = true;
       },
       errorReject(id) {
-        this.errorSnackbarTitle = 'Error';
-        this.errorSnackbarContent =
-          'Error while rejecting user id:' + id + ' delete request.';
+        this.errorSnackbarTitle = this.$t('admin.Error');
+        this.errorSnackbarContent =this.$t('admin.ErrorRejectingUserId') + id + this.$t('admin.DeleteRequest');
         this.$refs.errorSnackbar.snackbarError = true;
       },
     },
