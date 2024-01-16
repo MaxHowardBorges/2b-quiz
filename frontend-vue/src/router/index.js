@@ -22,7 +22,7 @@ const routes = [
   },
   {
     path: '/session-question-results',
-    name: SessionQuestionResults,
+    name: 'SessionQuestionResults',
     component: SessionQuestionResults, //
   },
   {
