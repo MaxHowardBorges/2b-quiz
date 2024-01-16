@@ -1,5 +1,3 @@
-
-
 <template>
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
     <div class="mb-4">
@@ -23,9 +21,13 @@
       <span class="spacer"></span>
       <span class="spacer"></span>
 
-        <!-- Un seul bouton pour gérer les résultats -->
-        <v-btn @click="handleManageResults">Gérer les résultats</v-btn>
-
+      <!-- Un seul bouton pour gérer les résultats -->
+      <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
+        Gérer les résultats
+      </v-btn>
+      <v-btn v-if="userStore.isStudent" @click="SeeResults">
+        Voir les résultats
+      </v-btn>
     </div>
 
     <v-sheet class="list">
@@ -82,11 +84,14 @@
 <script>
   import { ref } from 'vue';
   import router from '@/router';
+  import { useUserStore } from '@/stores/userStore';
 
   export default {
     name: 'QuestionItem',
     setup() {
+      const userStore = useUserStore();
       return {
+        userStore,
         question: ref('Session 1'),
         creationDate: ref('2024-01-11'),
         createdBy: ref('Nom Prénom'),
@@ -123,9 +128,11 @@
       };
     },
     methods: {
-      handleManageResults(){
-        router.push('/session-handle-results')
-
+      handleManageResults() {
+        router.push('/session-handle-results');
+      },
+      SeeResults() {
+        router.push('/');
       },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;

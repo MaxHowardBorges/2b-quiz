@@ -34,7 +34,33 @@
         <p class="text-white font-weight-bold">Settings</p>
       </v-btn>
     </div>
-    <result-table v-if="userStore.isTeacher" />
+    <div class="mb-4">
+      <b>{{ question }}</b>
+      <div class="mt-4 mb-4">
+        <v-row>
+          <v-col>
+            <span>
+              <b>Date de création:</b>
+              {{ creationDate }}
+            </span>
+          </v-col>
+          <v-col>
+            <span>
+              <b>Créé par:</b>
+              {{ createdBy }}
+            </span>
+          </v-col>
+        </v-row>
+      </div>
+      <span class="spacer"></span>
+      <span class="spacer"></span>
+      <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
+        Gérer les résultats
+      </v-btn>
+      <v-btn v-if="userStore.isStudent" @click="SeeResults">
+        Voir les résultats
+      </v-btn>
+    </div>
   </v-sheet>
 </template>
 
@@ -53,12 +79,21 @@
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
       return {
+        question: ref('Session 1'),
+        creationDate: ref('2024-01-11'),
+        createdBy: ref('Nom Prénom'),
         loading: ref(false),
         sessionStore,
         userStore,
       };
     },
     methods: {
+      handleManageResults() {
+        router.push('/session-handle-results');
+      },
+      SeeResults() {
+        router.push('/');
+      },
       returnToMenu() {
         router.push('/');
       },

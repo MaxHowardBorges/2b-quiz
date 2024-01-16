@@ -1,5 +1,3 @@
-
-
 <template>
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
     <div class="mb-4">
@@ -86,21 +84,17 @@
       label="Visibility Results"
       class="mx-2 my-3"
       v-model="switch1Value"
-      @change="handleSwitchChange"
-    ></v-switch>
+      @change="handleSwitchChange"></v-switch>
     <v-switch
       label="Visibility Responses"
       class="mx-2 my-3"
       v-model="switch2Value"
-      @change="handleSwitchChange"
-    ></v-switch>
+      @change="handleSwitchChange"></v-switch>
     <v-switch
       label="Visibility Globals"
       class="mx-2 my-3"
       v-model="switch3Value"
-      @change="handleSwitchChange"
-    ></v-switch>
-
+      @change="handleSwitchChange"></v-switch>
   </v-sheet>
 </template>
 
@@ -112,6 +106,9 @@
     name: 'QuestionItem',
     setup() {
       return {
+        switch1Value: ref(false),
+        switch2Value: ref(false),
+        switch3Value: ref(false),
         question: ref('Session 1'),
         creationDate: ref('2024-01-11'),
         createdBy: ref('Nom Prénom'),
@@ -156,6 +153,12 @@
       },
       showStudentResponses() {
         this.showStudentResponsesTable = !this.showStudentResponsesTable;
+      },
+      handleSwitchChange() {
+        // Handle switch changes here
+        console.log('Switch 1:', this.switch1Value);
+        console.log('Switch 2:', this.switch2Value);
+        console.log('Switch 3:', this.switch3Value);
       },
     },
   };
