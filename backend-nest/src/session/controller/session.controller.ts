@@ -127,29 +127,10 @@ export class SessionController {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
     //TODO IMPLEMENTS
-    await this.sessionService.saveSession(idSession);
+    await this.sessionService.saveSession(idSession, this.sessionMapper);
     console.log('LA FIIIIIIIIIIIIIIN');
     if (this.sessionService.isHost(idSession, request.user as Teacher)) {
       return HttpStatus.NO_CONTENT;
-      /*return [
-        await this.sessionService.getQuestionList(idSession),
-        this.sessionMapper.mapUserAnswerDto(a),
-      ]; //TODO replace with a DTO
-    } else {
-      if (this.sessionService.getSessionOrThrow(idSession).isResult) {
-        //TODO
-      }
-      if (
-        this.sessionService.getSessionOrThrow(idSession).isResult &&
-        this.sessionService.getSessionOrThrow(idSession).isResponses
-      ) {
-        //TODO
-      }
-      if (this.sessionService.getSessionOrThrow(idSession).isGlobal) {
-        //TODO
-      } else {
-        //TODO RETURN ONLY NOTE FOR STUDENT
-      }*/
     }
   }
 }

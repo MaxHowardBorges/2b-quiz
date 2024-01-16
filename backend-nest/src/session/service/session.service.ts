@@ -20,6 +20,9 @@ import { CreateSessionDto } from '../dto/createSession.dto';
 import { Session } from '../entity/session.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserSession } from '../entity/userSession.entity';
+import { Student } from '../../user/entity/student.entity';
+import { SessionMapper } from '../mapper/session.mapper';
 
 @Injectable()
 export class SessionService {
@@ -31,6 +34,8 @@ export class SessionService {
     private eventService: EventService,
     @InjectRepository(Session)
     private readonly sessionRepository: Repository<Session>,
+    @InjectRepository(UserSession)
+    private readonly userSessionRepository: Repository<UserSession>,
   ) {}
 
   async initializeSession(
@@ -220,12 +225,12 @@ export class SessionService {
       );
   }
 
-  //TODO
   //Save session into entity
-  async saveSession(idSession: string) {
+  async saveSession(idSession: string, sessionMapper: SessionMapper) {
     const session = this.getSessionOrThrow(idSession);
     //save session into entity
     const sessionEntity = new Session();
+    const userSessionEntity = new UserSession();
     //Define all sessionEntity's attributes
     sessionEntity.isGlobal = session.isGlobal;
     sessionEntity.isResult = session.isResult;
@@ -237,8 +242,41 @@ export class SessionService {
         session.questionnaryList,
         session.host,
       );
-    //Save session into entity
     await this.sessionRepository.save(sessionEntity);
+    //Define each userSessionEntity for each user in session
+    for (const user of session.connectedUser) {
+      const userSessionEntity = new UserSession();
+      userSessionEntity.session = sessionEntity;
+      if (user instanceof Teacher) {
+        userSessionEntity.teacher = user;
+      } else if (user instanceof Student) {
+        userSessionEntity.student = user;
+      }
+      //Define all userSessionEntity's attributes
+      userSessionEntity.answer = [];
+      const userAnswer = session.userAnswers.get(user.id);
+      for (const [question, answer] of userAnswer) {
+        if (Array.isArray(answer)) {
+          for (const a of answer) {
+            userSessionEntity.answer.push(a);
+          }
+        } else if (typeof answer === 'string') {
+          const answerEntity = new Answer();
+          answerEntity.question = question;
+          answerEntity.content = answer;
+          answerEntity.isCorrect = true;
+          userSessionEntity.answer.push(answerEntity);
+        } else if (answer instanceof Answer) {
+          userSessionEntity.answer.push(answer);
+        }
+      }
+      console.log(userSessionEntity);
+      await this.userSessionRepository.save(userSessionEntity, {});
+    }
+
+    console.log('bug');
+
+    console.log('bug');
   }
 
   getMapUser(idSession: string) {

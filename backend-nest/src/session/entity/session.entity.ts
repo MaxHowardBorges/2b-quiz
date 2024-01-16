@@ -21,7 +21,7 @@ export class Session {
   questionnary: Questionnary;
 
   @OneToMany(() => UserSession, (userSession) => userSession.id)
-  userSession: UserSession;
+  userSession: UserSession[];
 
   @ManyToOne(() => Teacher, (teacher) => teacher.id)
   teacher: Teacher;

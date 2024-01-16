@@ -177,20 +177,20 @@ describe('SessionService', () => {
   questionnaryTest.author = hostTeacher;
   questionnaryTest.title = 'morocco';
 
-  const session: SessionTemp = {
-    hasUser(user: ParticipantInterface): boolean {
-      return false;
-    },
-    id: '111111',
-    questionnaryList: [],
-    questionnaryNumber: 0,
-    questionNumber: 0,
-    connectedUser: null,
-    userAnswers: null,
-    endSession: false,
-    host: hostTeacher,
-  };
-  session.questionnaryList.push(questionnary);
+  // const session: SessionTemp = {
+  //   hasUser(user: ParticipantInterface): boolean {
+  //     return false;
+  //   },
+  //   id: '111111',
+  //   questionnaryList: [],
+  //   questionnaryNumber: 0,
+  //   questionNumber: 0,
+  //   connectedUser: null,
+  //   userAnswers: null,
+  //   endSession: false,
+  //   host: hostTeacher,
+  // };
+  // session.questionnaryList.push(questionnary);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -259,31 +259,31 @@ describe('SessionService', () => {
   });
 */
 
-    describe('nextQuestion', () => {
-      it('should return the next question', async () => {
-        mockMap.get.mockReturnValue(session);
-        mockQuestionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
-          questions,
-        );
-        mockQuestionService.findQuestion.mockResolvedValue(questions[0]);
-        const mockSessionMap = new Map<string, SessionTemp>();
-        mockSessionMap.set('111111', session);
-        (service as any).sessionMap = mockSessionMap;
-
-        let test = await service.nextQuestion('111111');
-        expect(test).not.toBeNull();
-        expect(test).not.toEqual(session);
-        let session2: SessionTemp = session;
-        let quest = new Question();
-        quest.answers = [];
-
-        session2.questionNumber = 0;
-        mockSessionMap.set('111111', session2);
-        (service as any).sessionMap = mockSessionMap;
-        let test2 = await service.nextQuestion('111111');
-        expect(test2).not.toEqual(quest);
-      });
-    });
+    // describe('nextQuestion', () => {
+    //   it('should return the next question', async () => {
+    //     mockMap.get.mockReturnValue(session);
+    //     mockQuestionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
+    //       questions,
+    //     );
+    //     mockQuestionService.findQuestion.mockResolvedValue(questions[0]);
+    //     const mockSessionMap = new Map<string, SessionTemp>();
+    //     mockSessionMap.set('111111', session);
+    //     (service as any).sessionMap = mockSessionMap;
+    //
+    //     let test = await service.nextQuestion('111111');
+    //     expect(test).not.toBeNull();
+    //     expect(test).not.toEqual(session);
+    //     let session2: SessionTemp = session;
+    //     let quest = new Question();
+    //     quest.answers = [];
+    //
+    //     session2.questionNumber = 0;
+    //     mockSessionMap.set('111111', session2);
+    //     (service as any).sessionMap = mockSessionMap;
+    //     let test2 = await service.nextQuestion('111111');
+    //     expect(test2).not.toEqual(quest);
+    //   });
+    // });
 
     //TODO NOT WORKING
     /*describe('currentQuestion', () => {

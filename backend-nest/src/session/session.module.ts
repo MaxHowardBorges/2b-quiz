@@ -8,6 +8,7 @@ import { EventModule } from '../event/event.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Questionnary } from '../questionnary/entity/questionnary.entity';
 import { Session } from './entity/session.entity';
+import { UserSession } from './entity/userSession.entity';
 
 @Module({
   controllers: [SessionController],
@@ -16,7 +17,7 @@ import { Session } from './entity/session.entity';
     QuestionnaryModule,
     QuestionModule,
     EventModule,
-    TypeOrmModule.forFeature([Session]),
+    TypeOrmModule.forFeature([Session, UserSession]),
   ],
 })
 export class SessionModule {}
