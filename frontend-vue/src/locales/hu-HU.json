@@ -54,5 +54,16 @@
   "Result": {
     "Participant": "hongrois Participants",
     "Setting": "hongrois Setting"
+  },
+  "user": {
+    "username": "hongroisUsername",
+    "name": "hongroisName",
+    "surname": "hongroisSurname",
+    "status": "hongroisStatus",
+    "askDelete": "hongroisAsk for delete account ?",
+    "modify": "hongroisModify",
+    "cancel": "hongroisCancel",
+    "validate": "hongroisValidate",
+    "userPage": "hongroisUser page"
   }
 }

@@ -54,5 +54,17 @@
   "Result": {
     "Participant": "Participants",
     "Setting": "Setting"
+  },
+
+  "user": {
+    "username": "Username",
+    "name": "Name",
+    "surname": "Surname",
+    "status": "Status",
+    "askDelete": "Ask for delete account",
+    "modify": "Modify",
+    "cancel": "Cancel",
+    "validate": "Validate",
+    "userPage": "User page"
   }
 }

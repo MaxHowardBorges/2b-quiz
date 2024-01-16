@@ -14,12 +14,12 @@
     width="90%"
     class="mt-5 px-6 py-8 mx-auto"
     elevation="5">
-    <h1>USER PAGE</h1>
+    <h1>{{ $t('user.userPage') }}</h1>
 
     <v-sheet border rounded="lg" class="pa-3 mx-auto my-4" max-width="600px">
       <div class="ma-2">
         <p>
-          Username :
+          {{ $t('user.username') }} :
           <b>{{ this.user.username }}</b>
         </p>
       </div>
@@ -27,14 +27,14 @@
       <div class="userinfo" v-if="!modification">
         <div class="ma-2">
           <p>
-            Name :
+            {{ $t('user.name') }} :
             <b>{{ this.user.name }}</b>
           </p>
         </div>
         <v-divider class="w-33 mx-auto"></v-divider>
         <div class="ma-2">
           <p>
-            Surname :
+            {{ $t('user.surname') }} :
             <b>{{ this.user.surname }}</b>
           </p>
         </div>
@@ -43,18 +43,18 @@
         <v-text-field
           variant="outlined"
           class="px-10 mt-5"
-          label="name"
+          :label="$t('user.name')"
           v-model="this.user.name"></v-text-field>
         <v-divider class="w-33 mx-auto"></v-divider>
         <v-text-field
           variant="outlined"
           class="px-10 mt-5"
-          label="name"
+          :label="$t('user.surname')"
           v-model="this.user.surname"></v-text-field>
       </v-sheet>
       <v-divider class="w-33 mx-auto"></v-divider>
       <p class="ma-2">
-        Status :
+        {{ $t('user.status') }} :
         <b>{{ userStore.userRole }}</b>
       </p>
     </v-sheet>
@@ -64,13 +64,13 @@
       class="mt-5"
       color="primary"
       @click="updateUserData">
-      Validate
+      {{ $t('user.validate') }}
     </v-btn>
     <v-btn class="mt-5" color="primary" @click="modification = !modification">
-      {{ modification ? 'Cancel' : 'Modify' }}
+      {{ modification ? $t('user.cancel') : $t('user.modify') }}
     </v-btn>
     <v-divider class="my-5"></v-divider>
-    <v-btn @click="askDeleteDialog">Ask for delete account</v-btn>
+    <v-btn @click="askDeleteDialog">{{ $t('user.askDelete') }}</v-btn>
   </v-sheet>
 </template>
 

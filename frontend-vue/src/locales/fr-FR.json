@@ -55,5 +55,17 @@
   "Result": {
     "Participant": "Participants",
     "Setting": "Paramètres"
+  },
+
+  "user": {
+    "username": "Nom d'utilisateur",
+    "name": "Prénom",
+    "surname": "Nom",
+    "status": "Statut",
+    "askDelete": "Demander à supprimer votre compte ",
+    "modify": "Modifier",
+    "cancel": "Annuler",
+    "validate": "Valider",
+    "userPage": "Page utilisateur"
   }
 }
