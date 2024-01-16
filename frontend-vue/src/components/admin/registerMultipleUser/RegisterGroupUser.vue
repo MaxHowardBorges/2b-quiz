@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex mb-3">
-      <p class="text-h4">Import user</p>
+      <p class="text-h4">{{ $t('login.ImportUser') }}</p>
       <v-spacer></v-spacer>
       <csv-import-dialog @import-csv="saveUsersFromCsv" />
     </div>
@@ -13,14 +13,14 @@
       :sort-by="[{ key: 'validate', order: 'desc' }]">
       <template v-slot:top>
         <v-toolbar class="justify-center">
-          <v-toolbar-title>Users</v-toolbar-title>
+          <v-toolbar-title>{{ $t('login.Users') }}</v-toolbar-title>
           <v-spacer></v-spacer>
 
           <v-btn
             @click="addRow"
             :disabled="isNotValidatedUser()"
             prepend-icon="add">
-            Add user
+            {{ $t('login.AddUser') }}
           </v-btn>
         </v-toolbar>
       </template>
@@ -195,11 +195,10 @@
             this.errorMessage = '';
           } else {
             console.log('Username déjà existant dans une autre ligne.');
-            this.errorMessage = 'Username déjà existant dans une autre ligne.';
+            this.errorMessage = this.$t('login.UsernameAlready');
           }
         } else {
-          this.errorMessage =
-            "Il y a un ou plusieurs éléments nécessaires qui n'ont pas été renseignés.";
+          this.errorMessage = this.$t('login.NotFilled');
         }
       },
       editItem(item) {

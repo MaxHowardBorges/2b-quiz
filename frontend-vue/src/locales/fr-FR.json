@@ -90,6 +90,24 @@
     "LoginWithAccount": "Se connecter avec votre compte :",
     "Register": "S'inscrire",
     "ImportCSV": "Import CSV",
-    "ImportFromCSV": "Importer depuis un fichier CSV"
+    "ImportFromCSV": "Importer depuis un fichier CSV",
+    "CSVContaint": "Le fichier CSV doit contenir les colonnes suivantes :",
+    "Field": "Le champ",
+    "values": "doit avoir les valeurs suivantes :",
+    "SelectCSV": "Sélectionner un fichier CSV",
+    "NoFile": "Aucun fichier sélectionné",
+    "Preview": "Prévisualisation du fichier",
+    "FileSucces": "Fichier csv traité avec succes.",
+    "FileError": "Erreur lors du traitement du fichier csv.",
+    "ImportUser": "Importer l'utilisateur",
+    "Users": "Utilisateurs",
+    "AddUser": "Ajouter un utilisateur",
+    "UsernameAlready": "Username déjà existant dans une autre ligne.",
+    "NotFilled ": "Tous les champs ne sont pas remplis."
+  },
+
+  "admin": {
+    "RegisterNew": "Enregistrer un nouvel utilisateur",
+    "close": "Fermer"
   }
 }

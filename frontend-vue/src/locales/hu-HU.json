@@ -88,6 +88,25 @@
     "LoginWithAccount": "Hongrois Login with your account :",
     "Register": "Hongrois Register",
     "ImportCSV": "Hongrois Import CSV",
-    "ImportFromCSV": "Hongrois Import from CSV"
+    "ImportFromCSV": "Hongrois Import from CSV",
+    "CSVContaint": "Hongrois The csv file must contain a header with the following fields",
+    "Field": "Hongrois The field",
+    "values": "Hongrois must have the following values",
+    "SelectCSV": "Hongrois Select CSV file",
+    "NoFile": "Hongrois No file selected",
+    "Preview": "Hongrois Preview of the file",
+    "FileSucces": "Hongrois File successfully imported",
+    "FileError": "Hongrois Error while importing the file",
+    "ImportUser": "Hongrois Import user",
+    "Users": "Hongrois Users",
+    "AddUser": "Hongrois Add user",
+    "UsernameAlready": "Hongrois Username déjà existant dans une autre ligne.",
+    "NotFilled ": "Hongrois There are one or more necessary elements that have not been filled in."
+
+  },
+
+  "admin": {
+    "RegisterNew": "Hongrois Register new user",
+    "close": "Hongrois Close"
   }
 }

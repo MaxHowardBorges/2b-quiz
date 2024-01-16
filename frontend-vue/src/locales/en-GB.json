@@ -78,6 +78,7 @@
     "validate": "Validate",
     "userPage": "User page",
     "comfirm": "Confirm"
+
   },
 
   "login": {
@@ -89,6 +90,24 @@
     "LoginWithAccount": "Login with your account :",
     "Register": "Register",
     "ImportCSV": "Import CSV",
-    "ImportFromCSV": "Import from CSV"
+    "ImportFromCSV": "Import from CSV",
+    "CSVContaint": "The csv file must contain a header with the following fields",
+    "Field": "The field",
+    "values": "must be one of the following values:",
+    "SelectCSV": "Select CSV file",
+    "NoFile": "No file selected",
+    "Preview": "Preview of the file",
+    "FileSucces": "File successfully imported",
+    "FileError": "Error while importing the file",
+    "ImportUser": "Import user",
+    "Users": "Users",
+    "AddUser": "Add user",
+    "UsernameAlready": "Username already used",
+    "NotFilled": "There are one or more necessary elements that have not been filled in."
+  },
+
+  "admin": {
+    "RegisterNew": "Register new user",
+    "close": "Close"
   }
 }

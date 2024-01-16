@@ -5,7 +5,7 @@
     :content="errorSnackbarContent"></error-snackbar>
   <v-dialog v-model="addUser" width="auto" :persistent="true">
     <v-card class="pa-5" min-width="40vw">
-      <p class="text-h3 ma-2">Register new user</p>
+      <p class="text-h3 ma-2">{{ $t('admin.RegisterNew') }}</p>
       <register-form
         class="ma-2"
         @user-registered="userAdded"
@@ -21,7 +21,7 @@
         @error-register-multiple="errorRegisterMultiple"
         @error-register-multiple-dulicate="errorRegisterMultipleDuplicate"
         @error-register-multiple-used="errorRegisterMultipleUsed" />
-      <v-btn @click="addMoreUser = false">Close</v-btn>
+      <v-btn @click="addMoreUser = false">{{ $t('admin.close') }}</v-btn>
     </v-card>
   </v-dialog>
   <info-snackbar

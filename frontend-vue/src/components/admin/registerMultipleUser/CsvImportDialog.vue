@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="importCsvDialog" max-width="600px">
     <template v-slot:activator="{ props }">
-      <v-btn dark class="mb-2" v-bind="props">Import from CSV</v-btn>
+      <v-btn dark class="mb-2" v-bind="props">{{ $t('login.ImportFromCSV') }}</v-btn>
     </template>
     <v-card class="pa-2">
       <v-card-title>
@@ -10,14 +10,14 @@
       <v-card-text>
         <v-alert color="info" icon="$info" class="mb-5 mx-5">
           <p class="mb-1">
-            The csv file must contain a header with the following fields:
+            {{ $t('login.CSVContaint') }} :
             <code class="text-dark-color">username,name,surname,userType</code>
             .
           </p>
           <p>
-            The field
+            {{ $t('login.Field') }}
             <code>userType</code>
-            must be one of the following values:
+            {{ $t('login.values') }} :
             <code class="text-dark-color">student,teacher,admin</code>
             .
           </p>
@@ -25,13 +25,13 @@
         <v-file-input
           v-model="csv"
           accept=".csv"
-          label="Select CSV file"
+          :label="$t('login.SelectCSV')"
           outlined
           dense
-          placeholder="No file selected"></v-file-input>
+          :placeholder="$t('login.NoFile')"></v-file-input>
         <div v-if="csv">
           <v-divider></v-divider>
-          <p class="mb-2 mt-4">Preview of the file:</p>
+          <p class="mb-2 mt-4">{{ $t('login.Preview') }}:</p>
           <v-sheet class="pa-3" max-height="500" rounded="lg" border>
             <pre class="overflow-auto">{{ getPreview() }}</pre>
           </v-sheet>
@@ -39,7 +39,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="text" @click="importCsvDialog = false">Cancel</v-btn>
+        <v-btn variant="text" @click="importCsvDialog = false">{{ $t('user.cancel') }}</v-btn>
         <!-- TODO: add close popup message -->
         <v-btn variant="text" @click="importCsv" :disabled="!(csv && csv[0])">
           Save
@@ -83,12 +83,12 @@
           });
           this.$emit('import-csv', usersData);
           this.importCsvDialog = false;
-          this.succes = 'Fichier csv traité avec succes.';
+          this.succes = this.$t('login.Preview');
           this.error = '';
         } catch (error) {
           console.log(error);
           this.succes = '';
-          this.error = 'Problème avec le fichier csv .';
+          this.error = this.$t('login.FileError');
         }
       },
       getPreview() {
