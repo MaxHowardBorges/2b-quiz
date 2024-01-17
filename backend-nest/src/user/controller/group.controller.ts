@@ -23,7 +23,7 @@ export class GroupController {
   constructor(private readonly userService: UserService) {}
   @Roles([UserType.TEACHER])
   @Post('/createGroup')
-  async createGroup(@Body() dto: CreateGroupDto) {
+  async createGroup(@Body(new ValidationPipe()) dto: CreateGroupDto) {
     return this.userService.createGroup(dto);
   }
   @Roles([UserType.TEACHER])

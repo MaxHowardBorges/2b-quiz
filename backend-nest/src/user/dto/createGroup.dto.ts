@@ -1,11 +1,11 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { Teacher } from '../entity/teacher.entity';
 
 export class CreateGroupDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsInt()
   @IsNotEmpty()
-  idTeacher: number;
+  teacher: Teacher;
 }

@@ -204,14 +204,13 @@ export class UserService {
     const group: Group = new Group();
     group.groupName = dto.name;
     group.tabUsers = [];
-    const t = <Teacher>await this.userRepository.findOne({
-      relations: ['createdGroups'],
-      where: { id: dto.idTeacher },
-    });
+    const t = dto.teacher;
     group.teacher = t;
     t.createdGroups.push(group);
     await this.groupRepository.save(group);
     await this.userRepository.save(t);
+    console.log(group);
+    group.teacher.createdGroups = []; // TODO vider les groupes créer du teacher pour ne pas les afficher est une solution temporaire, à remplacer par un mapper
     return group;
   }
 
