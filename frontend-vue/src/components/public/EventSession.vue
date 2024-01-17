@@ -1,38 +1,34 @@
 <template>
   <div>
     <div class="ml-2 mr-auto event-column text-left" ref="eventList">
-      <v-scroll-x-transition group tag="v-list">
+      <v-scroll-x-transition :group="true" tag="v-list">
         <v-sheet
           rounded="lg"
           elevation="1"
           border="sm"
-          v-for="event in events"
-          :key="event.id"
+          v-for="(event, index) in events"
+          v-bind:key="index"
           transition="fade-transition"
           class="my-2 pa-1 pl-2">
-          - {{ event.name }}
+          - {{ event }}
         </v-sheet>
       </v-scroll-x-transition>
     </div>
-    <v-btn
-      class="mt-2"
-      color="primary"
-      @click="addEvent({ id: 4, name: 'X a répondu à la question' })">
-      Add event
-    </v-btn>
   </div>
 </template>
 
 <script>
+  import { ref } from 'vue';
+  import { useSessionEventStore } from '@/stores/sessionEventStore';
+
   export default {
     name: 'EventColumn',
-    data() {
+    setup() {
+      const events = ref([]);
+      const sessionEventStore = useSessionEventStore();
       return {
-        events: [
-          { id: 1, name: 'La session à commencé' },
-          { id: 2, name: 'Y a rejoint la session' },
-          { id: 3, name: 'X a répondu à la question' },
-        ],
+        events,
+        sessionEventStore,
       };
     },
     methods: {
@@ -45,13 +41,26 @@
       },
       scrollToBottom() {
         const eventList = this.$refs.eventList;
-
         eventList.scrollTop = eventList.scrollHeight - eventList.clientHeight;
+      },
+      getNewEvent(newEventList) {
+        return newEventList.filter((event) => !this.events.includes(event));
       },
     },
     mounted() {
       this.$nextTick(() => {
         this.scrollToBottom();
+      });
+      this.sessionEventStore.$subscribe((mutation, state) => {
+        if (state.eventList.length > this.events.length) {
+          const newEvents = this.getNewEvent(state.eventList);
+          for (const newEvent of newEvents) {
+            this.addEvent(newEvent);
+          }
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+        }
       });
     },
   };

@@ -1,4 +1,4 @@
-import { Events } from '@/utils/events';
+import { Events, HostEvents } from '@/utils/events';
 import { defineStore } from 'pinia';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useUserStore } from '@/stores/userStore';
@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/userStore';
 export const useSessionEventStore = defineStore('sessionEvent', {
   state: () => ({
     eventSource: null,
+    eventList: [],
   }),
   actions: {
     setEventSource(eventSource) {
@@ -42,6 +43,48 @@ export const useSessionEventStore = defineStore('sessionEvent', {
       };
       this.setEventSource(eventSource);
       this.listenToEvents();
+    },
+    connectToSSEHost() {
+      const sessionStore = useSessionStore();
+      const userStore = useUserStore();
+      const url =
+        import.meta.env.VITE_API_URL +
+        '/event/' +
+        sessionStore.idSession +
+        '/host?token=' +
+        userStore.getToken();
+      const eventSource = new EventSource(url);
+      eventSource.onerror = () => {
+        sessionStore.disconnectFromSession('Error on SSE');
+      };
+      this.setEventSource(eventSource);
+      this.listenYoHostEvents();
+    },
+    listenYoHostEvents() {
+      const eventSource = this.eventSource;
+      if (eventSource) {
+        eventSource.onmessage = async (message) => {
+          message = JSON.parse(message.data);
+          let user = message.payload;
+          switch (message.event) {
+            case HostEvents.NEW_ANSWER:
+              user = message.payload.user;
+              this.eventList.push(
+                user.username + ' answered ' + message.payload.answer.content,
+              );
+              //TODO GET nb of answer
+              break;
+            case HostEvents.NEW_CONNECTION:
+              user = message.payload;
+              this.eventList.push(user.username + ' joined the session');
+              //TODO GET nb of connection
+              break;
+            default:
+              console.error('not used data ' + message.data);
+              break;
+          }
+        };
+      }
     },
     listenToEvents() {
       const eventSource = this.eventSource;

@@ -89,6 +89,8 @@ export const useSessionStore = defineStore('session', {
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
       this.setIdSession(content.id);
+      const sessionEventStore = useSessionEventStore();
+      sessionEventStore.connectToSSEHost();
     },
     async nextQuestion() {
       const userStore = useUserStore();

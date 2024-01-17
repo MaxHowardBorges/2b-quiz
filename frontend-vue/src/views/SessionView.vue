@@ -13,6 +13,7 @@
   </template>
 
   <v-sheet
+    v-else
     rounded="lg"
     width="90%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-row main-block"
