@@ -17,7 +17,7 @@
     min-height="20px"
     height="100%"
     width="48%"
-    style="background-color: green">
+    style="background-color: lightgrey">
     <v-scroll-y-transition>
       <div class="text-body-1 flex-grow-1 text-center" style="opacity: 1">
         <b>{{ answer }}</b>
