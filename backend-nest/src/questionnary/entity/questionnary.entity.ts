@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from '../../question/entity/question.entity';
 import { ManyToOne } from 'typeorm/decorator/relations/ManyToOne';
 import { Teacher } from '../../user/entity/teacher.entity';
@@ -22,4 +16,7 @@ export class Questionnary {
 
   @OneToMany(() => Question, (question) => question.questionnary)
   questions: Question[];
+
+  @Column({ default: () => false })
+  isCompilated: boolean;
 }
