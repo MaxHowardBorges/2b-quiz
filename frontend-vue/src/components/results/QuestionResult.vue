@@ -1,80 +1,70 @@
-<script setup>
-  import QuestionBlock from '@/components/question/QuestionBlock.vue';
-  import AnswerItem from '@/components/question/AnswerItem.vue';
-</script>
+<script setup></script>
 
 <template>
-  <div>
-    <v-sheet border rounded="lg" class="pa-3 mx-auto my-4" max-width="70%">
+  <div
+    class="d-flex justify-space-between align-center"
+    style="margin-top: 100px">
+    <v-sheet border rounded="lg" class="pa-3 mx-auto my-4" style="width: 70%">
       <v-card-title>
-        <div class="text-h5 text-center" style="white-space: normal">
-          <p style="margin-bottom: 25px">Est-ce que Elias est arabe ?</p>
+        <div
+          class="flex-wrap text-h5 text-center align-center"
+          style="white-space: normal">
+          <v-btn
+            icon="chevron_left "
+            @click="previousQuestion"
+            style="margin-right: 30%"></v-btn>
+          <b>{{ question }}</b>
+          <v-btn
+            icon="chevron_right "
+            @click="nextQuestion"
+            style="margin-left: 30%"></v-btn>
         </div>
       </v-card-title>
-      <div style="display: flex">
-        <v-card
-          class="d-flex align-center pa-5"
-          :class="isSelected ? 'selected-item' : ''"
-          :disabled="disabled"
-          min-height="20px"
-          height="100%"
-          width="50%"
-          @click="toggle">
-          <v-scroll-y-transition>
-            <div class="text-body-1 flex-grow-1 text-center" style="opacity: 1">
-              xxxxxxx
-            </div>
-          </v-scroll-y-transition>
-        </v-card>
-        <v-card
-          class="d-flex align-center pa-5"
-          :class="isSelected ? 'selected-item' : ''"
-          :disabled="disabled"
-          min-height="20px"
-          height="100%"
-          width="50%"
-          @click="toggle">
-          <v-scroll-y-transition>
-            <div class="text-body-1 flex-grow-1 text-center" style="opacity: 1">
-              xxxxxxx
-            </div>
-          </v-scroll-y-transition>
-        </v-card>
+
+      <div class="d-flex flex-wrap" style="margin-left: 15px">
+        <QuestionResultItem
+          v-for="(answer, index) in answers"
+          :key="index"
+          :answer="answer"
+          class="mr-2 mb-2"></QuestionResultItem>
       </div>
-      <div style="display: flex">
-        <v-card
-          class="d-flex align-center pa-5"
-          :class="isSelected ? 'selected-item' : ''"
-          :disabled="disabled"
-          min-height="20px"
-          height="100%"
-          width="50%"
-          @click="toggle">
-          <v-scroll-y-transition>
-            <div class="text-body-1 flex-grow-1 text-center" style="opacity: 1">
-              xxxxxxx
-            </div>
-          </v-scroll-y-transition>
-        </v-card>
-        <v-card
-          class="d-flex align-center pa-5"
-          :class="isSelected ? 'selected-item' : ''"
-          :disabled="disabled"
-          min-height="20px"
-          height="100%"
-          width="50%"
-          @click="toggle">
-          <v-scroll-y-transition>
-            <div class="text-body-1 flex-grow-1 text-center" style="opacity: 1">
-              xxxxxxx
-            </div>
-          </v-scroll-y-transition>
-        </v-card>
-      </div>
-      <div style="margin-top: 20px">Résultats : 9/20</div>
+      <div style="margin-top: 20px"><b>Résultats Session : 9/20</b></div>
     </v-sheet>
-    <v-btn></v-btn>
   </div>
 </template>
 
-<style scoped></style>
+<script>
+  import QuestionResultItem from '@/components/results/QuestionResultItem.vue';
+
+  export default {
+    components: {
+      QuestionResultItem,
+    },
+
+    data() {
+      return {
+        answers: [
+          'Oui',
+          'Non',
+          '*blague sur les chauves*',
+          '*blague sur mouvement de main*',
+        ],
+        colors: ['Oui', 'Non'],
+      };
+    },
+    props: {
+      question: {
+        type: String,
+        required: true,
+      },
+    },
+    methods: {
+      previousQuestion() {
+        // Implémentez la logique pour passer à la question précédente
+      },
+      nextQuestion() {
+        // Implémentez la logique pour passer à la question suivante
+      },
+    },
+  };
+</script>
