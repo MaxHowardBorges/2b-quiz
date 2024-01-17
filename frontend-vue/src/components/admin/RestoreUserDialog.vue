@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent width="auto">
     <v-card>
       <v-card-title class="text-h5">
-        Restore User {{ user.username }}
+        {{ this.$t('admin.RestoreUser') }}  {{ user.username }}
       </v-card-title>
       <v-card-text>
         <v-text-field v-model="name" label="Name" />

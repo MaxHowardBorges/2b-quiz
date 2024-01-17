@@ -1,11 +1,11 @@
 <template>
   <error-dialog
-    title="The Server is offline"
-    content="Please, try later."
+    :title="$t('home.TheServerOffline')"
+    :content="$t('home.PleaseTryLater')"
     ref="dialogError"></error-dialog>
 
   <error-snackbar
-    title="Error while connecting to the session"
+    :title="$t('home.ErrorConnectingSession')"
     :content="errorSnackbarContent"
     ref="errorSnackbar"></error-snackbar>
 

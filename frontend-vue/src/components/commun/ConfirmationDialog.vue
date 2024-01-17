@@ -9,8 +9,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="error" variant="text" @click="cancel">Cancel</v-btn>
-        <v-btn color="info" variant="text" @click="confirm">Confirm</v-btn>
+        <v-btn color="error" variant="text" @click="cancel">{{ this.$t('user.cancel') }}</v-btn>
+        <v-btn color="info" variant="text" @click="confirm">{{ this.$t('user.confirm') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -56,6 +56,7 @@
     components: { ErrorSnackbar, ErrorDialog },
     data() {
       return {
+        username: ref(''),
         errorSnackbarContent: '',
         idSession: ref(''),
         loading: false,

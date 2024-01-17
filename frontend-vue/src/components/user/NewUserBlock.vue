@@ -6,15 +6,15 @@
     class="mt-5 mb-8 px-9 py-8 mx-auto"
     elevation="5">
     <div class="pa-2">
-      <p class="text-h2 mb-3">New account</p>
+      <p class="text-h2 mb-3">{{ $t('user.NewAccount') }}</p>
       <p class="text-p mb-3">
-        Fill your informations according to the
+        {{ $t('user.FillYourInformationsAccordingToThe') }}
         <a class="text-secondary" target="_blank" href="" @click.stop>
-          Utilisation conditions
+          {{ $t('user.UtilisationConditions') }}
         </a>
-        and the
+        {{ $t('user.andThe') }}
         <a class="text-secondary" target="_blank" href="" @click.stop>
-          Privacy policy
+          {{ $t('user.PrivacyPolicy') }}
         </a>
       </p>
     </div>

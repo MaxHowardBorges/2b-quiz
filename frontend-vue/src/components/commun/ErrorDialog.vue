@@ -9,7 +9,7 @@
       </v-card-text>
       <v-card-actions class="align-self-end">
         <v-btn variant="elevated" color="info" @click="setDialogError(false)">
-          Close
+          {{ this.$t('admin.close') }}
         </v-btn>
       </v-card-actions>
     </v-card>

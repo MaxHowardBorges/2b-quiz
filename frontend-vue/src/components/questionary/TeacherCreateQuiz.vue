@@ -58,7 +58,7 @@ $
         }this.style['background']='#f1dc66';"
         class="qtype"
         type="button">
-        Multiple Choice question
+        {{$t('question.MultipleChoiceQuestion')}}
       </button>
       <button
         @click="
@@ -71,7 +71,7 @@ $
         }this.style['background']='#f1dc66';"
         class="qtype"
         type="button">
-        Open question
+        {{$t('question.OpenQuestion')}}
       </button>
       <button
         @click="
@@ -85,7 +85,7 @@ $
         style="margin-bottom: 20px"
         class="qtype"
         type="button">
-        True/False question
+        {{$t('question.TrueFalseQuestion')}}
       </button>
     </div>
 
@@ -93,19 +93,19 @@ $
       <input
         id="Question"
         type="text"
-        placeholder="Type you question"
+        :placeholder="$t('question.TypeYourQuestion')"
         style="border: 1px solid #000000; margin-bottom: 20px; height: 50px" />
 
       <div class="multiple" v-show="showMCQ">
         <div id="icons">
           <button
             style="border: 0; background-color: transparent; cursor: pointer">
-            <span class="material-symbols-outlined">remove</span>
+            <span class="material-symbols-outlined">{{ $t('question.remove') }}</span>
           </button>
           <input
             id="Reponse"
             type="text"
-            placeholder="Choice 1"
+            :placeholder="$t('question.remove') + ' 1'"
             style="border: 1px solid #000000; margin-bottom: 10px" />
           <button
             style="border: 0; background-color: transparent; cursor: pointer">
@@ -117,12 +117,12 @@ $
         <div id="icons">
           <button
             style="border: 0; background-color: transparent; cursor: pointer">
-            <span class="material-symbols-outlined">remove</span>
+            <span class="material-symbols-outlined">{{ $t('question.remove') }}</span>
           </button>
           <input
             id="Reponse"
             type="text"
-            placeholder="Choice 2"
+            :placeholder="$t('question.remove') + ' 2'"
             style="border: 1px solid #000000; margin-bottom: 10px" />
           <button
             style="border: 0; background-color: transparent; cursor: pointer">
@@ -134,12 +134,12 @@ $
         <div id="icons">
           <button
             style="border: 0; background-color: transparent; cursor: pointer">
-            <span class="material-symbols-outlined">remove</span>
+            <span class="material-symbols-outlined">{{ $t('question.remove') }}</span>
           </button>
           <input
             id="Reponse"
             type="text"
-            placeholder="Choice 3"
+            :placeholder="$t('question.remove') + ' 3' "
             style="border: 1px solid #000000; margin-bottom: 10px" />
           <button
             style="border: 0; background-color: transparent; cursor: pointer">
@@ -159,7 +159,7 @@ $
         }this.style['background']='#f1dc66';"
             class="validate2"
             type="button">
-            True
+            {{ $t('question.True') }}
           </button>
           <button
             onclick="var buttons = document.getElementsByClassName('validate2');
@@ -168,13 +168,13 @@ $
         }this.style['background']='#f1dc66';"
             class="validate2"
             type="button">
-            False
+            {{ $t('question.False') }}
           </button>
         </div>
       </div>
     </div>
 
-    <div><button class="validate" type="button">Create quiz</button></div>
+    <div><button class="validate" type="button">{{ $t('question.CreateQuiz') }}</button></div>
   </div>
 </template>
 

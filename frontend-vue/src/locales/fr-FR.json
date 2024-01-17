@@ -11,7 +11,10 @@
     "join": "Rejoindre",
     "errorS": "Erreur lors de la connexion  à la session :",
     "ServOffline": "Le serveur est hors ligne",
-    "PTL": "Veuillez réessayer plus tard."
+    "PTL": "Veuillez réessayer plus tard.",
+    "ErrorConnectingSession": "Erreur lors de la connexion à la session",
+    "TheServerOffline": "Le serveur est hors ligne",
+    "PleaseTryLater": "Veuillez réessayer plus tard."
   },
 
   "teacher": {
@@ -35,14 +38,24 @@
     "confirmLeave": "Êtes-vous sûr de quitter sans sauvegarder ?",
     "Confirmation": "Confirmation",
     "NoQuestion": "Veuillez noter que votre questionnaire ne comporte aucune question. Si vous le quittez, il ne sera pas sauvegardé.",
-    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce questionnaire ?"
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce questionnaire ?",
+    "AreSureDeleteQuestion": "Êtes-vous sûr de vouloir supprimer cette question :"
   },
 
   "question": {
     "writeAnswer": "Écrivez votre réponse ici",
     "writeWord": "Écrivez votre mot ici",
     "answer": "Réponse",
-    "correct": "Correct"
+    "correct": "Correct",
+    "MultipleChoiceQuestion": "Question à choix multiples",
+    "OpenQuestion": "Question ouverte",
+    "TrueFalseQuestion": "Question Vrai/Faux",
+    "TypeYourQuestion": "Écrivez votre question ici",
+    "remove": "Supprimer",
+    "Choice": "Choix",
+    "True": "Vrai",
+    "False": "Faux",
+    "CreateQuiz": "Créer un quiz"
   },
 
 
@@ -65,7 +78,8 @@
 
   "Result": {
     "Participant": "Participants",
-    "Setting": "Paramètres"
+    "Setting": "Paramètres",
+    "NoParticipantdataAvailable": "Aucune donnée de participant disponible"
   },
 
   "user": {
@@ -78,7 +92,20 @@
     "cancel": "Annuler",
     "validate": "Valider",
     "userPage": "Page utilisateur",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "ErrorWhileAskingDelete": "Erreur lors de la demande de suppression",
+    "ConfirmationForDelete": "Confirmation de suppression",
+    "SureDeleteAccount": "Êtes-vous sûr de vouloir supprimer votre compte ?",
+    "NewAccount": "Nouveau compte",
+    "FillYourInformationsAccordingToThe": "Remplissez vos informations selon le",
+    "UtilisationConditions": "Conditions d'utilisation",
+    "andThe": "et la",
+    "PrivacyPolicy": "Politique de confidentialité",
+    "Student": "Étudiant",
+    "Teacher": "Enseignant",
+    "waiting_for_admin_validation": "En attente de validation par l'administrateur",
+    "confirmIReadAcceptThe": "Je confirme avoir lu et accepté les",
+    "ValidateAccount": "Valider le compte"
   },
 
   "login": {
@@ -135,6 +162,7 @@
     "UserType": "Type d'utilisateur",
     "Student": "Étudiant",
     "Teacher": "Enseignant",
-    "save": "Sauvegarder"
+    "save": "Sauvegarder",
+    "RestoreUser": "Restaurer l'utilisateur"
   }
 }

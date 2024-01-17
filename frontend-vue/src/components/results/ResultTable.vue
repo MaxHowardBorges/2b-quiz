@@ -14,7 +14,7 @@
     <tbody>
     <tr v-for="(participant, index) in sessionStore.results[1]" :key="index">
       <td v-if="participant" class="text-center">{{ participant.username }}</td>
-      <td v-else class="text-center">No participant data available</td>
+      <td v-else class="text-center">{{ $t('Result.NoParticipantdataAvailable') }}</td>
       <td
         id='answers'
         v-for="(question, index) in sessionStore.results[0].flatMap(questionnary => questionnary.questions)"

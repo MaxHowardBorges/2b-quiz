@@ -6,7 +6,7 @@
 
     <template v-slot:actions>
       <v-btn color="indigo" variant="text" @click="snackbarError = false">
-        Close
+        {{ this.$t('admin.close') }}
       </v-btn>
     </template>
   </v-snackbar>

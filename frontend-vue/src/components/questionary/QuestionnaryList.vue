@@ -47,15 +47,16 @@
 
   <v-dialog v-model="alertQuestionDelete" max-width="600">
     <v-card>
-      <v-card-title class="headline">Confirmation</v-card-title>
+      <v-card-title class="headline">{{$t('questionnary.confirmation')}}</v-card-title>
       <v-card-text>
-        Are you sure to delete the question :
+
+        {{$t('questionnary.AreSureDeleteQuestion')}}
         <b>" {{ numberLabel }} "</b>
         ?
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="alertQuestionDelete = false">Cancel</v-btn>
-        <v-btn @click="deleteQuest">confirm</v-btn>
+        <v-btn @click="alertQuestionDelete = false">{{$t('user.cancel')}}</v-btn>
+        <v-btn @click="deleteQuest">{{$t('user.confirm')}}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -1,12 +1,12 @@
 <template>
   <error-snackbar
     ref="errorBar"
-    title="Error while asking for delete"
-    content="Please try later."></error-snackbar>
+    :title="$t('user.ErrorWhileAskingDelete')"
+    :content="$t('home.PleaseTryLater')"></error-snackbar>
   <confirmation-dialog
     ref="confirmationDialog"
-    title="Confirmation for delete"
-    content="Are you sure you want to ask for the delete of your account"
+    :title="$t('user.ConfirmationForDelete')"
+    :content="$t('user.SureDeleteAccount')"
     @confirm="askDelete"></confirmation-dialog>
   <v-sheet
     max-width="750px"

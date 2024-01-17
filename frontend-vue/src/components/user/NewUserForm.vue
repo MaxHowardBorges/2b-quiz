@@ -15,7 +15,7 @@
           <v-icon :size="$vuetify.display.mdAndUp ? 'xxx-large' : 'x-large'">
             school
           </v-icon>
-          <p>Student</p>
+          <p>{{ $t('user.Student') }}</p>
         </div>
       </v-btn>
       <v-btn :value="UserRoles.TEACHER" class="h-auto px-2 px-sm-3">
@@ -23,7 +23,7 @@
           <v-icon :size="$vuetify.display.mdAndUp ? 'xxx-large' : 'x-large'">
             menu_book
           </v-icon>
-          <p>Teacher</p>
+          <p>{{ $t('user.Student') }}</p>
         </div>
       </v-btn>
     </v-btn-toggle>
@@ -33,7 +33,7 @@
       type="info"
       variant="tonal"
       v-if="accountType === UserRoles.TEACHER">
-      You'll have to wait for an admin to validate your account
+      {{ $t('user.waiting_for_admin_validation') }}
     </v-alert>
     <v-text-field
       class="my-2"
@@ -58,13 +58,13 @@
     <v-checkbox validate-on="submit" :rules="checkConditionsRules" class="my-2">
       <template v-slot:label>
         <p class="text-left">
-          I confirm that I read and accept the
+          {{ $t('user.confirmIReadAcceptThe') }}
           <a class="text-secondary" target="_blank" href="" @click.stop>
-            Utilisation conditions
+            {{ $t('user.UtilisationConditions') }}
           </a>
-          and the
+          {{ $t('user.andThe') }}
           <a class="text-secondary" target="_blank" href="" @click.stop>
-            Privacy policy
+            {{ $t('user.PrivacyPolicy') }}
           </a>
         </p>
       </template>
@@ -75,7 +75,7 @@
       class="mt-2"
       color="primary"
       :loading="loading">
-      <p class="text-white font-weight-bold">Validate account</p>
+      <p class="text-white font-weight-bold">{{ $t('user.ValidateAccount') }}</p>
     </v-btn>
   </v-form>
 </template>
