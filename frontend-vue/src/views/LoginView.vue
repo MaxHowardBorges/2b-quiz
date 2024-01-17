@@ -91,7 +91,7 @@
     width="70%"
     class="mt-5 px-6 py-8 mx-auto"
     elevation="5">
-    <div class="logo ma-2 pa-2">Two Bee Quizz</div>
+    <div class="logo ma-2 pa-2">SVD</div>
 
     <div class="errrmes ma-5 pa-2"><b>Votre session est échue. Veuillez vous reconnecter.</b></div>
 

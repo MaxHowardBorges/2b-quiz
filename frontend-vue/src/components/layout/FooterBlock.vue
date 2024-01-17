@@ -1,7 +1,7 @@
 <template>
   <v-footer height="90px" bg-opacity="0.2" color='#007EA1' border elevation="5">
     <div>
-      <p class="logo">Two Bee Quizz</p>
+      <p class="logo">Système de Vote en Direct</p>
       <p>
         2023 -
         <strong>Équipe 2b</strong>

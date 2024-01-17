@@ -4,6 +4,7 @@ import SessionView from '@/views/SessionView.vue';
 import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 import DisplayView from '@/views/DisplayView.vue';
+import OrderQuestionnary from '@/views/OrderQuestionnary.vue';
 
 const routes = [
   {
@@ -11,6 +12,13 @@ const routes = [
     name: 'Session',
     component: SessionView,
   },
+
+  {
+    path: '/order-questionnary',
+    name: OrderQuestionnary,
+    component: OrderQuestionnary, //
+  },
+
   {
     path: '/',
     name: 'Home',
