@@ -17,7 +17,7 @@ export class UserSession {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Session, (session) => session.id)
+  @ManyToOne(() => Session, (session) => session.userSession)
   session: Session;
 
   @ManyToOne(() => Student, (student) => student.id, { nullable: true })

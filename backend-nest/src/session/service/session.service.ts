@@ -342,4 +342,59 @@ export class SessionService {
       });
     }
   }
+
+  async getResults(idSession: number, user: User) {
+    //get session with id
+    const session = await this.sessionRepository.findOne({
+      where: {
+        id: idSession,
+      },
+      relations: {
+        userSession: { student: true, teacher: true, answer: true },
+      },
+    });
+
+    // const userSession = await this.userSessionRepository.find({
+    //   where: {
+    //     id: user.id,
+    //   },
+    //   relations: [
+    //     'userSession',
+    //     'userSession.student',
+    //     'userSession.teacher',
+    //     'questionnary',
+    //   ],
+    // });
+
+    console.log(session);
+    if (session.isResult === true) {
+      //TODO
+      if (session.isResponses === true) {
+        //TODO
+      }
+    }
+    if (session.isGlobal) {
+      //Make an average result of all student in session
+      const userSession = session.userSession;
+      let average = 0;
+      for (const user of userSession) {
+        average += this.percentSucess(user);
+      }
+      average = average / userSession.length;
+      console.log(average);
+      return average;
+    }
+  }
+
+  //Calculate the percent of sucess of a student
+  private percentSucess(user: UserSession) {
+    const answer = user.answer;
+    let nbCorrectAnswer = 0;
+    for (const a of answer) {
+      if (a.isCorrect) {
+        nbCorrectAnswer++;
+      }
+    }
+    return (nbCorrectAnswer / answer.length) * 100;
+  }
 }

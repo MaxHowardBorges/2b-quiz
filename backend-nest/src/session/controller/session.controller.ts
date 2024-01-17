@@ -109,15 +109,22 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Get('/getResults')
-  async getResults(
+  @Get('/getSessionsList')
+  async getSessionsList(
     @Req() request: UserRequest,
     @Query('idsession') idSession: string,
   ) {
     //Return the results of the session
-    if (!this.sessionService.isHost(idSession, request.user as Teacher))
-      throw new IsNotHostException();
     return await this.sessionService.getListSession(request.user);
+  }
+  @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/getResults')
+  async getResults(
+    @Req() request: UserRequest,
+    @Query('idsession') idSession: number,
+  ) {
+    //Return the results of the session
+    return await this.sessionService.getResults(idSession, request.user);
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])

@@ -20,7 +20,7 @@ export class Session {
   @JoinColumn()
   questionnary: Questionnary;
 
-  @OneToMany(() => UserSession, (userSession) => userSession.id)
+  @OneToMany(() => UserSession, (userSession) => userSession.session)
   userSession: UserSession[];
 
   @ManyToOne(() => Teacher, (teacher) => teacher.id)
