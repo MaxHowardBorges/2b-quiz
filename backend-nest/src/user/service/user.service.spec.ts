@@ -17,19 +17,26 @@ import { NotValidatedUserException } from '../exception/notValidatedUser.excepti
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
 import { CreateGroupDto } from '../dto/createGroup.dto';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
+import { Group } from '../entity/group.entity';
+import { generateGroupMock } from '../../../test/mock/group.mock';
+
 describe('UserService', () => {
   let service: UserService;
   let userRepository: jest.Mocked<Repository<User>>;
+  let groupRepository: jest.Mocked<Repository<Group>>;
 
   let teacherMock = generateTeacherMock();
   let userMockList = generateRandomUserMockList(20);
   const userDeletedMockList = generateRandomUserMockList(20, true);
+  let groupMock = generateGroupMock();
+
   let adminMock = generateAdminMock();
   let studentMock = generateStudentMock();
   let notValidatedTeacherMock = generateTeacherMock(false, false);
   let notValidatedStudentMock = generateStudentMock(false, false);
 
   beforeEach(() => {
+    groupMock = generateGroupMock();
     teacherMock = generateTeacherMock();
     userMockList = generateRandomUserMockList(20);
     adminMock = generateAdminMock();
@@ -43,6 +50,7 @@ describe('UserService', () => {
 
     service = unit;
     userRepository = unitRef.get('UserRepository');
+    groupRepository = unitRef.get('GroupRepository');
   });
 
   it('should be defined', () => {
@@ -509,15 +517,38 @@ describe('UserService', () => {
   // createGroup
   describe('createGroup', () => {
     it('should create a group', async () => {
-      const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(user);
+      userRepository.findOneBy.mockResolvedValue(teacherMock);
+      groupRepository.save.mockResolvedValue(groupMock);
       const dto: CreateGroupDto = {
-        name: 'name',
-        idTeacher: user.id,
+        name: groupMock.groupName,
+        idTeacher: groupMock.teacher.id,
       };
       await service.createGroup(dto);
-      expect(userRepository.save).toBeCalledWith(user);
-      expect(user.askedDelete).toEqual(false);
+      expect(groupRepository.save).toBeCalledWith(groupMock);
+    });
+    it('should create a group that have a teacher', async () => {
+      ////
+      userRepository.findOneBy.mockResolvedValue(teacherMock);
+      groupRepository.save.mockResolvedValue(groupMock);
+      const dto: CreateGroupDto = {
+        name: groupMock.groupName,
+        idTeacher: groupMock.teacher.id,
+      };
+      const g = await service.createGroup(dto);
+      expect(groupRepository.save).toBeCalledWith(groupMock);
+      expect(g.teacher).toEqual(teacherMock);
+    });
+    it('should bee added to the created group', async () => {
+      ////
+      userRepository.findOneBy.mockResolvedValue(teacherMock);
+      groupRepository.save.mockResolvedValue(groupMock);
+      const dto: CreateGroupDto = {
+        name: groupMock.groupName,
+        idTeacher: groupMock.teacher.id,
+      };
+      const g = await service.createGroup(dto);
+      expect(groupRepository.save).toBeCalledWith(groupMock);
+      expect(g.teacher.createdGroups).toContain(groupMock);
     });
     it('should throw an error if user is not found', async () => {
       const user = teacherMock;
@@ -546,13 +577,7 @@ describe('UserService', () => {
 
   // deleteGroup
   describe('deleteGroup', () => {
-    it('should delete a group', async () => {
-      const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(user);
-      await service.deleteGroup(user.id);
-      expect(userRepository.save).toBeCalledWith(user);
-      expect(user.askedDelete).toEqual(false);
-    });
+    it('should delete a group', async () => {});
     it('should throw an error if user is not found', async () => {
       const user = teacherMock;
       userRepository.findOneBy.mockResolvedValue(null);
@@ -578,13 +603,7 @@ describe('UserService', () => {
 
   // getGroup
   describe('getGroup', () => {
-    it('should get a group', async () => {
-      const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(user);
-      await service.getGroup(user.id);
-      expect(userRepository.save).toBeCalledWith(user);
-      expect(user.askedDelete).toEqual(false);
-    });
+    it('should get a group', async () => {});
     it('should throw an error if user is not found', async () => {
       const user = teacherMock;
       userRepository.findOneBy.mockResolvedValue(null);

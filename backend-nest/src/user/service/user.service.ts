@@ -212,6 +212,7 @@ export class UserService {
     t.createdGroups.push(group);
     await this.groupRepository.save(group);
     await this.userRepository.save(t);
+    return group;
   }
 
   async deleteGroup(idGroup: number) {
