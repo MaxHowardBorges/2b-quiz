@@ -320,11 +320,9 @@ export class SessionService {
     if (user instanceof Teacher) {
       return this.sessionRepository.find({
         //Find all session where student is connected
-        relations: [
-          'userSession',
-          'userSession.student',
-          'userSession.teacher',
-        ],
+        relations: {
+          userSession: { student: true, teacher: true, answer: true },
+        },
         where: {
           userSession: { teacher: { id: user.id } },
           teacher: { id: user.id },
@@ -333,11 +331,9 @@ export class SessionService {
     } else if (user instanceof Student) {
       return this.sessionRepository.find({
         //Find all session where student is connected
-        relations: [
-          'userSession',
-          'userSession.student',
-          'userSession.teacher',
-        ],
+        relations: {
+          userSession: { student: true, teacher: true, answer: true },
+        },
         where: { userSession: { student: { id: user.id } } },
       });
     }
@@ -354,19 +350,8 @@ export class SessionService {
       },
     });
 
-    // const userSession = await this.userSessionRepository.find({
-    //   where: {
-    //     id: user.id,
-    //   },
-    //   relations: [
-    //     'userSession',
-    //     'userSession.student',
-    //     'userSession.teacher',
-    //     'questionnary',
-    //   ],
-    // });
-
     console.log(session);
+    const userSession = session.userSession;
     if (session.isResult === true) {
       //TODO
       if (session.isResponses === true) {
@@ -375,14 +360,13 @@ export class SessionService {
     }
     if (session.isGlobal) {
       //Make an average result of all student in session
-      const userSession = session.userSession;
       let average = 0;
       for (const user of userSession) {
         average += this.percentSucess(user);
       }
       average = average / userSession.length;
       console.log(average);
-      return average;
+      return average; //TODO modify to not a return
     }
   }
 

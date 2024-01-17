@@ -4,8 +4,11 @@ import { IsNotEmpty } from 'class-validator';
 import { UserAnswerDto } from './userAnswer.dto';
 
 export class ResultsDto {
-  @IsNotEmpty()
-  question: Question[];
+  personnalResult: number;
 
-  answersDto: UserAnswerDto[];
+  isResult: number;
+
+  isResponses: number;
+
+  isGlobal: number;
 }
