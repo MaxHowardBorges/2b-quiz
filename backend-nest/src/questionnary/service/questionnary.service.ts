@@ -68,6 +68,10 @@ export class QuestionnaryService {
       questionnaryDtoCombined,
       author,
     );
+    //Update isCompilated to true and save with TypeOrm
+    await this.questionnaryRepository.update(questionnary.id, {
+      isCompilated: true,
+    });
     return questionnary;
   }
 
@@ -135,7 +139,7 @@ export class QuestionnaryService {
       relations: {
         author: true,
       },
-      where: { author: { id: teacher.id } },
+      where: { author: { id: teacher.id }, isCompilated: false },
     });
   }
 
