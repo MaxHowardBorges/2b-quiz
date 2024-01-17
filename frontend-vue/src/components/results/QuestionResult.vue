@@ -28,7 +28,10 @@
           :answer="answer"
           class="mr-2 mb-2"></QuestionResultItem>
       </div>
-      <div style="margin-top: 20px"><b>Résultats Session : 9/20</b></div>
+      <div style="margin-top: 20px">
+        <b>Résultats Session : 9/20</b>
+      </div>
+      <b>Résultat Utilisateur : Bonne réponse</b>
     </v-sheet>
   </div>
 </template>
