@@ -103,7 +103,8 @@
     "Teacher": "hongrois Teacher",
     "waiting_for_admin_validation": "hongrois You'll have to wait for an admin to validate your account",
     "confirmIReadAcceptThe": "hongrois I confirm that I read and accept the",
-    "ValidateAccount": "hongrois Validate account"
+    "ValidateAccount": "hongrois Validate account",
+    "UserAskedDelete": "hongrois User who asked for a delete"
   },
 
   "login": {

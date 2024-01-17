@@ -104,7 +104,8 @@
     "Teacher": "Teacher",
     "waiting_for_admin_validation": "You'll have to wait for an admin to validate your account",
     "confirmIReadAcceptThe": "I confirm that I read and accept the",
-    "ValidateAccount": "Validate account"
+    "ValidateAccount": "Validate account",
+    "UserAskedDelete": "User who asked for a delete"
   },
 
   "login": {

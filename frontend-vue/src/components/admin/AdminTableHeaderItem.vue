@@ -5,7 +5,7 @@
         <template class="d-flex align-center justify-center">
           <template v-if="columnIcon">
             <td>
-              <v-tooltip location="top" text="User who asked for a delete">
+              <v-tooltip location="top" :text="$t('user.UserAskedDelete')">
                 <template v-slot:activator="{ props }">
                   <v-icon v-bind="props">{{ columnIcon }}</v-icon>
                 </template>

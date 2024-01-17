@@ -105,7 +105,8 @@
     "Teacher": "Enseignant",
     "waiting_for_admin_validation": "En attente de validation par l'administrateur",
     "confirmIReadAcceptThe": "Je confirme avoir lu et accepté les",
-    "ValidateAccount": "Valider le compte"
+    "ValidateAccount": "Valider le compte",
+    "UserAskedDelete": "L'utilisateur a demandé la suppression de son compte"
   },
 
   "login": {
