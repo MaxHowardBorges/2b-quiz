@@ -23,7 +23,7 @@
       :items="choosedQuestionnary"
       item-title="title"
       item-value="id"
-      item-color='#007EA1'
+      item-color="#007EA1"
       color="primary"
       multiple=""
       label="Select Questionnary"
@@ -107,7 +107,7 @@
           this.sessionStore.questionnary = this.selectedQuestionnary;
           try {
             await this.sessionStore.createSession();
-            await router.push('/session');
+            await router.push('/order-questionnary');
           } catch (error) {
             if (error instanceof ValidationError) {
               this.errorSnackbarContent = error.message;
@@ -143,14 +143,11 @@
   }
 
   v-list {
-    background-color: #007EA1 !important;
+    background-color: #007ea1 !important;
     color: #00afd7 !important;
   }
 
   v-list-item {
     color: #ffffff !important;
   }
-
-
-
 </style>
