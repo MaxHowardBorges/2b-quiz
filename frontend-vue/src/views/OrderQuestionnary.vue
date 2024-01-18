@@ -32,6 +32,51 @@
     <!-- Bouton pour ouvrir la fenêtre pop-up -->
     <v-btn @click="openPopup" class="mt-4">Ajouter Questionnaire</v-btn>
 
+    <v-select
+      v-model="selected"
+      :items="items"
+      label="Type de session"
+      class="mt-4 w-25 mx-auto"
+      outlined
+      dense
+      required
+    ></v-select>
+
+    <v-select
+      v-model="selectedAcces"
+      :items="itemsAcces"
+      label="Type d'accès"
+      class="mt-4 w-25 mx-auto"
+      outlined
+      dense
+      required ></v-select>
+
+    <v-btn v-if="selectedAcces === 'privé'" @click="openSelectionDialog" class="mt-4">Choisir étudiants</v-btn>
+<!--    TODO choisir les membres à ajouter en cours de route -->
+
+    <v-btn @click="" class="mt-4">Lancer la session</v-btn>
+    <!--    TODO mettre le lien -->
+
+    <v-dialog v-model="SelectionDialog" max-width="600">
+      <v-card>
+        <v-card-title>Choisir des membres</v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="">Ajouter</v-btn>
+          <v-btn @click="closeSelectionDialog">Fermer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
+
+
     <!-- Fenêtre pop-up -->
     <v-dialog v-model="popup" max-width="600">
       <v-card>
@@ -79,6 +124,23 @@
     { name: 'Questionnaire 5' },
   ]);
 
+  const items = [
+    'piloté',
+    'libre',
+    'chronometré',
+  ];
+
+  const selected = ref('piloté');
+
+  const itemsAcces = [
+    'fermé',
+    'public',
+    'privé',
+  ];
+
+  const selectedAcces = ref('fermé');
+
+
   const moveQuestionnaryUp = (index) => {
     if (index > 0) {
       const temp = questionnaries.value[index];
@@ -100,6 +162,7 @@
   };
 
   // Variables pour la fenêtre pop-up
+  const SelectionDialog = ref(false);
   const popup = ref(false);
   const searchQuery = ref('');
   const availableQuestionnaires = ref([
@@ -118,6 +181,14 @@
     popup.value = false;
   };
 
+  const openSelectionDialog = () => {
+    SelectionDialog.value = true;
+  };
+
+  const closeSelectionDialog = () => {
+    SelectionDialog.value = false;
+  };
+
   const addQuestionnaire = (selectedQuestionnaire) => {
     questionnaries.value.push({ name: selectedQuestionnaire.name });
     closePopup();
@@ -125,6 +196,7 @@
 </script>
 
 <style scoped>
+
   .questionnary-table {
     width: 70%;
     margin: 20px auto;
