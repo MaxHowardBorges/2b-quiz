@@ -76,7 +76,9 @@
         </v-btn>
         <!--    TODO choisir les membres à ajouter en cours de route -->
       </div>
-
+      <div class="d-flex flex-row mt-4">
+        <session-setting></session-setting>
+      </div>
       <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
 
       <v-dialog v-model="SelectionDialog" max-width="600">
@@ -142,10 +144,11 @@
   import { ValidationError } from '@/utils/valdiationError';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
+  import SessionSetting from '@/components/session/SessionSetting.vue';
 
   export default {
     name: 'CreateSession',
-    components: { ErrorSnackbar, ErrorDialog },
+    components: { SessionSetting, ErrorSnackbar, ErrorDialog },
     async beforeMount() {
       await this.questionnaryStore.getQuestionnariesFromUser();
       this.availableQuestionnaires = this.questionnaryStore.questionnaryList;
