@@ -22,6 +22,7 @@ import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exc
 import { EventHostEnum } from '../../event/enum/eventHost.enum';
 import { SettingsObject } from '../object/settings.object';
 import { SettingsDto } from '../dto/settings.dto';
+import { DisplaySettingsObject } from '../object/displaySettings.object';
 
 @Injectable()
 export class SessionService {
@@ -37,6 +38,10 @@ export class SessionService {
     teacher: Teacher,
     ids: number[],
     settings: SettingsObject = new SettingsObject(),
+    displaySettings: DisplaySettingsObject = new DisplaySettingsObject(
+      true,
+      true,
+    ),
   ): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
@@ -48,7 +53,13 @@ export class SessionService {
     }
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, teacher, questionnaries, settings),
+      await this.createSession(
+        idSession,
+        teacher,
+        questionnaries,
+        settings,
+        displaySettings,
+      ),
     );
     this.eventService.createSessionGroup(idSession, teacher.id);
     return this.sessionMap.get(idSession);
@@ -64,8 +75,15 @@ export class SessionService {
     teacher: Teacher,
     questionnaryTab: Questionnary[],
     settings: SettingsObject,
+    displaySettings: DisplaySettingsObject,
   ): Promise<Session> {
-    return new Session(idSession, questionnaryTab, teacher, settings);
+    return new Session(
+      idSession,
+      questionnaryTab,
+      teacher,
+      settings,
+      displaySettings,
+    );
   }
 
   isSessionExists(idSession: string): boolean {
@@ -123,13 +141,13 @@ export class SessionService {
     }
     const currentSession = this.sessionMap.get(idSession);
     const questionnaries = currentSession.questionnaryList;
-    for (let questionnary of questionnaries) {
-      let questionTab =
+    for (const questionnary of questionnaries) {
+      const questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
           questionnary.id,
         );
       questionnary.questions = [];
-      for (let question of questionTab) {
+      for (const question of questionTab) {
         questionnary.questions.push(
           await this.questionService.findQuestion(question.id),
         );
@@ -304,6 +322,25 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.whitelist = session.whitelist.concat(whitelist);
+    }
+    return !!session;
+  }
+
+  getDisplaySettings(idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      return session.displaySettings;
+    }
+    return null;
+  }
+
+  setDisplaySettings(
+    idSession: string,
+    displaySettings: DisplaySettingsObject,
+  ) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.displaySettings = displaySettings;
     }
     return !!session;
   }

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -29,6 +30,7 @@ import { IsNotParticipantException } from '../exception/isNotParticipant.excepti
 import { NextQuestionReturnDto } from '../dto/nextQuestionReturn.dto';
 import { SettingsDto } from '../dto/settings.dto';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
+import { DisplaySettingsDto } from '../dto/displaySettings.dto';
 
 @Controller('session')
 export class SessionController {
@@ -153,5 +155,32 @@ export class SessionController {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
     this.sessionService.addToWhitelist(idSession, body.whitelist);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/:idSession/display-settings')
+  async getDisplaySettings(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: string,
+  ): Promise<DisplaySettingsDto> {
+    if (!this.sessionService.isSessionExists(idSession))
+      throw new IdSessionNoneException();
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    return this.sessionService.getDisplaySettings(idSession);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Patch('/:idSession/display-settings')
+  async setDisplaySettings(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: string,
+    @Body(new ValidationPipe()) body: DisplaySettingsDto,
+  ) {
+    if (!this.sessionService.isSessionExists(idSession))
+      throw new IdSessionNoneException();
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    this.sessionService.setDisplaySettings(idSession, body);
   }
 }
