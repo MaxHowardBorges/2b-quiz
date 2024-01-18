@@ -103,11 +103,14 @@
     methods: {
       async handleCreateSession() {
         this.loading = false;
+        await router.push('/order-questionnary');
         if (this.selectedQuestionnary.length > 0) {
           this.sessionStore.questionnary = this.selectedQuestionnary;
+
           try {
             await this.sessionStore.createSession();
-            await router.push('/order-questionnary');
+            await router.push('/session');
+            //await router.push('/order-questionnary');
           } catch (error) {
             if (error instanceof ValidationError) {
               this.errorSnackbarContent = error.message;
@@ -118,7 +121,8 @@
             }
           }
           this.loading = false;
-        } else alert('Selectionnez au moins 1 questionnaire');
+        }
+        else await router.push('/order-questionnary'); //else alert('Selectionnez au moins 1 questionnaire');
       },
       handleCreateQuestionnary() {
         router.push('/questionary');

@@ -16,8 +16,10 @@ const routes = [
 
   {
     path: '/order-questionnary',
-    name: OrderQuestionnary,
-    component: OrderQuestionnary, //
+    name:'Order Questionnary',
+    component: OrderQuestionnary,
+    meta: { public: true, inMenu: true },
+    //
   },
 
   {

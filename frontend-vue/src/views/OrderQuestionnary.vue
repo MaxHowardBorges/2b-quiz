@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="(questionnary, index) in questionnaries" :key="index">
           <td>
-            <span>{{ questionnary.name }}</span>
+            <span>{{ questionnary.title }}</span>
           </td>
           <td class="text-center">
             <v-btn
@@ -54,8 +54,7 @@
     <v-btn v-if="selectedAcces === 'privé'" @click="openSelectionDialog" class="mt-4">Choisir étudiants</v-btn>
 <!--    TODO choisir les membres à ajouter en cours de route -->
 
-    <v-btn @click="" class="mt-4">Lancer la session</v-btn>
-    <!--    TODO mettre le lien -->
+    <v-btn @click="handleCreateSession" class="mt-4">Lancer la session</v-btn>
 
     <v-dialog v-model="SelectionDialog" max-width="600">
       <v-card>
@@ -73,17 +72,12 @@
       </v-card>
     </v-dialog>
 
-
-
-
-
     <!-- Fenêtre pop-up -->
     <v-dialog v-model="popup" max-width="600">
       <v-card>
         <v-card-title>Ajouter un questionnaire</v-card-title>
         <v-card-text>
           <!-- Contenu de votre fenêtre pop-up (peut inclure une barre de recherche, etc.) -->
-          <!-- Exemple : -->
           <v-text-field
             v-model="searchQuery"
             label="Rechercher un questionnaire"></v-text-field>
@@ -92,11 +86,9 @@
             <v-list-item
               v-for="(availableQuestionnaire, i) in availableQuestionnaires"
               :key="i">
-              <v-list-item-content>
                 <v-list-item-title>
-                  {{ availableQuestionnaire.name }}
+                  {{ availableQuestionnaire.title }}
                 </v-list-item-title>
-              </v-list-item-content>
               <v-list-item-action>
                 <v-btn @click="addQuestionnaire(availableQuestionnaire)">
                   Ajouter
@@ -113,87 +105,114 @@
   </div>
 </template>
 
-<script setup>
+<script>
   import { ref } from 'vue';
-
-  const questionnaries = ref([
-    { name: 'Questionnaire 1' },
-    { name: 'Questionnaire 2' },
-    { name: 'Questionnaire 3' },
-    { name: 'Questionnaire 4' },
-    { name: 'Questionnaire 5' },
-  ]);
-
-  const items = [
-    'piloté',
-    'libre',
-    'chronometré',
-  ];
-
-  const selected = ref('piloté');
-
-  const itemsAcces = [
-    'fermé',
-    'public',
-    'privé',
-  ];
-
-  const selectedAcces = ref('fermé');
+  import router from '@/router';
+  import { useSessionStore } from '@/stores/sessionStore';
+  import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+  import { ValidationError } from '@/utils/valdiationError';
+  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
 
 
-  const moveQuestionnaryUp = (index) => {
-    if (index > 0) {
-      const temp = questionnaries.value[index];
-      questionnaries.value[index] = questionnaries.value[index - 1];
-      questionnaries.value[index - 1] = temp;
-    }
-  };
-
-  const moveQuestionnaryDown = (index) => {
-    if (index < questionnaries.value.length - 1) {
-      const temp = questionnaries.value[index];
-      questionnaries.value[index] = questionnaries.value[index + 1];
-      questionnaries.value[index + 1] = temp;
-    }
-  };
-
-  const removeQuestionnary = (index) => {
-    questionnaries.value.splice(index, 1);
-  };
-
-  // Variables pour la fenêtre pop-up
-  const SelectionDialog = ref(false);
-  const popup = ref(false);
-  const searchQuery = ref('');
-  const availableQuestionnaires = ref([
-    { name: 'Questionnaire A' },
-    { name: 'Questionnaire B' },
-    { name: 'Questionnaire C' },
-    // ... Ajoutez d'autres questionnaires disponibles ici
-  ]);
-
-  // Fonctions pour la fenêtre pop-up
-  const openPopup = () => {
-    popup.value = true;
-  };
-
-  const closePopup = () => {
-    popup.value = false;
-  };
-
-  const openSelectionDialog = () => {
-    SelectionDialog.value = true;
-  };
-
-  const closeSelectionDialog = () => {
-    SelectionDialog.value = false;
-  };
-
-  const addQuestionnaire = (selectedQuestionnaire) => {
-    questionnaries.value.push({ name: selectedQuestionnaire.name });
-    closePopup();
+  export default {
+    name: 'OrderQuestionnary',
+    components: { ErrorSnackbar, ErrorDialog },
+    async mounted() {
+      await this.questionnaryStore.getQuestionnariesFromUser();
+      this.questionnaries = this.questionnaryStore.questionnaryList;
+      console.log(this.questionnaries);
+    },
+    data() {
+      const sessionStore = useSessionStore();
+      const questionnaryStore = useQuestionnaryStore();
+      return {
+        questionnaryStore,
+        sessionStore,
+        questionnaries: [
+          { name: 'Questionnaire 1' },
+          { name: 'Questionnaire 2' },
+          { name: 'Questionnaire 3' },
+          { name: 'Questionnaire 4' },
+          { name: 'Questionnaire 5' },
+        ],
+        items: ['piloté', 'libre', 'chronometré'],
+        selected: ref('piloté'),
+        itemsAcces: ['fermé', 'public', 'privé'],
+        selectedAcces: ref('fermé'),
+        SelectionDialog: ref(false),
+        popup: ref(false),
+        searchQuery: '',
+        availableQuestionnaires: [
+        ],
+        selectedQuestionnary: [],
+      };
+    },
+    methods: {
+      moveQuestionnaryUp(index) {
+        if (index > 0) {
+          const temp = this.questionnaries[index];
+          this.questionnaries[index] = this.questionnaries[index - 1];
+          this.questionnaries[index - 1] = temp;
+        }
+      },
+      moveQuestionnaryDown(index) {
+        if (index < this.questionnaries.length - 1) {
+          const temp = this.questionnaries[index];
+          this.questionnaries[index] = this.questionnaries[index + 1];
+          this.questionnaries[index + 1] = temp;
+        }
+      },
+      removeQuestionnary(index) {
+        this.availableQuestionnaires.push(this.questionnaries[index]);
+        this.questionnaries.splice(index, 1);
+      },
+      openPopup() {
+        this.popup = true;
+      },
+      closePopup() {
+        this.popup = false;
+      },
+      openSelectionDialog() {
+        this.SelectionDialog = true;
+      },
+      closeSelectionDialog() {
+        this.SelectionDialog = false;
+      },
+      addQuestionnaire(selectedQuestionnaire) {
+        this.questionnaries.push(selectedQuestionnaire);
+        this.closePopup();
+      },
+      async addselectID(){
+        for(let i = 0; i < this.questionnaries.length; i++) {
+          this.selectedQuestionnary.push({ id: this.questionnaries[i].id });
+        }
+      },
+      async handleCreateSession() {
+        await this.addselectID();
+        if (this.selectedQuestionnary.length > 0) {
+          console.log(this.selectedQuestionnary);
+          this.sessionStore.questionnary = this.selectedQuestionnary;
+          console.log(this.sessionStore.questionnary);
+          try {
+            await this.sessionStore.createSession();
+            await router.push('/session');
+          } catch (error) {
+            if (error instanceof ValidationError) {
+              this.errorSnackbarContent = error.message;
+              this.$refs.errorSnackbar.setSnackbarError(true);
+            } else {
+              console.error('Error while creating session:', error);
+              this.$refs.dialogError.setDialogError(true);
+            }
+          }
+          this.loading = false;
+        } else alert('Selectionnez au moins 1 questionnaire');
+      },
+    },
   };
 </script>
+
 
 <style scoped>
 
