@@ -9,7 +9,7 @@
       id="title-input">
       <v-text-field
         id="title-input"
-        v-if="OnList && clickedOnChange"
+        v-if="!useQ.isCreated || (OnList && clickedOnChange)"
         :rules="[required]"
         class="text-h1 w-75"
         variant="outlined"
