@@ -241,34 +241,46 @@ export class UserService {
       relations: ['teacher', 'tabUsers'],
       where: { id: idGroup },
     });
+    if (group == undefined) throw new GroupNotFoundException();
+
     const t = <Teacher>await this.userRepository.findOne({
       relations: ['createdGroups'],
       where: { id: group.teacher.id },
     });
+    if (t == undefined) throw new UserNotFoundException();
 
-    if (group) {
-      if (group.tabUsers == undefined) {
-        const index = t.createdGroups.findIndex((g) => {
-          return g.id === idGroup;
-        });
-        t.createdGroups.splice(index);
+    const verif = await this.userRepository.findOne({
+      relations: ['createdGroups'],
+      where: { id: group.teacher.id },
+    });
 
-        await this.userRepository.save(t);
-        await this.groupRepository.delete(idGroup);
-      } else {
-        for (let i = 0; i < group.tabUsers.length; i++) {
-          await this.removeStudentFromGroup(idGroup, group.tabUsers[i].id);
-        }
-        const index = t.createdGroups.findIndex((g) => {
-          return g.id === idGroup;
-        });
-        t.createdGroups.splice(index);
-        await this.userRepository.save(t);
-        await this.groupRepository.delete(idGroup);
-      }
-    } else {
-      throw new GroupNotFoundException();
+    if (
+      verif.getUserType() != UserType.TEACHER &&
+      verif.getUserType() != UserType.ADMIN
+    ) {
+      throw new StudentCantCreateGroupsException();
     }
+
+    if (group.tabUsers == undefined) {
+      const index = t.createdGroups.findIndex((g) => {
+        return g.id === idGroup;
+      });
+      t.createdGroups.splice(index);
+
+      await this.userRepository.save(t);
+      await this.groupRepository.delete(idGroup);
+    } else {
+      for (let i = 0; i < group.tabUsers.length; i++) {
+        await this.removeStudentFromGroup(idGroup, group.tabUsers[i].id);
+      }
+      const index = t.createdGroups.findIndex((g) => {
+        return g.id === idGroup;
+      });
+      t.createdGroups.splice(index);
+      await this.userRepository.save(t);
+      await this.groupRepository.delete(idGroup);
+    }
+
     return !!group;
   }
 
@@ -278,8 +290,6 @@ export class UserService {
       where: { id: idGroup },
     });
 
-    console.log(group);
-
     if (!group) {
       throw new GroupNotFoundException();
     }
@@ -287,6 +297,7 @@ export class UserService {
   }
 
   async addUserToGroup(idGroup: number, idStudent: number) {
+    //TODO Ajouter le cas ou un user est déjà dans le groupe
     const group = await this.groupRepository.findOne({
       relations: ['teacher', 'tabUsers'],
       where: { id: idGroup },
