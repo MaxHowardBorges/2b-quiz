@@ -5,22 +5,26 @@
     :direction="vertical ? 'vertical' : 'horizontal'"
     :bg-color="!vertical ? 'transparent' : ''"
     :class="!vertical ? 'align-self-center' : ''">
-    <page-menu-item
-      v-if="userStore.isAuthenticated && !userStore.isNotChoose"
-      v-for="page in getAllRoutes()"
-      :show-tabs="showTabs"
-      :vertical="vertical"
-      :content="page.name.toString()"
-      :to="page.path"
-      @toggle-tabs="toggleTabs"></page-menu-item>
-    <page-menu-item
-      v-if="!userStore.isAuthenticated || userStore.isNotChoose"
-      v-for="page in getPublicRoutes()"
-      :show-tabs="showTabs"
-      :vertical="vertical"
-      :content="page.name.toString()"
-      :to="page.path"
-      @toggle-tabs="toggleTabs"></page-menu-item>
+    <template v-if="userStore.isAuthenticated && !userStore.isNotChoose">
+      <page-menu-item
+        v-for="page in getAllRoutes(userStore.userRole)"
+        v-bind:key="page.name"
+        :show-tabs="showTabs"
+        :vertical="vertical"
+        :content="page.name.toString()"
+        :to="page.path"
+        @toggle-tabs="toggleTabs"></page-menu-item>
+    </template>
+    <template v-if="!userStore.isAuthenticated || userStore.isNotChoose">
+      <page-menu-item
+        v-for="page in getPublicRoutes()"
+        v-bind:key="page.name"
+        :show-tabs="showTabs"
+        :vertical="vertical"
+        :content="page.name.toString()"
+        :to="page.path"
+        @toggle-tabs="toggleTabs"></page-menu-item>
+    </template>
   </v-tabs>
 </template>
 
@@ -39,9 +43,9 @@
       };
     },
     props: {
-      vertical: false,
+      vertical: Boolean || false,
       showTabs: Boolean,
-      withToggleTabs: false,
+      withToggleTabs: Boolean || false,
     },
     methods: {
       getAllRoutes,

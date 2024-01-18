@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 import DisplayView from '@/views/DisplayView.vue';
 import OrderQuestionnary from '@/views/OrderQuestionnary.vue';
+import { UserRoles } from '@/utils/userRoles';
 
 const routes = [
   {
@@ -50,7 +51,7 @@ const routes = [
     path: '/questionary',
     name: 'questionary',
     component: QuestionaryView,
-    meta: { inMenu: true },
+    meta: { inMenu: true, roles: [UserRoles.TEACHER] },
   },
   {
     path: '/public',
