@@ -23,6 +23,7 @@ import { EventHostEnum } from '../../event/enum/eventHost.enum';
 import { SettingsObject } from '../object/settings.object';
 import { SettingsDto } from '../dto/settings.dto';
 import { DisplaySettingsObject } from '../object/displaySettings.object';
+import { EventObserverEnum } from '../../event/enum/eventObserver.enum';
 
 @Injectable()
 export class SessionService {
@@ -341,6 +342,10 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.displaySettings = displaySettings;
+      this.eventService.sendObserverEvent(
+        EventObserverEnum.NEW_DISPLAY_SETTINGS,
+        idSession,
+      );
     }
     return !!session;
   }

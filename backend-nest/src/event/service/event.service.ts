@@ -6,6 +6,7 @@ import { UserUnauthorisedException } from '../exception/userUnauthorised.excepti
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { ParticipantSessionObject } from '../object/participantSession.object';
 import { EventHostEnum } from '../enum/eventHost.enum';
+import { EventObserverEnum } from '../enum/eventObserver.enum';
 
 @Injectable()
 export class EventService {
@@ -41,6 +42,11 @@ export class EventService {
     }
   }
 
+  sendObserverEvent(event: EventObserverEnum, idSession: string): void {
+    if (this.sessionMap.get(idSession)) {
+      this.sessionMap.get(idSession).getObserverSubject().next(event);
+    }
+  }
   async createClient(
     idSession: string,
     idUser: number,
