@@ -48,6 +48,7 @@
         v-if="userStore.isTeacher"
         v-model="toggleValue"
         mandatory
+        variant="outlined"
         class="mb-4"
         color="primary">
         <v-btn value="true" @click="isCreating = true">Create a session</v-btn>

@@ -72,7 +72,7 @@ export class QuestionnaryController {
     @Req() request: UserRequest,
   ): Promise<QuestionnaryNbQuestionDto[]> {
     const questionnaryList =
-      await this.questionnaryService.findQuestionnariesFromIdUser(
+      await this.questionnaryService.findQuestionnariesFromIdUserWithQuestions(
         request.user as Teacher,
       );
     const questionnaryNbQuestionDtoList: QuestionnaryNbQuestionDto[] = [];
@@ -81,7 +81,7 @@ export class QuestionnaryController {
         this.questionnaryMapper.mapQuestionnaryNbQuestionDto(questionnary),
       );
     }
-    return questionnaryNbQuestionDtoList;
+    return questionnaryNbQuestionDtoList.reverse();
   }
 
   @Get('/:id/question/')

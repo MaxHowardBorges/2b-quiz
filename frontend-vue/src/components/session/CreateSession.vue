@@ -1,111 +1,137 @@
 <template>
-  <div class="w-75 mx-5">
-    <h2 class="text-center">Création d'une session</h2>
+  <v-sheet
+    min-width="450px"
+    width="90%"
+    class="mt-5 px-6 py-8 mx-auto d-flex flex-row"
+    elevation="4"
+    rounded="lg">
+    <div class="w-75 mx-auto">
+      <h2 class="text-center text-h2">Create a session</h2>
 
-    <table class="questionnary-table mx-auto w-100">
-      <thead>
-        <tr>
-          <th>Questionnaire</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(questionnary, index) in questionnaries" :key="index">
-          <td>
-            <span>{{ questionnary.title }}</span>
-          </td>
-          <td class="text-center">
-            <v-btn
-              icon="keyboard_arrow_up"
-              @click="moveQuestionnaryUp(index)"
-              :disabled="index === 0"></v-btn>
-            <v-btn
-              icon="keyboard_arrow_down"
-              @click="moveQuestionnaryDown(index)"
-              :disabled="index === questionnaries.length - 1"></v-btn>
-            <v-btn icon="delete" @click="removeQuestionnary(index)"></v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table class="questionnary-table mx-auto w-100">
+        <thead>
+          <tr>
+            <th>Questionnaire</th>
+            <th>Nombre de question</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody v-if="questionnaries.length !== 0">
+          <tr v-for="(questionnary, index) in questionnaries" :key="index">
+            <td>
+              <span>{{ questionnary.title }}</span>
+            </td>
+            <td class="text-center">
+              <span>{{ questionnary.nbQuestion }}</span>
+            </td>
+            <td class="text-center">
+              <v-btn
+                icon="keyboard_arrow_up"
+                @click="moveQuestionnaryUp(index)"
+                :disabled="index === 0"></v-btn>
+              <v-btn
+                icon="keyboard_arrow_down"
+                @click="moveQuestionnaryDown(index)"
+                :disabled="index === questionnaries.length - 1"></v-btn>
+              <v-btn icon="delete" @click="removeQuestionnary(index)"></v-btn>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="3" class="text-center text-warning">
+              No questionnary selected
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- Bouton pour ouvrir la fenêtre pop-up -->
-    <v-btn @click="openPopup" class="mt-4">Ajouter Questionnaire</v-btn>
+      <!-- Bouton pour ouvrir la fenêtre pop-up -->
+      <v-btn @click="openPopup" class="mt-4">Add Questionnaire</v-btn>
 
-    <v-select
-      v-model="selected"
-      :items="items"
-      label="Type de session"
-      class="mt-4 w-25 mx-auto"
-      outlined
-      dense
-      required></v-select>
+      <div class="d-flex flex-row mt-4">
+        <v-select
+          v-model="selected"
+          :items="items"
+          label="Type de session"
+          class="mt-4 mx-3"
+          outlined
+          dense
+          required></v-select>
 
-    <v-select
-      v-model="selectedAcces"
-      :items="itemsAcces"
-      label="Type d'accès"
-      class="mt-4 w-25 mx-auto"
-      outlined
-      dense
-      required></v-select>
+        <v-select
+          v-model="selectedAcces"
+          :items="itemsAcces"
+          label="Type d'accès"
+          class="mt-4 mx-3"
+          outlined
+          dense
+          required></v-select>
 
-    <v-btn
-      v-if="selectedAcces === 'privé'"
-      @click="openSelectionDialog"
-      class="mt-4">
-      Choisir étudiants
-    </v-btn>
-    <!--    TODO choisir les membres à ajouter en cours de route -->
+        <v-btn
+          v-if="selectedAcces === 'privé'"
+          @click="openSelectionDialog"
+          class="mt-4 mx-3">
+          Choisir étudiants
+        </v-btn>
+        <!--    TODO choisir les membres à ajouter en cours de route -->
+      </div>
 
-    <v-btn @click="handleCreateSession" class="mt-4">Lancer la session</v-btn>
+      <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
 
-    <v-dialog v-model="SelectionDialog" max-width="600">
-      <v-card>
-        <v-card-title>Choisir des membres</v-card-title>
-        <v-card-text>
-          <v-list>
-            <v-list-item></v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="">Ajouter</v-btn>
-          <v-btn @click="closeSelectionDialog">Fermer</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <v-dialog v-model="SelectionDialog" max-width="600">
+        <v-card>
+          <v-card-title>Choose members</v-card-title>
+          <v-card-text>
+            <v-list>
+              <v-list-item></v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn @click="">Ajouter</v-btn>
+            <v-btn @click="closeSelectionDialog">Fermer</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
-    <!-- Fenêtre pop-up -->
-    <v-dialog v-model="popup" max-width="600">
-      <v-card>
-        <v-card-title>Ajouter un questionnaire</v-card-title>
-        <v-card-text>
-          <!-- Contenu de votre fenêtre pop-up (peut inclure une barre de recherche, etc.) -->
-          <v-text-field
-            v-model="searchQuery"
-            label="Rechercher un questionnaire"></v-text-field>
-          <!-- Liste des questionnaires disponibles (peut provenir de votre API, etc.) -->
-          <v-list>
-            <v-list-item
-              v-for="(availableQuestionnaire, i) in availableQuestionnaires"
-              :key="i">
-              <v-list-item-title>
-                {{ availableQuestionnaire.title }}
-              </v-list-item-title>
-              <v-list-item-action>
-                <v-btn @click="addQuestionnaire(availableQuestionnaire)">
-                  Ajouter
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="closePopup">Fermer</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+      <!-- Fenêtre pop-up -->
+      <v-dialog v-model="popup" max-width="600">
+        <v-card>
+          <v-card-title>Ajouter un questionnaire</v-card-title>
+          <v-card-text>
+            <!-- Contenu de votre fenêtre pop-up (peut inclure une barre de recherche, etc.) -->
+            <v-text-field
+              v-model="searchQuery"
+              @update:model-value="updateSearchQuery"
+              label="Rechercher un questionnaire"></v-text-field>
+            <!-- Liste des questionnaires disponibles (peut provenir de votre API, etc.) -->
+            <v-list>
+              <v-list-item
+                v-for="(
+                  availableQuestionnaire, i
+                ) in displayedAvailableQuestionnaires"
+                :key="i">
+                <v-list-item-title>
+                  {{ availableQuestionnaire.title }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  composé de {{ availableQuestionnaire.nbQuestion }} questions
+                </v-list-item-subtitle>
+                <template v-slot:append>
+                  <v-btn @click="addQuestionnaire(availableQuestionnaire, i)">
+                    Ajouter
+                  </v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn @click="closePopup">Fermer</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+  </v-sheet>
 </template>
 
 <script>
@@ -120,10 +146,10 @@
   export default {
     name: 'CreateSession',
     components: { ErrorSnackbar, ErrorDialog },
-    async mounted() {
+    async beforeMount() {
       await this.questionnaryStore.getQuestionnariesFromUser();
-      this.questionnaries = this.questionnaryStore.questionnaryList;
-      console.log(this.questionnaries);
+      this.availableQuestionnaires = this.questionnaryStore.questionnaryList;
+      this.updateSearchQuery();
     },
     data() {
       const sessionStore = useSessionStore();
@@ -131,13 +157,7 @@
       return {
         questionnaryStore,
         sessionStore,
-        questionnaries: [
-          { name: 'Questionnaire 1' },
-          { name: 'Questionnaire 2' },
-          { name: 'Questionnaire 3' },
-          { name: 'Questionnaire 4' },
-          { name: 'Questionnaire 5' },
-        ],
+        questionnaries: [],
         items: ['piloté', 'libre', 'chronometré'],
         selected: ref('piloté'),
         itemsAcces: ['fermé', 'public', 'privé'],
@@ -146,6 +166,7 @@
         popup: ref(false),
         searchQuery: '',
         availableQuestionnaires: [],
+        displayedAvailableQuestionnaires: [],
         selectedQuestionnary: [],
       };
     },
@@ -155,6 +176,17 @@
           const temp = this.questionnaries[index];
           this.questionnaries[index] = this.questionnaries[index - 1];
           this.questionnaries[index - 1] = temp;
+        }
+      },
+      updateSearchQuery() {
+        const searchRegex = new RegExp(this.searchQuery, 'i');
+        if (this.searchQuery === '')
+          this.displayedAvailableQuestionnaires = this.availableQuestionnaires;
+        else {
+          this.displayedAvailableQuestionnaires =
+            this.availableQuestionnaires.filter(
+              (questionnary) => questionnary.title.search(searchRegex) !== -1,
+            );
         }
       },
       moveQuestionnaryDown(index) {
@@ -180,7 +212,8 @@
       closeSelectionDialog() {
         this.SelectionDialog = false;
       },
-      addQuestionnaire(selectedQuestionnaire) {
+      addQuestionnaire(selectedQuestionnaire, index) {
+        this.availableQuestionnaires.splice(index, 1);
         this.questionnaries.push(selectedQuestionnaire);
         this.closePopup();
       },
