@@ -4,25 +4,38 @@
     width="70%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
     elevation="5">
-    <input
-      v-if="OnList"
-      id="title"
-      type="text"
-      v-model="questionnaryName"
-      @change="changeName"
-      required />
-    <div v-else id="title">
-      {{ this.questionnaryName }}
-      <br />
-      Question N°{{
-        this.idQuestion
-          ? this.useQ.questions.findIndex(
-              (question) => question.id === this.idQuestion,
-            ) + 1
-          : !!this.useQ.questionnary
-          ? this.useQ.questions.length + 1
-          : 1
-      }}
+    <div
+      class="d-flex align-center flex-1-1 w-75 justify-center"
+      id="title-input">
+      <v-text-field
+        id="title-input"
+        v-if="OnList && clickedOnChange"
+        :rules="[required]"
+        class="text-h1 w-75"
+        variant="outlined"
+        v-model="questionnaryName"
+        required />
+      <div v-else>
+        <div id="title" class="text-h1">
+          {{ this.questionnaryName }}
+        </div>
+        <div v-if="!OnList">
+          Question N°{{
+            this.idQuestion
+              ? this.useQ.questions.findIndex(
+                  (question) => question.id === this.idQuestion,
+                ) + 1
+              : !!this.useQ.questionnary
+              ? this.useQ.questions.length + 1
+              : 1
+          }}
+        </div>
+      </div>
+      <v-btn
+        v-if="OnList"
+        :icon="clickedOnChange ? 'check' : 'edit'"
+        class="ml-5"
+        @click="changeName" />
     </div>
 
     <v-select
@@ -113,6 +126,7 @@
     data() {
       return {
         OnList: true,
+        clickedOnChange: false,
         showTypeSelector: false,
         selectedType: 'Unique',
         typeOptions: [
@@ -128,6 +142,7 @@
         statusQ: 'add',
         idQuestion: null,
         alertQuestionnaryNull: false,
+        required: (value) => !!value || 'Field is required',
       };
     },
     setup() {
@@ -228,8 +243,13 @@
         }
       },
       changeName() {
-        if (this.useQ.isCreated) {
-          this.useQ.modifyQuestionnary(this.questionnaryName);
+        if (this.clickedOnChange) {
+          this.clickedOnChange = false;
+          if (this.useQ.isCreated) {
+            this.useQ.modifyQuestionnary(this.questionnaryName);
+          }
+        } else {
+          this.clickedOnChange = true;
         }
       },
     },
@@ -240,10 +260,8 @@
   #title {
     margin-bottom: 10px;
     padding: 8px;
-    font-size: 40px !important;
-    font-weight: bold !important;
+    font-size: 50px !important;
     text-align: center;
-    border: 1px solid black;
   }
 
   v-btn {
@@ -267,5 +285,10 @@
     background-color: rgba(255, 0, 0, 0.2);
     color: brown;
     border-radius: 5px;
+  }
+
+  #title-input input {
+    font-size: 50px !important;
+    width: 75% !important;
   }
 </style>
