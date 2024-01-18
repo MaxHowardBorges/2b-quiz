@@ -67,6 +67,19 @@ export class QuestionnaryService {
     });
   }
 
+  async findQuestionnariesFromIdUserWithQuestions(teacher: Teacher) {
+    // questionnaires without questions
+    //TODO get from user questionnary bank
+
+    return await this.questionnaryRepository.find({
+      relations: {
+        author: true,
+        questions: true,
+      },
+      where: { author: { id: teacher.id } },
+    });
+  }
+
   async findQuestionsFromIdQuestionnary(idQuestionnary: number) {
     // questions without answers
     return this.questionService.findQuestions(

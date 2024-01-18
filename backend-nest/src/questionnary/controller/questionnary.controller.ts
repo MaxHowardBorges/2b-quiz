@@ -19,10 +19,15 @@ import { Roles } from '../../decorators/roles.decorator';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { NotAuthorException } from '../exception/notAuthor.exception';
 import { QuestionnaryNotFoundException } from '../exception/questionnaryNotFound.exception';
+import { QuestionnaryNbQuestionDto } from '../dto/questionnaryNbQuestion.dto';
+import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
 
 @Controller('questionnary')
 export class QuestionnaryController {
-  constructor(private readonly questionnaryService: QuestionnaryService) {}
+  constructor(
+    private readonly questionnaryService: QuestionnaryService,
+    private readonly questionnaryMapper: QuestionnaryMapper,
+  ) {}
 
   @Roles([UserType.TEACHER])
   @Post('/create')
@@ -63,10 +68,20 @@ export class QuestionnaryController {
 
   @Roles([UserType.TEACHER])
   @Get()
-  selectQuestionnaryList(@Req() request: UserRequest) {
-    return this.questionnaryService.findQuestionnariesFromIdUser(
-      request.user as Teacher,
-    );
+  async selectQuestionnaryList(
+    @Req() request: UserRequest,
+  ): Promise<QuestionnaryNbQuestionDto[]> {
+    const questionnaryList =
+      await this.questionnaryService.findQuestionnariesFromIdUser(
+        request.user as Teacher,
+      );
+    const questionnaryNbQuestionDtoList: QuestionnaryNbQuestionDto[] = [];
+    for (const questionnary of questionnaryList) {
+      questionnaryNbQuestionDtoList.push(
+        this.questionnaryMapper.mapQuestionnaryNbQuestionDto(questionnary),
+      );
+    }
+    return questionnaryNbQuestionDtoList;
   }
 
   @Get('/:id/question/')
