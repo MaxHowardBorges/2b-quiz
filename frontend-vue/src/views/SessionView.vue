@@ -1,44 +1,68 @@
 <template>
-  <template v-if="sessionStore.isParticipant">
-    <session-waiting-block-student
-      v-if="waiting && !ended"
-      :id-session="sessionStore.idSession.toString()"
-      :waiting-session-start="waitingSessionStart" />
+  <template v-if="!!sessionStore.idSession">
+    <template v-if="sessionStore.isParticipant">
+      <session-waiting-block-student
+        v-if="waiting && !ended"
+        :id-session="sessionStore.idSession.toString()"
+        :waiting-session-start="waitingSessionStart" />
 
-    <session-question-block
-      @answer-sent-relay="waiting = true"
-      v-if="!waiting && !ended" />
+      <session-question-block
+        @answer-sent-relay="waiting = true"
+        v-if="!waiting && !ended" />
 
-    <session-ended-block @reset="reset" v-if="ended" />
-  </template>
+      <session-ended-block @reset="reset" v-if="ended" />
+    </template>
 
-  <v-sheet
-    v-else-if="sessionStore.isHost"
-    rounded="lg"
-    width="90%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-row main-block"
-    elevation="5">
-    <div class="left-panel h-100">
-      <div class="leftRight mt-5">
-        <session-waiting-block-teacher
-          v-if="waiting"
-          @session-start="waiting = false" />
+    <v-sheet
+      v-else-if="sessionStore.isHost"
+      rounded="lg"
+      width="90%"
+      class="mt-5 px-6 py-8 mx-auto d-flex flex-row main-block"
+      elevation="5">
+      <div class="left-panel h-100">
+        <div class="leftRight mt-5">
+          <session-waiting-block-teacher
+            v-if="waiting"
+            @session-start="waiting = false" />
 
-        <session-question-block
-          class="w-75"
-          @answer-sent-relay="waiting = true"
-          v-if="!waiting && !ended" />
+          <session-question-block
+            class="w-75"
+            @answer-sent-relay="waiting = true"
+            v-if="!waiting && !ended" />
 
-        <session-ended-block @reset="reset" v-if="ended" />
+          <session-ended-block @reset="reset" v-if="ended" />
 
-        <ActionTeacher v-if="!waiting"></ActionTeacher>
+          <ActionTeacher v-if="!waiting"></ActionTeacher>
+        </div>
       </div>
+      <v-divider :vertical="true"></v-divider>
+      <event-session
+        class="w-100 right-panel h-100"
+        v-if="sessionStore.isHost"></event-session>
+    </v-sheet>
+  </template>
+  <template v-else>
+    <div
+      class="mt-6 h-100 d-flex align-center justify-center ma-2 flex-column w-100">
+      <v-btn-toggle
+        v-if="userStore.isTeacher"
+        v-model="toggleValue"
+        mandatory
+        class="mb-4"
+        color="primary">
+        <v-btn value="true" @click="isCreating = true">Create a session</v-btn>
+        <v-btn value="false" @click="isCreating = false">Join a session</v-btn>
+      </v-btn-toggle>
+      <template
+        v-if="isCreating && userStore.isTeacher"
+        class="d-block w-100 flex-1-1 mx-auto">
+        <create-session></create-session>
+      </template>
+      <template v-else>
+        <join-form></join-form>
+      </template>
     </div>
-    <v-divider :vertical="true"></v-divider>
-    <event-session
-      class="w-100 right-panel h-100"
-      v-if="sessionStore.isHost"></event-session>
-  </v-sheet>
+  </template>
 </template>
 
 <script>
@@ -49,18 +73,23 @@
   import SessionWaitingBlockTeacher from '@/components/session/SessionWaitingBlockTeacher.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
-  import router from '@/router';
   import EventSession from '@/components/public/EventSession.vue';
   import ActionTeacher from '@/components/public/ActionTeacher.vue';
+  import JoinForm from '@/components/session/JoinForm.vue';
+  import CreateSession from '@/components/session/CreateSession.vue';
 
-  let waiting;
   export default {
     beforeRouteUpdate(to, from, next) {
-      waiting = to.query.key !== 'display';
+      this.waiting = to.query.key !== 'display';
       next();
     },
     name: 'SessionView',
+    props: {
+      isCreating: Boolean || false,
+    },
     components: {
+      CreateSession,
+      JoinForm,
       EventSession,
       SessionEndedBlock,
       SessionQuestionBlock,
@@ -75,7 +104,8 @@
       let ended = ref(false);
       let waitingSessionStart = ref(true);
       let echoQuestion = ref(null);
-      waiting = ref(true);
+      let waiting = ref(true);
+      let toggleValue = 'true';
 
       sessionStore.$subscribe((mutation, state) => {
         if (state.ended !== ended.value) {
@@ -91,6 +121,7 @@
         }
       });
       return {
+        toggleValue,
         ended,
         sessionStore,
         userStore,
@@ -98,9 +129,8 @@
         waitingSessionStart,
       };
     },
-
-    mounted() {
-      if (!this.sessionStore.idSession) router.replace('/');
+    beforeMount() {
+      this.toggleValue = this.isCreating ? 'true' : 'false';
     },
     methods: {
       reset() {

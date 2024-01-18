@@ -12,11 +12,15 @@ const routes = [
     path: '/session',
     name: 'Session',
     component: SessionView,
+    meta: { inMenu: true },
+    props: (route) => ({
+      isCreating: !!route.query.isCreating,
+    }),
   },
 
   {
     path: '/order-questionnary',
-    name:'Order Questionnary',
+    name: 'Order Questionnary',
     component: OrderQuestionnary,
     meta: { public: true, inMenu: true },
     //

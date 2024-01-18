@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import JoinForm from '@/components/home/JoinForm.vue';
+  import JoinForm from '@/components/session/JoinForm.vue';
   import { useUserStore } from '@/stores/userStore';
   import NewUserBlock from '@/components/user/NewUserBlock.vue';
   import LoginBlock from '@/components/user/LoginBlock.vue';

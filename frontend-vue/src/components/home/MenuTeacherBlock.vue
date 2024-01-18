@@ -18,18 +18,6 @@
     position="relative">
     <h1 class="mb-6">Teacher Menu</h1>
 
-    <v-select
-      v-model="selectedQuestionnary"
-      :items="choosedQuestionnary"
-      item-title="title"
-      item-value="id"
-      item-color="#007EA1"
-      color="primary"
-      multiple=""
-      label="Select Questionnary"
-      dense
-      outlined></v-select>
-
     <div class="">
       <v-btn
         @click="handleCreateSession"
@@ -37,6 +25,16 @@
         class="mx-6 my-3"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Create session</p>
+      </v-btn>
+    </div>
+
+    <div class="">
+      <v-btn
+        @click="handleJoinSession"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Join session</p>
       </v-btn>
     </div>
 
@@ -62,7 +60,6 @@
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import router from '@/router';
-  import { ValidationError } from '@/utils/valdiationError';
   import { ref } from 'vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
@@ -102,27 +99,37 @@
     },
     methods: {
       async handleCreateSession() {
-        this.loading = false;
-        await router.push('/order-questionnary');
-        if (this.selectedQuestionnary.length > 0) {
-          this.sessionStore.questionnary = this.selectedQuestionnary;
-
-          try {
-            await this.sessionStore.createSession();
-            await router.push('/session');
-            //await router.push('/order-questionnary');
-          } catch (error) {
-            if (error instanceof ValidationError) {
-              this.errorSnackbarContent = error.message;
-              this.$refs.errorSnackbar.setSnackbarError(true);
-            } else {
-              console.error('Error while creating session:', error);
-              this.$refs.dialogError.setDialogError(true);
-            }
-          }
-          this.loading = false;
-        }
-        else await router.push('/order-questionnary'); //else alert('Selectionnez au moins 1 questionnaire');
+        await router.push({
+          path: '/session',
+          query: {
+            isCreating: 'true',
+          },
+        });
+        // this.loading = false;
+        // await router.push('/order-questionnary');
+        // if (this.selectedQuestionnary.length > 0) {
+        //   this.sessionStore.questionnary = this.selectedQuestionnary;
+        //
+        //   try {
+        //     await this.sessionStore.createSession();
+        //     await router.push('/session');
+        //     //await router.push('/order-questionnary');
+        //   } catch (error) {
+        //     if (error instanceof ValidationError) {
+        //       this.errorSnackbarContent = error.message;
+        //       this.$refs.errorSnackbar.setSnackbarError(true);
+        //     } else {
+        //       console.error('Error while creating session:', error);
+        //       this.$refs.dialogError.setDialogError(true);
+        //     }
+        //   }
+        //   this.loading = false;
+        // } else await router.push('/order-questionnary'); //else alert('Selectionnez au moins 1 questionnaire');
+      },
+      handleJoinSession() {
+        router.push({
+          path: '/session',
+        });
       },
       handleCreateQuestionnary() {
         router.push('/questionary');
