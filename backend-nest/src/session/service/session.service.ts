@@ -346,11 +346,31 @@ export class SessionService {
         id: idSession,
       },
       relations: {
-        userSession: { student: true, teacher: true, answer: true },
+        questionnary: true,
+        userSession: {
+          student: true,
+          teacher: true,
+          answer: { question: true },
+        },
       },
     });
 
-    console.log(session);
+    //get session's questionnary
+    const questionnary = await this.questionnaryService.findQuestionnary(
+      session.questionnary.id,
+    );
+    //get questionnary's questions
+    questionnary.questions =
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        questionnary.id,
+      );
+    //get questionnary's questions's answers
+    questionnary.questions.map(
+      async (question) =>
+        (question.answers = await this.questionService.findAnswers(
+          question.id,
+        )),
+    );
     const userSession = session.userSession;
     if (session.isResult === true) {
       //TODO
@@ -362,26 +382,29 @@ export class SessionService {
       //Make an average result of all student in session
       let average = 0;
       for (const user of userSession) {
-        average += await this.percentSucess(user);
+        for (const question of questionnary.questions) {
+          average += this.percentSucess(question, user);
+        }
       }
       average = average / userSession.length;
-      console.log(average);
       return average; //TODO modify to not a return
     }
   }
 
   //Calculate the percent of sucess of a student
-  private async percentSucess(user: UserSession) {
-    const answer = user.answer;
-    let nbCorrectAnswer = 0;
-    for (const a of answer) {
-      const question = await this.questionService.findQuestion(a.question.id);
-      if (question.type === QuestionType.QCM) {
-        const answers = await this.questionService.findAnswers(question.id);
-      }
-      if (a.isCorrect) {
+  private percentSucess(question: Question, user: UserSession) {
+    const userAnswer = user.answer;
+    let nbCorrectAnswer = 0; //TODO isCorrect is null
+    const answer = userAnswer.filter(
+      (answer) => answer.question.id == question.id,
+    );
+    console.log(answer);
+    if (question.type === QuestionType.QCM) {
+      if (answer.map((answer) => answer.isCorrect)) {
         nbCorrectAnswer++;
       }
+    } else if (answer[0].isCorrect) {
+      nbCorrectAnswer++;
     }
     return (nbCorrectAnswer / answer.length) * 100;
   }

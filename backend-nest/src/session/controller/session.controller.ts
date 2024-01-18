@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   Req,
@@ -118,10 +119,10 @@ export class SessionController {
     return await this.sessionService.getListSession(request.user);
   }
   @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Get('/getResults')
+  @Get('/:idSession/result')
   async getResults(
     @Req() request: UserRequest,
-    @Query('idsession') idSession: number,
+    @Param('idSession') idSession: number,
   ) {
     //Return the results of the session
     return await this.sessionService.getResults(idSession, request.user);
