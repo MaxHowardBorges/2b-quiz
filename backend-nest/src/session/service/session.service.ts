@@ -362,7 +362,7 @@ export class SessionService {
       //Make an average result of all student in session
       let average = 0;
       for (const user of userSession) {
-        average += this.percentSucess(user);
+        average += await this.percentSucess(user);
       }
       average = average / userSession.length;
       console.log(average);
@@ -371,10 +371,14 @@ export class SessionService {
   }
 
   //Calculate the percent of sucess of a student
-  private percentSucess(user: UserSession) {
+  private async percentSucess(user: UserSession) {
     const answer = user.answer;
     let nbCorrectAnswer = 0;
     for (const a of answer) {
+      const question = await this.questionService.findQuestion(a.question.id);
+      if (question.type === QuestionType.QCM) {
+        const answers = await this.questionService.findAnswers(question.id);
+      }
       if (a.isCorrect) {
         nbCorrectAnswer++;
       }
