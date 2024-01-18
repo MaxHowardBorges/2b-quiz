@@ -201,6 +201,7 @@ export class UserService {
   }
 
   async createGroup(dto: CreateGroupDto) {
+    // TODO les informations telles que		"validate": true, "deleted": false et "askedDelete": false ne doivent pas apparaitre, a retirer
     const group: Group = new Group();
     group.groupName = dto.name;
     group.tabUsers = [];
@@ -209,8 +210,8 @@ export class UserService {
     t.createdGroups.push(group);
     await this.groupRepository.save(group);
     await this.userRepository.save(t);
-    console.log(group);
-    group.teacher.createdGroups = []; // TODO vider les groupes créer du teacher pour ne pas les afficher est une solution temporaire, à remplacer par un mapper
+    //group.teacher.createdGroups = []; // TODO vider les groupes créer du teacher pour ne pas les afficher est une solution temporaire, à remplacer par un mapper
+
     return group;
   }
 
@@ -255,6 +256,8 @@ export class UserService {
       relations: ['teacher', 'tabUsers'],
       where: { id: idGroup },
     });
+
+    console.log(group);
 
     if (!group) {
       throw new GroupNotFoundException();

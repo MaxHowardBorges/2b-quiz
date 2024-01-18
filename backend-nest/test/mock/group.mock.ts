@@ -4,7 +4,7 @@ import { generateTeacherMock } from './user.mock';
 
 export function generateGroupMock() {
   const group = new Group();
-  group.id = faker.number.int();
+  group.id = undefined;
   group.groupName = faker.internet.userName();
   group.teacher = generateTeacherMock(false, true);
   group.tabUsers = [];

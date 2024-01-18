@@ -516,6 +516,10 @@ describe('UserService', () => {
 
   // createGroup
   describe('createGroup', () => {
+    afterEach(() => {
+      groupMock = generateGroupMock();
+      teacherMock = generateTeacherMock();
+    });
     //test cases where the teacher has already created groups or where the group name is empty
     it('should create a group', async () => {
       userRepository.findOneBy.mockResolvedValue(teacherMock);
@@ -537,9 +541,9 @@ describe('UserService', () => {
         name: groupMock.groupName,
         teacher: groupMock.teacher,
       };
-      const createdGroup: Group = await service.createGroup(dto);
+      const createdGroup = await service.createGroup(dto);
       expect(groupRepository.save).toBeCalledWith(groupMock);
-      expect(createdGroup).toEqual(teacherMock);
+      expect(createdGroup.teacher).toEqual(groupMock.teacher);
     });
     it("should be added to the teacher's created group", async () => {
       ////
@@ -550,8 +554,9 @@ describe('UserService', () => {
         teacher: groupMock.teacher,
       };
       const g = await service.createGroup(dto);
+      console.log(g.teacher.createdGroups);
       expect(groupRepository.save).toBeCalledWith(groupMock);
-      expect(g.teacher.createdGroups).toContain(groupMock);
+      expect(g.teacher.createdGroups).toContain(g.id);
     });
     it("should return an error if the teacher's group name is empty", async () => {
       const user = teacherMock;

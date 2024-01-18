@@ -15,6 +15,8 @@ export function generateTeacherMock(
   user.surname = faker.person.lastName();
   user.deleted = deleteUser;
   user.questionnaries = [];
+  user.createdGroups = [];
+  user.joinedGroups = [];
   return user;
 }
 
