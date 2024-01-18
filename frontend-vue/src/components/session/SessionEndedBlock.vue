@@ -1,11 +1,11 @@
 <template>
   <h1>Session ended</h1>
-  <h2 v-if="userStore.isStudent">Thanks for participating</h2>
+  <h2 v-if="sessionStore.isParticipant">Thanks for participating</h2>
 
   <div class="mt-3 d-flex flex-wrap">
     <v-btn
       min-width="190px"
-      v-if="userStore.isTeacher"
+      v-if="sessionStore.isHost"
       @click="handleCreateSession"
       color="primary"
       class="pa-2 ma-2 flex-1-1"
@@ -29,7 +29,7 @@
       <p class="text-white font-weight-bold">Settings</p>
     </v-btn>
   </div>
-  <result-table v-if="userStore.isTeacher" />
+  <result-table v-if="sessionStore.isHost" />
 </template>
 
 <script>

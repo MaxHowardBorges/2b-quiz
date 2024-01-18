@@ -1,5 +1,5 @@
 <template>
-  <template v-if="userStore.isStudent">
+  <template v-if="sessionStore.isParticipant">
     <session-waiting-block-student
       v-if="waiting && !ended"
       :id-session="sessionStore.idSession.toString()"
@@ -13,7 +13,7 @@
   </template>
 
   <v-sheet
-    v-else
+    v-else-if="sessionStore.isHost"
     rounded="lg"
     width="90%"
     class="mt-5 px-6 py-8 mx-auto d-flex flex-row main-block"
@@ -21,7 +21,7 @@
     <div class="left-panel h-100">
       <div class="leftRight mt-5">
         <session-waiting-block-teacher
-          v-if="userStore.isTeacher && waiting"
+          v-if="waiting"
           @session-start="waiting = false" />
 
         <session-question-block
@@ -34,10 +34,10 @@
         <ActionTeacher v-if="!waiting"></ActionTeacher>
       </div>
     </div>
-    <v-divider vertical></v-divider>
-    <EventSession
+    <v-divider :vertical="true"></v-divider>
+    <event-session
       class="w-100 right-panel h-100"
-      v-if="userStore.isTeacher"></EventSession>
+      v-if="sessionStore.isHost"></event-session>
   </v-sheet>
 </template>
 
@@ -56,11 +56,7 @@
   let waiting;
   export default {
     beforeRouteUpdate(to, from, next) {
-      waiting = true;
-      console.log(to.query.key);
-      if (to.query.key === 'display') {
-        waiting = false;
-      }
+      waiting = to.query.key !== 'display';
       next();
     },
     name: 'SessionView',

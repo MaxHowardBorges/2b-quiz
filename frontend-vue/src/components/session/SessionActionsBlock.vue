@@ -1,10 +1,13 @@
 <template>
-  <v-btn @click="handleSubmit" color="primary" v-if="userStore.isStudent">
+  <v-btn
+    @click="handleSubmit"
+    color="primary"
+    v-if="sessionStore.isParticipant">
     <p class="text-white font-weight-bold">Send answer</p>
   </v-btn>
 
-  <v-divider v-if="userStore.isTeacher" class="mx-6 my-5"></v-divider>
-  <div class="d-flex flex-row justify-center" v-if="userStore.isTeacher">
+  <v-divider v-if="sessionStore.isHost" class="mx-6 my-5"></v-divider>
+  <div class="d-flex flex-row justify-center" v-if="sessionStore.isHost">
     <v-btn
       @click="handleStop"
       color="primary"

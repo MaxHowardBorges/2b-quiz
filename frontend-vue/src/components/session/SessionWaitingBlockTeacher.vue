@@ -67,7 +67,6 @@
         }
       },
       launchWindows() {
-        console.log(this.sessionStore);
         const routeData = router.resolve({
           name: 'public',
           query: { idSession: this.sessionStore.idSession },

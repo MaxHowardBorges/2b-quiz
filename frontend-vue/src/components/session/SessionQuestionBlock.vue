@@ -9,7 +9,7 @@
       <question-block
         @new-selected-value-relay="updateSelectedValue"
         :disabled="
-          userStore.isTeacher || sessionStore.isDisplay
+          sessionStore.isHost || sessionStore.isDisplay
         "></question-block>
 
       <session-actions-block
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-  import AnswerGroup from '@/components/question/AnswerGroup.vue';
   import SessionActionsBlock from '@/components/session/SessionActionsBlock.vue';
   import QuestionBlock from '@/components/question/QuestionBlock.vue';
   import { useSessionStore } from '@/stores/sessionStore';
@@ -32,7 +31,6 @@
     components: {
       QuestionBlock,
       SessionActionsBlock,
-      AnswerGroup,
     },
     emits: ['answer-sent-relay'],
     setup() {

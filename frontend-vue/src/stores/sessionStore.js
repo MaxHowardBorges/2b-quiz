@@ -20,6 +20,8 @@ export const useSessionStore = defineStore('session', {
     ended: false,
     results: [],
     isDisplay: false,
+    isHost: false,
+    isParticipant: false,
   }),
   actions: {
     setQuestion(question) {
@@ -44,6 +46,7 @@ export const useSessionStore = defineStore('session', {
       const response = await joinSession(body, userStore.getToken());
       await throwIfNotOK(response, 204);
       userStore.updateToken(response.headers.get('Authorization'));
+      this.isParticipant = true;
       this.setIdSession(body.idSession);
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEStudent();
@@ -88,6 +91,7 @@ export const useSessionStore = defineStore('session', {
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
+      this.isHost = true;
       this.setIdSession(content.id);
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEHost();
@@ -135,6 +139,8 @@ export const useSessionStore = defineStore('session', {
       sessionEventStore.connectToSSEObserver();
     },
     sessionEnd() {
+      this.isParticipant = null;
+      this.isHost = null;
       this.setIdSession(null);
     },
   },

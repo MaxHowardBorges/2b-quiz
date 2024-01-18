@@ -47,6 +47,7 @@ export const useSessionEventStore = defineStore('sessionEvent', {
     connectToSSEHost() {
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
+      this.eventList = [];
       const url =
         import.meta.env.VITE_API_URL +
         '/event/' +
