@@ -20,6 +20,7 @@ import { GroupNotFoundException } from '../../questionnary/exception/groupNotFou
 import { Group } from '../entity/group.entity';
 import { generateGroupMock } from '../../../test/mock/group.mock';
 import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
+import { StudentCantCreateGroupsException } from '../exception/StudentCantCreateGroups.exception';
 
 describe('UserService', () => {
   let service: UserService;
@@ -524,6 +525,7 @@ describe('UserService', () => {
     //test cases where the teacher has already created groups or where the group name is empty
     it('should create a group', async () => {
       userRepository.findOneBy.mockResolvedValue(teacherMock);
+      userRepository.findOne.mockResolvedValue(teacherMock);
       groupRepository.save.mockResolvedValue(groupMock);
       const dto: CreateGroupDto = {
         name: groupMock.groupName,
@@ -581,14 +583,15 @@ describe('UserService', () => {
       );
     });
     it('should throw an error if user is not a teacher', async () => {
-      const user = <Teacher>studentMock;
-      userRepository.findOneBy.mockResolvedValue(user);
+      const user = studentMock;
+      userRepository.findOneBy.mockResolvedValue(teacherMock);
+      userRepository.findOne.mockResolvedValue(user);
       const dto: CreateGroupDto = {
         name: 'name',
-        teacher: user,
+        teacher: <Teacher>user,
       };
       await expect(service.createGroup(dto)).rejects.toThrow(
-        NotValidatedUserException,
+        StudentCantCreateGroupsException,
       );
     });
   });

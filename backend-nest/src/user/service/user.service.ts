@@ -18,6 +18,7 @@ import { StudentNotInGroupException } from '../exception/studentNotInGroup.excep
 import { CreateGroupDto } from '../dto/createGroup.dto';
 import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
 import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
+import { StudentCantCreateGroupsException } from '../exception/StudentCantCreateGroups.exception';
 
 @Injectable()
 export class UserService {
@@ -212,9 +213,19 @@ export class UserService {
     )
       throw new UserNotFoundException();
 
-    await this.userRepository.findBy({
-      id: dto.teacher.id,
+    const verifyTeacher = await this.userRepository.findOne({
+      where: {
+        id: dto.teacher.id,
+      },
     });
+
+    if (
+      verifyTeacher.getUserType() != UserType.TEACHER &&
+      verifyTeacher.getUserType() != UserType.ADMIN
+    ) {
+      throw new StudentCantCreateGroupsException();
+    }
+
     const t = dto.teacher;
     group.teacher = t;
     t.createdGroups.push(group);
