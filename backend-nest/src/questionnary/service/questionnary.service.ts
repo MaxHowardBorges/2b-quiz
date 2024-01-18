@@ -34,24 +34,26 @@ export class QuestionnaryService {
 
   //Create new questionnary from Questionnary id array
   async createQuestionnaryFromIdArray(
-    questionnarys: Questionnary[],
+    idQuestionnarys: number[],
     author: Teacher,
   ) {
+    //Find all questionnarys from idQuestionnarys array
+    //const questionnarys :Questionnary[] = await this.questionnaryRepository.find()
     //QuestionnaryCreateDto array for save dto
     const questionnaryDto: QuestionnaryCreateDto[] = [];
     // for (const id of questionnarys) {
     //   const questionnary = await this.questionnaryRepository.findOne({
     //     where: { 'questionnarys.id': id },
     //   });
-    for (const questionnary of questionnarys) {
-      const id = questionnary.id; // Assuming Questionnary has an 'id' property
+    for (const idQuestionnary of idQuestionnarys) {
+      const id = idQuestionnary; //questionnary.id; // Assuming Questionnary has an 'id' property
 
       const foundQuestionnary = await this.questionnaryRepository.findOne({
         where: { id },
       });
       if (foundQuestionnary) {
         //add questionnaryDto to questionnaryDto array
-        questionnaryDto.push(await this.questionnaryToDto(questionnary));
+        questionnaryDto.push(await this.questionnaryToDto(foundQuestionnary));
       }
     }
     //Combine all questionnaryDto in one questionnaryDto

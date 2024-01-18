@@ -22,6 +22,15 @@ export class QuestionService {
     return answer.question.id === question.id;
   }
 
+  async createAnswerOpenEnded(answer: Answer) {
+    const answerDB = new Answer();
+    answerDB.content = answer.content;
+    answerDB.isCorrect = true;
+    answerDB.question = answer.question;
+    await this.answerRepository.save(answerDB);
+    return answerDB;
+  }
+
   async createQuestion(q: Question, questionnary: Questionnary) {
     const question = new Question();
     question.questionnary = questionnary;

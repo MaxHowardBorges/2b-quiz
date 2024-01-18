@@ -49,16 +49,20 @@ export class SessionService {
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
-    const questionnaries: Questionnary[] = [];
-    for (const id of idsQuestionnarys) {
-      questionnaries.push(await this.questionnaryService.findQuestionnary(id));
-    }
+    const questionnarie =
+      await this.questionnaryService.createQuestionnaryFromIdArray(
+        idsQuestionnarys,
+        teacher,
+      );
+
+    //const questionnaries: Questionnary = //await this.questionnaryService.findQuestionnary(id));
+
     this.sessionMap.set(
       idSession,
       await this.createSession(
         idSession,
         teacher,
-        questionnaries,
+        questionnarie,
         isResult,
         isGlobal,
         isResponses,
@@ -76,14 +80,14 @@ export class SessionService {
   async createSession(
     idSession: string,
     teacher: Teacher,
-    questionnaryTab: Questionnary[],
+    questionnary: Questionnary,
     isResult: boolean,
     isGlobal: boolean,
     isResponses: boolean,
   ): Promise<SessionTemp> {
     return new SessionTemp(
       idSession,
-      questionnaryTab,
+      questionnary,
       isResult,
       isGlobal,
       isResponses,
@@ -103,7 +107,7 @@ export class SessionService {
       currentSession.questionNumber + 1 <
       (
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+          currentSession.questionnary.id,
         )
       ).length
     ) {
@@ -111,27 +115,27 @@ export class SessionService {
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
       let questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+          currentSession.questionnary.id,
         );
       return await this.questionService.findQuestion(
         questionTab[currentSession.questionNumber].id,
       );
       // else check for next questionnary in the current session
-    } else if (
-      currentSession.questionnaryNumber + 1 <
-      currentSession.questionnaryList.length
-    ) {
-      currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
-      currentSession.questionNumber = 0;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        );
-      return await this.questionService.findQuestion(
-        questionTab[currentSession.questionNumber].id,
-      );
-    }
+    } //else if (
+    //   currentSession.questionnaryNumber + 1 <
+    //   currentSession.questionnaryList.length
+    // ) {
+    //   currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
+    //   currentSession.questionNumber = 0;
+    //   this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+    //   let questionTab =
+    //     await this.questionnaryService.findQuestionsFromIdQuestionnary(
+    //       currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+    //     );
+    //   return await this.questionService.findQuestion(
+    //     questionTab[currentSession.questionNumber].id,
+    //   );
+    // }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
     this.eventService.closeClientGroup(idSession);
@@ -147,20 +151,19 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     const currentSession = this.sessionMap.get(idSession);
-    const questionnaries = currentSession.questionnaryList;
-    for (let questionnary of questionnaries) {
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          questionnary.id,
-        );
-      questionnary.questions = [];
-      for (let question of questionTab) {
-        questionnary.questions.push(
-          await this.questionService.findQuestion(question.id),
-        );
-      }
+    const questionnary = currentSession.questionnary;
+    let questionTab =
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        questionnary.id,
+      );
+    questionnary.questions = [];
+    for (let question of questionTab) {
+      questionnary.questions.push(
+        await this.questionService.findQuestion(question.id),
+      );
     }
-    return questionnaries;
+
+    return questionnary.questions;
   }
 
   join(idSession: string, user: ParticipantInterface): void {
@@ -211,6 +214,14 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
+    let answerdb = new Answer();
+    if (typeof idAnswer === 'string') {
+      const answer = new Answer();
+      answer.content = idAnswer;
+      answer.isCorrect = true;
+      answer.question = question;
+      answerdb = await this.questionService.createAnswerOpenEnded(answer);
+    }
     session.userAnswers
       .get(user.id)
       .set(
@@ -219,6 +230,8 @@ export class SessionService {
           ? question.answers.filter((answer) => idAnswer.includes(answer.id))
           : typeof idAnswer === 'number'
           ? question.answers.find((answer) => answer.id === idAnswer)
+          : question.type === QuestionType.OUV
+          ? question.answers.find((answer) => answer.id === answerdb.id)
           : question.type === QuestionType.QOC
           ? idAnswer.split(/[ _]/)[0]
           : idAnswer,
@@ -237,11 +250,7 @@ export class SessionService {
     sessionEntity.isResponses = session.isResponses;
     sessionEntity.date = new Date();
     sessionEntity.teacher = session.host;
-    sessionEntity.questionnary =
-      await this.questionnaryService.createQuestionnaryFromIdArray(
-        session.questionnaryList,
-        session.host,
-      );
+    sessionEntity.questionnary = session.questionnary;
     await this.sessionRepository.save(sessionEntity);
     //Define each userSessionEntity for each user in session
     for (const user of session.connectedUser) {
@@ -302,7 +311,7 @@ export class SessionService {
   async getCurrentQuestion(session: SessionTemp) {
     const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
-        session.questionnaryList[session.questionnaryNumber].id,
+        session.questionnary.id,
       );
     return await this.questionService.findQuestion(
       questionTab[session.questionNumber].id,
