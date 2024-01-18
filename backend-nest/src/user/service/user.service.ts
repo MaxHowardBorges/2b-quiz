@@ -17,6 +17,7 @@ import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJ
 import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
 import { CreateGroupDto } from '../dto/createGroup.dto';
 import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
+import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
 
 @Injectable()
 export class UserService {
@@ -203,8 +204,17 @@ export class UserService {
   async createGroup(dto: CreateGroupDto) {
     // TODO les informations telles que		"validate": true, "deleted": false et "askedDelete": false ne doivent pas apparaitre, a retirer
     const group: Group = new Group();
+    if (dto.name == '') throw new GroupNameEmptyException();
     group.groupName = dto.name;
     group.tabUsers = [];
+    if (
+      (await this.userRepository.findOneBy({ id: dto.teacher.id })) == undefined
+    )
+      throw new UserNotFoundException();
+
+    await this.userRepository.findBy({
+      id: dto.teacher.id,
+    });
     const t = dto.teacher;
     group.teacher = t;
     t.createdGroups.push(group);

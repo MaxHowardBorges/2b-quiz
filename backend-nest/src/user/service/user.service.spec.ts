@@ -19,6 +19,7 @@ import { CreateGroupDto } from '../dto/createGroup.dto';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
 import { Group } from '../entity/group.entity';
 import { generateGroupMock } from '../../../test/mock/group.mock';
+import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
 
 describe('UserService', () => {
   let service: UserService;
@@ -556,17 +557,16 @@ describe('UserService', () => {
       const g = await service.createGroup(dto);
       console.log(g.teacher.createdGroups);
       expect(groupRepository.save).toBeCalledWith(groupMock);
-      expect(g.teacher.createdGroups).toContain(g.id);
+      expect(g.teacher.createdGroups).toContain(g);
     });
     it("should return an error if the teacher's group name is empty", async () => {
-      const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(user);
+      userRepository.findOneBy.mockResolvedValue(teacherMock);
       const dto: CreateGroupDto = {
         name: '',
         teacher: groupMock.teacher,
       };
       await expect(service.createGroup(dto)).rejects.toThrow(
-        GroupNotFoundException,
+        new GroupNameEmptyException(),
       );
     });
     it('should throw an error if user is not found', async () => {
