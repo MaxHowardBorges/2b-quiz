@@ -3,13 +3,7 @@ import { AccessTypeEnum } from '../enum/accessType.enum';
 export class SettingsObject {
   accessType: AccessTypeEnum;
 
-  isDisplayAnswer: boolean;
-
-  constructor(
-    accessType: AccessTypeEnum = AccessTypeEnum.Public,
-    isDisplayAnswer: boolean = false,
-  ) {
+  constructor(accessType: AccessTypeEnum = AccessTypeEnum.Public) {
     this.accessType = accessType;
-    this.isDisplayAnswer = isDisplayAnswer;
   }
 }

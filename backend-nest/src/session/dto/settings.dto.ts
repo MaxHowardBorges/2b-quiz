@@ -5,8 +5,4 @@ export class SettingsDto {
   @IsNotEmpty()
   @IsEnum(AccessTypeEnum)
   accessType: AccessTypeEnum;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  isDisplayAnswer: boolean;
 }

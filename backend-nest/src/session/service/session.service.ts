@@ -306,7 +306,6 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.settings.accessType = settings.accessType;
-      session.settings.isDisplayAnswer = settings.isDisplayAnswer;
     }
     return !!session;
   }
