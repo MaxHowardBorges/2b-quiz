@@ -29,7 +29,8 @@ export class QuestionCreateDto {
   @Type(() => AnswerCreateDto)
   answers: AnswerCreateDto[];
 
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => TagDto)
-  tags: TagDto[];
+  tags?: TagDto[];
 }

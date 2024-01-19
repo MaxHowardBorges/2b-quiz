@@ -42,14 +42,17 @@ export class SessionController {
   async createSession(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) paramSession: CreateSessionDto,
-  ): Promise<SessionTemp> {
-    return this.sessionService.initializeSession(
-      request.user as Teacher,
-      paramSession.idsQuestionnarys,
-      paramSession.isResult,
-      paramSession.isGlobal,
-      paramSession.isResponses,
+  ) {
+    const test = this.sessionMapper.mapSessionTempDto(
+      await this.sessionService.initializeSession(
+        request.user as Teacher,
+        paramSession.idsQuestionnarys,
+        paramSession.isResult,
+        paramSession.isGlobal,
+        paramSession.isResponses,
+      ),
     );
+    return test;
   }
 
   @Roles([UserType.TEACHER])

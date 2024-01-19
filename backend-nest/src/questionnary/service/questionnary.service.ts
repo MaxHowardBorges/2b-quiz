@@ -9,6 +9,8 @@ import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
 import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
 import { Answer } from '../../question/entity/answer.entity';
 import { Teacher } from '../../user/entity/teacher.entity';
+import { QuestionnaryDto } from '../dto/questionnary.dto';
+import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
 
 @Injectable()
 export class QuestionnaryService {
@@ -16,14 +18,17 @@ export class QuestionnaryService {
     @InjectRepository(Questionnary)
     private readonly questionnaryRepository: Repository<Questionnary>,
     private questionService: QuestionService,
+    private questionnaryMapper: QuestionnaryMapper,
   ) {}
 
   async createQuestionnary(
     questionnaryDto: QuestionnaryCreateDto,
     author: Teacher,
+    isCompilated = false,
   ) {
     const questionnary = this.dtoToQuestionnary(questionnaryDto);
     questionnary.author = author;
+    questionnary.isCompilated = isCompilated;
     await this.questionnaryRepository.save(questionnary);
     for (const q of questionnary.questions) {
       await this.questionService.createQuestion(q, questionnary);
@@ -37,42 +42,33 @@ export class QuestionnaryService {
     idQuestionnarys: number[],
     author: Teacher,
   ) {
-    //Find all questionnarys from idQuestionnarys array
-    //const questionnarys :Questionnary[] = await this.questionnaryRepository.find()
-    //QuestionnaryCreateDto array for save dto
-    const questionnaryDto: QuestionnaryCreateDto[] = [];
-    // for (const id of questionnarys) {
-    //   const questionnary = await this.questionnaryRepository.findOne({
-    //     where: { 'questionnarys.id': id },
-    //   });
+    const questionnaryDto: QuestionnaryDto[] = [];
     for (const idQuestionnary of idQuestionnarys) {
-      const id = idQuestionnary; //questionnary.id; // Assuming Questionnary has an 'id' property
-
-      const foundQuestionnary = await this.findQuestionnary(id);
+      const foundQuestionnary = await this.findQuestionnary(idQuestionnary);
       if (foundQuestionnary) {
-        //add questionnaryDto to questionnaryDto array
-        questionnaryDto.push(await this.questionnaryToDto(foundQuestionnary));
+        foundQuestionnary.questions =
+          await this.findQuestionsFromIdQuestionnary(foundQuestionnary.id);
+        for (const question of foundQuestionnary.questions) {
+          question.answers = await this.questionService.findAnswers(
+            question.id,
+          );
+        }
+        questionnaryDto.push(
+          this.questionnaryMapper.entityToQuestionnaryDto(foundQuestionnary),
+        );
       }
     }
     //Combine all questionnaryDto in one questionnaryDto
     const questionnaryDtoCombined = new QuestionnaryCreateDto();
     questionnaryDtoCombined.title = 'Questionnary Combined';
     questionnaryDtoCombined.questions = [];
-    for (const q of questionnaryDto) {
-      for (const question of q.questions) {
+    for (const questionnary of questionnaryDto) {
+      for (const question of questionnary.questions) {
         questionnaryDtoCombined.questions.push(question);
       }
     }
     //Create questionnary from questionnaryDtoCombined
-    const questionnary = await this.createQuestionnary(
-      questionnaryDtoCombined,
-      author,
-    );
-    //Update isCompilated to true and save with TypeOrm
-    await this.questionnaryRepository.update(questionnary.id, {
-      isCompilated: true,
-    });
-    return questionnary;
+    return await this.createQuestionnary(questionnaryDtoCombined, author, true);
   }
 
   //Transform Questionnary to QuestionnaryCreateDto

@@ -49,7 +49,7 @@ export class SessionService {
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
-    const questionnarie =
+    const questionnary =
       await this.questionnaryService.createQuestionnaryFromIdArray(
         idsQuestionnarys,
         teacher,
@@ -62,7 +62,7 @@ export class SessionService {
       await this.createSession(
         idSession,
         teacher,
-        questionnarie,
+        questionnary,
         isResult,
         isGlobal,
         isResponses,
