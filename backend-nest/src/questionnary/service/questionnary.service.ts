@@ -48,9 +48,7 @@ export class QuestionnaryService {
     for (const idQuestionnary of idQuestionnarys) {
       const id = idQuestionnary; //questionnary.id; // Assuming Questionnary has an 'id' property
 
-      const foundQuestionnary = await this.questionnaryRepository.findOne({
-        where: { id },
-      });
+      const foundQuestionnary = await this.findQuestionnary(id);
       if (foundQuestionnary) {
         //add questionnaryDto to questionnaryDto array
         questionnaryDto.push(await this.questionnaryToDto(foundQuestionnary));
