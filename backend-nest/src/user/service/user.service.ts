@@ -341,57 +341,55 @@ export class UserService {
       relations: ['tabUsers'],
       where: { id: idGroup },
     });
+    if (!group) throw new GroupNotFoundException();
     const user: User = <Student>await this.userRepository.findOne({
       relations: ['joinedGroups'],
       where: { id: idStudent },
     });
+    if (!user) throw new UserNotFoundException();
 
-    if (group && user) {
-      const groupTabUsers = group.tabUsers;
-      const studentGroup = (<Student>user).joinedGroups;
+    const groupTabUsers = group.tabUsers;
+    const studentGroup = (<Student>user).joinedGroups;
 
-      let isIn = false;
-      for (const s of groupTabUsers) {
-        if (s.id == idStudent) {
-          isIn = true;
-        }
-      }
-
-      if (isIn) {
-        let index = groupTabUsers.findIndex((s) => {
-          s.id = user.id;
-        });
-        groupTabUsers.splice(index);
-
-        index = (<Student>user).joinedGroups.findIndex((g) => {
-          return g.id === group.id;
-        });
-        studentGroup.splice(index);
-
-        await this.userRepository.save(user);
-        await this.groupRepository.save(group);
-      } else {
-        throw new StudentNotInGroupException();
+    let isIn = false;
+    for (const s of groupTabUsers) {
+      if (s.id == idStudent) {
+        isIn = true;
       }
     }
 
-    if (!group) {
-      throw new GroupNotFoundException();
+    if (isIn) {
+      let index = groupTabUsers.findIndex((s) => {
+        s.id = user.id;
+      });
+      groupTabUsers.splice(index);
+
+      index = studentGroup.findIndex((g) => {
+        return g.id === group.id;
+      });
+      studentGroup.splice(index);
+
+      await this.userRepository.save(user);
+      await this.groupRepository.save(group);
+    } else {
+      throw new StudentNotInGroupException();
     }
-    if (!user) {
-      throw new UserNotFoundException();
-    }
+
     return !!(group && user);
   }
 
-  async getGroupFromTeacher(idTeacher: number) {
+  async getGroupsFromTeacher(idTeacher: number) {
     //TODO Vérifier que le user est bien un teacher
     const t = <Teacher>await this.userRepository.findOne({
       relations: ['createdGroups'],
       where: { id: idTeacher },
     });
     if (t == undefined) throw new UserNotFoundException();
-    if (t.createdGroups == undefined) new TeacherHasNoCreatedGroupsException();
+
+    if (t.createdGroups == undefined || t.createdGroups.length == 0) {
+      throw new TeacherHasNoCreatedGroupsException();
+    }
+
     return t.createdGroups;
   }
 }
