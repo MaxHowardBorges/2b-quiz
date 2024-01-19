@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Put,
+  Req,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
@@ -17,14 +18,23 @@ import { UserType } from '../constants/userType.constant';
 import { CreateGroupDto } from '../dto/createGroup.dto';
 import { AddStudentToGroupDto } from '../dto/addStudentToGroup.dto';
 import { RemoveStudentFromGroupDto } from '../dto/removeStudentFromGroup.dto';
+import { UserRequest } from '../../auth/config/user.request';
+import { Teacher } from '../entity/teacher.entity';
+import { TeacherMapper } from '../mapper/teacher.mapper';
 
 @Controller('group')
 export class GroupController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly teacherMapper: TeacherMapper,
+  ) {}
   @Roles([UserType.TEACHER])
   @Post('/createGroup')
-  async createGroup(@Body(new ValidationPipe()) dto: CreateGroupDto) {
-    return this.userService.createGroup(dto);
+  async createGroup(@Req() request: UserRequest, @Body('name') name: string) {
+    const t = this.teacherMapper.teacherToTeacherGroupDataDtoMap(
+      <Teacher>request.user,
+    );
+    return this.userService.createGroup(t, name);
   }
   @Roles([UserType.TEACHER])
   @Delete('/:id/deleteGroup')
@@ -59,8 +69,8 @@ export class GroupController {
     return this.userService.getUserWithGroup(id);
   }
 
-  @Get('/:id/getGroupsFromTeacher')
-  async getGroupsFromTeacher(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.getGroupsFromTeacher(id);
+  @Get('/getGroupsFromTeacher')
+  async getGroupsFromTeacher(@Req() request: UserRequest) {
+    return this.userService.getGroupsFromTeacher(request.user.id);
   }
 }

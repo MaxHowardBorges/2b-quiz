@@ -7,6 +7,7 @@ import {
   generateAdminMock,
   generateRandomUserMockList,
   generateStudentMock,
+  generateTeacherGroupMock,
   generateTeacherMock,
 } from '../../../test/mock/user.mock';
 import { SortUserParam } from '../constants/sortUserParam.enum';
@@ -15,7 +16,6 @@ import { UserType } from '../constants/userType.constant';
 import { Student } from '../entity/student.entity';
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { UserNotFoundException } from '../../auth/exception/userNotFound.exception';
-import { CreateGroupDto } from '../dto/createGroup.dto';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
 import { Group } from '../entity/group.entity';
 import { generateGroupMock } from '../../../test/mock/group.mock';
@@ -30,6 +30,7 @@ describe('UserService', () => {
   let groupRepository: jest.Mocked<Repository<Group>>;
 
   let teacherMock = generateTeacherMock();
+  let teacherGroupMock = generateTeacherGroupMock();
   let userMockList = generateRandomUserMockList(20);
   const userDeletedMockList = generateRandomUserMockList(20, true);
   let groupMock = generateGroupMock();
@@ -520,80 +521,65 @@ describe('UserService', () => {
 
   // createGroup
   describe('createGroup', () => {
-    afterEach(() => {
+    beforeEach(() => {
       groupMock = generateGroupMock();
+      teacherGroupMock = generateTeacherGroupMock();
       teacherMock = generateTeacherMock();
     });
     //test cases where the teacher has already created groups or where the group name is empty
     it('should create a group', async () => {
-      userRepository.findOneBy.mockResolvedValue(teacherMock);
       userRepository.findOne.mockResolvedValue(teacherMock);
       groupRepository.save.mockResolvedValue(groupMock);
-      const dto: CreateGroupDto = {
-        name: groupMock.groupName,
-        teacher: groupMock.teacher,
-      };
-      await service.createGroup(dto);
+      groupMock.teacher = teacherGroupMock;
+
+      await service.createGroup(teacherGroupMock, groupMock.groupName);
       expect(groupRepository.save).toBeCalledWith(groupMock);
       // expect(groupRepository.save).toBeCalledWith(groupMock.groupName);
       // expect(groupRepository.save).toBeCalledWith(groupMock.teacher);
     });
     it('should create a group that has a teacher', async () => {
       ////
-      userRepository.findOneBy.mockResolvedValue(teacherMock);
+      userRepository.findOne.mockResolvedValue(teacherMock);
       groupRepository.save.mockResolvedValue(groupMock);
-      const dto: CreateGroupDto = {
-        name: groupMock.groupName,
-        teacher: groupMock.teacher,
-      };
-      const createdGroup = await service.createGroup(dto);
+      groupMock.teacher = teacherGroupMock;
+
+      const createdGroup = await service.createGroup(
+        teacherGroupMock,
+        groupMock.groupName,
+      );
       expect(groupRepository.save).toBeCalledWith(groupMock);
       expect(createdGroup.teacher).toEqual(groupMock.teacher);
     });
     it("should be added to the teacher's created group", async () => {
       ////
-      userRepository.findOneBy.mockResolvedValue(teacherMock);
+      userRepository.findOne.mockResolvedValue(teacherMock);
       groupRepository.save.mockResolvedValue(groupMock);
-      const dto: CreateGroupDto = {
-        name: groupMock.groupName,
-        teacher: groupMock.teacher,
-      };
-      const g = await service.createGroup(dto);
+      groupMock.teacher = teacherGroupMock;
+
+      const g = await service.createGroup(
+        teacherGroupMock,
+        groupMock.groupName,
+      );
       expect(groupRepository.save).toBeCalledWith(groupMock);
-      expect(g.teacher.createdGroups).toContain(g);
+      expect(teacherMock.createdGroups).toContain(g);
     });
     it("should return an error if the teacher's group name is empty", async () => {
-      userRepository.findOneBy.mockResolvedValue(teacherMock);
-      const dto: CreateGroupDto = {
-        name: '',
-        teacher: groupMock.teacher,
-      };
-      await expect(service.createGroup(dto)).rejects.toThrow(
+      userRepository.findOne.mockResolvedValue(teacherMock);
+      await expect(service.createGroup(teacherGroupMock, '')).rejects.toThrow(
         new GroupNameEmptyException(),
       );
     });
     it('should throw an error if user is not found', async () => {
-      const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(null);
-      const dto: CreateGroupDto = {
-        name: 'name',
-        teacher: user,
-      };
-      await expect(service.createGroup(dto)).rejects.toThrow(
-        UserNotFoundException,
-      );
+      userRepository.findOne.mockResolvedValue(null);
+      await expect(
+        service.createGroup(teacherGroupMock, groupMock.groupName),
+      ).rejects.toThrow(UserNotFoundException);
     });
     it('should throw an error if user is not a teacher', async () => {
-      const user = studentMock;
-      userRepository.findOneBy.mockResolvedValue(teacherMock);
-      userRepository.findOne.mockResolvedValue(user);
-      const dto: CreateGroupDto = {
-        name: 'name',
-        teacher: <Teacher>user,
-      };
-      await expect(service.createGroup(dto)).rejects.toThrow(
-        StudentCantCreateGroupsException,
-      );
+      userRepository.findOne.mockResolvedValue(studentMock);
+      await expect(
+        service.createGroup(teacherGroupMock, groupMock.groupName),
+      ).rejects.toThrow(StudentCantCreateGroupsException);
     });
   });
 

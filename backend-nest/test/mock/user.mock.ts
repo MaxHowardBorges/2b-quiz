@@ -3,6 +3,7 @@ import { Teacher } from '../../src/user/entity/teacher.entity';
 import { Student } from '../../src/user/entity/student.entity';
 import { Admin } from '../../src/user/entity/admin.entity';
 import { faker } from '@faker-js/faker/locale/fr';
+import { TeacherGroupDto } from '../../src/user/dto/teacherGroup.dto';
 
 export function generateTeacherMock(
   deleteUser: boolean = false,
@@ -15,6 +16,18 @@ export function generateTeacherMock(
   user.surname = faker.person.lastName();
   user.deleted = deleteUser;
   user.questionnaries = [];
+  user.createdGroups = [];
+  user.joinedGroups = [];
+  return user;
+}
+
+export function generateTeacherGroupMock() {
+  const username = faker.internet.userName();
+  const user = new TeacherGroupDto();
+  user.id = Math.floor(Math.random() * 10000);
+  user.name = faker.person.firstName();
+  user.surname = faker.person.lastName();
+  user.username = username;
   user.createdGroups = [];
   user.joinedGroups = [];
   return user;

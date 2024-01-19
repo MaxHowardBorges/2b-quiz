@@ -15,11 +15,12 @@ import { Group } from '../entity/group.entity';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
 import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJoined.exception';
 import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
-import { CreateGroupDto } from '../dto/createGroup.dto';
 import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
 import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
 import { StudentCantCreateGroupsException } from '../exception/StudentCantCreateGroups.exception';
 import { TeacherHasNoCreatedGroupsException } from '../exception/teacherHasNoCreatedGroups.exception';
+import { TeacherGroupDto } from '../dto/teacherGroup.dto';
+import { TeacherMapper } from '../mapper/teacher.mapper';
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
+    private readonly teacherMapper: TeacherMapper,
   ) {}
   async createUser(
     username: string,
@@ -203,22 +205,20 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async createGroup(dto: CreateGroupDto) {
+  async createGroup(teacher: TeacherGroupDto, name: string) {
     // TODO les informations telles que		"validate": true, "deleted": false et "askedDelete": false ne doivent pas apparaitre, a retirer
     const group: Group = new Group();
-    if (dto.name == '') throw new GroupNameEmptyException();
-    group.groupName = dto.name;
+    if (name == '') throw new GroupNameEmptyException();
+    group.groupName = name;
     group.tabUsers = [];
-    if (
-      (await this.userRepository.findOneBy({ id: dto.teacher.id })) == undefined
-    )
-      throw new UserNotFoundException();
-
     const verifyTeacher = await this.userRepository.findOne({
+      relations: ['createdGroups'],
       where: {
-        id: dto.teacher.id,
+        id: teacher.id,
       },
     });
+
+    if (verifyTeacher == undefined) throw new UserNotFoundException();
 
     if (
       verifyTeacher.getUserType() != UserType.TEACHER &&
@@ -227,8 +227,8 @@ export class UserService {
       throw new StudentCantCreateGroupsException();
     }
 
-    const t = dto.teacher;
-    group.teacher = t;
+    const t = <Teacher>verifyTeacher;
+    group.teacher = teacher;
     t.createdGroups.push(group);
     await this.groupRepository.save(group);
     await this.userRepository.save(t);
@@ -290,10 +290,12 @@ export class UserService {
       relations: ['teacher', 'tabUsers'],
       where: { id: idGroup },
     });
-
     if (!group) {
       throw new GroupNotFoundException();
     }
+    group.teacher = this.teacherMapper.teacherToTeacherGroupDataDtoMap(
+      <Teacher>group.teacher,
+    );
     return group;
   }
 
