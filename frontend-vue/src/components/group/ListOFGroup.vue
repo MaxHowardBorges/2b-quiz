@@ -163,8 +163,42 @@
       </v-card>
     </v-dialog>
 
-    <v-btn class="mt-5" color="primary" @click='openCreate'>Create a group</v-btn>
+    <v-btn class="mt-5" color="primary" @click='openAddUser'>Create a group</v-btn>
 
+    <v-dialog v-model="DisplayAddUser" max-width='1000px'>
+      <v-card>
+        <v-card-title>Add user to a group</v-card-title>
+        <v-card-text>List of users to add</v-card-text>
+
+        <table>
+          <thead>
+          <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">Username</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Surname</th>
+            <th class="text-center">Type</th>
+            <th class="text-center">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="user in users" :key="user.id" class="ma-2">
+            <td class="text-center">{{ user.id }}</td>
+            <td class="text-center">{{ user.username }}</td>
+            <td class="text-center">{{ user.name }}</td>
+            <td class="text-center">{{ user.surname }}</td>
+            <td class="text-center">{{ user.type }}</td>
+            <td class="text-center">
+              <v-btn @click="openDelete" text="add"></v-btn>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <v-card-actions>
+          <v-btn @click="closeAddUser">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-sheet>
 </template>
@@ -172,8 +206,12 @@
 <script>
 
   import { useUserStore } from '@/stores/userStore';
+  import { ref } from 'vue';
+  import AdminTableHeaderBlock from '@/components/admin/AdminTableHeaderBlock.vue';
+  import AdminListItem from '@/components/admin/AdminListItem.vue';
 
   export default {
+    components: { AdminListItem, AdminTableHeaderBlock },
     data() {
       return {
         addDialog: false,
@@ -181,18 +219,94 @@
         deleteDialog: false,
         CreateGroupDialog: false,
         DisplayGroupDialog: false,
-
-        users: [
-          { id: 1, name: 'Élève 1' },
-          { id: 2, name: 'Élève 2' },
+        DisplayAddUser: false,
+        isDeletedUsers: false,
+        sorting: {
+          id: null,
+          username: null,
+          name: null,
+          surname: null,
+          type: null,
+          validate: null,
+        },
+        loading: ref(false),
+        nbItemsOptions: [10, 20, 50, 100],
+        indexPage: 1,
+        itemsPerPage: 10,
+        columns1: [
+          { id: 'id', label: 'ID' },
+          { id: 'username', label: 'Username' },
+          { id: 'name', label: 'Name' },
+          { id: 'surname', label: 'Surname' },
+          { id: 'type', label: 'Type' },
+          { id: 'askedDelete', label: 'Asked delete', icon: 'feedback' },
+          { id: 'validate', label: 'Validated' },
         ],
-
       };
     },
     setup() {
       const userStore = useUserStore();
       return {
         userStore,
+        users: ref([
+          {
+            id: 18,
+            username: 'Apolline.Lecomte',
+            name: 'Apolline',
+            surname: 'Lecomte',
+            type: 'student',
+          },
+          {
+            id: 19,
+            username: 'Dimitri35',
+            name: 'Dimitri',
+            surname: 'Laurent',
+            type: 'student',
+          },
+          {
+            id: 20,
+            username: 'Martine_Hubert30',
+            name: 'Martine',
+            surname: 'Hubert',
+            type: 'student',
+          },
+          {
+            id: 21,
+            username: 'Angelique.Sanchez',
+            name: 'Angélique',
+            surname: 'Sanchez',
+            type: 'student',
+          },
+          {
+            id: 22,
+            username: 'Maud.Rousseau',
+            name: 'Maud',
+            surname: 'Rousseau',
+            type: 'student',
+          },
+          {
+            id: 23,
+            username: 'Paterne_Lemoine80',
+            name: 'Paterne',
+            surname: 'Lemoine',
+            type: 'student',
+          },
+          {
+            id: 24,
+            username: 'Jade_Garnier',
+            name: 'Jade',
+            surname: 'Garnier',
+            type: 'student',
+          },
+          {
+            id: 25,
+            username: 'Eulalie60',
+            name: 'Eulalie',
+            surname: 'Fabre',
+            type: 'student',
+          },
+        ]),
+        nbPage: ref(1),
       };
     },
     computed: {
@@ -218,6 +332,12 @@
       openCreate() {
         this.CreateGroupDialog = true;
       },
+      openAddUser() {
+        this.DisplayAddUser = true;
+      },
+      closeAddUser() {
+        this.DisplayAddUser = false;
+      },
       closeDialogs() {
         this.addDialog = false;
         this.leaveDialog = false;
@@ -225,6 +345,7 @@
         this.CreateGroupDialog = false;
         this.DisplayGroupDialog = false;
       },
+
     },
   };
 
