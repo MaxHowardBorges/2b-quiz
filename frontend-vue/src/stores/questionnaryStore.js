@@ -63,7 +63,7 @@ export const useQuestionnaryStore = defineStore('questionnary', {
       const response = await createQuestionnary(questionnary, userStore.token);
       await throwIfNotOK(response, 201);
       userStore.updateToken(response.headers.get('Authorization'));
-      this.idQuestionnary = await response.json().id;
+      this.idQuestionnary = (await response.json()).id;
       await this.getQuestionnary();
     },
     async getQuestionnary() {

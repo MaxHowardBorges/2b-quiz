@@ -113,7 +113,7 @@ export class SessionService {
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
+      const questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
           currentSession.questionnary.id,
         );
@@ -152,12 +152,12 @@ export class SessionService {
     }
     const currentSession = this.sessionMap.get(idSession);
     const questionnary = currentSession.questionnary;
-    let questionTab =
+    const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
         questionnary.id,
       );
     questionnary.questions = [];
-    for (let question of questionTab) {
+    for (const question of questionTab) {
       questionnary.questions.push(
         await this.questionService.findQuestion(question.id),
       );
@@ -403,7 +403,7 @@ export class SessionService {
   //Calculate the percent of sucess of a student
   private percentSucess(question: Question, user: UserSession) {
     const userAnswer = user.answer;
-    let nbCorrectAnswer = 0; //TODO isCorrect is null
+    let nbCorrectAnswer = 0;
     const answer = userAnswer.filter(
       (answer) => answer.question.id == question.id,
     );
