@@ -244,6 +244,7 @@
       },
       async validQuestion() {
         const index = this.$refs.questionnaryComponent.correct;
+        console.log(index);
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
         const type = this.typeOptions.find(

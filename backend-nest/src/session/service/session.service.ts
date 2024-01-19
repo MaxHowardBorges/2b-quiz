@@ -23,6 +23,7 @@ import { UserSession } from '../entity/userSession.entity';
 import { Student } from '../../user/entity/student.entity';
 import { SessionMapper } from '../mapper/session.mapper';
 import { User } from '../../user/entity/user.entity';
+import { ResultsDto } from '../dto/results.dto';
 
 @Injectable()
 export class SessionService {
@@ -217,25 +218,28 @@ export class SessionService {
     let answerdb = new Answer();
     if (typeof idAnswer === 'string') {
       const answer = new Answer();
-      answer.content = idAnswer;
+      if (question.type === QuestionType.QOC) {
+        answer.content = idAnswer.split(/[ _]/)[0];
+      } else {
+        answer.content = idAnswer;
+      }
+
       answer.isCorrect = true;
       answer.question = question;
       answerdb = await this.questionService.createAnswerOpenEnded(answer);
     }
-    session.userAnswers
-      .get(user.id)
-      .set(
-        question,
-        Array.isArray(idAnswer)
-          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-          : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : question.type === QuestionType.OUV
-          ? question.answers.find((answer) => answer.id === answerdb.id)
-          : question.type === QuestionType.QOC
-          ? idAnswer.split(/[ _]/)[0]
-          : idAnswer,
-      );
+    session.userAnswers.get(user.id).set(
+      question,
+      Array.isArray(idAnswer)
+        ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+        : typeof idAnswer === 'number'
+        ? question.answers.find((answer) => answer.id === idAnswer)
+        : question.type === QuestionType.OUV
+        ? answerdb
+        : question.type === QuestionType.QOC
+        ? answerdb //idAnswer.split(/[ _]/)[0]
+        : idAnswer,
+    );
   }
 
   //Save session into entity
@@ -349,6 +353,7 @@ export class SessionService {
   }
 
   async getResults(idSession: number, user: User) {
+    const resultsdto = new ResultsDto();
     //get session with id
     const session = await this.sessionRepository.findOne({
       where: {
@@ -383,6 +388,7 @@ export class SessionService {
     const userSession = session.userSession;
     if (session.isResult === true) {
       //TODO
+
       if (session.isResponses === true) {
         //TODO
       }
@@ -395,8 +401,9 @@ export class SessionService {
           average += this.percentSucess(question, user);
         }
       }
-      average = average / userSession.length;
-      return average; //TODO modify to not a return
+      average =
+        (average / userSession.length / questionnary.questions.length) * 100;
+      resultsdto.isGlobal = average; //TODO modify to not a return
     }
   }
 
@@ -415,6 +422,9 @@ export class SessionService {
     } else if (answer[0].isCorrect) {
       nbCorrectAnswer++;
     }
-    return (nbCorrectAnswer / answer.length) * 100;
+    console.log('-------------------------------------------');
+    console.log(answer[0]);
+    console.log(nbCorrectAnswer);
+    return nbCorrectAnswer;
   }
 }
