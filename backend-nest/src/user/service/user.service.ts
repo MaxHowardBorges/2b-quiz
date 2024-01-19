@@ -298,16 +298,20 @@ export class UserService {
   }
 
   async addUserToGroup(idGroup: number, idStudent: number) {
-    //TODO Ajouter le cas ou un user est déjà dans le groupe
     const group = await this.groupRepository.findOne({
       relations: ['teacher', 'tabUsers'],
       where: { id: idGroup },
     });
-
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
     const user: User = <Student>await this.userRepository.findOne({
       relations: ['joinedGroups'],
       where: { id: idStudent },
     });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
 
     if (user.getUserType() == UserType.ADMIN) {
       throw new AdminCantJoinException();
@@ -327,12 +331,6 @@ export class UserService {
 
       await this.userRepository.save(user);
       await this.groupRepository.save(group);
-    }
-    if (!group) {
-      throw new GroupNotFoundException();
-    }
-    if (!user) {
-      throw new UserNotFoundException();
     }
 
     return !!(group && user);

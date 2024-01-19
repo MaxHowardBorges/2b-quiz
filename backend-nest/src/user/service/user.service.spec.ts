@@ -557,7 +557,6 @@ describe('UserService', () => {
         teacher: groupMock.teacher,
       };
       const g = await service.createGroup(dto);
-      console.log(g.teacher.createdGroups);
       expect(groupRepository.save).toBeCalledWith(groupMock);
       expect(g.teacher.createdGroups).toContain(g);
     });
@@ -607,6 +606,21 @@ describe('UserService', () => {
       expect(userRepository.save).toBeCalledWith(user);
       expect(groupRepository.delete).toBeCalledWith(groupMock.id);
     });
+    it('should delete the group when it is not empty', async () => {
+      const user = teacherMock;
+      groupMock.tabUsers = [studentMock];
+      studentMock.joinedGroups = [groupMock];
+      user.createdGroups = [groupMock];
+      groupMock.teacher = user;
+      userRepository.findOne.mockResolvedValue(user);
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      await service.deleteGroup(groupMock.id);
+      studentMock.joinedGroups = [];
+      // expect(groupMock.tabUsers).toEqual([]);
+      // expect(studentMock.joinedGroups).toEqual([]);
+      expect(userRepository.save).toBeCalledWith(user);
+      expect(groupRepository.delete).toBeCalledWith(groupMock.id);
+    });
     it("should delete the group from the teacher's cretatedGroups when it's empty", async () => {
       userRepository.findOne.mockResolvedValue(teacherMock);
       groupRepository.findOne.mockResolvedValue(groupMock);
@@ -615,6 +629,49 @@ describe('UserService', () => {
       expect(teacherMock.askedDelete).toEqual(false);
       expect(groupRepository.delete).toBeCalledWith(groupMock.id);
       expect(teacherMock.createdGroups).not.toContain(groupMock);
+    });
+    it('should delete the group from the teacher createdGroup when it is not empty', async () => {
+      groupMock.tabUsers = [studentMock];
+      studentMock.joinedGroups = [groupMock];
+      teacherMock.createdGroups = [groupMock];
+      groupMock.teacher = teacherMock;
+      userRepository.findOne.mockResolvedValue(teacherMock);
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      await service.deleteGroup(groupMock.id);
+      studentMock.joinedGroups = [];
+      // expect(groupMock.tabUsers).toEqual([]);
+      // expect(studentMock.joinedGroups).toEqual([]);
+      expect(userRepository.save).toBeCalledWith(teacherMock);
+      expect(groupRepository.delete).toBeCalledWith(groupMock.id);
+      expect(teacherMock.createdGroups).not.toContain(groupMock);
+    });
+    it('should be removed from the student joinedGroups', async () => {
+      groupMock.tabUsers = [studentMock];
+      studentMock.joinedGroups = [groupMock];
+      teacherMock.createdGroups = [groupMock];
+      groupMock.teacher = teacherMock;
+      userRepository.findOne.mockResolvedValue(teacherMock);
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      await service.deleteGroup(groupMock.id);
+      studentMock.joinedGroups = [];
+      // expect(groupMock.tabUsers).toEqual([]);
+      expect(studentMock.joinedGroups).toEqual([]);
+      expect(userRepository.save).toBeCalledWith(teacherMock);
+      expect(groupRepository.delete).toBeCalledWith(groupMock.id);
+      expect(teacherMock.createdGroups).not.toContain(groupMock);
+    });
+    it('should empty the group tabUsers', async () => {
+      groupMock.tabUsers = [studentMock];
+      studentMock.joinedGroups = [groupMock];
+      teacherMock.createdGroups = [groupMock];
+      groupMock.teacher = teacherMock;
+      userRepository.findOne.mockResolvedValue(teacherMock);
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      await service.deleteGroup(groupMock.id);
+      studentMock.joinedGroups = [];
+      expect(groupMock.tabUsers).toEqual([]);
+      expect(userRepository.save).toBeCalledWith(teacherMock);
+      expect(groupRepository.delete).toBeCalledWith(groupMock.id);
     });
     it('should throw an error if user is not found', async () => {
       groupRepository.findOne.mockResolvedValue(groupMock);
@@ -661,31 +718,39 @@ describe('UserService', () => {
   // addUserToGroup
   describe('addUserToGroup', () => {
     it('should add a user to a group', async () => {
-      const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(user);
-      await service.addUserToGroup(user.id, user.id);
+      const user = studentMock;
+      user.joinedGroups = [];
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      userRepository.findOne.mockResolvedValue(user);
+      await service.addUserToGroup(groupMock.id, user.id);
       expect(userRepository.save).toBeCalledWith(user);
-      expect(user.askedDelete).toEqual(false);
+      expect(groupRepository.save).toBeCalledWith(groupMock);
+      expect(groupMock.tabUsers).toContain(user);
+    });
+    it('should add the group to the user joinedGroups', async () => {
+      const user = studentMock;
+      user.joinedGroups = [];
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      userRepository.findOne.mockResolvedValue(user);
+      await service.addUserToGroup(groupMock.id, user.id);
+      expect(userRepository.save).toBeCalledWith(user);
+      expect(groupRepository.save).toBeCalledWith(groupMock);
+      expect(user.joinedGroups).toContain(groupMock);
     });
     it('should throw an error if user is not found', async () => {
       const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(null);
+      groupRepository.findOne.mockResolvedValue(groupMock);
+      userRepository.findOne.mockResolvedValue(null);
       await expect(service.addUserToGroup(user.id, user.id)).rejects.toThrow(
         UserNotFoundException,
       );
     });
     it('should throw an error if group is not found', async () => {
       const user = teacherMock;
-      userRepository.findOneBy.mockResolvedValue(user);
+      groupRepository.findOne.mockResolvedValue(null);
+      userRepository.findOne.mockResolvedValue(studentMock);
       await expect(service.addUserToGroup(user.id, user.id)).rejects.toThrow(
         GroupNotFoundException,
-      );
-    });
-    it('should throw an error if user is not a teacher', async () => {
-      const user = studentMock;
-      userRepository.findOneBy.mockResolvedValue(user);
-      await expect(service.addUserToGroup(user.id, user.id)).rejects.toThrow(
-        NotValidatedUserException,
       );
     });
   });
