@@ -17,7 +17,9 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Teacher)
     private readonly teacherRepository: Repository<Teacher>,
   ) {}
   async createUser(
