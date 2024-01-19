@@ -54,7 +54,7 @@ describe('SessionService', () => {
     closeClientGroup: jest.fn(),
   };
 
-  let hostTeacher = generateTeacherMock();
+  const hostTeacher = generateTeacherMock();
 
   const questionnary: Questionnary = {
     id: 15,
@@ -69,6 +69,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 37,
@@ -76,6 +78,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 38,
@@ -83,6 +87,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
   ];
 
@@ -171,7 +177,7 @@ describe('SessionService', () => {
 
   questionnary.questions = questions;
 
-  let questionnaryTest = new Questionnary();
+  const questionnaryTest = new Questionnary();
   questionnaryTest.questions = questions;
   questionnaryTest.id = 15;
   questionnaryTest.author = hostTeacher;

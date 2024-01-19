@@ -4,11 +4,19 @@ import { UserType } from '../constants/userType.constant';
 import { ParticipantInterface } from '../interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { OneToMany } from 'typeorm/decorator/relations/OneToMany';
+import { Tag } from '../../question/entity/tag.entity';
+import { Question } from '../../question/entity/question.entity';
 
 @ChildEntity()
 export class Teacher extends User implements ParticipantInterface {
   @OneToMany(() => Questionnary, (questionnary) => questionnary.author)
   questionnaries: Questionnary[];
+
+  @OneToMany(() => Tag, (tag) => tag.author)
+  tags: Tag[];
+
+  @OneToMany(() => Question, (question) => question.author)
+  questions: Question[];
 
   constructor(username: string, validate: boolean) {
     super(username, validate);

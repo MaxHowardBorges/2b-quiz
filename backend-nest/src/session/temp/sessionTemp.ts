@@ -8,7 +8,7 @@ import { Column } from 'typeorm';
 export class SessionTemp {
   id: string;
 
-  questionnaryList: Questionnary[];
+  questionnary: Questionnary;
 
   questionnaryNumber: number;
 
@@ -30,7 +30,7 @@ export class SessionTemp {
 
   constructor(
     idSession: string,
-    tabQuestionnary: Questionnary[],
+    questionnary: Questionnary,
     isResult: boolean,
     isGlobal: boolean,
     isResponses: boolean,
@@ -39,7 +39,7 @@ export class SessionTemp {
     this.id = idSession;
     this.questionNumber = -1;
     this.questionnaryNumber = 0;
-    this.questionnaryList = tabQuestionnary;
+    this.questionnary = questionnary;
     this.connectedUser = new Set<ParticipantInterface>();
     this.isResult = isResult;
     this.isGlobal = isGlobal;
