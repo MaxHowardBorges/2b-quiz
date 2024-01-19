@@ -21,7 +21,7 @@
         <td class="text-center" @click='openDisplay'>7</td>
 
         <td class="text-center">
-          <v-btn @click="openAdd" icon="add"></v-btn>
+          <v-btn @click="openAddUser" icon="add"></v-btn>
           <v-btn @click="openLeave" icon="logout"></v-btn>
           <v-btn @click="openDelete" icon="delete"></v-btn>
         </td>
@@ -30,7 +30,7 @@
         <td class="text-center">2B QUIZ</td>
         <td class="text-center">7</td>
         <td class="text-center">
-          <v-btn @click="openAdd" icon="add"></v-btn>
+          <v-btn @click="openAddUser" icon="add"></v-btn>
           <v-btn @click="openLeave" icon="logout"></v-btn>
           <v-btn @click="openDelete" icon="delete"></v-btn>
         </td>
@@ -39,7 +39,7 @@
         <td class="text-center">2B QUIZ</td>
         <td class="text-center">7</td>
         <td class="text-center">
-          <v-btn @click="openAdd" icon="add"></v-btn>
+          <v-btn @click="openAddUser" icon="add"></v-btn>
           <v-btn @click="openLeave" icon="logout"></v-btn>
           <v-btn @click="openDelete" icon="delete"></v-btn>
         </td>
@@ -209,9 +209,10 @@
   import { ref } from 'vue';
   import AdminTableHeaderBlock from '@/components/admin/AdminTableHeaderBlock.vue';
   import AdminListItem from '@/components/admin/AdminListItem.vue';
+  import { useGroupStore } from '@/stores/groupStore';
 
   export default {
-    components: { AdminListItem, AdminTableHeaderBlock },
+    components: { AdminListItem, AdminTableHeaderBlock},
     data() {
       return {
         addDialog: false,
@@ -242,12 +243,15 @@
           { id: 'askedDelete', label: 'Asked delete', icon: 'feedback' },
           { id: 'validate', label: 'Validated' },
         ],
+        ListOFGroup: [],
       };
     },
     setup() {
       const userStore = useUserStore();
+      const useGroup = useGroupStore();
       return {
         userStore,
+        useGroup,
         users: ref([
           {
             id: 18,
@@ -308,6 +312,10 @@
         ]),
         nbPage: ref(1),
       };
+    },
+    mounted() {
+      //this.ListOFGroup = this.useGroup.getGroup();
+      //console.log(this.ListOFGroup);
     },
     computed: {
       filteredUsers() {
