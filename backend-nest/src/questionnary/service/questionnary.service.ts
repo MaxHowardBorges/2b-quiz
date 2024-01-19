@@ -152,18 +152,24 @@ export class QuestionnaryService {
     );
   }
 
-  async addQuestion(idQuestionnary: number, questionDto: QuestionCreateDto) {
-    const question = this.dtoToQuestion(
+  async addQuestion(
+    teacher: Teacher,
+    idQuestionnary: number,
+    questionDto: QuestionCreateDto,
+  ) {
+    const question = this.questionService.dtoToQuestion(
       questionDto,
-      await this.findQuestionnary(idQuestionnary),
+      await this.questionnaryRepository.findOne({
+        where: { id: idQuestionnary },
+      }),
     );
+    question.author = teacher;
     const questionnary = await this.questionnaryRepository.findOne({
       where: { id: idQuestionnary },
     });
     if (questionnary) {
       return await this.questionService.createQuestion(question, questionnary);
     }
-    return !!questionnary;
   }
 
   async deleteQuestion(idQuestionnary: number, idQuestion: number) {
@@ -172,6 +178,11 @@ export class QuestionnaryService {
     });
 
     if (questionnary) {
+      const question = await this.questionService.findQuestion(idQuestion);
+      if (question.originalId === null) {
+        await this.questionService.modifyQuestionsOriginalId(idQuestion);
+      }
+
       return await this.questionService.deleteQuestion(
         questionnary,
         idQuestion,
@@ -189,10 +200,15 @@ export class QuestionnaryService {
       where: { id: idQuestionnary },
     });
     if (questionnary) {
-      const question = this.dtoToQuestion(
+      const question = this.questionService.dtoToQuestion(
         questionDto,
-        await this.findQuestionnary(idQuestionnary),
+        await this.questionnaryRepository.findOne({
+          where: { id: idQuestionnary },
+        }),
       );
+      if (question.originalId === null) {
+        await this.questionService.modifyQuestionsOriginalId(idQuestion);
+      }
       return await this.questionService.modifyQuestion(
         question,
         questionnary,
@@ -225,30 +241,10 @@ export class QuestionnaryService {
     questionnary.questions = [];
     for (const questionDto of questionnaryDto.questions) {
       questionnary.questions.push(
-        this.dtoToQuestion(questionDto, questionnary),
+        this.questionService.dtoToQuestion(questionDto, questionnary),
       );
     }
     return questionnary;
-  }
-  dtoToQuestion(questionDto: QuestionCreateDto, questionnaryRef: Questionnary) {
-    const question = new Question();
-    question.id = null;
-    question.content = questionDto.content;
-    question.answers = [];
-    question.questionnary = questionnaryRef;
-    question.type = questionDto.type;
-    for (const answerDto of questionDto.answers) {
-      question.answers.push(this.dtoToAnswer(answerDto, question));
-    }
-    return question;
-  }
-  dtoToAnswer(answerDto: AnswerCreateDto, questionRef: Question) {
-    const answer = new Answer();
-    answer.id = null;
-    answer.content = answerDto.content;
-    answer.isCorrect = answerDto.isCorrect;
-    answer.question = questionRef;
-    return answer;
   }
 
   async isQuestionnaryFromTeacher(idQuestionnary: number, teacher: Teacher) {

@@ -14,6 +14,8 @@ import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
+import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
+import { QuestionMapper } from '../../question/mapper/question.mapper';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
@@ -31,6 +33,8 @@ export class SessionController {
   constructor(
     private sessionService: SessionService,
     private readonly sessionMapper: SessionMapper,
+    private readonly questionnaryMapper: QuestionnaryMapper,
+    private readonly questionMapper: QuestionMapper,
   ) {}
 
   @Roles([UserType.TEACHER])
@@ -58,7 +62,7 @@ export class SessionController {
       throw new IsNotHostException();
     const question = await this.sessionService.nextQuestion(body.idSession);
     if (question) {
-      return question;
+      return this.questionMapper.entityToQuestionDto(question);
     }
     return null;
   }
@@ -89,7 +93,9 @@ export class SessionController {
       this.sessionService.isHost(body.idSession, request.user)
     )
       throw new IsHostException();
-    const question = await this.sessionService.currentQuestion(body.idSession);
+    const question = this.questionMapper.entityToQuestionDto(
+      await this.sessionService.currentQuestion(body.idSession),
+    );
     return this.sessionMapper.mapCurrentQuestionDto(question);
   }
 
