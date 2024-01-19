@@ -19,6 +19,7 @@ import { CreateGroupDto } from '../dto/createGroup.dto';
 import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
 import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
 import { StudentCantCreateGroupsException } from '../exception/StudentCantCreateGroups.exception';
+import { TeacherHasNoCreatedGroupsException } from '../exception/teacherHasNoCreatedGroups.exception';
 
 @Injectable()
 export class UserService {
@@ -383,5 +384,16 @@ export class UserService {
       throw new UserNotFoundException();
     }
     return !!(group && user);
+  }
+
+  async getGroupFromTeacher(idTeacher: number) {
+    //TODO Vérifier que le user est bien un teacher
+    const t = <Teacher>await this.userRepository.findOne({
+      relations: ['createdGroups'],
+      where: { id: idTeacher },
+    });
+    if (t == undefined) throw new UserNotFoundException();
+    if (t.createdGroups == undefined) new TeacherHasNoCreatedGroupsException();
+    return t.createdGroups;
   }
 }

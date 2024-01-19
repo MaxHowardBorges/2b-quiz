@@ -58,4 +58,9 @@ export class GroupController {
   async getUser(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserWithGroup(id);
   }
+
+  @Get('/:id/getGroupFromTeacher')
+  async getGroupFromTeacher(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getGroupFromTeacher(id);
+  }
 }
