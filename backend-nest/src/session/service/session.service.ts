@@ -374,12 +374,9 @@ export class SessionService {
         questionnary.id,
       );
     //get questionnary's questions's answers
-    questionnary.questions.map(
-      async (question) =>
-        (question.answers = await this.questionService.findAnswers(
-          question.id,
-        )),
-    );
+    for (const question of questionnary.questions) {
+      question.answers = await this.questionService.findAnswers(question.id);
+    }
     const userSession = session.userSession;
     if (session.isResult === true) {
       //TODO
@@ -395,26 +392,36 @@ export class SessionService {
           average += this.percentSucess(question, user);
         }
       }
-      average = average / userSession.length;
-      return average; //TODO modify to not a return
+      return (
+        (average / userSession.length / questionnary.questions.length) * 100
+      );
     }
   }
 
   //Calculate the percent of sucess of a student
   private percentSucess(question: Question, user: UserSession) {
-    const userAnswer = user.answer;
+    const userAnswerEveryQuestions = user.answer;
     let nbCorrectAnswer = 0;
-    const answer = userAnswer.filter(
+    const userAnswer = userAnswerEveryQuestions.filter(
       (answer) => answer.question.id == question.id,
     );
-    console.log(answer);
+
     if (question.type === QuestionType.QCM) {
-      if (answer.map((answer) => answer.isCorrect)) {
+      if (
+        userAnswer
+          .map((answer) => answer.id)
+          .every((idAnswerUser) =>
+            question.answers
+              .filter((answer) => answer.isCorrect)
+              .map((answer) => answer.id)
+              .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
+          )
+      ) {
         nbCorrectAnswer++;
       }
-    } else if (answer[0].isCorrect) {
+    } else if (userAnswer[0].isCorrect) {
       nbCorrectAnswer++;
     }
-    return (nbCorrectAnswer / answer.length) * 100;
+    return nbCorrectAnswer;
   }
 }
