@@ -7,6 +7,7 @@ import {
   joinSession,
   sendAnswer,
   getResults,
+  stopSession,
 } from '@/api/session';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
@@ -95,7 +96,18 @@ export const useSessionStore = defineStore('session', {
     },
     async endSession() {
       const userStore = useUserStore();
-      const response = await startEndingSession(this.idSession, userStore.token);
+      const response = await startEndingSession(
+        this.idSession,
+        userStore.token,
+      );
+      await throwIfNotOK(response);
+      userStore.updateToken(response.headers.get('Authorization'));
+      this.setTabResult(await response.json());
+    },
+    //if stop session, delete questionnary compiled
+    async stopSession() {
+      const userStore = useUserStore();
+      const response = await stopSession(this.idSession, userStore.token);
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setTabResult(await response.json());

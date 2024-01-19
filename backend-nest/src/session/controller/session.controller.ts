@@ -149,4 +149,17 @@ export class SessionController {
     await this.sessionService.saveSession(idSession, this.sessionMapper);
     return HttpStatus.NO_CONTENT;
   }
+
+  @Roles([UserType.TEACHER])
+  @Get('/stopSession')
+  async stopSession(
+    @Req() request: UserRequest,
+    @Query('idsession') idSession: string,
+  ) {
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    //TODO IMPLEMENTS
+    await this.sessionService.deleteQuestionnary(idSession);
+    return HttpStatus.NO_CONTENT;
+  }
 }

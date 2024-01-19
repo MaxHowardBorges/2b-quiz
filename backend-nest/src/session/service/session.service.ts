@@ -24,6 +24,7 @@ import { Student } from '../../user/entity/student.entity';
 import { SessionMapper } from '../mapper/session.mapper';
 import { User } from '../../user/entity/user.entity';
 import { ResultsDto } from '../dto/results.dto';
+import { th } from '@faker-js/faker';
 
 @Injectable()
 export class SessionService {
@@ -290,6 +291,12 @@ export class SessionService {
     console.log('bug');
 
     console.log('bug');
+  }
+
+  //delete questionnary of a session only with idsession
+  async deleteQuestionnary(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    await this.questionnaryService.deleteQuestionnary(session.questionnary.id);
   }
 
   getMapUser(idSession: string) {
