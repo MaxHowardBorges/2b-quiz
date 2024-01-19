@@ -1,11 +1,8 @@
 <template>
   <ListOfQuestionnary
     v-if="toggleList"
-    @edit="
-      toggleList = false;
-      toggleEdit = true;
-    "
-    @bank="toggleVisibility"></ListOfQuestionnary>
+    @edit="toCreate"
+    @bank="toBank"></ListOfQuestionnary>
   <ListOfQuestion
     v-if="toggleBank"
     @toggleVisibility="toggleVisibilityfromBank"
@@ -18,7 +15,7 @@
       toggleList = true;
     "
     ref="questionnaryEditRef"
-    @returnToBank="toggleVisibility"></QuestionnaryEdit>
+    @returnToBank="toBank"></QuestionnaryEdit>
 </template>
 
 <script>
@@ -30,6 +27,10 @@
   import { ref } from 'vue';
 
   export default {
+    props: {
+      toCreateBool: { type: Boolean, default: false },
+      toBankBool: { type: Boolean, default: false },
+    },
     data() {
       return {
         toggleList: ref(true),
@@ -45,6 +46,12 @@
     },
     mounted() {
       this.useQ.idQuestionnary = null;
+      if (this.toCreateBool) {
+        this.toCreate();
+      }
+      if (this.toBankBool) {
+        this.toBank();
+      }
     },
     methods: {
       triggerChangeStatus(questionId, questionType) {
@@ -57,10 +64,15 @@
           );
         });
       },
-      toggleVisibility() {
+      toBank() {
         this.toggleBank = true;
         this.toggleList = false;
         this.toggleEdit = false;
+      },
+      toCreate() {
+        this.toggleBank = false;
+        this.toggleList = false;
+        this.toggleEdit = true;
       },
       toggleVisibilityfromBank(toList = true) {
         this.toggleBank = false;
