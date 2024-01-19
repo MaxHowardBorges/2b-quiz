@@ -10,6 +10,7 @@ export async function createQuestionnary(body, token) {
 }
 
 export async function addQuestion(body, id, token) {
+  console.log(JSON.stringify(body));
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + id + '/question',
     {

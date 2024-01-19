@@ -23,6 +23,7 @@ import { UserSession } from '../entity/userSession.entity';
 import { Student } from '../../user/entity/student.entity';
 import { SessionMapper } from '../mapper/session.mapper';
 import { User } from '../../user/entity/user.entity';
+import { ResultsDto } from '../dto/results.dto';
 
 @Injectable()
 export class SessionService {
@@ -217,25 +218,28 @@ export class SessionService {
     let answerdb = new Answer();
     if (typeof idAnswer === 'string') {
       const answer = new Answer();
-      answer.content = idAnswer;
+      if (question.type === QuestionType.QOC) {
+        answer.content = idAnswer.split(/[ _]/)[0];
+      } else {
+        answer.content = idAnswer;
+      }
+
       answer.isCorrect = true;
       answer.question = question;
       answerdb = await this.questionService.createAnswerOpenEnded(answer);
     }
-    session.userAnswers
-      .get(user.id)
-      .set(
-        question,
-        Array.isArray(idAnswer)
-          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-          : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : question.type === QuestionType.OUV
-          ? question.answers.find((answer) => answer.id === answerdb.id)
-          : question.type === QuestionType.QOC
-          ? idAnswer.split(/[ _]/)[0]
-          : idAnswer,
-      );
+    session.userAnswers.get(user.id).set(
+      question,
+      Array.isArray(idAnswer)
+        ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+        : typeof idAnswer === 'number'
+        ? question.answers.find((answer) => answer.id === idAnswer)
+        : question.type === QuestionType.OUV
+        ? answerdb
+        : question.type === QuestionType.QOC
+        ? answerdb //idAnswer.split(/[ _]/)[0]
+        : idAnswer,
+    );
   }
 
   //Save session into entity
