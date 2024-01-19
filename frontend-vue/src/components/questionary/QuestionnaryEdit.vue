@@ -243,16 +243,25 @@
         );
       },
       async validQuestion() {
-        const index = this.$refs.questionnaryComponent.correct;
-        const content = this.$refs.questionnaryComponent.question.content;
-        const answers = this.$refs.questionnaryComponent.getAnswers();
         const type = this.typeOptions.find(
           (option) => option.typeLabel === this.selectedType,
         ).typeCode;
+        const content = this.$refs.questionnaryComponent.question.content;
+        const answers = this.$refs.questionnaryComponent.getAnswers();
         const tags = this.selectedTags;
 
-        for (let i = 0; i < answers.length; i++) {
-          answers[i].isCorrect = i === index;
+        let index = this.$refs.questionnaryComponent.correct;
+        if (type === 'qcm') {
+          index = this.$refs.questionnaryComponent.correctMultiple;
+          for (let i = 0; i < answers.length; i++) {
+            answers[i].isCorrect = index.some(
+              (idIsCorrect) => idIsCorrect === i,
+            );
+          }
+        } else {
+          for (let i = 0; i < answers.length; i++) {
+            answers[i].isCorrect = i === index;
+          }
         }
 
         if (content && answers) {
