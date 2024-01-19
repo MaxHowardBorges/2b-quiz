@@ -11,12 +11,22 @@ import { UserNotFoundException } from '../../auth/exception/userNotFound.excepti
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { SortUserParam } from '../constants/sortUserParam.enum';
 import { SortOrder } from '../../constants/sortOrder.enum';
+import { Group } from '../entity/group.entity';
+import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
+import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJoined.exception';
+import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
+import { CreateGroupDto } from '../dto/createGroup.dto';
+import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
+import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
+import { StudentCantCreateGroupsException } from '../exception/StudentCantCreateGroups.exception';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Group)
+    private readonly groupRepository: Repository<Group>,
   ) {}
   async createUser(
     username: string,
@@ -75,6 +85,23 @@ export class UserService {
 
   async getUser(id: number) {
     return await this.userRepository.findOneBy({ id });
+  }
+
+  async getUserWithGroup(idUser: number) {
+    if (
+      (<User>(
+        await this.userRepository.findOne({ where: { id: idUser } })
+      )).getUserType() == UserType.TEACHER
+    ) {
+      return await this.userRepository.findOne({
+        relations: ['joinedGroups', 'createdGroups'],
+        where: { id: idUser },
+      });
+    }
+    return await this.userRepository.findOne({
+      relations: ['joinedGroups'],
+      where: { id: idUser },
+    });
   }
 
   async getUserByUsername(username: string, deleted: boolean = false) {
@@ -173,5 +200,188 @@ export class UserService {
     if (!user) throw new UserNotFoundException();
     user.askedDelete = false;
     await this.userRepository.save(user);
+  }
+
+  async createGroup(dto: CreateGroupDto) {
+    // TODO les informations telles que		"validate": true, "deleted": false et "askedDelete": false ne doivent pas apparaitre, a retirer
+    const group: Group = new Group();
+    if (dto.name == '') throw new GroupNameEmptyException();
+    group.groupName = dto.name;
+    group.tabUsers = [];
+    if (
+      (await this.userRepository.findOneBy({ id: dto.teacher.id })) == undefined
+    )
+      throw new UserNotFoundException();
+
+    const verifyTeacher = await this.userRepository.findOne({
+      where: {
+        id: dto.teacher.id,
+      },
+    });
+
+    if (
+      verifyTeacher.getUserType() != UserType.TEACHER &&
+      verifyTeacher.getUserType() != UserType.ADMIN
+    ) {
+      throw new StudentCantCreateGroupsException();
+    }
+
+    const t = dto.teacher;
+    group.teacher = t;
+    t.createdGroups.push(group);
+    await this.groupRepository.save(group);
+    await this.userRepository.save(t);
+    //group.teacher.createdGroups = []; // TODO vider les groupes créer du teacher pour ne pas les afficher est une solution temporaire, à remplacer par un mapper
+
+    return group;
+  }
+
+  async deleteGroup(idGroup: number) {
+    const group = await this.groupRepository.findOne({
+      relations: ['teacher', 'tabUsers'],
+      where: { id: idGroup },
+    });
+    if (group == undefined) throw new GroupNotFoundException();
+
+    const t = <Teacher>await this.userRepository.findOne({
+      relations: ['createdGroups'],
+      where: { id: group.teacher.id },
+    });
+    if (t == undefined) throw new UserNotFoundException();
+
+    const verif = await this.userRepository.findOne({
+      relations: ['createdGroups'],
+      where: { id: group.teacher.id },
+    });
+
+    if (
+      verif.getUserType() != UserType.TEACHER &&
+      verif.getUserType() != UserType.ADMIN
+    ) {
+      throw new StudentCantCreateGroupsException();
+    }
+
+    if (group.tabUsers == undefined) {
+      const index = t.createdGroups.findIndex((g) => {
+        return g.id === idGroup;
+      });
+      t.createdGroups.splice(index);
+
+      await this.userRepository.save(t);
+      await this.groupRepository.delete(idGroup);
+    } else {
+      for (let i = 0; i < group.tabUsers.length; i++) {
+        await this.removeStudentFromGroup(idGroup, group.tabUsers[i].id);
+      }
+      const index = t.createdGroups.findIndex((g) => {
+        return g.id === idGroup;
+      });
+      t.createdGroups.splice(index);
+      await this.userRepository.save(t);
+      await this.groupRepository.delete(idGroup);
+    }
+
+    return !!group;
+  }
+
+  async getGroup(idGroup: number) {
+    const group = await this.groupRepository.findOne({
+      relations: ['teacher', 'tabUsers'],
+      where: { id: idGroup },
+    });
+
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    return group;
+  }
+
+  async addUserToGroup(idGroup: number, idStudent: number) {
+    //TODO Ajouter le cas ou un user est déjà dans le groupe
+    const group = await this.groupRepository.findOne({
+      relations: ['teacher', 'tabUsers'],
+      where: { id: idGroup },
+    });
+
+    const user: User = <Student>await this.userRepository.findOne({
+      relations: ['joinedGroups'],
+      where: { id: idStudent },
+    });
+
+    if (user.getUserType() == UserType.ADMIN) {
+      throw new AdminCantJoinException();
+    }
+
+    if (group && user) {
+      if (group.tabUsers.length != 0) {
+        for (let i = 0; i < group.tabUsers.length; i++) {
+          if (group.tabUsers[i].id == user.id) {
+            throw new UserAlreadyJoinedException();
+          }
+        }
+      }
+
+      (<Student>user).joinedGroups.push(group);
+      group.tabUsers.push(user);
+
+      await this.userRepository.save(user);
+      await this.groupRepository.save(group);
+    }
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return !!(group && user);
+  }
+
+  async removeStudentFromGroup(idGroup: number, idStudent: number) {
+    const group = await this.groupRepository.findOne({
+      relations: ['tabUsers'],
+      where: { id: idGroup },
+    });
+    const user: User = <Student>await this.userRepository.findOne({
+      relations: ['joinedGroups'],
+      where: { id: idStudent },
+    });
+
+    if (group && user) {
+      const groupTabUsers = group.tabUsers;
+      const studentGroup = (<Student>user).joinedGroups;
+
+      let isIn = false;
+      for (const s of groupTabUsers) {
+        if (s.id == idStudent) {
+          isIn = true;
+        }
+      }
+
+      if (isIn) {
+        let index = groupTabUsers.findIndex((s) => {
+          s.id = user.id;
+        });
+        groupTabUsers.splice(index);
+
+        index = (<Student>user).joinedGroups.findIndex((g) => {
+          return g.id === group.id;
+        });
+        studentGroup.splice(index);
+
+        await this.userRepository.save(user);
+        await this.groupRepository.save(group);
+      } else {
+        throw new StudentNotInGroupException();
+      }
+    }
+
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return !!(group && user);
   }
 }
