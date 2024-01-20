@@ -1,4 +1,6 @@
 <template>
+  <!-- settings dialog-->
+  <set-settings-dialog ref="settingsDialog"></set-settings-dialog>
   <h1>Waiting participants...</h1>
   <div class="session-info">
     <p>Session ID: {{ sessionStore.idSession }}</p>
@@ -8,9 +10,15 @@
   <div>
     <p>{{ sessionStore.status.nbJoined }} user joined</p>
   </div>
-  <v-btn color="primary" class="mx-6 my-3" @click="launchWindows">
-    <p class="text-white font-weight-bold pa-2">Launch 3rd screen</p>
-  </v-btn>
+  <v-divider class="ma-3"></v-divider>
+  <div>
+    <v-btn color="primary" class="mx-6 my-3" @click="launchWindows">
+      <p class="text-white font-weight-bold pa-2">Launch 3rd screen</p>
+    </v-btn>
+    <v-btn color="primary" class="mx-6 my-3" @click="openSettings">
+      Settings
+    </v-btn>
+  </div>
   <div>
     <v-btn color="primary" class="mx-6 my-3" @click="cancelSession">
       <p class="text-white font-weight-bold pa-2">Cancel session</p>
@@ -29,9 +37,12 @@
   import { ref } from 'vue';
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
+  import SessionSetting from '@/components/session/SessionSetting.vue';
+  import SetSettingsDialog from '@/components/session/SetSettingsDialog.vue';
 
   export default {
     name: 'SessionWaitingBlockTeacher',
+    components: { SetSettingsDialog, SessionSetting },
     setup() {
       const sessionStore = useSessionStore();
       return {
@@ -75,6 +86,9 @@
           query: { idSession: this.sessionStore.idSession },
         });
         window.open(routeData.href, '_blank');
+      },
+      openSettings() {
+        this.$refs.settingsDialog.openSettings();
       },
     },
   };

@@ -37,6 +37,7 @@
           <template v-slot:item.selected="{ item }">
             <v-checkbox
               v-model="item.selected"
+              :disabled="this.isInSession ? isIdInWhitelist(item.id) : false"
               @update:model-value="appendToSelect(item)"></v-checkbox>
           </template>
         </v-data-table>
@@ -49,6 +50,7 @@
           <template v-slot:item.selected="{ item }">
             <v-checkbox
               v-model="item.selected"
+              :disabled="this.isInSession ? isIdInWhitelist(item.id) : false"
               @update:model-value="appendGroupToSelect(item)"></v-checkbox>
           </template>
         </v-data-table>
@@ -109,16 +111,16 @@
       <v-switch
         color="primary"
         label="Display question on public screen"
-        v-model="displaySetting.displayQuestion"
+        v-model="displaySettings.displayQuestion"
         @update:model-value="
-          displaySetting.displayAnswer =
-            displaySetting.displayAnswer && displaySetting.displayQuestion
+          displaySettings.displayAnswer =
+            displaySettings.displayAnswer && displaySettings.displayQuestion
         " />
       <v-switch
         color="primary"
         label="Display answers on public screen"
-        v-model="displaySetting.displayAnswer"
-        :disabled="!displaySetting.displayQuestion" />
+        v-model="displaySettings.displayAnswer"
+        :disabled="!displaySettings.displayQuestion" />
     </div>
   </div>
 </template>
@@ -128,6 +130,7 @@
   import { AccessType } from '@/utils/accesType';
   import { useUserStore } from '@/stores/userStore';
   import { SessionType } from '@/utils/sessionType';
+  import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
     name: 'SessionSetting',
@@ -148,10 +151,10 @@
         ],
         selectedSessionType: ref(SessionType.PILOTED),
         itemsAcces: [AccessType.PUBLIC, AccessType.PRIVATE, AccessType.CLOSED],
-        selectedAcces: ref(AccessType.PRIVATE),
+        selectedAcces: ref(AccessType.CLOSED),
         SelectionDialog: ref(false),
         popup: ref(false),
-        displaySetting: {
+        displaySettings: {
           displayQuestion: true,
           displayAnswer: true,
         },
@@ -182,21 +185,41 @@
     },
     setup() {
       const userStore = useUserStore();
-      return { userStore };
+      const sessionStore = useSessionStore();
+      return { userStore, sessionStore };
     },
-    mounted() {
-      this.getUsersAndGroups();
+    async beforeMount() {
+      await this.getUsersAndGroups();
+      if (this.isInSession) {
+        this.selectedAcces = this.sessionStore.settings.accessType;
+        this.displaySetting = this.sessionStore.settings.displaySetting;
+        if (this.sessionStore.whitelist)
+          for (let i = 0; i < this.sessionStore.whitelist.length; i++) {
+            const idUser = this.sessionStore.whitelist[i];
+            let user = this.students.find((user) => user.id === idUser);
+            if (!user) user = this.teachers.find((user) => user.id === idUser);
+            user.selected = true;
+          }
+        if (this.sessionStore.whitelistGroups)
+          for (let i = 0; i < this.sessionStore.whitelistGroups.length; i++) {
+            const idGroup = this.sessionStore.whitelistGroups[i];
+            const group = this.students.find((group) => group.id === idGroup);
+            group.selected = true;
+          }
+      }
     },
     methods: {
-      getUsersAndGroups() {
-        this.userStore.getStudentForTeacher().then((res) => {
-          this.students = res;
-        });
-        this.userStore.getTeacherForTeacher().then((res) => {
-          this.teachers = res;
-        });
+      async getUsersAndGroups() {
+        this.students = await this.userStore.getStudentForTeacher();
+        this.teachers = await this.userStore.getTeacherForTeacher();
         //TODO get groups
         this.groups = [];
+      },
+      isIdInWhitelist(id) {
+        return (
+          this.sessionStore.whitelist.includes(id) ||
+          this.sessionStore.whitelistGroups.includes(id)
+        );
       },
       openSelectionDialog() {
         this.SelectionDialog = true;
@@ -251,10 +274,15 @@
         return this.selectedGroups.map((group) => group.id);
       },
       getSettings() {
+        if (this.isInSession)
+          return {
+            accessType: this.selectedAcces,
+            displaySettings: this.displaySettings,
+          };
         return {
           sessionType: this.selectedSessionType,
           accessType: this.selectedAcces,
-          displaySetting: this.displaySetting,
+          displaySettings: this.displaySettings,
         };
       },
     },

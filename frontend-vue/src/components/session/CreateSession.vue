@@ -55,7 +55,9 @@
 
       <v-sheet border="sm" rounded="lg" class="px-4">
         <p class="text-h4 mt-2">Session settings</p>
-        <session-setting ref="sessionSettings"></session-setting>
+        <session-setting
+          ref="sessionSettings"
+          :isInSession="false"></session-setting>
       </v-sheet>
 
       <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>

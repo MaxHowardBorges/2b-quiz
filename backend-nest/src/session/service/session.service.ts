@@ -62,7 +62,6 @@ export class SessionService {
       ),
     );
     this.eventService.createSessionGroup(idSession, teacher.id);
-    console.log(this.sessionMap.get(idSession));
     return this.sessionMap.get(idSession);
   }
 
@@ -310,15 +309,9 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.settings.accessType = settings.accessType;
+      this.setDisplaySettings(idSession, settings.displaySettings);
     }
-    return !!session;
-  }
-
-  setWhitelist(idSession: string, whitelist: number[]) {
-    const session = this.sessionMap.get(idSession);
-    if (!!session) {
-      session.whitelist = whitelist;
-    }
+    console.log(session);
     return !!session;
   }
 

@@ -81,3 +81,31 @@ export async function getSessionStatus(token, idSession) {
     },
   );
 }
+
+export async function setSessionSettings(token, idSession, body) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/settings`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    },
+  );
+}
+
+export async function addToWhitelist(token, idSession, body) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/whitelist/add`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    },
+  );
+}

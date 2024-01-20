@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import {
+  addToWhitelist,
   createSession,
   getCurrentQuestion,
   getNextQuestion,
@@ -7,6 +8,7 @@ import {
   getSessionStatus,
   joinSession,
   sendAnswer,
+  setSessionSettings,
 } from '@/api/session';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
@@ -25,6 +27,8 @@ export const useSessionStore = defineStore('session', {
     isParticipant: false,
     status: { settings: null, nbJoined: null, nbAnswered: null },
     settings: null,
+    whitelist: [],
+    whitelistGroups: [],
   }),
   actions: {
     setQuestion(question) {
@@ -109,11 +113,48 @@ export const useSessionStore = defineStore('session', {
       this.isHost = true;
       this.setIdSession(content.id);
       await this.getSessionStatus();
+      this.settings = settings;
+      this.whitelist = selectedUsersId;
+      this.whitelistGroups = selectedUsersId;
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEHost();
     },
     async setSettings(settings) {
-      this.settings = settings;
+      try {
+        const userStore = useUserStore();
+        this.settings = settings;
+        console.log(settings);
+        const response = await setSessionSettings(
+          userStore.getToken(),
+          this.idSession,
+          settings,
+        );
+        await throwIfNotOK(response, 204);
+        userStore.updateToken(response.headers.get('Authorization'));
+      } catch (e) {
+        this.disconnectFromSession(e.message);
+      }
+    },
+    async addToWhiteList(selectedUsersId) {
+      try {
+        const userStore = useUserStore();
+        const response = await addToWhitelist(
+          userStore.getToken(),
+          this.idSession,
+          {
+            whitelist: selectedUsersId,
+          },
+        );
+        await throwIfNotOK(response);
+        userStore.updateToken(response.headers.get('Authorization'));
+        this.whitelist.concat(selectedUsersId);
+      } catch (e) {
+        this.disconnectFromSession(e.message);
+      }
+    },
+    async addToWhiteListGroup(selectedGroupsId) {
+      //TODO call api
+      this.whitelistGroups.concat(selectedGroupsId);
     },
     async nextQuestion() {
       const userStore = useUserStore();
@@ -172,6 +213,7 @@ export const useSessionStore = defineStore('session', {
     sessionEnd() {
       this.isParticipant = null;
       this.isHost = null;
+      this.settings = null;
       this.setIdSession(null);
     },
   },

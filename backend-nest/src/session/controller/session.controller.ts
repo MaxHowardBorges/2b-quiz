@@ -138,7 +138,7 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER])
-  @Post('/:idSession/settings')
+  @Patch('/:idSession/settings')
   async setSessionSettings(
     @Req() request: UserRequest,
     @Param('idSession') idSession: string,
@@ -165,6 +165,8 @@ export class SessionController {
     this.sessionService.addToWhitelist(idSession, body.whitelist);
   }
 
+  //TODO add /:idSession/whitelist/addGroup
+
   @Roles([UserType.TEACHER])
   @Get('/:idSession/display-settings')
   async getDisplaySettings(
@@ -176,20 +178,6 @@ export class SessionController {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
     return this.sessionService.getDisplaySettings(idSession);
-  }
-
-  @Roles([UserType.TEACHER])
-  @Patch('/:idSession/display-settings')
-  async setDisplaySettings(
-    @Req() request: UserRequest,
-    @Param('idSession') idSession: string,
-    @Body(new ValidationPipe()) body: DisplaySettingsDto,
-  ) {
-    if (!this.sessionService.isSessionExists(idSession))
-      throw new IdSessionNoneException();
-    if (!this.sessionService.isHost(idSession, request.user as Teacher))
-      throw new IsNotHostException();
-    this.sessionService.setDisplaySettings(idSession, body);
   }
 
   @Roles([UserType.TEACHER])

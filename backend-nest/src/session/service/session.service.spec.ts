@@ -180,6 +180,7 @@ describe('SessionService', () => {
   questionnaryTest.title = 'morocco';
 
   const session: Session = {
+    whitelistGroups: [],
     getCurrentQuestion(): Question {
       return undefined;
     },
@@ -197,8 +198,7 @@ describe('SessionService', () => {
     userAnswers: null,
     endSession: false,
     host: hostTeacher,
-    settings: new SettingsObject(),
-    displaySettings: new DisplaySettingsObject(true, true),
+    settings: new SettingsObject(new DisplaySettingsObject(true, true)),
     whitelist: null,
   };
   session.questionnaryList.push(questionnary);
@@ -246,9 +246,13 @@ describe('SessionService', () => {
       expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
-      const testSession = await service.initializeSession(hostTeacher, [
-        questionnary.id,
-      ]);
+      const testSession = await service.initializeSession(
+        hostTeacher,
+        [questionnary.id],
+        new SettingsObject(new DisplaySettingsObject(true, true)),
+        [],
+        [],
+      );
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(Session);
       expect(testSession.id).not.toBeNull();
@@ -262,8 +266,7 @@ describe('SessionService', () => {
         service.generateIdSession(),
         hostTeacher,
         [questionnary],
-        new SettingsObject(),
-        new DisplaySettingsObject(true, true),
+        new SettingsObject(new DisplaySettingsObject(true, true)),
       );
       expect(test).toBeInstanceOf(Session);
       expect(typeof test.id).toBe('string');
