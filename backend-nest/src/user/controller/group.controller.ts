@@ -21,6 +21,9 @@ import { RemoveStudentFromGroupDto } from '../dto/removeStudentFromGroup.dto';
 import { UserRequest } from '../../auth/config/user.request';
 import { Teacher } from '../entity/teacher.entity';
 import { TeacherMapper } from '../mapper/teacher.mapper';
+import { DontOwnTheGroup } from '../exception/dontOwnTheGroup';
+import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJoined.exception';
+import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
 
 @Controller('group')
 export class GroupController {
@@ -29,48 +32,80 @@ export class GroupController {
     private readonly teacherMapper: TeacherMapper,
   ) {}
   @Roles([UserType.TEACHER])
-  @Post('/createGroup')
+  @Post('/create') //TODO to test
   async createGroup(@Req() request: UserRequest, @Body('name') name: string) {
-    const t = this.teacherMapper.teacherToTeacherGroupDataDtoMap(
-      <Teacher>request.user,
-    );
-    return this.userService.createGroup(t, name);
+    return this.userService.createGroup(name, <Teacher>request.user);
   }
   @Roles([UserType.TEACHER])
-  @Delete('/:id/deleteGroup')
-  async deleteGroup(@Param('id', ParseIntPipe) idGroup: number) {
-    return this.userService.deleteGroup(idGroup);
+  @Delete('/:id') //TODO to test
+  async deleteGroup(
+    @Req() request: UserRequest,
+    @Param('id', ParseIntPipe) idGroup: number,
+  ) {
+    if (
+      await this.userService.isGroupFromTeacher(
+        idGroup,
+        request.user as Teacher,
+      )
+    ) {
+      throw new DontOwnTheGroup();
+    }
+    return this.userService.deleteGroup(idGroup, request.user as Teacher);
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Get('/:id/getGroup')
+  @Get('/:id') //TODO to test
   async getGroup(@Param('id', ParseIntPipe) idGroup: number) {
     return this.userService.getGroup(idGroup);
   }
   @Roles([UserType.TEACHER])
-  @Put('/:id/addUserToGroup')
+  @Post('/:id/user/:idUser') //TODO to test
   async addUserToGroup(
+    @Req() request: UserRequest,
     @Param('id', ParseIntPipe) idGroup: number,
-    @Body(new ValidationPipe()) dto: AddStudentToGroupDto,
+    @Param('idUser', ParseIntPipe) idUser: number,
   ) {
-    return this.userService.addUserToGroup(idGroup, dto.idStudent);
+    if (
+      await this.userService.isGroupFromTeacher(
+        idGroup,
+        request.user as Teacher,
+      )
+    ) {
+      throw new DontOwnTheGroup();
+    } else if (await this.userService.isAlreadyInGroup(idGroup, idUser)) {
+      throw new UserAlreadyJoinedException();
+    }
+    return this.userService.addUserToGroup(idGroup, idUser);
   }
-  @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Patch('/:id/removeStudentFromGroup')
+
+  @Roles([UserType.TEACHER])
+  @Delete('/:id/user/:idUser') //TODO to test
   async removeStudentFromGroup(
+    @Req() request: UserRequest,
     @Param('id', ParseIntPipe) idGroup: number,
-    @Body(new ValidationPipe()) dto: RemoveStudentFromGroupDto,
+    @Param('idUser', ParseIntPipe) idUser: number,
   ) {
-    return this.userService.removeStudentFromGroup(idGroup, dto.idStudent);
+    if (
+      await this.userService.isGroupFromTeacher(
+        idGroup,
+        request.user as Teacher,
+      )
+    ) {
+      throw new DontOwnTheGroup();
+    } else if (!(await this.userService.isAlreadyInGroup(idGroup, idUser))) {
+      throw new StudentNotInGroupException();
+    }
+    return this.userService.removeStudentFromGroup(idGroup, idUser);
   }
 
-  @Get('/:id/getUser')
-  async getUser(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.getUserWithGroup(id);
+  @Get('/:id/user') //TODO to test weirder than before
+  async getUser(@Param('id', ParseIntPipe) idGroup: number) {
+    return this.userService.getUserWithGroup(idGroup);
   }
 
-  @Get('/getGroupsFromTeacher')
+  @Roles([UserType.TEACHER])
+  @Get('/user') //TODO to test
   async getGroupsFromTeacher(@Req() request: UserRequest) {
-    return this.userService.getGroupsFromTeacher(request.user.id);
+    return this.userService.getGroupsFromTeacher(request.user as Teacher);
   }
 }
