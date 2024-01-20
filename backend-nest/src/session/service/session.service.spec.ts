@@ -180,6 +180,12 @@ describe('SessionService', () => {
   questionnaryTest.title = 'morocco';
 
   const session: Session = {
+    getCurrentQuestion(): Question {
+      return undefined;
+    },
+    getNbAnsweredForCurrentQuestion(): number {
+      return 0;
+    },
     hasUser(user: ParticipantInterface): boolean {
       return false;
     },
