@@ -34,34 +34,34 @@ export const useGroupStore = defineStore('group', {
 
     async getGroups() {
       const userStoreU = useUserStore();
-      console.log("getGroups");
+      console.log('getGroups');
       const response = await getGroupsOfTeacher(userStoreU.token);
-      console.log("response : ");
+      console.log('response : ');
       console.log(response);
       const groups = await response.json();
       await this.setTabsGroups(groups);
-      return await this.getTabsGroup();
+      return this.getTabsGroup();
     },
 
     async createGroup(body) {
       const userStoreU = useUserStore();
       try {
-        console.log("createGroup");
+        console.log('createGroup');
         const bodytosend = { name: body };
-        console.log("bodytosend : ");
+        console.log('bodytosend : ');
         console.log(bodytosend);
         const response = await createGroup(bodytosend, userStoreU.token);
         if (!response.ok || response.status !== 201) {
           throw new Error('Erreur de réponse'); // TODO manage error
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
-        const group = JSON.parse(await response.text())
+        const group = JSON.parse(await response.text());
         //this.idGroup = JSON.parse(await response.text()).id;
         await this.getGroups();
         this.setTabsGroups(group);
-        console.log("group : ");
+        console.log('group : ');
         console.log(group);
-      }catch (error) {
+      } catch (error) {
         console.error(error);
       }
     },
@@ -100,7 +100,11 @@ export const useGroupStore = defineStore('group', {
     async removeStudentFromGroup(idGroup, idStudent) {
       const userStoreU = useUserStore();
       try {
-        const response = await removeStudentFromGroup(idGroup, idStudent, userStoreU.token);
+        const response = await removeStudentFromGroup(
+          idGroup,
+          idStudent,
+          userStoreU.token,
+        );
         if (!response.ok) {
           throw new Error('Erreur de chargement du groupe'); // TODO manage error
         }
@@ -116,7 +120,11 @@ export const useGroupStore = defineStore('group', {
     async addStudentToGroup(idGroup, idStudent) {
       const userStoreU = useUserStore();
       try {
-        const response = await addStudentToGroup(idGroup, idStudent, userStoreU.token);
+        const response = await addStudentToGroup(
+          idGroup,
+          idStudent,
+          userStoreU.token,
+        );
         if (!response.ok) {
           throw new Error('Erreur de chargement du groupe'); // TODO manage error
         }
@@ -128,6 +136,5 @@ export const useGroupStore = defineStore('group', {
         console.error(error);
       }
     },
-
   },
 });

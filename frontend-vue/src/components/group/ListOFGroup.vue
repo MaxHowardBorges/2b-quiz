@@ -4,53 +4,48 @@
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto"
-    elevation="5"
-  >
+    elevation="5">
     <h1 class="text-h4 ma-5">List of groups</h1>
     <table class="w-full">
       <thead>
-      <tr>
-        <th class="text-center">id</th>
-        <th class="text-center">Group name</th>
-        <th class="text-center">Number of people</th>
-        <th class="text-center">Actions</th>
-      </tr>
+        <tr>
+          <th class="text-center">id</th>
+          <th class="text-center">Group name</th>
+          <th class="text-center">Number of people</th>
+          <th class="text-center">Actions</th>
+        </tr>
       </thead>
       <tbody>
-<!--      <tr class="ma-2">-->
-<!--        <td class="text-center">1</td>-->
-<!--        <td class="text-center" @click="openDisplay">group.groupName</td>-->
-<!--        <td class="text-center">7</td>-->
-<!--        <td class="text-center">-->
-<!--          <v-btn @click="openAddUser" icon="add"></v-btn>-->
-<!--          <v-btn @click="openLeave" icon="logout"></v-btn>-->
-<!--          <v-btn @click="openDelete" icon="delete"></v-btn>-->
-<!--        </td>-->
-<!--      </tr>-->
-      <tr class="ma-2" v-for="group in ListOFGroup">
-        <td class="text-center">{{ group.id }}</td>
-        <td class="text-center" @click="openDisplay">{{ group.groupName }}</td>
-        <td class="text-center">7</td>
-        <td class="text-center">
-          <v-btn @click="openAddUser" icon="add"></v-btn>
-          <v-btn @click="openLeave" icon="logout"></v-btn>
-          <v-btn @click="openDelete" icon="delete"></v-btn>
-        </td>
-      </tr>
+        <!--      <tr class="ma-2">-->
+        <!--        <td class="text-center">1</td>-->
+        <!--        <td class="text-center" @click="openDisplay">group.groupName</td>-->
+        <!--        <td class="text-center">7</td>-->
+        <!--        <td class="text-center">-->
+        <!--          <v-btn @click="openAddUser" icon="add"></v-btn>-->
+        <!--          <v-btn @click="openLeave" icon="logout"></v-btn>-->
+        <!--          <v-btn @click="openDelete" icon="delete"></v-btn>-->
+        <!--        </td>-->
+        <!--      </tr>-->
+        <tr class="ma-2" v-for="group in ListOFGroup">
+          <td class="text-center">{{ group.id }}</td>
+          <td class="text-center" @click="openDisplay">
+            {{ group.groupName }}
+          </td>
+          <td class="text-center">{{ group.nbTabUsers }}</td>
+          <td class="text-center">
+            <v-btn @click="openAddUser" icon="add"></v-btn>
+            <v-btn @click="openLeave" icon="logout"></v-btn>
+            <v-btn @click="openDelete" icon="delete"></v-btn>
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <v-dialog v-model="addDialog" max-width="500px">
       <v-card>
-        <v-card-title>
-          Add User
-        </v-card-title>
+        <v-card-title>Add User</v-card-title>
         <v-card-text>
-          <v-text-field
-            label="Email"
-            required
-          ></v-text-field>
-
+          <v-text-field label="Email" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
@@ -62,9 +57,7 @@
 
     <v-dialog v-model="leaveDialog" max-width="500px">
       <v-card>
-        <v-card-title>
-          Leave Group
-        </v-card-title>
+        <v-card-title>Leave Group</v-card-title>
         <v-card-text>Are you sure to leave this Group?</v-card-text>
         <v-card-actions>
           <v-btn @click="closeDialogs">Yes</v-btn>
@@ -75,9 +68,7 @@
 
     <v-dialog v-model="deleteDialog" max-width="500px">
       <v-card>
-        <v-card-title>
-          Delete Group
-        </v-card-title>
+        <v-card-title>Delete Group</v-card-title>
         <v-card-text>Are you sure to delete this Group?</v-card-text>
         <v-card-actions>
           <v-btn @click="closeDialogs">Yes</v-btn>
@@ -88,15 +79,12 @@
 
     <v-dialog v-model="CreateGroupDialog" max-width="500px">
       <v-card>
-        <v-card-title>
-          Create a group
-        </v-card-title>
+        <v-card-title>Create a group</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="nameOFGroup"
             label="Group name"
-            required
-          ></v-text-field>
+            required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
@@ -108,27 +96,25 @@
 
     <v-dialog v-model="DisplayGroupDialog" max-width="500px">
       <v-card>
-        <v-card-title>
-          Display group
-        </v-card-title>
-        <v-card-text> List of users in the group</v-card-text>
+        <v-card-title>Display group</v-card-title>
+        <v-card-text>List of users in the group</v-card-text>
 
         <table>
           <thead>
-          <tr>
-            <th class="text-center">Name</th>
-            <th class="text-center">Surname</th>
-            <th class="text-center">Actions</th>
-          </tr>
+            <tr>
+              <th class="text-center">Name</th>
+              <th class="text-center">Surname</th>
+              <th class="text-center">Actions</th>
+            </tr>
           </thead>
           <tbody>
-          <tr class="ma-2">
-            <td class="text-center">Axel</td>
-            <td class="text-center">GUILLOU</td>
-            <td class="text-center">
-              <v-btn @click="openDelete" icon="delete"></v-btn>
-            </td>
-          </tr>
+            <tr class="ma-2">
+              <td class="text-center">Axel</td>
+              <td class="text-center">GUILLOU</td>
+              <td class="text-center">
+                <v-btn @click="openDelete" icon="delete"></v-btn>
+              </td>
+            </tr>
           </tbody>
         </table>
         <v-card-actions>
@@ -138,35 +124,37 @@
       </v-card>
     </v-dialog>
 
-    <v-btn class="mt-5" color="primary" @click='openCreate'>Create a group</v-btn>
+    <v-btn class="mt-5" color="primary" @click="openCreate">
+      Create a group
+    </v-btn>
 
-    <v-dialog v-model="DisplayAddUser" max-width='1000px'>
+    <v-dialog v-model="DisplayAddUser" max-width="1000px">
       <v-card>
         <v-card-title>Add user to a group</v-card-title>
         <v-card-text>List of users to add</v-card-text>
 
         <table>
           <thead>
-          <tr>
-            <th class="text-center">ID</th>
-            <th class="text-center">Username</th>
-            <th class="text-center">Name</th>
-            <th class="text-center">Surname</th>
-            <th class="text-center">Type</th>
-            <th class="text-center">Actions</th>
-          </tr>
+            <tr>
+              <th class="text-center">ID</th>
+              <th class="text-center">Username</th>
+              <th class="text-center">Name</th>
+              <th class="text-center">Surname</th>
+              <th class="text-center">Type</th>
+              <th class="text-center">Actions</th>
+            </tr>
           </thead>
           <tbody>
-          <tr v-for="user in users" :key="user.id" class="ma-2">
-            <td class="text-center">{{ user.id }}</td>
-            <td class="text-center">{{ user.username }}</td>
-            <td class="text-center">{{ user.name }}</td>
-            <td class="text-center">{{ user.surname }}</td>
-            <td class="text-center">{{ user.type }}</td>
-            <td class="text-center">
-              <v-btn @click="openDelete" text="add"></v-btn>
-            </td>
-          </tr>
+            <tr v-for="user in users" :key="user.id" class="ma-2">
+              <td class="text-center">{{ user.id }}</td>
+              <td class="text-center">{{ user.username }}</td>
+              <td class="text-center">{{ user.name }}</td>
+              <td class="text-center">{{ user.surname }}</td>
+              <td class="text-center">{{ user.type }}</td>
+              <td class="text-center">
+                <v-btn @click="openDelete" text="add"></v-btn>
+              </td>
+            </tr>
           </tbody>
         </table>
         <v-card-actions>
@@ -174,12 +162,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-sheet>
 </template>
 
 <script>
-
   import { useUserStore } from '@/stores/userStore';
   import { ref } from 'vue';
   import AdminTableHeaderBlock from '@/components/admin/AdminTableHeaderBlock.vue';
@@ -187,7 +173,7 @@
   import { useGroupStore } from '@/stores/groupStore';
 
   export default {
-    components: { AdminListItem, AdminTableHeaderBlock},
+    components: { AdminListItem, AdminTableHeaderBlock },
     data() {
       return {
         addDialog: false,
@@ -227,9 +213,7 @@
       return {
         userStore,
         useGroup,
-        ListOFGroup: ref([
-          { "id": 17, "groupName": "test" },
-        ]),
+        ListOFGroup: ref([{ id: 17, groupName: 'test' }]),
         users: ref([
           {
             id: 18,
@@ -292,14 +276,13 @@
       };
     },
     async mounted() {
-
-      this.ListOFGroup = await this.useGroup.getGroups();//this.useGroup.tabsGroups;
-      console.log("groups of ListOFGroup", this.ListOFGroup);
+      this.ListOFGroup = await this.useGroup.getGroups(); //this.useGroup.tabsGroups;
+      console.log('groups of ListOFGroup', this.ListOFGroup);
     },
     computed: {
       filteredUsers() {
-        return this.users.filter(user =>
-          user.name.toLowerCase().includes(this.search.toLowerCase())
+        return this.users.filter((user) =>
+          user.name.toLowerCase().includes(this.search.toLowerCase()),
         );
       },
     },
@@ -340,10 +323,8 @@
         this.useGroup.createGroup(this.nameOFGroup);
         this.closeDialogs();
       },
-
     },
   };
-
 </script>
 
 <style scoped>
@@ -352,7 +333,8 @@
     width: 100%;
   }
 
-  th, td {
+  th,
+  td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
@@ -365,5 +347,4 @@
   tr:hover {
     background-color: #f5f5f5;
   }
-
 </style>

@@ -17,6 +17,7 @@ export class GroupMapper {
       id: group.id,
       tabUsers: group.tabUsers, //TODO map tab user to dto
       teacher: group.teacher, //TODO map teacher to dto
+      nbTabUsers: group.tabUsers.length,
     };
   }
 }

@@ -217,14 +217,11 @@ export class UserService {
   }
 
   async createGroup(name: string, teacher: Teacher) {
-    // TODO les informations telles que		"validate": true, "deleted": false et "askedDelete": false ne doivent pas apparaitre, a retirer
     const group: Group = new Group();
     group.groupName = name;
     group.tabUsers = [];
     group.teacher = teacher;
     await this.groupRepository.save(group);
-    //group.teacher.createdGroups = []; // TODO vider les groupes créer du teacher pour ne pas les afficher est une solution temporaire, à remplacer par un mapper
-
     return group;
   }
 
@@ -273,8 +270,8 @@ export class UserService {
   async getGroupsFromTeacher(teacher: Teacher) {
     return (<Teacher>await this.userRepository.findOne({
       where: { id: teacher.id },
-      relations: ['createdGroups'],
-    })).createdGroups; //TODO get number of member by group
+      relations: ['createdGroups.tabUsers'],
+    })).createdGroups;
   }
 
   async isGroupFromTeacher(idGroup: number, user: Teacher) {

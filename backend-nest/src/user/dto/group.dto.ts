@@ -9,4 +9,6 @@ export class GroupDto {
   teacher: Teacher;
 
   tabUsers: User[];
+
+  nbTabUsers: number;
 }
