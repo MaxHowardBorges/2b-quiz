@@ -14,7 +14,7 @@ import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
 import { Teacher } from '../entity/teacher.entity';
-import { TeacherMapper } from '../mapper/teacher.mapper';
+import { GroupMapper } from '../mapper/group.mapper';
 import { DontOwnTheGroup } from '../exception/dontOwnTheGroup';
 import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJoined.exception';
 import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
@@ -23,12 +23,14 @@ import { StudentNotInGroupException } from '../exception/studentNotInGroup.excep
 export class GroupController {
   constructor(
     private readonly userService: UserService,
-    private readonly teacherMapper: TeacherMapper,
+    private readonly groupMapper: GroupMapper,
   ) {}
   @Roles([UserType.TEACHER])
   @Post('/create')
   async createGroup(@Req() request: UserRequest, @Body('name') name: string) {
-    return this.userService.createGroup(name, request.user as Teacher);
+    return this.groupMapper.mapGroup(
+      await this.userService.createGroup(name, request.user as Teacher),
+    );
   }
 
   @Roles([UserType.TEACHER])
@@ -51,7 +53,7 @@ export class GroupController {
   @Roles([UserType.TEACHER, UserType.STUDENT])
   @Get('/:id') //TODO to test
   async getGroup(@Param('id', ParseIntPipe) idGroup: number) {
-    return this.userService.getGroup(idGroup);
+    return this.groupMapper.mapGroup(await this.userService.getGroup(idGroup));
   }
   @Roles([UserType.TEACHER])
   @Put('/:id/user/:idUser')
@@ -101,6 +103,8 @@ export class GroupController {
   @Roles([UserType.TEACHER])
   @Get('')
   async getGroupsFromTeacher(@Req() request: UserRequest) {
-    return await this.userService.getGroupsFromTeacher(request.user as Teacher);
+    return this.groupMapper.mapGroupTab(
+      await this.userService.getGroupsFromTeacher(request.user as Teacher),
+    );
   }
 }

@@ -9,10 +9,10 @@ import { UserService } from './service/user.service';
 import { UserMapper } from './mapper/user.mapper';
 import { Group } from './entity/group.entity';
 import { GroupController } from './controller/group.controller';
-import { TeacherMapper } from './mapper/teacher.mapper';
+import { GroupMapper } from './mapper/group.mapper';
 
 @Module({
-  providers: [UserService, UserMapper, TeacherMapper],
+  providers: [UserService, UserMapper, GroupMapper],
   imports: [TypeOrmModule.forFeature([User, Teacher, Student, Admin, Group])],
   exports: [UserService],
   controllers: [UserController, GroupController],

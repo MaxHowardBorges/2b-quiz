@@ -14,7 +14,7 @@ import { SortOrder } from '../../constants/sortOrder.enum';
 import { Group } from '../entity/group.entity';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
 import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
-import { TeacherMapper } from '../mapper/teacher.mapper';
+import { GroupMapper } from '../mapper/group.mapper';
 
 @Injectable()
 export class UserService {
@@ -23,7 +23,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
-    private readonly teacherMapper: TeacherMapper,
+    private readonly teacherMapper: GroupMapper,
   ) {}
   async createUser(
     username: string,
@@ -274,7 +274,7 @@ export class UserService {
     return (<Teacher>await this.userRepository.findOne({
       where: { id: teacher.id },
       relations: ['createdGroups'],
-    })).createdGroups;
+    })).createdGroups; //TODO get number of member by group
   }
 
   async isGroupFromTeacher(idGroup: number, user: Teacher) {
