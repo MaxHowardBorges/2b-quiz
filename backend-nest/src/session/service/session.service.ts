@@ -284,13 +284,8 @@ export class SessionService {
           userSessionEntity.answer.push(answer);
         }
       }
-      console.log(userSessionEntity);
       await this.userSessionRepository.save(userSessionEntity, {});
     }
-
-    console.log('bug');
-
-    console.log('bug');
   }
 
   //delete questionnary of a session only with idsession
@@ -360,7 +355,6 @@ export class SessionService {
   }
 
   async getResults(idSession: number, masterUser: User) {
-    //get session with id
     const session = await this.sessionRepository.findOne({
       where: {
         id: idSession,
@@ -374,6 +368,10 @@ export class SessionService {
         },
       },
     });
+    // session.isResult = true;
+    // session.isResponses = false;
+    // session.isGlobal = false;
+    session.isResponses = session.isResult && session.isResponses;
 
     //get session's questionnary
     const questionnary = await this.questionnaryService.findQuestionnary(
@@ -390,18 +388,17 @@ export class SessionService {
     }
 
     let resultTab = new ResultsDto();
-    resultTab.questions = [];
-    resultTab.personnalResult = 0;
-    const usersSession = session.userSession;
     let average = 0;
     let openQuestions = 0;
     let isCurrentUser = false;
+
+    const usersSession = session.userSession;
     for (const userSession of usersSession) {
       if (userSession.student.id === masterUser.id) {
         isCurrentUser = !isCurrentUser;
       }
       for (const question of questionnary.questions) {
-        isCurrentUser
+        session.isResult && isCurrentUser
           ? resultTab.questions.push(
               this.sessionMapper.mapQuestionResult(question),
             )
@@ -409,64 +406,44 @@ export class SessionService {
         if (question.type === 'ouv' || question.type === 'qoc') {
           openQuestions++;
         } else {
-          let questionResult = this.percentSucess(question, userSession);
+          let questionResult = this.percentSuccess(question, userSession);
           average += questionResult.nbCorrectAnswer;
           if (isCurrentUser) {
-            questionResult.rightAnswer
-              .map((answer) => answer.content)
-              .every((correctAnswer) =>
-                resultTab.questions[
+            session.isResult
+              ? (resultTab.questions[
                   resultTab.questions.length - 1
-                ].answers.push(correctAnswer),
-              );
-            resultTab.questions[
-              resultTab.questions.length - 1
-            ].hasAnsweredCorrectly = questionResult.nbCorrectAnswer == 1;
+                ].hasAnsweredCorrectly = questionResult.nbCorrectAnswer == 1)
+              : '';
+            session.isResponses
+              ? questionResult.rightAnswer
+                  .map((answer) => answer.content)
+                  .every((correctAnswer) =>
+                    resultTab.questions[
+                      resultTab.questions.length - 1
+                    ].answers.push(correctAnswer),
+                  )
+              : '';
             resultTab.personnalResult += questionResult.nbCorrectAnswer;
           }
         }
       }
     }
+    session.isGlobal
+      ? (resultTab.globalResult =
+          (average /
+            usersSession.length /
+            (questionnary.questions.length - openQuestions)) *
+          100)
+      : '';
     resultTab.personnalResult =
       (resultTab.personnalResult /
         (questionnary.questions.length - openQuestions)) *
       100;
-    resultTab.globalResult =
-      (average /
-        usersSession.length /
-        (questionnary.questions.length - openQuestions)) *
-      100;
     return resultTab;
-    // if (session.isResult === true) {
-    //   //TODO
-    //   if (session.isResponses === true) {
-    //     //TODO
-    //   }
-    // }
-    // if (session.isGlobal) {
-    //   //Make an average result of all student in session
-    //   let average = 0;
-    //   let openQuestions = 0;
-    //   for (const user of usersSession) {
-    //     for (const question of questionnary.questions) {
-    //       if (question.type === 'ouv' || question.type === 'qoc') {
-    //         openQuestions++;
-    //       } else {
-    //         average += this.percentSucess(question, user);
-    //       }
-    //     }
-    //   }
-    //   return (
-    //     (average /
-    //       usersSession.length /
-    //       (questionnary.questions.length - openQuestions)) *
-    //     100
-    //   );
-    // }
   }
 
-  //Calculate the percent of sucess of a student
-  private percentSucess(question: Question, user: UserSession) {
+  //Calculate the percent of success of a student
+  private percentSuccess(question: Question, user: UserSession) {
     const userAnswerEveryQuestions = user.answer;
     let nbCorrectAnswer = 0;
     const userAnswer = userAnswerEveryQuestions.filter(
@@ -474,18 +451,17 @@ export class SessionService {
     );
     const rightAnswer = question.answers.filter((answer) => answer.isCorrect);
 
-    if (question.type === QuestionType.QCM) {
-      if (
-        userAnswer
-          .map((answer) => answer.id)
-          .every((idAnswerUser) =>
-            rightAnswer
-              .map((answer) => answer.id)
-              .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
-          )
-      ) {
-        nbCorrectAnswer++;
-      }
+    if (
+      question.type === QuestionType.QCM &&
+      userAnswer
+        .map((answer) => answer.id)
+        .every((idAnswerUser) =>
+          rightAnswer
+            .map((answer) => answer.id)
+            .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
+        )
+    ) {
+      nbCorrectAnswer++;
     } else if (userAnswer[0].isCorrect) {
       nbCorrectAnswer++;
     }

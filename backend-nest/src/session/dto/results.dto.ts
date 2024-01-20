@@ -1,10 +1,12 @@
-import { Question } from '../../question/entity/question.entity';
-import { notNull } from 'jest-mock-extended';
-import { IsNotEmpty } from 'class-validator';
-import { UserAnswerDto } from './userAnswer.dto';
 import { QuestionResultDto } from './questionResult.dto';
 
 export class ResultsDto {
+  constructor() {
+    this.personnalResult = 0;
+    this.questions = [];
+    this.globalResult = 0;
+  }
+
   personnalResult: number;
 
   questions: QuestionResultDto[];
