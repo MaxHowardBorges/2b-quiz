@@ -6,6 +6,8 @@ import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { AnswerDto } from '../../question/dto/answer.dto';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { Session } from '../session';
+import { SessionStatusDto } from '../dto/sessionStatus.dto';
 
 @Injectable()
 export class SessionMapper {
@@ -21,7 +23,10 @@ export class SessionMapper {
   }
 
   mapUserAnswerDto(
-    userAnswers: Map<ParticipantInterface, Map<QuestionDto, AnswerDto | string | AnswerDto[]>>,
+    userAnswers: Map<
+      ParticipantInterface,
+      Map<QuestionDto, AnswerDto | string | AnswerDto[]>
+    >,
   ): UserAnswerDto[] {
     const userAnswerDtos = [];
     for (const [user, innerMap] of userAnswers.entries()) {
@@ -48,5 +53,15 @@ export class SessionMapper {
     }
 
     return userAnswerDtos;
+  }
+
+  mapSessionStatusDto(session: Session): SessionStatusDto {
+    const sessionStatusDto = new SessionStatusDto();
+    sessionStatusDto.nbJoined = session.connectedUser.size;
+    sessionStatusDto.nbAnswered = session.getNbAnsweredForCurrentQuestion();
+    sessionStatusDto.settings = session.settings;
+    sessionStatusDto.displaySettings = session.displaySettings;
+    sessionStatusDto.whitelist = session.whitelist;
+    return sessionStatusDto;
   }
 }

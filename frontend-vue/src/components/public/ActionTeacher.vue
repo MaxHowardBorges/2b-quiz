@@ -1,16 +1,26 @@
 <template>
   <div class="action-block">
+    <div>
+      <p v-if="!sessionStore.status.nbAnswered">
+        {{ sessionStore.status.nbJoined }} user joined
+      </p>
+      <p v-else>
+        {{ sessionStore.status.nbAnswered }}/{{ sessionStore.status.nbJoined }}
+        user answered
+      </p>
+    </div>
     <v-btn @click="endSession" class="btn btn-primary">Fin de la session</v-btn>
-    <v-btn @click="nextQuestion" class="btn btn-success">Question suivante</v-btn>
+    <v-btn @click="nextQuestion" class="btn btn-success">
+      Question suivante
+    </v-btn>
     <v-btn @click="openSettings" class="btn btn-info">Settings</v-btn>
     <v-switch
       v-model="model"
       color="primary"
       hide-details
-      inset
+      :inset="true"
       @change="toggleSwitch"
-      :label="`Switch: ${model?'ouvert':'fermé'}`"
-    ></v-switch>
+      :label="`Switch: ${model ? 'ouvert' : 'fermé'}`"></v-switch>
 
     <v-dialog v-model="setting" max-width="500px">
       <v-card>
@@ -18,23 +28,19 @@
           <span class="headline">Paramètres</span>
         </v-card-title>
 
-        <v-card-text>A complété
-        </v-card-text>
+        <v-card-text>A complété</v-card-text>
 
         <!-- TODO add settings -->
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="this.setting = false">
-            Annuler
-          </v-btn>
+          <v-btn color="primary" @click="this.setting = false">Annuler</v-btn>
           <v-btn color="primary" @click="this.setting = false">
             Enregistrer
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 

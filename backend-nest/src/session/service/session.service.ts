@@ -348,4 +348,12 @@ export class SessionService {
     }
     return !!session;
   }
+
+  getSessionStatus(idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      return session;
+    }
+    return null;
+  }
 }

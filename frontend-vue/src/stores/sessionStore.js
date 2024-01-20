@@ -4,6 +4,7 @@ import {
   getCurrentQuestion,
   getNextQuestion,
   getSessionResults,
+  getSessionStatus,
   joinSession,
   sendAnswer,
 } from '@/api/session';
@@ -22,6 +23,7 @@ export const useSessionStore = defineStore('session', {
     isDisplay: false,
     isHost: false,
     isParticipant: false,
+    status: { settings: null, nbJoined: null, nbAnswered: null },
   }),
   actions: {
     setQuestion(question) {
@@ -93,6 +95,7 @@ export const useSessionStore = defineStore('session', {
       const content = await response.json();
       this.isHost = true;
       this.setIdSession(content.id);
+      await this.getSessionStatus();
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEHost();
     },
@@ -103,6 +106,7 @@ export const useSessionStore = defineStore('session', {
       const response = await getNextQuestion(body, userStore.getToken());
       await throwIfNotOK(response, 201);
       userStore.updateToken(response.headers.get('Authorization'));
+      await this.getSessionStatus();
       return await response.json();
     },
     async getCurrentQuestionForTeacher(responseText) {
@@ -123,6 +127,17 @@ export const useSessionStore = defineStore('session', {
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setTabResult(await response.json());
+    },
+    async getSessionStatus() {
+      const userStore = useUserStore();
+      const response = await getSessionStatus(
+        userStore.getToken(),
+        this.idSession,
+      );
+      await throwIfNotOK(response);
+      userStore.updateToken(response.headers.get('Authorization'));
+      this.status = await response.json();
+      console.log(this.status);
     },
     disconnectFromSession(error) {
       const sessionEventStore = useSessionEventStore();

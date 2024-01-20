@@ -59,10 +59,11 @@ export const useSessionEventStore = defineStore('sessionEvent', {
         sessionStore.disconnectFromSession('Error on SSE');
       };
       this.setEventSource(eventSource);
-      this.listenYoHostEvents();
+      this.listenToHostEvents();
     },
-    listenYoHostEvents() {
+    listenToHostEvents() {
       const eventSource = this.eventSource;
+      const sessionStore = useSessionStore();
       if (eventSource) {
         eventSource.onmessage = async (message) => {
           message = JSON.parse(message.data);
@@ -73,11 +74,12 @@ export const useSessionEventStore = defineStore('sessionEvent', {
               this.eventList.push(
                 user.username + ' answered ' + message.payload.answer.content,
               );
-              //TODO GET nb of answer
+              await sessionStore.getSessionStatus();
               break;
             case HostEvents.NEW_CONNECTION:
               user = message.payload;
               this.eventList.push(user.username + ' joined the session');
+              await sessionStore.getSessionStatus();
               //TODO GET nb of connection
               break;
             default:
