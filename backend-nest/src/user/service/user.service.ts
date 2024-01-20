@@ -13,13 +13,7 @@ import { SortUserParam } from '../constants/sortUserParam.enum';
 import { SortOrder } from '../../constants/sortOrder.enum';
 import { Group } from '../entity/group.entity';
 import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
-import { UserAlreadyJoinedException } from '../../session/exception/userAlreadyJoined.exception';
-import { StudentNotInGroupException } from '../exception/studentNotInGroup.exception';
 import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
-import { GroupNameEmptyException } from '../exception/groupNameEmpty.exception';
-import { StudentCantCreateGroupsException } from '../exception/StudentCantCreateGroups.exception';
-import { TeacherHasNoCreatedGroupsException } from '../exception/teacherHasNoCreatedGroups.exception';
-import { TeacherGroupDto } from '../dto/teacherGroup.dto';
 import { TeacherMapper } from '../mapper/teacher.mapper';
 
 @Injectable()
@@ -234,7 +228,7 @@ export class UserService {
     return group;
   }
 
-  async deleteGroup(idGroup: number, teacher: Teacher) {
+  async deleteGroup(idGroup: number) {
     const group = await this.getGroup(idGroup);
     await this.groupRepository.delete(idGroup);
 
@@ -270,14 +264,17 @@ export class UserService {
     const group = await this.getGroup(idGroup);
     const user = await this.getStudent(idStudent);
 
-    await this.groupRepository.delete({ tabUsers: { id: user.id } });
+    group.tabUsers = group.tabUsers.filter((tabUser) => tabUser.id !== user.id);
+    await this.groupRepository.save(group);
 
     return !!(group && user);
   }
 
   async getGroupsFromTeacher(teacher: Teacher) {
-    console.log(teacher);
-    return teacher.createdGroups;
+    return (<Teacher>await this.userRepository.findOne({
+      where: { id: teacher.id },
+      relations: ['createdGroups'],
+    })).createdGroups;
   }
 
   async isGroupFromTeacher(idGroup: number, user: Teacher) {

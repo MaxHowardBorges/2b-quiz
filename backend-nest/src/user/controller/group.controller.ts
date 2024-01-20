@@ -5,19 +5,13 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   Put,
   Req,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
-import { UserMapper } from '../mapper/user.mapper';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../constants/userType.constant';
-import { CreateGroupDto } from '../dto/createGroup.dto';
-import { AddStudentToGroupDto } from '../dto/addStudentToGroup.dto';
-import { RemoveStudentFromGroupDto } from '../dto/removeStudentFromGroup.dto';
 import { UserRequest } from '../../auth/config/user.request';
 import { Teacher } from '../entity/teacher.entity';
 import { TeacherMapper } from '../mapper/teacher.mapper';
@@ -32,10 +26,11 @@ export class GroupController {
     private readonly teacherMapper: TeacherMapper,
   ) {}
   @Roles([UserType.TEACHER])
-  @Post('/create') //TODO to test
+  @Post('/create')
   async createGroup(@Req() request: UserRequest, @Body('name') name: string) {
-    return this.userService.createGroup(name, <Teacher>request.user);
+    return this.userService.createGroup(name, request.user as Teacher);
   }
+
   @Roles([UserType.TEACHER])
   @Delete('/:id') //TODO to test
   async deleteGroup(
@@ -43,14 +38,14 @@ export class GroupController {
     @Param('id', ParseIntPipe) idGroup: number,
   ) {
     if (
-      await this.userService.isGroupFromTeacher(
+      !(await this.userService.isGroupFromTeacher(
         idGroup,
         request.user as Teacher,
-      )
+      ))
     ) {
       throw new DontOwnTheGroup();
     }
-    return this.userService.deleteGroup(idGroup, request.user as Teacher);
+    return this.userService.deleteGroup(idGroup);
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
@@ -59,17 +54,17 @@ export class GroupController {
     return this.userService.getGroup(idGroup);
   }
   @Roles([UserType.TEACHER])
-  @Post('/:id/user/:idUser') //TODO to test
+  @Put('/:id/user/:idUser')
   async addUserToGroup(
     @Req() request: UserRequest,
     @Param('id', ParseIntPipe) idGroup: number,
     @Param('idUser', ParseIntPipe) idUser: number,
   ) {
     if (
-      await this.userService.isGroupFromTeacher(
+      !(await this.userService.isGroupFromTeacher(
         idGroup,
         request.user as Teacher,
-      )
+      ))
     ) {
       throw new DontOwnTheGroup();
     } else if (await this.userService.isAlreadyInGroup(idGroup, idUser)) {
@@ -79,17 +74,17 @@ export class GroupController {
   }
 
   @Roles([UserType.TEACHER])
-  @Delete('/:id/user/:idUser') //TODO to test
+  @Delete('/:id/user/:idUser')
   async removeStudentFromGroup(
     @Req() request: UserRequest,
     @Param('id', ParseIntPipe) idGroup: number,
     @Param('idUser', ParseIntPipe) idUser: number,
   ) {
     if (
-      await this.userService.isGroupFromTeacher(
+      !(await this.userService.isGroupFromTeacher(
         idGroup,
         request.user as Teacher,
-      )
+      ))
     ) {
       throw new DontOwnTheGroup();
     } else if (!(await this.userService.isAlreadyInGroup(idGroup, idUser))) {
@@ -104,8 +99,8 @@ export class GroupController {
   }
 
   @Roles([UserType.TEACHER])
-  @Get('/user') //TODO to test
+  @Get('')
   async getGroupsFromTeacher(@Req() request: UserRequest) {
-    return this.userService.getGroupsFromTeacher(request.user as Teacher);
+    return await this.userService.getGroupsFromTeacher(request.user as Teacher);
   }
 }
