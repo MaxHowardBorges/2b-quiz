@@ -60,7 +60,7 @@
         <create-session></create-session>
       </template>
       <template v-else>
-        <join-form></join-form>
+        <join-form @joined-session="prepareSession"></join-form>
       </template>
     </div>
   </template>
@@ -80,10 +80,6 @@
   import CreateSession from '@/components/session/CreateSession.vue';
 
   export default {
-    beforeRouteUpdate(to, from, next) {
-      this.waiting = to.query.key !== 'display';
-      next();
-    },
     name: 'SessionView',
     props: {
       isCreating: Boolean || false,
@@ -101,44 +97,64 @@
     setup() {
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
-
-      let ended = ref(false);
-      let waitingSessionStart = ref(true);
-      let echoQuestion = ref(null);
-      let waiting = ref(true);
-      let toggleValue = 'true';
-
-      sessionStore.$subscribe((mutation, state) => {
-        if (state.ended !== ended.value) {
-          ended.value = true;
-          this.sessionStore.sessionEnd();
-        } else if (
-          echoQuestion.value !== state.question &&
-          userStore.isStudent
-        ) {
-          echoQuestion.value = state.question;
-          waitingSessionStart.value = false;
-          waiting.value = false;
-        }
-      });
       return {
-        toggleValue,
-        ended,
         sessionStore,
         userStore,
-        waiting,
-        waitingSessionStart,
+      };
+    },
+    data() {
+      return {
+        subscribe: null,
+        ended: false,
+        waitingSessionStart: ref(true),
+        echoQuestion: this.sessionStore.question,
+        waiting: true,
+        toggleValue: 'true',
       };
     },
     beforeMount() {
       this.toggleValue = this.isCreating ? 'true' : 'false';
     },
     methods: {
+      subscribeToEvents() {
+        this.subscribe = this.sessionStore.$subscribe((mutation, state) => {
+          if (state.ended !== this.ended) {
+            this.ended = true;
+            this.sessionStore.sessionEnd();
+          } else if (
+            this.echoQuestion !== state.question &&
+            this.sessionStore.isParticipant
+          ) {
+            this.echoQuestion = state.question;
+            this.waitingSessionStart = false;
+            this.waiting = false;
+          }
+        });
+      },
       reset() {
         this.ended = false;
         this.sessionStore.setEnded(false);
         this.waiting = true;
         this.waitingSessionStart = true;
+        this.echoQuestion = this.sessionStore.question;
+        this.subscribe = null;
+      },
+      async prepareSession(isStarted, idSession) {
+        this.sessionStore.setIdSession(idSession);
+        if (isStarted) {
+          await this.sessionStore.getCurrentQuestions();
+          this.waiting = false;
+          this.waitingSessionStart = false;
+          this.echoQuestion = this.sessionStore.question;
+        } else {
+          this.reset();
+        }
+        console.log('prepareSession', isStarted);
+        console.log('waitingSessionStart', this.waitingSessionStart);
+        console.log('waiting', this.waiting);
+        console.log('echoQuestion', this.echoQuestion);
+        console.log('ended', this.ended);
+        this.subscribeToEvents();
       },
     },
   };

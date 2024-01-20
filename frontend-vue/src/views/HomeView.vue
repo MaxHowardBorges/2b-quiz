@@ -11,7 +11,16 @@
   <div
     v-if="userStore.isAuthenticated"
     class="h-100 d-flex align-center justify-center ma-2">
-    <join-form v-if="userStore.isStudent" />
+    <div class="">
+      <v-btn
+        v-if="userStore.isStudent"
+        @click="handleJoinSession"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Join session</p>
+      </v-btn>
+    </div>
     <new-user-block v-if="userStore.isNotChoose" />
     <menu-teacher
       v-if="userStore.isTeacher"
@@ -29,6 +38,7 @@
   import MenuTeacher from '@/components/home/MenuTeacherBlock.vue';
   import AdminBlock from '@/components/admin/AdminBlock.vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
+  import router from '@/router';
 
   export default {
     name: 'HomeView',
@@ -68,6 +78,11 @@
           '.\nPlease retry later.';
         this.$refs.sessionErrorDialog.dialogError = true;
       }
+    },
+    methods: {
+      handleJoinSession() {
+        router.push('/session');
+      },
     },
   };
 </script>

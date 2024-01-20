@@ -1,24 +1,25 @@
-export async function joinSession(body, token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/session/join', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(body),
-  });
-}
-
-export async function getCurrentQuestion(body, token) {
+export async function joinSession(idSession, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/session/question/current',
+    import.meta.env.VITE_API_URL + `/session/${idSession}/join`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(body),
+    },
+  );
+}
+
+export async function getCurrentQuestion(idSession, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/question`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
   );
 }

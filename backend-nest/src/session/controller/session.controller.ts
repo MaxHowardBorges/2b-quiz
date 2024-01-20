@@ -12,7 +12,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Session } from '../session';
-import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
@@ -22,7 +21,6 @@ import { UserRequest } from '../../auth/config/user.request';
 import { IsNotHostException } from '../exception/isNotHost.exception';
 import { IsHostException } from '../exception/isHost.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
-import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { WhitelistDto } from '../dto/whitelist.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
@@ -69,38 +67,6 @@ export class SessionController {
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/join') //TODO replace with /:idSession/
-  @HttpCode(HttpStatus.NO_CONTENT)
-  joinSession(
-    @Req() request: UserRequest,
-    @Body(new ValidationPipe()) body: JoinSessionDto,
-  ) {
-    if (
-      request.user instanceof Teacher &&
-      this.sessionService.isHost(body.idSession, request.user)
-    )
-      throw new IsHostException();
-    this.sessionService.join(body.idSession, request.user);
-  }
-
-  @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/question/current') //TODO go to get & replace with /:idSession/
-  async getCurrentQuestion(
-    @Req() request: UserRequest,
-    @Body(new ValidationPipe()) body: GetCurrentQuestionDto,
-  ): Promise<CurrentQuestionDto> {
-    if (
-      !(
-        this.sessionService.isParticipant(body.idSession, request.user) ||
-        this.sessionService.isHost(body.idSession, request.user as Teacher)
-      )
-    )
-      throw new IsNotParticipantException();
-    const question = await this.sessionService.currentQuestion(body.idSession);
-    return this.sessionMapper.mapCurrentQuestionDto(question);
-  }
-
-  @Roles([UserType.STUDENT, UserType.TEACHER])
   @Post('/respond') //TODO replace with /:idSession/
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
@@ -135,6 +101,39 @@ export class SessionController {
   @Get('/getMap2')
   async getMap2() {
     return this.sessionService.getMap();
+  }
+
+  @Roles([UserType.STUDENT, UserType.TEACHER])
+  @Post('/:idSession/question')
+  async getCurrentQuestion(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: string,
+  ): Promise<CurrentQuestionDto> {
+    if (
+      !(
+        this.sessionService.isParticipant(idSession, request.user) ||
+        this.sessionService.isHost(idSession, request.user as Teacher)
+      )
+    )
+      throw new IsNotParticipantException();
+    const question = await this.sessionService.currentQuestion(idSession);
+    return this.sessionMapper.mapCurrentQuestionDto(question);
+  }
+
+  @Roles([UserType.STUDENT, UserType.TEACHER])
+  @Post('/:idSession/join') //TODO replace with /:idSession/
+  joinSession(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: string,
+  ) {
+    if (
+      request.user instanceof Teacher &&
+      this.sessionService.isHost(idSession, request.user)
+    )
+      throw new IsHostException();
+    this.sessionService.join(idSession, request.user);
+    if (this.sessionService.isStarted(idSession)) return { isStarted: true };
+    return { isStarted: false };
   }
 
   @Roles([UserType.TEACHER])

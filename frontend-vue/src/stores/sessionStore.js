@@ -46,23 +46,25 @@ export const useSessionStore = defineStore('session', {
     setTabResult(results) {
       this.isDisplay = results;
     },
-    async joinSession(body) {
+    async joinSession(idSession) {
       const userStore = useUserStore();
       userStore.reloadState();
       this.setEnded(false);
-      const response = await joinSession(body, userStore.getToken());
-      await throwIfNotOK(response, 204);
+      const response = await joinSession(idSession, userStore.getToken());
+      await throwIfNotOK(response, 201);
       userStore.updateToken(response.headers.get('Authorization'));
+      const content = await response.json();
       this.isParticipant = true;
-      this.setIdSession(body.idSession);
-      const sessionEventStore = useSessionEventStore();
-      sessionEventStore.connectToSSEStudent();
+      console.log(content.isStarted);
+      return content.isStarted;
     },
     async getCurrentQuestions() {
       const userStore = useUserStore();
       userStore.reloadState();
-      const body = { idSession: this.idSession };
-      const response = await getCurrentQuestion(body, userStore.getToken());
+      const response = await getCurrentQuestion(
+        this.idSession,
+        userStore.getToken(),
+      );
       if (!response.ok) {
         response.text().then((text) => console.log(text));
         throw new Error('Error on get current question');
@@ -96,15 +98,19 @@ export const useSessionStore = defineStore('session', {
       const userStore = useUserStore();
       userStore.reloadState();
       let body;
+      const questionnaryList = [];
+      for (const question of this.questionnary) {
+        questionnaryList.push(question.id);
+      }
       if (selectedUsersId !== null && selectedGroupsId !== null) {
         body = {
-          questionnaryList: this.questionnary,
+          questionnaryList: questionnaryList,
           settings: settings,
           whitelist: selectedUsersId,
           whitelistGroups: selectedGroupsId,
         };
       } else {
-        body = { questionnaryList: this.questionnary, settings: settings };
+        body = { questionnaryList: questionnaryList, settings: settings };
       }
       const response = await createSession(userStore.getToken(), body);
       await throwIfNotOK(response);

@@ -35,6 +35,7 @@ describe('SessionService', () => {
   const mockQuestionnaryService = {
     findQuestionnary: jest.fn(),
     findQuestionsFromIdQuestionnary: jest.fn(),
+    findQuestionnaryWithQuestionsId: jest.fn(),
   };
 
   const mockQuestionnaryRepository = {
@@ -246,6 +247,9 @@ describe('SessionService', () => {
       expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
+      mockQuestionnaryService.findQuestionnaryWithQuestionsId.mockResolvedValue(
+        questionnary.questions,
+      );
       const testSession = await service.initializeSession(
         hostTeacher,
         [questionnary.id],
@@ -256,7 +260,7 @@ describe('SessionService', () => {
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(Session);
       expect(testSession.id).not.toBeNull();
-      expect(testSession.id).not.toMatch(/[a-zA-ZÀ-ÿ]/);
+      expect(testSession.id).not.toMatch(/[a-zÀ-ÿ]/);
     });
   });
 

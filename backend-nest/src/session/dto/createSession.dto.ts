@@ -4,7 +4,6 @@ import { Type } from 'class-transformer';
 
 export class CreateSessionDto {
   @IsNotEmpty()
-  @IsNotEmpty({ each: true })
   @IsArray()
   questionnaryList: number[];
 

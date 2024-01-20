@@ -8,7 +8,6 @@ import { UserUnknownException } from '../exception/userUnknown.exception';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
-import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
 import { EventParticipantEnum } from '../../event/enum/eventParticipant.enum';
 import { EventService } from '../../event/service/event.service';
@@ -48,7 +47,9 @@ export class SessionService {
     }
     const questionnaries: Questionnary[] = [];
     for (const id of ids) {
-      questionnaries.push(await this.questionnaryService.findQuestionnary(id));
+      questionnaries.push(
+        await this.questionnaryService.findQuestionnaryWithQuestionsId(id),
+      );
     }
     this.sessionMap.set(
       idSession,
@@ -91,10 +92,6 @@ export class SessionService {
   }
 
   isSessionExists(idSession: string): boolean {
-    return this.sessionMap.has(idSession);
-  }
-
-  startSession(idSession: string): boolean {
     return this.sessionMap.has(idSession);
   }
 
@@ -161,31 +158,23 @@ export class SessionService {
   }
 
   join(idSession: string, user: ParticipantInterface): void {
-    if (this.sessionMap.has(idSession) == false) {
+    if (!this.sessionMap.has(idSession)) {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
-
-    if (session.settings.accessType == AccessTypeEnum.Public) {
-      if (session.connectedUser.has(user)) {
-        throw new UserAlreadyJoinedException();
-      }
-      this.joinParticipant(session, user);
-    } else if (
-      session.settings.accessType == AccessTypeEnum.Private &&
-      session.whitelist.includes(user.id)
-    ) {
-      if (session.connectedUser.has(user)) {
-        throw new UserAlreadyJoinedException();
-      }
-      this.joinParticipant(session, user);
-    } else if (
-      session.settings.accessType == AccessTypeEnum.Private &&
-      !session.whitelist.includes(user.id)
-    ) {
-      throw new UserNotInWhitelistException();
-    } else {
-      throw new SessionClosedException();
+    switch (session.settings.accessType) {
+      case AccessTypeEnum.Public:
+        this.joinParticipant(session, user);
+        break;
+      case AccessTypeEnum.Private:
+        if (session.whitelist.includes(user.id)) {
+          this.joinParticipant(session, user);
+        } else {
+          throw new UserNotInWhitelistException();
+        }
+        break;
+      default:
+        throw new SessionClosedException();
     }
   }
 
@@ -350,6 +339,16 @@ export class SessionService {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       return session;
+    }
+    return null;
+  }
+
+  isStarted(idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      return !(
+        session.questionNumber === -1 && session.questionnaryNumber === 0
+      );
     }
     return null;
   }
