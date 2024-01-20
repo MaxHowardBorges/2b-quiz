@@ -75,7 +75,7 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
   import EventSession from '@/components/public/EventSession.vue';
-  import ActionTeacher from '@/components/public/ActionTeacher.vue';
+  import ActionTeacher from '@/components/session/ActionTeacher.vue';
   import JoinForm from '@/components/session/JoinForm.vue';
   import CreateSession from '@/components/session/CreateSession.vue';
 

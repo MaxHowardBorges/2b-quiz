@@ -47,7 +47,6 @@
       const sessionStore = useSessionStore();
       return {
         loading: ref(false),
-        participantsCount: ref(''), // TODO get update nb
         sessionStore,
       };
     },

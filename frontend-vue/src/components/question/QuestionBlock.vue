@@ -9,7 +9,6 @@
       <p>{{ sessionStore.question.content }}</p>
     </div>
   </v-card-title>
-  <!--    <template v-slot:subtitle>some hint ??</template> TODO check utility -->
   <answer-group
     v-if="!sessionStore.isDisplay || sessionStore.displaySettings.displayAnswer"
     @new-selected-value="relayEvent"

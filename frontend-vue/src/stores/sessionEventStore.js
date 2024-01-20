@@ -80,7 +80,6 @@ export const useSessionEventStore = defineStore('sessionEvent', {
               user = message.payload;
               this.eventList.push(user.username + ' joined the session');
               await sessionStore.getSessionStatus();
-              //TODO GET nb of connection
               break;
             default:
               console.error('not used data ' + message.data);

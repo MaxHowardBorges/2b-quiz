@@ -103,7 +103,6 @@
         class="mt-4 mx-3">
         Choisir étudiants
       </v-btn>
-      <!--    TODO choisir les membres à ajouter en cours de route -->
     </div>
     <v-divider class="ma-2"></v-divider>
     <p class="text-h5">Display settings</p>

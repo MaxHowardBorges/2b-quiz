@@ -121,7 +121,7 @@ export class SessionController {
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/:idSession/join') //TODO replace with /:idSession/
+  @Post('/:idSession/join')
   joinSession(
     @Req() request: UserRequest,
     @Param('idSession') idSession: string,

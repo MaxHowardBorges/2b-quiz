@@ -4,7 +4,6 @@ import SessionView from '@/views/SessionView.vue';
 import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 import DisplayView from '@/views/DisplayView.vue';
-import OrderQuestionnary from '@/views/OrderQuestionnary.vue';
 import { UserRoles } from '@/utils/userRoles';
 
 const routes = [
@@ -17,15 +16,6 @@ const routes = [
       isCreating: !!route.query.isCreating,
     }),
   },
-
-  {
-    path: '/order-questionnary',
-    name: 'Order Questionnary',
-    component: OrderQuestionnary,
-    meta: { public: true, inMenu: true },
-    //
-  },
-
   {
     path: '/',
     name: 'Home',
@@ -38,13 +28,6 @@ const routes = [
     }),
     component: HomeView,
     meta: { public: true, inMenu: true },
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    meta: { public: true, disabled: true },
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/RegisterView.vue'),
   },
   {
     path: '/user',

@@ -16,7 +16,7 @@
   import SessionWaitingBlockStudent from '@/components/session/SessionWaitingBlockStudent.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
-  import ActionTeacher from '@/components/public/ActionTeacher.vue';
+  import ActionTeacher from '@/components/session/ActionTeacher.vue';
 
   export default {
     name: 'DisplayView',

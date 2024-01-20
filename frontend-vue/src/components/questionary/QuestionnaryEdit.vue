@@ -193,10 +193,9 @@
         if (content && answers) {
           if (this.useQ.idQuestionnary == null) {
             await this.useQ.createQuestionnary({
-              author: 'author_default',
               title: this.questionnaryName,
               questions: [],
-            }); //TODO get author
+            });
             await this.useQ.addQuestion({ content, type, answers });
           } else if (this.statusQ === 'modify') {
             await this.useQ.modifyQuestion(this.idQuestion, {
@@ -279,12 +278,6 @@
 
   .button-container {
     display: flex;
-  }
-
-  .errrmes {
-    background-color: rgba(255, 0, 0, 0.2);
-    color: brown;
-    border-radius: 5px;
   }
 
   #title-input input {

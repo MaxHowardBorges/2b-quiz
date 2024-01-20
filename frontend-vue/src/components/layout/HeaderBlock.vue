@@ -110,7 +110,6 @@
           : 'darkTheme';
       },
       toggleLogout() {
-        // TODO a lier avec le back
         this.userStore.selfLogout();
       },
       getVS() {
