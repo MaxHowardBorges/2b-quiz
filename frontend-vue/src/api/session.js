@@ -110,3 +110,16 @@ export async function addToWhitelist(token, idSession, body) {
     },
   );
 }
+
+export async function getSessionDisplaySettings(token, idSession) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/display-settings`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}

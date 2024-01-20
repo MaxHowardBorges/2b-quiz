@@ -192,7 +192,7 @@
       await this.getUsersAndGroups();
       if (this.isInSession) {
         this.selectedAcces = this.sessionStore.settings.accessType;
-        this.displaySetting = this.sessionStore.settings.displaySetting;
+        this.displaySettings = this.sessionStore.settings.displaySettings;
         if (this.sessionStore.whitelist)
           for (let i = 0; i < this.sessionStore.whitelist.length; i++) {
             const idUser = this.sessionStore.whitelist[i];

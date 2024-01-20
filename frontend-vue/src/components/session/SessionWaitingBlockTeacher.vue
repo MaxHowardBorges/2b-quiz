@@ -13,7 +13,7 @@
   <v-divider class="ma-3"></v-divider>
   <div>
     <v-btn color="primary" class="mx-6 my-3" @click="launchWindows">
-      <p class="text-white font-weight-bold pa-2">Launch 3rd screen</p>
+      <p class="text-white font-weight-bold pa-2">Launch public screen</p>
     </v-btn>
     <v-btn color="primary" class="mx-6 my-3" @click="openSettings">
       Settings

@@ -7,3 +7,7 @@ export const HostEvents = {
   NEW_CONNECTION: 'new_connection',
   NEW_ANSWER: 'new_answer',
 };
+
+export const ObserverEvents = {
+  NEW_DISPLAY_SETTINGS: 'new_display_settings',
+};

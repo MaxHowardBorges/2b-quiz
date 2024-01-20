@@ -6,7 +6,7 @@
       :id-session="idSession"
       :waitingSessionStart="true" />
     <session-question-block v-if="!waiting && !ended" />
-<!--    <ActionTeacher></ActionTeacher>-->
+    <!--    <ActionTeacher></ActionTeacher>-->
   </div>
 </template>
 
@@ -20,7 +20,12 @@
 
   export default {
     name: 'DisplayView',
-    components: { ActionTeacher, SessionWaitingBlockStudent, SessionQuestionBlock, WaitForm },
+    components: {
+      ActionTeacher,
+      SessionWaitingBlockStudent,
+      SessionQuestionBlock,
+      WaitForm,
+    },
     props: {
       idSession: String,
     },
@@ -41,7 +46,7 @@
     },
     async mounted() {
       try {
-        this.sessionStore.connectToSessionAsObserver(this.idSession);
+        await this.sessionStore.connectToSessionAsObserver(this.idSession);
       } catch (error) {
         this.sessionStore.disconnectFromSession(
           'Error while connecting to session',

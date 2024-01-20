@@ -1,4 +1,4 @@
-import { Events, HostEvents } from '@/utils/events';
+import { Events, HostEvents, ObserverEvents } from '@/utils/events';
 import { defineStore } from 'pinia';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useUserStore } from '@/stores/userStore';
@@ -99,6 +99,12 @@ export const useSessionEventStore = defineStore('sessionEvent', {
               break;
             case Events.END_SESSION:
               this.loadEnd();
+              break;
+            case ObserverEvents.NEW_DISPLAY_SETTINGS:
+              const sessionStore = useSessionStore();
+              if (sessionStore.isDisplay) {
+                await sessionStore.getSessionDisplaySettings();
+              }
               break;
             default:
               console.error('not used data ' + message.data);

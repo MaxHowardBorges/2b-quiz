@@ -4,6 +4,7 @@ import {
   createSession,
   getCurrentQuestion,
   getNextQuestion,
+  getSessionDisplaySettings,
   getSessionResults,
   getSessionStatus,
   joinSession,
@@ -29,6 +30,10 @@ export const useSessionStore = defineStore('session', {
     settings: null,
     whitelist: [],
     whitelistGroups: [],
+    displaySettings: {
+      displayQuestion: true,
+      displayAnswer: true,
+    },
   }),
   actions: {
     setQuestion(question) {
@@ -209,12 +214,27 @@ export const useSessionStore = defineStore('session', {
       this.setQuestion({ content: '', answers: [], type: '' });
       router.push({ path: '/', query: { sessionError: error } }).then();
     },
-    connectToSessionAsObserver(idSession) {
+    async connectToSessionAsObserver(idSession) {
       this.setIsDisplay(true);
       this.setIdSession(idSession);
       this.setEnded(false);
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEObserver();
+      await this.getSessionDisplaySettings();
+    },
+    async getSessionDisplaySettings() {
+      try {
+        const userStore = useUserStore();
+        const response = await getSessionDisplaySettings(
+          userStore.getToken(),
+          this.idSession,
+        );
+        await throwIfNotOK(response);
+        userStore.updateToken(response.headers.get('Authorization'));
+        this.displaySettings = await response.json();
+      } catch (e) {
+        this.disconnectFromSession(e.message);
+      }
     },
     sessionEnd() {
       this.isParticipant = null;
