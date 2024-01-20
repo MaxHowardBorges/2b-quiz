@@ -21,6 +21,7 @@ import { NotAuthorException } from '../exception/notAuthor.exception';
 import { QuestionnaryNotFoundException } from '../exception/questionnaryNotFound.exception';
 import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
 import { QuestionMapper } from '../../question/mapper/question.mapper';
+import { QuestionnaryNbQuestionDto } from '../dto/questionnaryNbQuestion.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {

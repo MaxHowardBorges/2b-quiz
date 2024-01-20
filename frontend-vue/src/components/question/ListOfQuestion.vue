@@ -1,5 +1,6 @@
 <template>
   <v-sheet
+    min-width="400px"
     rounded="lg"
     width="70%"
     class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
@@ -11,51 +12,64 @@
       <h1>Private Question Bank</h1>
     </div>
 
-    <div style="display: flex; margin: 20px 0; width: 50%">
-      <div id="divDrop1">
-        <v-select
-          v-model="selectedType"
-          :items="typeOptions"
-          item-title="typeLabel"
-          item-value="typeCode"
-          label="Types"
-          :multiple="true"
-          style="width: 180%"
-          @change="filteredQuestions"></v-select>
+    <div class="d-flex justify-center flex-column w-75">
+      <div class="w-100">
+        <v-text-field
+          v-model="this.searchQuery"
+          min-width="200px"
+          label="Search"
+          @input="filteredQuestions"></v-text-field>
       </div>
-      <v-text-field
-        id="search"
-        v-model="this.searchQuery"
-        label="Search"
-        @input="filteredQuestions"></v-text-field>
-
-      <div id="divDrop2">
-        <v-select
-          v-model="selectedTags"
-          :items="tags"
-          item-title="description"
-          multiple=""
-          return-object
-          label="Tags"
-          style="width: 180%"
-          @change="filteredQuestions"></v-select>
-      </div>
+      <v-sheet class="d-flex justify-center" min-width="200px">
+        <v-sheet min-width="200px" class="w-100">
+          <v-autocomplete
+            class="mr-2"
+            :clearable="true"
+            v-model="selectedType"
+            :items="typeOptions"
+            :chips="true"
+            :closable-chips="true"
+            item-title="typeLabel"
+            item-value="typeCode"
+            label="Types"
+            multiple=""
+            variant="outlined"
+            @change="filteredQuestions"></v-autocomplete>
+        </v-sheet>
+        <v-sheet min-width="200px" class="w-100">
+          <v-autocomplete
+            v-model="selectedTags"
+            :clearable="true"
+            :items="tags"
+            :chips="true"
+            :closable-chips="true"
+            min-width="200px"
+            item-title="description"
+            multiple=""
+            return-object=""
+            label="Tags"
+            variant="outlined"
+            @change="filteredQuestions"></v-autocomplete>
+        </v-sheet>
+      </v-sheet>
     </div>
 
     <v-pagination
       v-if="this.totalPages() > 1"
       v-model="currentPage"
       :length="this.totalPages()"></v-pagination>
-
-    <v-sheet
-      class="list"
-      v-for="(q, index) in this.paginatedQuestions()"
-      :key="index">
-      <QuestionItem
-        :question="q"
-        @modifyQuestionFromBank="modifyQuestionFromBank"
-        @showQuestionnaryList="showQuestionnaryList"></QuestionItem>
-    </v-sheet>
+    <div>
+      <v-sheet
+        class="list"
+        v-for="(q, index) in this.paginatedQuestions()"
+        :key="index">
+        <question-item
+          class="w-100 my-3"
+          :question="q"
+          @modifyQuestionFromBank="modifyQuestionFromBank"
+          @showQuestionnaryList="showQuestionnaryList"></question-item>
+      </v-sheet>
+    </div>
 
     <!-- Pagination controls -->
     <v-pagination
@@ -230,16 +244,6 @@
   #divButton {
     position: absolute;
     left: 18%;
-  }
-
-  #divDrop1 {
-    position: absolute;
-    left: 75%;
-  }
-
-  #divDrop2 {
-    position: absolute;
-    right: 75%;
   }
 
   .selected-question {

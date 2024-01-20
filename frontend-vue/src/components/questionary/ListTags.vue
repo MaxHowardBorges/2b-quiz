@@ -21,10 +21,10 @@
       :length="totalPages()"></v-pagination>
 
     <v-sheet class="list" v-for="(tag, index) in paginatedTags()" :key="index">
-      <TagItem
+      <tag-item
         :tag="tag"
         @updateTag="UpdateTag"
-        @deleteTag="DeleteTag"></TagItem>
+        @deleteTag="DeleteTag"></tag-item>
     </v-sheet>
 
     <v-pagination

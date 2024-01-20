@@ -27,7 +27,8 @@
 
     <template
       v-if="
-        (mdAndUp || userStore.isAuthenticated) &&
+        mdAndUp &&
+        userStore.isAuthenticated &&
         this.sessionStore.idSession === null
       "
       v-slot:extension>

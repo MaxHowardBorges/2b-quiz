@@ -22,7 +22,7 @@
       <v-btn
         @click="handleCreateSession"
         color="primary"
-        class="mx-6 my-3"
+        class="mx-6 my-3 w-100"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Create session</p>
       </v-btn>
@@ -32,7 +32,7 @@
       <v-btn
         @click="handleJoinSession"
         color="primary"
-        class="mx-6 my-3"
+        class="mx-6 my-3 w-100"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Join session</p>
       </v-btn>
@@ -42,19 +42,14 @@
       <v-btn
         @click="handleCreateQuestionnary"
         color="primary"
-        class="mx-6 my-3"
+        class="mx-6 my-3 w-100"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Create new Questionnary</p>
       </v-btn>
     </div>
     <div class="">
-      <v-btn color="primary" class="mx-6 my-3" max-width="250px">
+      <v-btn color="primary" class="mx-6 my-3 w-100" max-width="250px">
         <p class="text-white font-weight-bold pa-2">Session history</p>
-      </v-btn>
-    </div>
-    <div class="">
-      <v-btn color="primary" class="mx-6 my-3" max-width="250px">
-        <p class="text-white font-weight-bold pa-2">Banque privée de questions</p>
       </v-btn>
     </div>
   </v-sheet>

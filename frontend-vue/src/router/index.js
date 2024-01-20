@@ -46,7 +46,7 @@ const routes = [
     path: '/public',
     name: 'public',
     component: DisplayView,
-    meta: { inMenu: true },
+    meta: { inMenu: false },
     props: (route) => ({
       idSession: route.query.idSession,
     }),

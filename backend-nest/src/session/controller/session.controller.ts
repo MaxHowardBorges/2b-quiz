@@ -16,7 +16,6 @@ import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
 import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
-import { QuestionMapper } from '../../question/mapper/question.mapper';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
@@ -40,7 +39,6 @@ export class SessionController {
     private sessionService: SessionService,
     private readonly sessionMapper: SessionMapper,
     private readonly questionnaryMapper: QuestionnaryMapper,
-    private readonly questionMapper: QuestionMapper,
   ) {}
 
   @Roles([UserType.TEACHER])

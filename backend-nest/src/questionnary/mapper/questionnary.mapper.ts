@@ -3,6 +3,7 @@ import { Questionnary } from '../entity/questionnary.entity';
 
 import { QuestionnaryDto } from '../dto/questionnary.dto';
 import { QuestionMapper } from '../../question/mapper/question.mapper';
+import { QuestionnaryNbQuestionDto } from '../dto/questionnaryNbQuestion.dto';
 
 @Injectable()
 export class QuestionnaryMapper {

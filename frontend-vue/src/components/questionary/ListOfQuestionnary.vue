@@ -6,7 +6,7 @@
     elevation="5">
     <h1>View questionnary</h1>
 
-    <v-sheet class="list">
+    <v-sheet class="list w-75 mt-2">
       <v-sheet
         v-if="this.useQ.questionnaryList.length > 0"
         v-for="(questionnary, index) in this.useQ.questionnaryList"
@@ -19,11 +19,11 @@
       <v-sheet v-else>No Questionnaries</v-sheet>
     </v-sheet>
 
-    <v-card class="mt-25">
-      <v-btn @click="backHome">Back to home</v-btn>
-      <v-btn @click="bank">Private question bank</v-btn>
-      <v-btn @click="edit">New Questionnary</v-btn>
-    </v-card>
+    <v-sheet class="d-flex flex-row w-100">
+      <v-btn @click="backHome" class="flex-1-1 ma-2">Back to home</v-btn>
+      <v-btn @click="bank" class="flex-1-1 ma-2">Private question bank</v-btn>
+      <v-btn @click="edit" class="flex-1-1 ma-2">New Questionnary</v-btn>
+    </v-sheet>
   </v-sheet>
 </template>
 
@@ -67,10 +67,10 @@
 
 <style scoped>
   * {
-    color: #007EA1;
+    color: #007ea1;
   }
 
-  h1{
+  h1 {
     color: black;
   }
 </style>
