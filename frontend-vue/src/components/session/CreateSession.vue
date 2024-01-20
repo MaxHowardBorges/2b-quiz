@@ -2,7 +2,7 @@
   <v-sheet
     min-width="450px"
     width="90%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-row mb-5"
+    class="mt-4 px-6 py-8 mx-auto d-flex flex-row mb-5"
     elevation="4"
     rounded="lg">
     <div class="w-75 mx-auto">
@@ -55,7 +55,7 @@
 
       <v-sheet border="sm" rounded="lg" class="px-4">
         <p class="text-h4 mt-2">Session settings</p>
-        <session-setting></session-setting>
+        <session-setting ref="sessionSettings"></session-setting>
       </v-sheet>
 
       <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
@@ -102,11 +102,11 @@
 
 <script>
   import { ref } from 'vue';
-  import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
   import { ValidationError } from '@/utils/valdiationError';
   import SessionSetting from '@/components/session/SessionSetting.vue';
+  import { AccessType } from '@/utils/accesType';
 
   export default {
     name: 'CreateSession',
@@ -171,27 +171,47 @@
         this.questionnaries.push(selectedQuestionnaire);
         this.closePopup();
       },
-      async addselectID() {
+      async addSelectId() {
         for (let i = 0; i < this.questionnaries.length; i++) {
           this.selectedQuestionnary.push({ id: this.questionnaries[i].id });
         }
       },
       async handleCreateSession() {
-        await this.addselectID();
+        await this.addSelectId();
         if (this.selectedQuestionnary.length > 0) {
-          console.log(this.selectedQuestionnary);
-          this.sessionStore.questionnary = this.selectedQuestionnary;
-          console.log(this.sessionStore.questionnary);
-          try {
-            await this.sessionStore.createSession();
-            await router.push('/session');
-          } catch (error) {
-            if (error instanceof ValidationError) {
-              this.errorSnackbarContent = error.message;
-              this.$refs.errorSnackbar.setSnackbarError(true);
-            } else {
-              console.error('Error while creating session:', error);
-              this.$refs.dialogError.setDialogError(true);
+          const settings = this.$refs.sessionSettings.getSettings();
+
+          if (
+            settings.accessType === AccessType.PRIVATE &&
+            this.$refs.sessionSettings.getSelectedUsersId().length === 0 &&
+            this.$refs.sessionSettings.getSelectedGroupsId().length === 0
+          ) {
+            alert('Aucun utilisateur ou groupe ont été sélectionné');
+          } else {
+            this.sessionStore.questionnary = this.selectedQuestionnary;
+            this.loading = true;
+            try {
+              if (settings.accessType === AccessType.PRIVATE) {
+                const selectedUsersId =
+                  this.$refs.sessionSettings.getSelectedUsersId();
+                const selectedGroupsId =
+                  this.$refs.sessionSettings.getSelectedGroupsId();
+                await this.sessionStore.createSession(
+                  settings,
+                  selectedUsersId,
+                  selectedGroupsId,
+                );
+              } else {
+                await this.sessionStore.createSession(settings);
+              }
+            } catch (error) {
+              if (error instanceof ValidationError) {
+                this.errorSnackbarContent = error.message;
+                this.$refs.errorSnackbar.setSnackbarError(true);
+              } else {
+                console.error('Error while creating session:', error);
+                this.$refs.dialogError.setDialogError(true);
+              }
             }
           }
           this.loading = false;

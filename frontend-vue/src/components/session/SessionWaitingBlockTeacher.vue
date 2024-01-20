@@ -43,6 +43,7 @@
     emits: ['session-start'],
     methods: {
       async cancelSession() {
+        this.sessionStore.sessionEnd();
         //TODO call api/store
         await router.push('/');
       },

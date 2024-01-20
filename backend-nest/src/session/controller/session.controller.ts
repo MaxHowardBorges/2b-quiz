@@ -32,6 +32,7 @@ import { SettingsDto } from '../dto/settings.dto';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { DisplaySettingsDto } from '../dto/displaySettings.dto';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
+import { CreateSessionDto } from '../dto/createSession.dto';
 
 @Controller('session')
 export class SessionController {
@@ -44,9 +45,15 @@ export class SessionController {
   @Post('/create')
   async createSession(
     @Req() request: UserRequest,
-    @Body(new ValidationPipe()) ids: number[],
+    @Body(new ValidationPipe()) createSessionDto: CreateSessionDto,
   ): Promise<Session> {
-    return this.sessionService.initializeSession(request.user as Teacher, ids);
+    return this.sessionService.initializeSession(
+      request.user as Teacher,
+      createSessionDto.questionnaryList,
+      createSessionDto.settings,
+      createSessionDto.whitelist,
+      createSessionDto.whitelistGroups,
+    );
   }
 
   @Roles([UserType.TEACHER])

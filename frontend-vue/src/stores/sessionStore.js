@@ -24,6 +24,7 @@ export const useSessionStore = defineStore('session', {
     isHost: false,
     isParticipant: false,
     status: { settings: null, nbJoined: null, nbAnswered: null },
+    settings: null,
   }),
   actions: {
     setQuestion(question) {
@@ -81,15 +82,27 @@ export const useSessionStore = defineStore('session', {
       }
       userStore.updateToken(response.headers.get('Authorization'));
     },
-    async createSession() {
+    async createSession(
+      settings,
+      selectedUsersId = null,
+      selectedGroupsId = null,
+    ) {
       this.setEnded(false);
       //this.setIsDisplay(true);
       const userStore = useUserStore();
       userStore.reloadState();
-      const response = await createSession(
-        userStore.getToken(),
-        this.questionnary,
-      );
+      let body;
+      if (selectedUsersId !== null && selectedGroupsId !== null) {
+        body = {
+          questionnaryList: this.questionnary,
+          settings: settings,
+          whitelist: selectedUsersId,
+          whitelistGroups: selectedGroupsId,
+        };
+      } else {
+        body = { questionnaryList: this.questionnary, settings: settings };
+      }
+      const response = await createSession(userStore.getToken(), body);
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
@@ -98,6 +111,9 @@ export const useSessionStore = defineStore('session', {
       await this.getSessionStatus();
       const sessionEventStore = useSessionEventStore();
       sessionEventStore.connectToSSEHost();
+    },
+    async setSettings(settings) {
+      this.settings = settings;
     },
     async nextQuestion() {
       const userStore = useUserStore();

@@ -32,7 +32,7 @@
 
           <session-ended-block @reset="reset" v-if="ended" />
 
-          <ActionTeacher v-if="!waiting"></ActionTeacher>
+          <action-teacher v-if="!waiting"></action-teacher>
         </div>
       </div>
       <v-divider :vertical="true"></v-divider>
@@ -43,7 +43,7 @@
   </template>
   <template v-else>
     <div
-      class="mt-6 h-100 d-flex align-center justify-center ma-2 flex-column w-100">
+      class="mt-4 h-100 d-flex align-center justify-center ma-2 flex-column w-100">
       <v-btn-toggle
         v-if="userStore.isTeacher"
         v-model="toggleValue"

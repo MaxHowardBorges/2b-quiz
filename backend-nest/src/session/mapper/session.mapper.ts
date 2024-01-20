@@ -60,7 +60,7 @@ export class SessionMapper {
     sessionStatusDto.nbJoined = session.connectedUser.size;
     sessionStatusDto.nbAnswered = session.getNbAnsweredForCurrentQuestion();
     sessionStatusDto.settings = session.settings;
-    sessionStatusDto.displaySettings = session.displaySettings;
+    sessionStatusDto.displaySettings = session.settings.displaySettings;
     sessionStatusDto.whitelist = session.whitelist;
     return sessionStatusDto;
   }

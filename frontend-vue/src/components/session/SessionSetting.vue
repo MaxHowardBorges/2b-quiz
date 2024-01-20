@@ -13,6 +13,14 @@
           <v-btn @click="openDisplayUserTeacher">Enseignants</v-btn>
           <v-btn @click="openDisplayUserGroup">Groupes</v-btn>
         </v-btn-toggle>
+        <v-text-field
+          v-model="search"
+          label="Search"
+          prepend-inner-icon="magnify"
+          :single-line="true"
+          variant="outlined"
+          class="mt-2"
+          hide-details></v-text-field>
       </v-card-text>
       <v-sheet
         border="lg"
@@ -21,8 +29,9 @@
         elevation="3">
         <v-data-table
           v-if="displayUserStudent || displayUserTeacher"
-          :items="users"
+          :items="displayUserTeacher ? teachers : students"
           :headers="headers"
+          :search="search"
           class="ma-2"
           show-headers>
           <template v-slot:item.selected="{ item }">
@@ -69,8 +78,8 @@
     <div class="d-flex flex-row mt-4">
       <v-select
         v-if="!isInSession"
-        v-model="selected"
-        :items="items"
+        v-model="selectedSessionType"
+        :items="sessionTypes"
         label="Type de session"
         class="mt-4 mx-3"
         outlined
@@ -117,6 +126,8 @@
 <script>
   import { ref } from 'vue';
   import { AccessType } from '@/utils/accesType';
+  import { useUserStore } from '@/stores/userStore';
+  import { SessionType } from '@/utils/sessionType';
 
   export default {
     name: 'SessionSetting',
@@ -130,8 +141,12 @@
     },
     data() {
       return {
-        items: ['piloté', 'libre', 'chronometré'],
-        selected: ref('piloté'),
+        sessionTypes: [
+          SessionType.PILOTED,
+          SessionType.FREE,
+          SessionType.TIMED,
+        ],
+        selectedSessionType: ref(SessionType.PILOTED),
         itemsAcces: [AccessType.PUBLIC, AccessType.PRIVATE, AccessType.CLOSED],
         selectedAcces: ref(AccessType.PRIVATE),
         SelectionDialog: ref(false),
@@ -140,111 +155,16 @@
           displayQuestion: true,
           displayAnswer: true,
         },
+        search: '',
         displayUserStudent: true,
         displayUserTeacher: false,
         displayUserGroup: false,
         selectedUsers: [],
         selectedGroups: [],
         toggleTable: '0',
-        users: [
-          {
-            id: 1,
-            username: 'username1',
-            name: 'name1',
-            surname: 'name1',
-            selected: false,
-          },
-          {
-            id: 2,
-            username: 'username2',
-            name: 'name2',
-            surname: 'name2',
-            selected: false,
-          },
-          {
-            id: 3,
-            username: 'username3',
-            name: 'name3',
-            surname: 'name3',
-            selected: false,
-          },
-          {
-            id: 4,
-            username: 'username4',
-            name: 'name4',
-            surname: 'name4',
-            selected: false,
-          },
-          {
-            id: 5,
-            username: 'username5',
-            name: 'name5',
-            surname: 'name5',
-            selected: false,
-          },
-          {
-            id: 6,
-            username: 'username6',
-            name: 'name6',
-            surname: 'name6',
-            selected: false,
-          },
-          {
-            id: 7,
-            username: 'username7',
-            name: 'name7',
-            surname: 'name7',
-            selected: false,
-          },
-          {
-            id: 8,
-            username: 'username8',
-            name: 'name8',
-            surname: 'name8',
-            selected: false,
-          },
-          {
-            id: 9,
-            username: 'username9',
-            name: 'name9',
-            surname: 'name9',
-            selected: false,
-          },
-          {
-            id: 10,
-            username: 'username10',
-            name: 'name10',
-            surname: 'name10',
-            selected: false,
-          },
-          {
-            id: 11,
-            username: 'username11',
-            name: 'name11',
-            surname: 'name11',
-            selected: false,
-          },
-          {
-            id: 12,
-            username: 'username12',
-            name: 'name12',
-            surname: 'name12',
-            selected: false,
-          },
-        ],
-        groups: [
-          { id: 1, name: 'name1', nb: 1, selected: false },
-          { id: 2, name: 'name2', nb: 2, selected: false },
-          { id: 3, name: 'name3', nb: 3, selected: false },
-          { id: 4, name: 'name4', nb: 4, selected: false },
-          { id: 5, name: 'name5', nb: 5, selected: false },
-          { id: 6, name: 'name6', nb: 6, selected: false },
-          { id: 7, name: 'name7', nb: 7, selected: false },
-          { id: 8, name: 'name8', nb: 8, selected: false },
-          { id: 9, name: 'name9', nb: 9, selected: false },
-          { id: 10, name: 'name10', nb: 10, selected: false },
-          { id: 11, name: 'name11', nb: 11, selected: false },
-        ],
+        students: [],
+        teachers: [],
+        groups: [],
         headersGroups: [
           { title: 'ID', key: 'id' },
           { title: 'Name', key: 'name' },
@@ -260,33 +180,47 @@
         ],
       };
     },
+    setup() {
+      const userStore = useUserStore();
+      return { userStore };
+    },
+    mounted() {
+      this.getUsersAndGroups();
+    },
     methods: {
+      getUsersAndGroups() {
+        this.userStore.getStudentForTeacher().then((res) => {
+          this.students = res;
+        });
+        this.userStore.getTeacherForTeacher().then((res) => {
+          this.teachers = res;
+        });
+        //TODO get groups
+        this.groups = [];
+      },
       openSelectionDialog() {
         this.SelectionDialog = true;
-        this.displayUserTeacher = false;
-        this.displayUserStudent = true;
-        this.displayUserGroup = false;
       },
       closeSelectionDialog() {
         this.SelectionDialog = false;
-        this.displayUserTeacher = false;
-        this.displayUserStudent = false;
-        this.displayUserGroup = false;
       },
       openDisplayUserStudent() {
-        this.displayUserStudent = !this.displayUserStudent;
+        this.displayUserStudent = true;
         this.displayUserTeacher = false;
         this.displayUserGroup = false;
+        this.search = '';
       },
       openDisplayUserTeacher() {
-        this.displayUserTeacher = !this.displayUserTeacher;
+        this.displayUserTeacher = true;
         this.displayUserStudent = false;
         this.displayUserGroup = false;
+        this.search = '';
       },
       openDisplayUserGroup() {
-        this.displayUserGroup = !this.displayUserGroup;
+        this.displayUserGroup = true;
         this.displayUserTeacher = false;
         this.displayUserStudent = false;
+        this.search = '';
       },
       appendToSelect(value) {
         if (value) {
@@ -309,6 +243,19 @@
             );
           }
         }
+      },
+      getSelectedUsersId() {
+        return this.selectedUsers.map((user) => user.id);
+      },
+      getSelectedGroupsId() {
+        return this.selectedGroups.map((group) => group.id);
+      },
+      getSettings() {
+        return {
+          sessionType: this.selectedSessionType,
+          accessType: this.selectedAcces,
+          displaySetting: this.displaySetting,
+        };
       },
     },
   };

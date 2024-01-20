@@ -38,11 +38,9 @@ export class SessionService {
   async initializeSession(
     teacher: Teacher,
     ids: number[],
-    settings: SettingsObject = new SettingsObject(),
-    displaySettings: DisplaySettingsObject = new DisplaySettingsObject(
-      true,
-      true,
-    ),
+    settings: SettingsObject,
+    whitelist: number[] = [],
+    whitelistGroups: number[] = [],
   ): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
@@ -59,16 +57,24 @@ export class SessionService {
         teacher,
         questionnaries,
         settings,
-        displaySettings,
+        whitelist,
+        whitelistGroups,
       ),
     );
     this.eventService.createSessionGroup(idSession, teacher.id);
+    console.log(this.sessionMap.get(idSession));
     return this.sessionMap.get(idSession);
   }
 
   generateIdSession(): string {
-    //TODO change to 6 characters
-    return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
+    //generate 6 characters random string A-Z 0-9
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    for (let counter = 0; counter < 6; counter++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 
   async createSession(
@@ -76,15 +82,13 @@ export class SessionService {
     teacher: Teacher,
     questionnaryTab: Questionnary[],
     settings: SettingsObject,
-    displaySettings: DisplaySettingsObject,
+    whitelist: number[] = [],
+    whitelistGroups: number[] = [],
   ): Promise<Session> {
-    return new Session(
-      idSession,
-      questionnaryTab,
-      teacher,
-      settings,
-      displaySettings,
-    );
+    const session = new Session(idSession, questionnaryTab, teacher, settings);
+    session.whitelist = whitelist;
+    session.whitelistGroups = whitelistGroups;
+    return session;
   }
 
   isSessionExists(idSession: string): boolean {
@@ -329,7 +333,7 @@ export class SessionService {
   getDisplaySettings(idSession: string) {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
-      return session.displaySettings;
+      return session.settings.displaySettings;
     }
     return null;
   }
@@ -340,7 +344,7 @@ export class SessionService {
   ) {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
-      session.displaySettings = displaySettings;
+      session.settings.displaySettings = displaySettings;
       this.eventService.sendObserverEvent(
         EventObserverEnum.NEW_DISPLAY_SETTINGS,
         idSession,

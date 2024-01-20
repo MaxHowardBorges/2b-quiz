@@ -4,7 +4,6 @@ import { Answer } from '../question/entity/answer.entity';
 import { Teacher } from '../user/entity/teacher.entity';
 import { ParticipantInterface } from '../user/interface/participant.interface';
 import { SettingsObject } from './object/settings.object';
-import { DisplaySettingsObject } from './object/displaySettings.object';
 
 export class Session {
   id: string;
@@ -25,7 +24,7 @@ export class Session {
 
   whitelist: number[];
 
-  displaySettings: DisplaySettingsObject;
+  whitelistGroups: number[];
 
   settings: SettingsObject;
 
@@ -34,7 +33,6 @@ export class Session {
     tabQuestionnary: Questionnary[],
     host: Teacher,
     settings: SettingsObject,
-    displaySettings: DisplaySettingsObject,
   ) {
     this.id = idSession;
     this.questionNumber = -1;
@@ -49,7 +47,7 @@ export class Session {
     this.whitelist = [];
     this.host = host;
     this.settings = settings;
-    this.displaySettings = displaySettings;
+    this.whitelistGroups = [];
   }
 
   hasUser(user: ParticipantInterface): boolean {
