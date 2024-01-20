@@ -22,7 +22,7 @@ div.custom_background{
 
 div.custom_background:before {
     display: block;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     width: 100%;

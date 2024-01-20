@@ -2,7 +2,7 @@
   <v-sheet
     min-width="450px"
     width="90%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-row"
+    class="mt-5 px-6 py-8 mx-auto d-flex flex-row mb-5"
     elevation="4"
     rounded="lg">
     <div class="w-75 mx-auto">
@@ -98,8 +98,6 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
   import { ValidationError } from '@/utils/valdiationError';
-  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
-  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
   import SessionSetting from '@/components/session/SessionSetting.vue';
 
   export default {
