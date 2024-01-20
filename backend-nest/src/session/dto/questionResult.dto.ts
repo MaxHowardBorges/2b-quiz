@@ -5,5 +5,5 @@ export class QuestionResultDto {
   id: number;
   type: QuestionType;
   hasAnsweredCorrectly: boolean;
-  isCorrect: boolean;
+  answers: String[];
 }

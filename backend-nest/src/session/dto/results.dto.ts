@@ -9,5 +9,5 @@ export class ResultsDto {
 
   questions: QuestionResultDto[];
 
-  isGlobal: number;
+  globalResult: number;
 }

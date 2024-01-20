@@ -11,6 +11,8 @@ import { QuestionnaryUsersAnswerMapDto } from '../dto/QuestionnaryUsersAnswerMap
 import { SessionDto } from '../dto/session.dto';
 import { SessionTemp } from '../temp/sessionTemp';
 import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
+import { Question } from '../../question/entity/question.entity';
+import { QuestionResultDto } from '../dto/questionResult.dto';
 
 @Injectable()
 export class SessionMapper {
@@ -88,6 +90,16 @@ export class SessionMapper {
       isGlobal: sessionTemp.isGlobal,
       isResponses: sessionTemp.isResponses,
       host: sessionTemp.host,
+    };
+  }
+
+  mapQuestionResult(question: Question): QuestionResultDto {
+    return {
+      id: question.id,
+      content: question.content,
+      type: question.type,
+      answers: [],
+      hasAnsweredCorrectly: false,
     };
   }
 }
