@@ -13,7 +13,14 @@
           <tr>
             <th colspan="3">Questionnaire</th>
             <th>Nombre de question</th>
-            <th>Actions</th>
+            <th colspan="2">
+              <template class="d-flex justify-end">
+                <!-- Bouton pour ouvrir la fenêtre pop-up -->
+                <v-btn @click="openPopup" class="d-flex justify-center">
+                  Add Questionnaire
+                </v-btn>
+              </template>
+            </th>
           </tr>
         </thead>
         <tbody v-if="questionnaries.length !== 0">
@@ -46,10 +53,11 @@
         </tbody>
       </table>
 
-      <!-- Bouton pour ouvrir la fenêtre pop-up -->
-      <v-btn @click="openPopup" class="mt-4">Add Questionnaire</v-btn>
+      <v-sheet border="sm" rounded="lg" class="px-4">
+        <p class="text-h4 mt-2">Session settings</p>
+        <session-setting></session-setting>
+      </v-sheet>
 
-      <session-setting></session-setting>
       <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
 
       <!-- Fenêtre pop-up -->
@@ -206,6 +214,22 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+  }
+
+  table.questionnary-table tr td:nth-child(2) {
+    width: 20% !important;
+  }
+
+  table.questionnary-table tr td:nth-child(3) {
+    width: 35% !important;
+  }
+
+  table.questionnary-table tr th:nth-child(2) {
+    width: 20% !important;
+  }
+
+  table.questionnary-table tr th:nth-child(3) {
+    width: 35% !important;
   }
 
   .questionnary-table th {

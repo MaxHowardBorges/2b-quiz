@@ -94,7 +94,8 @@
       </v-btn>
       <!--    TODO choisir les membres à ajouter en cours de route -->
     </div>
-
+    <v-divider class="ma-2"></v-divider>
+    <p class="text-h5">Display settings</p>
     <div class="d-flex">
       <v-switch
         color="primary"

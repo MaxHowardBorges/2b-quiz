@@ -1,5 +1,10 @@
 <template>
-  <v-footer height="90px" bg-opacity="0.2" color='#007EA1' border elevation="5">
+  <v-footer
+    height="90px"
+    bg-opacity="0.2"
+    color="#007EA1"
+    elevation="5"
+    class="bg-gradiant">
     <div>
       <p class="logo">Système de Vote en Direct</p>
       <p>
