@@ -15,6 +15,8 @@ import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
+import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
+import { QuestionMapper } from '../../question/mapper/question.mapper';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
@@ -37,6 +39,8 @@ export class SessionController {
   constructor(
     private sessionService: SessionService,
     private readonly sessionMapper: SessionMapper,
+    private readonly questionnaryMapper: QuestionnaryMapper,
+    private readonly questionMapper: QuestionMapper,
   ) {}
 
   @Roles([UserType.TEACHER])
@@ -91,10 +95,13 @@ export class SessionController {
       throw new IsNotHostException();
     const a = this.sessionService.getMapUser(idSession); //TODO refactor
     this.sessionService.getMap();
-    return [
-      await this.sessionService.getQuestionList(idSession),
+
+    return this.sessionMapper.mapQuestionnaryUsersAnswer(
+      this.questionnaryMapper.entityToQuestionnaryDtoTab(
+        await this.sessionService.getQuestionList(idSession),
+      ),
       this.sessionMapper.mapUserAnswerDto(a),
-    ]; //TODO replace with a DTO
+    );
   }
 
   @Roles([UserType.TEACHER])

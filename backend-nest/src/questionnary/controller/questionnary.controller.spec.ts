@@ -7,6 +7,13 @@ describe('QuestionnaryController', () => {
   let controller: QuestionnaryController;
   let questionnaryService: jest.Mocked<QuestionnaryService>;
   let questionnaryMapper: jest.Mocked<QuestionnaryMapper>;
+
+  beforeAll(() => {
+    const { unit, unitRef } = TestBed.create(QuestionnaryController).compile();
+    controller = unit;
+    questionnaryService = unitRef.get(QuestionnaryService);
+    questionnaryMapper = unitRef.get(QuestionnaryMapper);
+  });
   /*
   const result: QuestionnaryDto = {
     "id": 15,
@@ -165,13 +172,6 @@ describe('QuestionnaryController', () => {
     "author": "malias"
   };
 */
-  beforeEach(async () => {
-    const { unit, unitRef } = TestBed.create(QuestionnaryController).compile();
-
-    controller = unit;
-    questionnaryService = unitRef.get(QuestionnaryService);
-    questionnaryMapper = unitRef.get(QuestionnaryMapper);
-  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();

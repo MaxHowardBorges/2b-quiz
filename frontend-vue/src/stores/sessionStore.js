@@ -70,10 +70,7 @@ export const useSessionStore = defineStore('session', {
         this.idSession,
         userStore.getToken(),
       );
-      if (!response.ok) {
-        response.text().then((text) => console.log(text));
-        throw new Error('Error on get current question');
-      }
+      await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setQuestion(await response.json());
     },

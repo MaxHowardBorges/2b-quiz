@@ -8,6 +8,8 @@ import { AnswerDto } from '../../question/dto/answer.dto';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Session } from '../session';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
+import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
+import { QuestionnaryUsersAnswerMapDto } from '../dto/QuestionnaryUsersAnswerMap.dto';
 
 @Injectable()
 export class SessionMapper {
@@ -53,6 +55,16 @@ export class SessionMapper {
     }
 
     return userAnswerDtos;
+  }
+
+  mapQuestionnaryUsersAnswer(
+    questionnaries: QuestionnaryDto[],
+    usersAnswer: UserAnswerDto[],
+  ): QuestionnaryUsersAnswerMapDto {
+    return {
+      questionnaries: questionnaries,
+      usersAnswer: usersAnswer,
+    };
   }
 
   mapSessionStatusDto(session: Session): SessionStatusDto {

@@ -3,21 +3,21 @@
     <thead>
     <tr>
       <th rowspan='2' class='thclass text-center'>Participant</th>
-      <th v-for="(questionnary, index) in sessionStore.results[0]" :key="index" :colspan="questionnary.questions.length" class='thclass text-center'>
+      <th v-for="(questionnary, index) in sessionStore.results.questionnaries" :key="index" :colspan="questionnary.questions.length" class='thclass text-center'>
         {{ questionnary.title }}
       </th>
     </tr>
-    <th class='thclass' id='questions' v-for="(question, index) in this.sessionStore.results[0].flatMap(questionnary => questionnary.questions)" :key="index">
+    <th class='thclass' id='questions' v-for="(question, index) in this.sessionStore.results.questionnaries.flatMap(questionnary => questionnary.questions)" :key="index">
       <th class='text-center pa-2'>{{ question.content }}</th>
     </th>
     </thead>
     <tbody>
-    <tr v-for="(participant, index) in sessionStore.results[1]" :key="index">
+    <tr v-for="(participant, index) in sessionStore.results.usersAnswer" :key="index">
       <td v-if="participant" class="text-center">{{ participant.username }}</td>
       <td v-else class="text-center">No participant data available</td>
       <td
         id='answers'
-        v-for="(question, index) in sessionStore.results[0].flatMap(questionnary => questionnary.questions)"
+        v-for="(question, index) in sessionStore.results.questionnaries.flatMap(questionnary => questionnary.questions)"
         :key="index"
         :style="{
           'background-color': (() => {
@@ -76,7 +76,7 @@
         return userAnswer;
       },
       getQuestion(idQuestion) {
-        return this.sessionStore.results[0].flatMap(questionnary => questionnary.questions).find(
+        return this.sessionStore.results.questionnaries.flatMap(questionnary => questionnary.questions).find(
           (question) => question.id === idQuestion,
         );
       },
