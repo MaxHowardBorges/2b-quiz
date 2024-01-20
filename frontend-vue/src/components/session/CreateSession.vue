@@ -11,20 +11,20 @@
       <table class="questionnary-table mx-auto w-100">
         <thead>
           <tr>
-            <th>Questionnaire</th>
+            <th colspan="3">Questionnaire</th>
             <th>Nombre de question</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody v-if="questionnaries.length !== 0">
           <tr v-for="(questionnary, index) in questionnaries" :key="index">
-            <td>
+            <td colspan="3">
               <span>{{ questionnary.title }}</span>
             </td>
             <td class="text-center">
               <span>{{ questionnary.nbQuestion }}</span>
             </td>
-            <td class="text-center">
+            <td class="text-center" colspan="2">
               <v-btn
                 icon="keyboard_arrow_up"
                 @click="moveQuestionnaryUp(index)"
@@ -39,7 +39,7 @@
         </tbody>
         <tbody v-else>
           <tr>
-            <td colspan="3" class="text-center text-warning">
+            <td colspan="6" class="text-center text-warning">
               No questionnary selected
             </td>
           </tr>
@@ -49,52 +49,8 @@
       <!-- Bouton pour ouvrir la fenêtre pop-up -->
       <v-btn @click="openPopup" class="mt-4">Add Questionnaire</v-btn>
 
-      <div class="d-flex flex-row mt-4">
-        <v-select
-          v-model="selected"
-          :items="items"
-          label="Type de session"
-          class="mt-4 mx-3"
-          outlined
-          dense
-          required></v-select>
-
-        <v-select
-          v-model="selectedAcces"
-          :items="itemsAcces"
-          label="Type d'accès"
-          class="mt-4 mx-3"
-          outlined
-          dense
-          required></v-select>
-
-        <v-btn
-          v-if="selectedAcces === 'privé'"
-          @click="openSelectionDialog"
-          class="mt-4 mx-3">
-          Choisir étudiants
-        </v-btn>
-        <!--    TODO choisir les membres à ajouter en cours de route -->
-      </div>
-      <div class="d-flex flex-row mt-4">
-        <session-setting></session-setting>
-      </div>
+      <session-setting></session-setting>
       <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
-
-      <v-dialog v-model="SelectionDialog" max-width="600">
-        <v-card>
-          <v-card-title>Choose members</v-card-title>
-          <v-card-text>
-            <v-list>
-              <v-list-item></v-list-item>
-            </v-list>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="">Ajouter</v-btn>
-            <v-btn @click="closeSelectionDialog">Fermer</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
 
       <!-- Fenêtre pop-up -->
       <v-dialog v-model="popup" max-width="600">
@@ -148,7 +104,7 @@
 
   export default {
     name: 'CreateSession',
-    components: { SessionSetting, ErrorSnackbar, ErrorDialog },
+    components: { SessionSetting },
     async beforeMount() {
       await this.questionnaryStore.getQuestionnariesFromUser();
       this.availableQuestionnaires = this.questionnaryStore.questionnaryList;
@@ -161,11 +117,6 @@
         questionnaryStore,
         sessionStore,
         questionnaries: [],
-        items: ['piloté', 'libre', 'chronometré'],
-        selected: ref('piloté'),
-        itemsAcces: ['fermé', 'public', 'privé'],
-        selectedAcces: ref('fermé'),
-        SelectionDialog: ref(false),
         popup: ref(false),
         searchQuery: '',
         availableQuestionnaires: [],
@@ -208,12 +159,6 @@
       },
       closePopup() {
         this.popup = false;
-      },
-      openSelectionDialog() {
-        this.SelectionDialog = true;
-      },
-      closeSelectionDialog() {
-        this.SelectionDialog = false;
       },
       addQuestionnaire(selectedQuestionnaire, index) {
         this.availableQuestionnaires.splice(index, 1);

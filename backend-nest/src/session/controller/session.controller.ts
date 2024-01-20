@@ -31,6 +31,7 @@ import { NextQuestionReturnDto } from '../dto/nextQuestionReturn.dto';
 import { SettingsDto } from '../dto/settings.dto';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { DisplaySettingsDto } from '../dto/displaySettings.dto';
+import { SessionStatusDto } from '../dto/sessionStatus.dto';
 
 @Controller('session')
 export class SessionController {
@@ -182,5 +183,20 @@ export class SessionController {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
     this.sessionService.setDisplaySettings(idSession, body);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/:idSession/status')
+  async getSessionStatus(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: string,
+  ): Promise<SessionStatusDto> {
+    if (!this.sessionService.isSessionExists(idSession))
+      throw new IdSessionNoneException();
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    return this.sessionMapper.mapSessionStatusDto(
+      this.sessionService.getSessionStatus(idSession),
+    );
   }
 }

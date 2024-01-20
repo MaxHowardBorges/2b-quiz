@@ -5,7 +5,9 @@
     <img alt="Qr code" src="../../assets/QR_CODE.png" style="width: 200px" />
   </div>
 
-  <p>{{ participantsCount }} participant joined the session !</p>
+  <div>
+    <p>{{ sessionStore.status.nbJoined }} user joined</p>
+  </div>
   <v-btn color="primary" class="mx-6 my-3" @click="launchWindows">
     <p class="text-white font-weight-bold pa-2">Launch 3rd screen</p>
   </v-btn>

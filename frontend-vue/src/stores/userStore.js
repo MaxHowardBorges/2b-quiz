@@ -6,6 +6,8 @@ import {
   getAllUsers,
   getAllUsersSort,
   getMe,
+  getStudent,
+  getTeachers,
   getUserType,
   loginUser,
   registerUser,
@@ -219,6 +221,18 @@ export const useUserStore = defineStore('user', {
       const response = await rejectRequest(id, this.getToken());
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
+    },
+    async getStudentForTeacher() {
+      const response = await getStudent(this.getToken());
+      await throwIfNotOK(response, 200);
+      this.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async getTeacherForTeacher() {
+      const response = await getTeachers(this.getToken());
+      await throwIfNotOK(response, 200);
+      this.updateToken(response.headers.get('Authorization'));
+      return await response.json();
     },
     reloadState() {
       this.setToken(localStorage.getItem('token'));

@@ -55,4 +55,22 @@ export class Session {
   hasUser(user: ParticipantInterface): boolean {
     return [...this.connectedUser].some((u) => u.equals(user));
   }
+
+  getCurrentQuestion(): Question {
+    if (this.questionNumber === -1) return null;
+    return this.questionnaryList[this.questionnaryNumber].questions[
+      this.questionNumber
+    ];
+  }
+
+  getNbAnsweredForCurrentQuestion(): number {
+    let sum = 0;
+    if (this.getCurrentQuestion() === null) return null;
+    for (const user of this.connectedUser) {
+      const questionMap = this.userAnswers.get(user.id);
+      if (questionMap !== undefined)
+        if (questionMap.has(this.getCurrentQuestion())) sum++;
+    }
+    return sum;
+  }
 }

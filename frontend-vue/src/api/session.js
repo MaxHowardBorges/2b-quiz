@@ -68,3 +68,16 @@ export async function getSessionResults(idSession, token) {
     },
   );
 }
+
+export async function getSessionStatus(token, idSession) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/status`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
