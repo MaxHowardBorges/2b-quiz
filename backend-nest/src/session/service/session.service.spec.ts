@@ -11,6 +11,8 @@ import { Answer } from '../../question/entity/answer.entity';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { generateTeacherMock } from '../../../test/mock/user.mock';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { DisplaySettingsObject } from '../object/displaySettings.object';
+import { SettingsObject } from '../object/settings.object';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -189,7 +191,8 @@ describe('SessionService', () => {
     userAnswers: null,
     endSession: false,
     host: hostTeacher,
-    accessType: null,
+    settings: new SettingsObject(),
+    displaySettings: new DisplaySettingsObject(true, true),
     whitelist: null,
   };
   session.questionnaryList.push(questionnary);
@@ -253,6 +256,8 @@ describe('SessionService', () => {
         service.generateIdSession(),
         hostTeacher,
         [questionnary],
+        new SettingsObject(),
+        new DisplaySettingsObject(true, true),
       );
       expect(test).toBeInstanceOf(Session);
       expect(typeof test.id).toBe('string');

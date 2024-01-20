@@ -1,15 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaryController } from './questionnary.controller';
 import { QuestionnaryService } from '../service/questionnary.service';
+import { TestBed } from '@automock/jest';
+import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
 
 describe('QuestionnaryController', () => {
   let controller: QuestionnaryController;
-  let service: QuestionnaryService;
-
-  const mockQuestionnaryService = {
-    createQuestionnary: jest.fn(),
-    findQuestionnary: jest.fn(),
-  };
+  let questionnaryService: jest.Mocked<QuestionnaryService>;
+  let questionnaryMapper: jest.Mocked<QuestionnaryMapper>;
   /*
   const result: QuestionnaryDto = {
     "id": 15,
@@ -169,20 +166,17 @@ describe('QuestionnaryController', () => {
   };
 */
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [QuestionnaryController],
-      providers: [QuestionnaryService],
-    })
-      .overrideProvider(QuestionnaryService)
-      .useValue(mockQuestionnaryService)
-      .compile();
+    const { unit, unitRef } = TestBed.create(QuestionnaryController).compile();
 
-    controller = await module.resolve(QuestionnaryController);
-    service = await module.resolve(QuestionnaryService);
+    controller = unit;
+    questionnaryService = unitRef.get(QuestionnaryService);
+    questionnaryMapper = unitRef.get(QuestionnaryMapper);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(questionnaryService).toBeDefined();
+    expect(questionnaryMapper).toBeDefined();
   });
   /*
   describe('createQuestionnary', () => {
