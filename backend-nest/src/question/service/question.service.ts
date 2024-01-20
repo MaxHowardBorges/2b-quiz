@@ -58,8 +58,9 @@ export class QuestionService {
   }
 
   async getTag(id: number) {
-    const tag = await this.tagRepository.findOneBy({
-      idTag: id,
+    const tag = await this.tagRepository.findOne({
+      where: { idTag: id },
+      relations: ['questions'],
     });
     if (tag) {
       return tag;
@@ -69,6 +70,7 @@ export class QuestionService {
   async getTags(teacher: Teacher) {
     return await this.tagRepository.find({
       where: { author: { id: teacher.id } },
+      relations: ['questions'],
     });
   }
 

@@ -23,8 +23,6 @@ import { UserSession } from '../entity/userSession.entity';
 import { Student } from '../../user/entity/student.entity';
 import { SessionMapper } from '../mapper/session.mapper';
 import { User } from '../../user/entity/user.entity';
-import { ResultsDto } from '../dto/results.dto';
-import { th } from '@faker-js/faker';
 
 @Injectable()
 export class SessionService {
@@ -398,13 +396,21 @@ export class SessionService {
     if (session.isGlobal) {
       //Make an average result of all student in session
       let average = 0;
+      let openQuestions = 0;
       for (const user of userSession) {
         for (const question of questionnary.questions) {
-          average += this.percentSucess(question, user);
+          if (question.type === 'ouv' || question.type === 'qoc') {
+            openQuestions++;
+          } else {
+            average += this.percentSucess(question, user);
+          }
         }
       }
       return (
-        (average / userSession.length / questionnary.questions.length) * 100
+        (average /
+          userSession.length /
+          (questionnary.questions.length - openQuestions)) *
+        100
       );
     }
   }
