@@ -10,33 +10,26 @@
     <table class="w-full">
       <thead>
       <tr>
+        <th class="text-center">id</th>
         <th class="text-center">Group name</th>
         <th class="text-center">Number of people</th>
         <th class="text-center">Actions</th>
       </tr>
       </thead>
       <tbody>
-      <tr class="ma-2">
-        <td class="text-center" @click='openDisplay'>2B QUIZ</td>
-        <td class="text-center" @click='openDisplay'>7</td>
-
-        <td class="text-center">
-          <v-btn @click="openAddUser" icon="add"></v-btn>
-          <v-btn @click="openLeave" icon="logout"></v-btn>
-          <v-btn @click="openDelete" icon="delete"></v-btn>
-        </td>
-      </tr>
-      <tr class="ma-2">
-        <td class="text-center">2B QUIZ</td>
-        <td class="text-center">7</td>
-        <td class="text-center">
-          <v-btn @click="openAddUser" icon="add"></v-btn>
-          <v-btn @click="openLeave" icon="logout"></v-btn>
-          <v-btn @click="openDelete" icon="delete"></v-btn>
-        </td>
-      </tr>
-      <tr class="ma-2">
-        <td class="text-center">2B QUIZ</td>
+<!--      <tr class="ma-2">-->
+<!--        <td class="text-center">1</td>-->
+<!--        <td class="text-center" @click="openDisplay">group.groupName</td>-->
+<!--        <td class="text-center">7</td>-->
+<!--        <td class="text-center">-->
+<!--          <v-btn @click="openAddUser" icon="add"></v-btn>-->
+<!--          <v-btn @click="openLeave" icon="logout"></v-btn>-->
+<!--          <v-btn @click="openDelete" icon="delete"></v-btn>-->
+<!--        </td>-->
+<!--      </tr>-->
+      <tr class="ma-2" v-for="group in ListOFGroup">
+        <td class="text-center">{{ group.id }}</td>
+        <td class="text-center" @click="openDisplay">{{ group.groupName }}</td>
         <td class="text-center">7</td>
         <td class="text-center">
           <v-btn @click="openAddUser" icon="add"></v-btn>
@@ -100,32 +93,14 @@
         </v-card-title>
         <v-card-text>
           <v-text-field
+            v-model="nameOFGroup"
             label="Group name"
             required
           ></v-text-field>
         </v-card-text>
 
         <v-card-actions>
-          <v-btn @click="closeDialogs">Create</v-btn>
-          <v-btn @click="closeDialogs">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="CreateGroupDialog" max-width="500px">
-      <v-card>
-        <v-card-title>
-          Create a group
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-            label="Group name"
-            required
-          ></v-text-field>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn @click="closeDialogs">Create</v-btn>
+          <v-btn @click="HandleCreateGroup">Create</v-btn>
           <v-btn @click="closeDialogs">Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -163,7 +138,7 @@
       </v-card>
     </v-dialog>
 
-    <v-btn class="mt-5" color="primary" @click='openAddUser'>Create a group</v-btn>
+    <v-btn class="mt-5" color="primary" @click='openCreate'>Create a group</v-btn>
 
     <v-dialog v-model="DisplayAddUser" max-width='1000px'>
       <v-card>
@@ -243,7 +218,7 @@
           { id: 'askedDelete', label: 'Asked delete', icon: 'feedback' },
           { id: 'validate', label: 'Validated' },
         ],
-        ListOFGroup: [],
+        nameOFGroup: ref(''),
       };
     },
     setup() {
@@ -252,6 +227,9 @@
       return {
         userStore,
         useGroup,
+        ListOFGroup: ref([
+          { "id": 17, "groupName": "test" },
+        ]),
         users: ref([
           {
             id: 18,
@@ -313,9 +291,10 @@
         nbPage: ref(1),
       };
     },
-    mounted() {
-      //this.ListOFGroup = this.useGroup.getGroup();
-      //console.log(this.ListOFGroup);
+    async mounted() {
+
+      this.ListOFGroup = await this.useGroup.getGroups();//this.useGroup.tabsGroups;
+      console.log("groups of ListOFGroup", this.ListOFGroup);
     },
     computed: {
       filteredUsers() {
@@ -352,6 +331,14 @@
         this.deleteDialog = false;
         this.CreateGroupDialog = false;
         this.DisplayGroupDialog = false;
+      },
+      HandleCreateGroup() {
+        if (this.nameOFGroup === '') {
+          alert('Please enter a name for the group');
+          return;
+        }
+        this.useGroup.createGroup(this.nameOFGroup);
+        this.closeDialogs();
       },
 
     },
