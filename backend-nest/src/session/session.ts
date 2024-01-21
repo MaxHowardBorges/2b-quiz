@@ -61,13 +61,29 @@ export class Session {
     ];
   }
 
+  getCurrentQuestionInMap(
+    userAnswers: Map<Question, Answer | string | Answer[]>,
+    idQuestion: number,
+  ): Answer | string | Answer[] {
+    let question: Question;
+    if (this.questionNumber === -1) return null;
+    question =
+      this.questionnaryList[this.questionnaryNumber].questions[idQuestion];
+    const answers = [...userAnswers.entries()].find(([q, a]) =>
+      q.equals(question),
+    );
+    if (answers === undefined) return null;
+    return answers[1];
+  }
+
   getNbAnsweredForCurrentQuestion(): number {
     let sum = 0;
     if (this.getCurrentQuestion() === null) return null;
     for (const user of this.connectedUser) {
       const questionMap = this.userAnswers.get(user.id);
       if (questionMap !== undefined)
-        if (questionMap.has(this.getCurrentQuestion())) sum++;
+        if (this.getCurrentQuestionInMap(questionMap, this.questionNumber))
+          sum++;
     }
     return sum;
   }

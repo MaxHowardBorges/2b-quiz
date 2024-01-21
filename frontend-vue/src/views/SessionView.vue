@@ -78,11 +78,14 @@
   import ActionTeacher from '@/components/session/ActionTeacher.vue';
   import JoinForm from '@/components/session/JoinForm.vue';
   import CreateSession from '@/components/session/CreateSession.vue';
+  import { useSessionEventStore } from '@/stores/sessionEventStore';
+  import { ValidationError } from '@/utils/valdiationError';
 
   export default {
     name: 'SessionView',
     props: {
       isCreating: Boolean || false,
+      idSession: String || null,
     },
     components: {
       CreateSession,
@@ -113,9 +116,30 @@
       };
     },
     beforeMount() {
+      if (this.idSession) {
+        if (this.sessionStore.idSession !== this.idSession) {
+          this.joinSession();
+        }
+      }
       this.toggleValue = this.isCreating ? 'true' : 'false';
     },
     methods: {
+      async joinSession() {
+        try {
+          const isStarted = await this.sessionStore.joinSession(this.idSession);
+          await this.prepareSession(isStarted, this.idSession);
+          const sessionEventStore = useSessionEventStore();
+          sessionEventStore.connectToSSEStudent();
+        } catch (error) {
+          if (error instanceof ValidationError) {
+            this.errorSnackbarContent = error.message;
+            this.$refs.errorSnackbar.setSnackbarError(true);
+          } else {
+            console.error('Error while joining session:', error);
+            this.$refs.dialogError.setDialogError(true);
+          }
+        }
+      },
       subscribeToEvents() {
         this.subscribe = this.sessionStore.$subscribe((mutation, state) => {
           if (state.ended !== this.ended) {

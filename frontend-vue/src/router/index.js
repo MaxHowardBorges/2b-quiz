@@ -8,7 +8,17 @@ import { UserRoles } from '@/utils/userRoles';
 
 const routes = [
   {
-    path: '/session',
+    path: '/session/:idSession',
+    name: 'SessionRouted',
+    component: SessionView,
+    meta: { inMenu: false },
+    props: (route) => ({
+      isCreating: !!route.query.isCreating,
+      idSession: route.params.idSession,
+    }),
+  },
+  {
+    path: '/session/',
     name: 'Session',
     component: SessionView,
     meta: { inMenu: true },
