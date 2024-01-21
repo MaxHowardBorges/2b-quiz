@@ -6,6 +6,8 @@ import {
   getAllUsers,
   getAllUsersSort,
   getMe,
+  getStudent,
+  getTeachers,
   getUserType,
   loginUser,
   registerUser,
@@ -88,6 +90,7 @@ export const useUserStore = defineStore('user', {
       await throwIfNotOK(response, 201);
       const token = (await response.json()).access_token;
       this.setToken(token);
+      this.saveState();
       await this.updateUserType();
       //this.setUsername(username);
       this.intervalChecker();
@@ -95,6 +98,7 @@ export const useUserStore = defineStore('user', {
     updateToken(token) {
       token = token.replace('Bearer ', '');
       this.setToken(token);
+      this.saveState();
     },
     async updateUserType() {
       const userType = await this.fetchUserType();
@@ -102,7 +106,7 @@ export const useUserStore = defineStore('user', {
     },
     async fetchUserType() {
       try {
-        const response = await getUserType(this.token);
+        const response = await getUserType(this.getToken());
         if (!response.ok) await this.forceLogout();
         else {
           this.updateToken(response.headers.get('Authorization'));
@@ -146,7 +150,7 @@ export const useUserStore = defineStore('user', {
     async validateSelf(name, surname, userType) {
       const response = await validateSelf(
         { name, surname, userType },
-        this.token,
+        this.getToken(),
       );
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
@@ -160,11 +164,11 @@ export const useUserStore = defineStore('user', {
           page,
           nbItem,
           sort,
-          this.token,
+          this.getToken(),
           deleted,
         );
       } else {
-        response = await getAllUsers(page, nbItem, this.token, deleted);
+        response = await getAllUsers(page, nbItem, this.getToken(), deleted);
       }
       await throwIfNotOK(response, 200);
       this.updateToken(response.headers.get('Authorization'));
@@ -194,7 +198,7 @@ export const useUserStore = defineStore('user', {
       this.updateToken(response.headers.get('Authorization'));
     },
     async getSelf() {
-      const response = await getMe(this.token);
+      const response = await getMe(this.getToken());
       await throwIfNotOK(response, 200);
       this.updateToken(response.headers.get('Authorization'));
       return await response.json();
@@ -204,22 +208,45 @@ export const useUserStore = defineStore('user', {
         name,
         surname,
       };
-      const response = await updateMe(this.token, body);
+      const response = await updateMe(this.getToken(), body);
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
     async askDelete() {
-      const response = await askDelete(this.token);
+      const response = await askDelete(this.getToken());
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
     async rejectRequest(id) {
-      const response = await rejectRequest(id, this.token);
+      const response = await rejectRequest(id, this.getToken());
       await throwIfNotOK(response, 204);
       this.updateToken(response.headers.get('Authorization'));
     },
+    async getStudentForTeacher() {
+      const response = await getStudent(this.getToken());
+      await throwIfNotOK(response, 200);
+      this.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async getTeacherForTeacher() {
+      const response = await getTeachers(this.getToken());
+      await throwIfNotOK(response, 200);
+      this.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    reloadState() {
+      this.setToken(localStorage.getItem('token'));
+    },
+    saveState() {
+      localStorage.setItem('token', this.token);
+    },
+    getToken() {
+      this.reloadState();
+      return this.token;
+    },
   },
   persist: {
+    strategies: [{ storage: localStorage, paths: ['token'] }],
     paths: ['token'],
   },
 });

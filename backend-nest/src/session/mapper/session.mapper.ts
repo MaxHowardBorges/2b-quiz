@@ -6,6 +6,8 @@ import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { AnswerDto } from '../../question/dto/answer.dto';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { Session } from '../session';
+import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 import { QuestionnaryUsersAnswerMapDto } from '../dto/QuestionnaryUsersAnswerMap.dto';
 
@@ -63,5 +65,15 @@ export class SessionMapper {
       questionnaries: questionnaries,
       usersAnswer: usersAnswer,
     };
+  }
+
+  mapSessionStatusDto(session: Session): SessionStatusDto {
+    const sessionStatusDto = new SessionStatusDto();
+    sessionStatusDto.nbJoined = session.connectedUser.size;
+    sessionStatusDto.nbAnswered = session.getNbAnsweredForCurrentQuestion();
+    sessionStatusDto.settings = session.settings;
+    sessionStatusDto.displaySettings = session.settings.displaySettings;
+    sessionStatusDto.whitelist = session.whitelist;
+    return sessionStatusDto;
   }
 }

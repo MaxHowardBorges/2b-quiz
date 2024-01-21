@@ -52,10 +52,31 @@ export class QuestionnaryService {
     });
   }
 
+  async findQuestionnaryWithQuestionsId(idQuestionnary: number) {
+    return await this.questionnaryRepository.findOne({
+      relations: {
+        questions: true,
+      },
+      where: { id: idQuestionnary },
+    });
+  }
+
   async findQuestionnariesFromIdUser(teacher: Teacher) {
     // questionnaires without questions
     return await this.questionnaryRepository.find({
       relations: ['author'],
+      where: { author: { id: teacher.id } },
+    });
+  }
+
+  async findQuestionnariesFromIdUserWithQuestions(teacher: Teacher) {
+    // questionnaires without questions
+
+    return await this.questionnaryRepository.find({
+      relations: {
+        author: true,
+        questions: true,
+      },
       where: { author: { id: teacher.id } },
     });
   }

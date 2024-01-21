@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from '../entity/student.entity';
@@ -17,6 +17,10 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Teacher)
+    private readonly teacherRepository: Repository<Teacher>,
   ) {}
   async createUser(
     username: string,
@@ -173,5 +177,26 @@ export class UserService {
     if (!user) throw new UserNotFoundException();
     user.askedDelete = false;
     await this.userRepository.save(user);
+  }
+
+  async getStudents(user: User) {
+    if (!(user instanceof Teacher)) throw new UserNotFoundException();
+    return await this.studentRepository.find({
+      where: {
+        deleted: false,
+        validate: true,
+      },
+    });
+  }
+
+  async getOtherTeacher(user: User) {
+    if (!(user instanceof Teacher)) throw new UserNotFoundException();
+    return await this.teacherRepository.find({
+      where: {
+        deleted: false,
+        validate: true,
+        id: Not(user.id),
+      },
+    });
   }
 }

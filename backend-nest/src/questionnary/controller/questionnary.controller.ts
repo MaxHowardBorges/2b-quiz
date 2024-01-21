@@ -19,8 +19,9 @@ import { Roles } from '../../decorators/roles.decorator';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { NotAuthorException } from '../exception/notAuthor.exception';
 import { QuestionnaryNotFoundException } from '../exception/questionnaryNotFound.exception';
-import { QuestionMapper } from '../../question/mapper/question.mapper';
 import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
+import { QuestionMapper } from '../../question/mapper/question.mapper';
+import { QuestionnaryNbQuestionDto } from '../dto/questionnaryNbQuestion.dto';
 
 @Controller('questionnary')
 export class QuestionnaryController {
@@ -85,12 +86,20 @@ export class QuestionnaryController {
 
   @Roles([UserType.TEACHER])
   @Get()
-  async selectQuestionnaryList(@Req() request: UserRequest) {
-    return this.questionnaryMapper.entityToQuestionnaryDtoTab(
-      await this.questionnaryService.findQuestionnariesFromIdUser(
+  async selectQuestionnaryList(
+    @Req() request: UserRequest,
+  ): Promise<QuestionnaryNbQuestionDto[]> {
+    const questionnaryList =
+      await this.questionnaryService.findQuestionnariesFromIdUserWithQuestions(
         request.user as Teacher,
-      ),
-    );
+      );
+    const questionnaryNbQuestionDtoList: QuestionnaryNbQuestionDto[] = [];
+    for (const questionnary of questionnaryList) {
+      questionnaryNbQuestionDtoList.push(
+        this.questionnaryMapper.mapQuestionnaryNbQuestionDto(questionnary),
+      );
+    }
+    return questionnaryNbQuestionDtoList.reverse();
   }
 
   @Roles([UserType.TEACHER])
