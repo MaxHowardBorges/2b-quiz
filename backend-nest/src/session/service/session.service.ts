@@ -244,11 +244,10 @@ export class SessionService {
   }
 
   //Save session into entity
-  async saveSession(idSession: string, sessionMapper: SessionMapper) {
+  async saveSession(idSession: string) {
     const session = this.getSessionOrThrow(idSession);
     //save session into entity
     const sessionEntity = new Session();
-    const userSessionEntity = new UserSession();
     //Define all sessionEntity's attributes
     sessionEntity.isGlobal = session.isGlobal;
     sessionEntity.isResult = session.isResult;
@@ -368,9 +367,6 @@ export class SessionService {
         },
       },
     });
-    // session.isResult = true;
-    // session.isResponses = false;
-    // session.isGlobal = false;
     session.isResponses = session.isResult && session.isResponses;
 
     //get session's questionnary
