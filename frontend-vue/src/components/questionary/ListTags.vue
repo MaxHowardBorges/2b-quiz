@@ -24,7 +24,7 @@
       <tag-item
         :tag="tag"
         @updateTag="UpdateTag"
-        @deleteTag="DeleteTag"></tag-item>
+        @deleteTag="showConfirmDeletion"></tag-item>
     </v-sheet>
 
     <v-pagination
@@ -32,6 +32,22 @@
       v-model="currentPage"
       :length="totalPages()"></v-pagination>
   </v-sheet>
+
+  <v-dialog v-model="confirmationDialog" max-width="600">
+    <v-card>
+      <v-card-title class="headline">Confirmation</v-card-title>
+      <v-card-text>
+        Are you sure you want to delete the tag
+        {{ !!this.selectedTag ? this.selectedTag.description : '' }}
+        ?
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="confirmationDialog = false" color="error">Cancel</v-btn>
+        <v-btn @click="DeleteTag" color="success">confirm</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -56,6 +72,8 @@
         searchQuery: '',
         itemsPerPage: 9,
         currentPage: 1,
+        selectedTag: null,
+        confirmationDialog: false,
       };
     },
     methods: {
@@ -91,8 +109,14 @@
         await this.questionnaryStore.updateTag(tag);
         this.tags = this.questionnaryStore.tagList;
       },
-      async DeleteTag(tag) {
-        await this.questionnaryStore.deleteTag(tag);
+      showConfirmDeletion(tag) {
+        this.selectedTag = tag;
+        this.confirmationDialog = true;
+      },
+      async DeleteTag() {
+        await this.questionnaryStore.deleteTag(this.selectedTag);
+        this.confirmationDialog = false;
+        this.selectedTag = null;
         this.tags = this.questionnaryStore.tagList;
       },
     },
