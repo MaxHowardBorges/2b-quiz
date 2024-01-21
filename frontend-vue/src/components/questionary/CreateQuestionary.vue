@@ -104,6 +104,7 @@
       selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
     },
+    emits: ['sendModifyingQuestion'],
     setup() {
       const questionnaryStore = useQuestionnaryStore();
       return {
@@ -114,6 +115,8 @@
       let question = this.isFromBank
         ? this.getQuestionFromBank()
         : this.getQuestion();
+      console.log(question);
+      this.$emit('sendModifyingQuestion', { ...question });
       return {
         question,
         indexD: 0,
@@ -127,10 +130,13 @@
     methods: {
       getQuestion() {
         if (this.idQuestion) {
-          let question = this.questionnaryStore.questions.find(
-            (question) => question.id === this.idQuestion,
-          );
-          question.answers = this.questionnaryStore.answers;
+          let question = {
+            ...this.questionnaryStore.questions.find(
+              (question) => question.id === this.idQuestion,
+            ),
+          };
+          question.answers = this.questionnaryStore.answers; //TODO make a copy
+          console.log(question.answers);
           return question;
         }
         let initQuestion = {
@@ -147,9 +153,11 @@
         return initQuestion;
       },
       getQuestionFromBank() {
-        let questionFromBank = this.questionnaryStore.privateQuestions.find(
-          (question) => question.id === this.idQuestion,
-        );
+        let questionFromBank = {
+          ...this.questionnaryStore.privateQuestions.find(
+            (question) => question.id === this.idQuestion,
+          ),
+        };
         this.questionnaryStore.idQuestionnary = questionFromBank.questionnaryId;
         return questionFromBank;
       },

@@ -113,6 +113,7 @@
       ref="questionnaryComponent"
       id="quest"
       v-if="OnListQuestion"
+      @sendModifyingQuestion="sendModifyingQuestion"
       :is-from-bank="isFromBank"
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
@@ -178,7 +179,7 @@
     /*props: {
       ChangeStatus: String,
     },*/ //USE IF WARNING IN CONSOLE
-    emits: ['returnToBank', 'GoList', 'child-mounted'],
+    emits: ['returnToBank', 'GoList', 'child-mounted', 'sendModifyingQuestion'],
     data() {
       return {
         // questionnary
@@ -187,6 +188,7 @@
         // question
         statusQ: 'add',
         idQuestion: null,
+        modifyingQuestion: null,
         isFromBank: false,
         // type
         OnList: true,
@@ -312,7 +314,11 @@
             .some((questionTag) => questionTag === tl.description),
         );
       },
+      sendModifyingQuestion(question) {
+        this.modifyingQuestion = question;
+      },
       async validQuestion() {
+        console.log('oh no');
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
@@ -361,7 +367,25 @@
         } else alert('Remplissez les champs vide avant de valider');
       },
       showConfirmationDialog() {
-        this.confirmationDialog = true;
+        const content = this.$refs.questionnaryComponent.question.content;
+        const answers = this.$refs.questionnaryComponent.getAnswers();
+        const type = this.typeOptions.find(
+          (option) => option.typeLabel === this.selectedType,
+        ).typeCode;
+        console.log(this.modifyingQuestion);
+        console.log(answers);
+        console.log(this.modifyingQuestion.answers !== answers);
+
+        if (
+          this.modifyingQuestion.content !== content ||
+          this.modifyingQuestion.type !== type ||
+          JSON.stringify(this.modifyingQuestion.answers) !==
+            JSON.stringify(answers)
+        ) {
+          this.confirmationDialog = true;
+        } else {
+          this.leaveWithoutSaving();
+        }
       },
       leaveWithoutSaving() {
         this.selectedType = 'Unique';
