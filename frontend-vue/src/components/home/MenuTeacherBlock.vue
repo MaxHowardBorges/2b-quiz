@@ -9,6 +9,8 @@
     :content="errorSnackbarContent"
     ref="errorSnackbar"></error-snackbar>
 
+  <session-activity></session-activity>
+
   <v-sheet
     min-width="150px"
     class="pa-7 d-block my-6 mx-auto"
@@ -62,10 +64,11 @@
   import router from '@/router';
   import { ref } from 'vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+  import SessionActivity from '@/components/session/activity/SessionActivity.vue';
 
   export default {
     name: 'MenuTeacherBlock',
-    components: { ErrorSnackbar, ErrorDialog },
+    components: { SessionActivity, ErrorSnackbar, ErrorDialog },
     props: {
       dialogError: false,
       errorSnackbar: false,
