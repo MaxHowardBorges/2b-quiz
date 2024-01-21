@@ -132,7 +132,11 @@
       <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <questionnary-list-one
           :numberLabel="question.content"
-          :typeLabel="question.type"
+          :typeLabel="
+            typeOptions.filter((type) => type.typeCode === question.type)[0]
+              .typeLabel
+          "
+          :typeCode="question.type"
           :idQuestion="question.id"
           @ChangeStatuss="changeStatus" />
       </v-sheet>
