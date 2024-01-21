@@ -73,6 +73,7 @@
     methods: {
       async cancelSession() {
         //TODO call api/store
+        await this.sessionStore.stopSession();
         await router.push('/');
       },
       async handleLaunch() {

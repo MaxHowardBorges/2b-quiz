@@ -1,4 +1,17 @@
 <template>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Are you sure ?</v-card-title>
+
+      <v-card-text>
+        If you stop the session, all of results will be lost !
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="yesCancel">Yes</v-btn>
+        <v-btn @click="noCancel">No</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <v-btn @click="handleSubmit" color="primary" v-if="userStore.isStudent">
     <p class="text-white font-weight-bold">Send answer</p>
   </v-btn>
@@ -27,6 +40,7 @@
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
+  import { th } from 'vuetify/locale';
 
   export default {
     name: 'SessionActionsBlock',
@@ -40,14 +54,25 @@
         userStore,
       };
     },
+    data() {
+      return {
+        dialogVisible: false,
+      };
+    },
     emits: ['answer-sent'],
     methods: {
       async handleNextQuestion() {
         await this.sessionStore.nextQuestion();
       },
       async handleStop() {
+        this.dialogVisible = true;
+      },
+      async noCancel() {
+        this.dialogVisible = false;
+      },
+      async yesCancel() {
         await router.push('/');
-        //TODO to finish
+        this.sessionStore.stopSession();
       },
       async handleSubmit() {
         try {

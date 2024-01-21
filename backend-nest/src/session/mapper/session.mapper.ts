@@ -6,10 +6,20 @@ import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { AnswerDto } from '../../question/dto/answer.dto';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
+import { QuestionnaryUsersAnswerMapDto } from '../dto/QuestionnaryUsersAnswerMap.dto';
+import { SessionDto } from '../dto/session.dto';
+import { SessionTemp } from '../temp/sessionTemp';
+import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
+import { Question } from '../../question/entity/question.entity';
+import { QuestionResultDto } from '../dto/questionResult.dto';
 
 @Injectable()
 export class SessionMapper {
-  constructor(private readonly answerMapper: AnswerMapper) {}
+  constructor(
+    private readonly answerMapper: AnswerMapper,
+    private readonly questionnaryMapper: QuestionnaryMapper,
+  ) {}
 
   mapCurrentQuestionDto(question: QuestionDto): CurrentQuestionDto {
     return {
@@ -21,7 +31,10 @@ export class SessionMapper {
   }
 
   mapUserAnswerDto(
-    userAnswers: Map<ParticipantInterface, Map<QuestionDto, AnswerDto | string | AnswerDto[]>>,
+    userAnswers: Map<
+      ParticipantInterface,
+      Map<QuestionDto, AnswerDto | string | AnswerDto[]>
+    >,
   ): UserAnswerDto[] {
     const userAnswerDtos = [];
     for (const [user, innerMap] of userAnswers.entries()) {
@@ -48,5 +61,45 @@ export class SessionMapper {
     }
 
     return userAnswerDtos;
+  }
+
+  mapQuestionnaryUsersAnswer(
+    questionnaries: QuestionnaryDto[],
+    usersAnswer: UserAnswerDto[],
+  ): QuestionnaryUsersAnswerMapDto {
+    return {
+      questionnaries: questionnaries,
+      usersAnswer: usersAnswer,
+    };
+  }
+
+  //map sessionTemp into a dto with the same arguments, shoud return a sessionTempDto
+  mapSessionTempDto(sessionTemp: SessionTemp): SessionDto {
+    const questionnaryDto = this.questionnaryMapper.entityToQuestionnaryDto(
+      sessionTemp.questionnary,
+    );
+    return {
+      id: sessionTemp.id,
+      questionnary: questionnaryDto,
+      questionnaryNumber: sessionTemp.questionnaryNumber,
+      questionNumber: sessionTemp.questionNumber,
+      connectedUser: sessionTemp.connectedUser,
+      userAnswers: sessionTemp.userAnswers,
+      endSession: sessionTemp.endSession,
+      isResult: sessionTemp.isResult,
+      isGlobal: sessionTemp.isGlobal,
+      isResponses: sessionTemp.isResponses,
+      host: sessionTemp.host,
+    };
+  }
+
+  mapQuestionResult(question: Question): QuestionResultDto {
+    return {
+      id: question.id,
+      content: question.content,
+      type: question.type,
+      answers: [],
+      hasAnsweredCorrectly: false,
+    };
   }
 }

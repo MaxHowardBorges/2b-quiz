@@ -56,6 +56,17 @@
         <p class="text-white font-weight-bold pa-2">Session history</p>
       </v-btn>
     </div>
+    <div class="">
+      <v-btn
+        @click="handleGoToQuestionBank"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">
+          Banque privée de questions
+        </p>
+      </v-btn>
+    </div>
   </v-sheet>
 </template>
 
@@ -123,7 +134,16 @@
         } else alert('Selectionnez au moins 1 questionnaire');
       },
       handleCreateQuestionnary() {
-        router.push('/questionary');
+        router.push({
+          name: 'questionary',
+          query: { toCreateBool: true, toBankBool: false },
+        });
+      },
+      handleGoToQuestionBank() {
+        router.push({
+          name: 'questionary',
+          query: { toCreateBool: false, toBankBool: true },
+        });
       },
       redirectToSessionHistory() {
         router.push('/session-history');

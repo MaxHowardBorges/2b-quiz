@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Session } from '../session';
+import { SessionTemp } from '../temp/sessionTemp';
 import { QuestionService } from '../../question/service/question.service';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { Question } from '../../question/entity/question.entity';
@@ -16,29 +16,59 @@ import { Teacher } from '../../user/entity/teacher.entity';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
+import { Session } from '../entity/session.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserSession } from '../entity/userSession.entity';
+import { Student } from '../../user/entity/student.entity';
+import { SessionMapper } from '../mapper/session.mapper';
+import { User } from '../../user/entity/user.entity';
+import { ResultsDto } from '../dto/results.dto';
 
 @Injectable()
 export class SessionService {
-  private sessionMap: Map<string, Session> = new Map<string, Session>();
+  private sessionMap: Map<string, SessionTemp> = new Map<string, SessionTemp>();
   constructor(
     private questionService: QuestionService,
     private questionnaryService: QuestionnaryService,
     private answerMapper: AnswerMapper,
+    private readonly sessionMapper: SessionMapper,
     private eventService: EventService,
+    @InjectRepository(Session)
+    private readonly sessionRepository: Repository<Session>,
+    @InjectRepository(UserSession)
+    private readonly userSessionRepository: Repository<UserSession>,
   ) {}
 
-  async initializeSession(teacher: Teacher, ids: number[]): Promise<Session> {
+  async initializeSession(
+    teacher: Teacher,
+    idsQuestionnarys: number[],
+    isResult: boolean,
+    isGlobal: boolean,
+    isResponses: boolean,
+  ): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
-    const questionnaries: Questionnary[] = [];
-    for (const id of ids) {
-      questionnaries.push(await this.questionnaryService.findQuestionnary(id));
-    }
+    const questionnary =
+      await this.questionnaryService.createQuestionnaryFromIdArray(
+        idsQuestionnarys,
+        teacher,
+      );
+
+    //const questionnaries: Questionnary = //await this.questionnaryService.findQuestionnary(id));
+
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, teacher, questionnaries),
+      await this.createSession(
+        idSession,
+        teacher,
+        questionnary,
+        isResult,
+        isGlobal,
+        isResponses,
+      ),
     );
     this.eventService.createClientGroup(idSession);
     return this.sessionMap.get(idSession);
@@ -52,9 +82,19 @@ export class SessionService {
   async createSession(
     idSession: string,
     teacher: Teacher,
-    questionnaryTab: Questionnary[],
-  ): Promise<Session> {
-    return new Session(idSession, questionnaryTab, teacher);
+    questionnary: Questionnary,
+    isResult: boolean,
+    isGlobal: boolean,
+    isResponses: boolean,
+  ): Promise<SessionTemp> {
+    return new SessionTemp(
+      idSession,
+      questionnary,
+      isResult,
+      isGlobal,
+      isResponses,
+      teacher,
+    );
   }
 
   startSession(idSession: string): boolean {
@@ -69,35 +109,35 @@ export class SessionService {
       currentSession.questionNumber + 1 <
       (
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+          currentSession.questionnary.id,
         )
       ).length
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
       this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
+      const questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+          currentSession.questionnary.id,
         );
       return await this.questionService.findQuestion(
         questionTab[currentSession.questionNumber].id,
       );
       // else check for next questionnary in the current session
-    } else if (
-      currentSession.questionnaryNumber + 1 <
-      currentSession.questionnaryList.length
-    ) {
-      currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
-      currentSession.questionNumber = 0;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        );
-      return await this.questionService.findQuestion(
-        questionTab[currentSession.questionNumber].id,
-      );
-    }
+    } //else if (
+    //   currentSession.questionnaryNumber + 1 <
+    //   currentSession.questionnaryList.length
+    // ) {
+    //   currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
+    //   currentSession.questionNumber = 0;
+    //   this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
+    //   let questionTab =
+    //     await this.questionnaryService.findQuestionsFromIdQuestionnary(
+    //       currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+    //     );
+    //   return await this.questionService.findQuestion(
+    //     questionTab[currentSession.questionNumber].id,
+    //   );
+    // }
     this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
     currentSession.endSession = true;
     this.eventService.closeClientGroup(idSession);
@@ -113,20 +153,19 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     const currentSession = this.sessionMap.get(idSession);
-    const questionnaries = currentSession.questionnaryList;
-    for (let questionnary of questionnaries) {
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          questionnary.id,
-        );
-      questionnary.questions = [];
-      for (let question of questionTab) {
-        questionnary.questions.push(
-          await this.questionService.findQuestion(question.id),
-        );
-      }
+    const questionnary = currentSession.questionnary;
+    const questionTab =
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        questionnary.id,
+      );
+    questionnary.questions = [];
+    for (const question of questionTab) {
+      questionnary.questions.push(
+        await this.questionService.findQuestion(question.id),
+      );
     }
-    return questionnaries;
+
+    return questionnary.questions;
   }
 
   join(idSession: string, user: ParticipantInterface): void {
@@ -177,18 +216,81 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers
-      .get(user.id)
-      .set(
-        question,
-        Array.isArray(idAnswer)
-          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-          : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : question.type === QuestionType.QOC
-          ? idAnswer.split(/[ _]/)[0]
-          : idAnswer,
-      );
+    let answerdb = new Answer();
+    if (typeof idAnswer === 'string') {
+      const answer = new Answer();
+      if (question.type === QuestionType.QOC) {
+        answer.content = idAnswer.split(/[ _]/)[0];
+      } else {
+        answer.content = idAnswer;
+      }
+
+      answer.isCorrect = true;
+      answer.question = question;
+      answerdb = await this.questionService.createAnswerOpenEnded(answer);
+    }
+    session.userAnswers.get(user.id).set(
+      question,
+      Array.isArray(idAnswer)
+        ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+        : typeof idAnswer === 'number'
+        ? question.answers.find((answer) => answer.id === idAnswer)
+        : question.type === QuestionType.OUV
+        ? answerdb
+        : question.type === QuestionType.QOC
+        ? answerdb //idAnswer.split(/[ _]/)[0]
+        : idAnswer,
+    );
+  }
+
+  //Save session into entity
+  async saveSession(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    //save session into entity
+    const sessionEntity = new Session();
+    //Define all sessionEntity's attributes
+    sessionEntity.isGlobal = session.isGlobal;
+    sessionEntity.isResult = session.isResult;
+    sessionEntity.isResponses = session.isResponses;
+    sessionEntity.date = new Date();
+    sessionEntity.teacher = session.host;
+    sessionEntity.questionnary = session.questionnary;
+    await this.sessionRepository.save(sessionEntity);
+    //Define each userSessionEntity for each user in session
+    for (const user of session.connectedUser) {
+      const userSessionEntity = new UserSession();
+      userSessionEntity.session = sessionEntity;
+      if (user instanceof Teacher) {
+        userSessionEntity.teacher = user;
+      } else if (user instanceof Student) {
+        userSessionEntity.student = user;
+      }
+      //Define all userSessionEntity's attributes
+      userSessionEntity.answer = [];
+      const userAnswer = session.userAnswers.get(user.id);
+      for (const [question, answer] of userAnswer) {
+        if (Array.isArray(answer)) {
+          for (const a of answer) {
+            userSessionEntity.answer.push(a);
+          }
+        } else if (typeof answer === 'string') {
+          const answerEntity = new Answer();
+          answerEntity.question = question;
+          answerEntity.content = answer;
+          answerEntity.isCorrect = true;
+          userSessionEntity.answer.push(answerEntity);
+        } else if (answer instanceof Answer) {
+          userSessionEntity.answer.push(answer);
+        }
+      }
+      await this.userSessionRepository.save(userSessionEntity, {});
+    }
+  }
+
+  //delete questionnary of a session only with idsession
+  async deleteQuestionnary(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    await this.questionnaryService.deleteQuestionnary(session.questionnary.id);
   }
 
   getMapUser(idSession: string) {
@@ -211,10 +313,10 @@ export class SessionService {
     );
   }
 
-  async getCurrentQuestion(session: Session) {
+  async getCurrentQuestion(session: SessionTemp) {
     const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
-        session.questionnaryList[session.questionnaryNumber].id,
+        session.questionnary.id,
       );
     return await this.questionService.findQuestion(
       questionTab[session.questionNumber].id,
@@ -226,5 +328,139 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     return this.sessionMap.get(idSession);
+  }
+
+  async getListSession(user: User) {
+    if (user instanceof Teacher) {
+      return this.sessionRepository.find({
+        //Find all session where student is connected
+        relations: {
+          userSession: { student: true, teacher: true, answer: true },
+        },
+        where: {
+          userSession: { teacher: { id: user.id } },
+          teacher: { id: user.id },
+        },
+      });
+    } else if (user instanceof Student) {
+      return this.sessionRepository.find({
+        //Find all session where student is connected
+        relations: {
+          userSession: { student: true, teacher: true, answer: true },
+        },
+        where: { userSession: { student: { id: user.id } } },
+      });
+    }
+  }
+
+  async getResults(idSession: number, masterUser: User) {
+    const session = await this.sessionRepository.findOne({
+      where: {
+        id: idSession,
+      },
+      relations: {
+        questionnary: true,
+        userSession: {
+          student: true,
+          teacher: true,
+          answer: { question: true },
+        },
+      },
+    });
+    session.isResponses = session.isResult && session.isResponses;
+
+    //get session's questionnary
+    const questionnary = await this.questionnaryService.findQuestionnary(
+      session.questionnary.id,
+    );
+    //get questionnary's questions
+    questionnary.questions =
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        questionnary.id,
+      );
+    //get questionnary's questions's answers
+    for (const question of questionnary.questions) {
+      question.answers = await this.questionService.findAnswers(question.id);
+    }
+
+    let resultTab = new ResultsDto();
+    let average = 0;
+    let openQuestions = 0;
+    let isCurrentUser = false;
+
+    const usersSession = session.userSession;
+    for (const userSession of usersSession) {
+      if (userSession.student.id === masterUser.id) {
+        isCurrentUser = !isCurrentUser;
+      }
+      for (const question of questionnary.questions) {
+        session.isResult && isCurrentUser
+          ? resultTab.questions.push(
+              this.sessionMapper.mapQuestionResult(question),
+            )
+          : '';
+        if (question.type === 'ouv' || question.type === 'qoc') {
+          openQuestions++;
+        } else {
+          let questionResult = this.percentSuccess(question, userSession);
+          average += questionResult.nbCorrectAnswer;
+          if (isCurrentUser) {
+            session.isResult
+              ? (resultTab.questions[
+                  resultTab.questions.length - 1
+                ].hasAnsweredCorrectly = questionResult.nbCorrectAnswer == 1)
+              : '';
+            session.isResponses
+              ? questionResult.rightAnswer
+                  .map((answer) => answer.content)
+                  .every((correctAnswer) =>
+                    resultTab.questions[
+                      resultTab.questions.length - 1
+                    ].answers.push(correctAnswer),
+                  )
+              : '';
+            resultTab.personnalResult += questionResult.nbCorrectAnswer;
+          }
+        }
+      }
+    }
+    session.isGlobal
+      ? (resultTab.globalResult =
+          (average /
+            usersSession.length /
+            (questionnary.questions.length - openQuestions)) *
+          100)
+      : '';
+    resultTab.personnalResult =
+      (resultTab.personnalResult /
+        (questionnary.questions.length - openQuestions)) *
+      100;
+    return resultTab;
+  }
+
+  //Calculate the percent of success of a student
+  private percentSuccess(question: Question, user: UserSession) {
+    const userAnswerEveryQuestions = user.answer;
+    let nbCorrectAnswer = 0;
+    const userAnswer = userAnswerEveryQuestions.filter(
+      (answer) => answer.question.id == question.id,
+    );
+    const rightAnswer = question.answers.filter((answer) => answer.isCorrect);
+
+    if (
+      question.type === QuestionType.QCM &&
+      userAnswer
+        .map((answer) => answer.id)
+        .every((idAnswerUser) =>
+          rightAnswer
+            .map((answer) => answer.id)
+            .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
+        )
+    ) {
+      nbCorrectAnswer++;
+    } else if (userAnswer[0].isCorrect) {
+      nbCorrectAnswer++;
+    }
+    return { nbCorrectAnswer, rightAnswer };
   }
 }

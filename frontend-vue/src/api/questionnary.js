@@ -108,13 +108,14 @@ export async function deleteQuestion(idQuestionnary, idQuestion, token) {
   );
 }
 
-export async function deleteQuestionnary(idQuestionnary) {
+export async function deleteQuestionnary(idQuestionnary, token) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/questionnary/' + idQuestionnary,
     {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
     },
   );

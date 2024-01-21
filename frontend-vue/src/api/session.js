@@ -34,7 +34,8 @@ export async function sendAnswer(body, token) {
   });
 }
 
-export async function createSession(token,body) {
+export async function createSession(token, body) {
+  console.log(body);
   return await fetch(import.meta.env.VITE_API_URL + '/session/create', {
     method: 'POST',
     headers: {
@@ -56,9 +57,37 @@ export async function getNextQuestion(body, token) {
   });
 }
 
-export async function getSessionResults(idSession, token) {
+export async function startEndingSession(idSession, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/session/getMap?idsession=' + idSession,
+    import.meta.env.VITE_API_URL + '/session/endSession?idsession=' + idSession,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
+export async function stopSession(idSession, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL +
+      '/session/stopSession?idsession=' +
+      idSession,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
+export async function getResults(idSession, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/session/getResults?idsession=' + idSession,
     {
       method: 'GET',
       headers: {

@@ -65,6 +65,10 @@ const routes = [
   {
     path: '/questionary',
     name: 'questionary',
+    props: (route) => ({
+      toCreateBool: route.query.toCreateBool === 'true',
+      toBankBool: route.query.toBankBool === 'true',
+    }),
     component: QuestionaryView,
     meta: { inMenu: true },
   },

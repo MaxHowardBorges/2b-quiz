@@ -16,4 +16,7 @@ export class Questionnary {
 
   @OneToMany(() => Question, (question) => question.questionnary)
   questions: Question[];
+
+  @Column({ default: () => false })
+  isCompilated: boolean;
 }
