@@ -15,6 +15,8 @@ const routes = [
     props: (route) => ({
       isCreating: !!route.query.isCreating,
       idSession: route.params.idSession,
+      errorSnackbar: route.query.errorSnackbar,
+      serverError: !!route.query.serverError,
     }),
   },
   {
@@ -24,6 +26,8 @@ const routes = [
     meta: { inMenu: true },
     props: (route) => ({
       isCreating: !!route.query.isCreating,
+      errorSnackbar: route.query.errorSnackbar,
+      serverError: !!route.query.serverError,
     }),
   },
   {

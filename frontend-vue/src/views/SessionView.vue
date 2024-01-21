@@ -1,4 +1,14 @@
 <template>
+  <error-dialog
+    title="The Server is offline"
+    content="Please, try later."
+    ref="dialogError"></error-dialog>
+
+  <error-snackbar
+    title="Error while connecting to the session"
+    :content="errorSnackbarContent"
+    ref="errorSnackbar"></error-snackbar>
+
   <template v-if="!!sessionStore.idSession">
     <template v-if="sessionStore.isParticipant">
       <session-waiting-block-student
@@ -80,14 +90,21 @@
   import CreateSession from '@/components/session/CreateSession.vue';
   import { useSessionEventStore } from '@/stores/sessionEventStore';
   import { ValidationError } from '@/utils/valdiationError';
+  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
+  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
+  import router from '@/router';
 
   export default {
     name: 'SessionView',
     props: {
       isCreating: Boolean || false,
       idSession: String || null,
+      serverError: Boolean || false,
+      errorSnackbar: String || false,
     },
     components: {
+      ErrorDialog,
+      ErrorSnackbar,
       CreateSession,
       JoinForm,
       EventSession,
@@ -107,6 +124,8 @@
     },
     data() {
       return {
+        errorSnackbarContent: '',
+        snackbarError: ref(false),
         subscribe: null,
         ended: false,
         waitingSessionStart: ref(true),
@@ -123,20 +142,40 @@
       }
       this.toggleValue = this.isCreating ? 'true' : 'false';
     },
+    mounted() {
+      console.log('joinSession', this.idSession);
+      console.log('isCreating', this.isCreating);
+      console.log('serverError', this.serverError);
+      console.log('errorSnackbar', this.errorSnackbar);
+      if (this.errorSnackbar) {
+        this.errorSnackbarContent = this.errorSnackbar;
+        this.$refs.errorSnackbar.setSnackbarError(true);
+      } else if (this.serverError) {
+        this.$refs.dialogError.setDialogError(true);
+      }
+    },
     methods: {
       async joinSession() {
         try {
+          console.log('joinSession', this.idSession);
           const isStarted = await this.sessionStore.joinSession(this.idSession);
           await this.prepareSession(isStarted, this.idSession);
           const sessionEventStore = useSessionEventStore();
           sessionEventStore.connectToSSEStudent();
         } catch (error) {
           if (error instanceof ValidationError) {
-            this.errorSnackbarContent = error.message;
-            this.$refs.errorSnackbar.setSnackbarError(true);
+            console.log('error instanceof ValidationError', error.message);
+            await router.replace({
+              name: 'Session',
+              query: { errorSnackbar: error.message },
+            });
+            router.go(0);
           } else {
-            console.error('Error while joining session:', error);
-            this.$refs.dialogError.setDialogError(true);
+            await router.replace({
+              name: 'Session',
+              query: { serverError: error.message },
+            });
+            router.go(0);
           }
         }
       },
