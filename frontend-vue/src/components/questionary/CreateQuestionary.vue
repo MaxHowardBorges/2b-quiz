@@ -104,6 +104,7 @@
       selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
     },
+    emits: ['sendModifyingQuestion'],
     setup() {
       const questionnaryStore = useQuestionnaryStore();
       return {
@@ -114,6 +115,7 @@
       let question = this.isFromBank
         ? this.getQuestionFromBank()
         : this.getQuestion();
+      this.$emit('sendModifyingQuestion', { ...question });
       return {
         question,
         indexD: 0,
@@ -127,9 +129,11 @@
     methods: {
       getQuestion() {
         if (this.idQuestion) {
-          let question = this.questionnaryStore.questions.find(
-            (question) => question.id === this.idQuestion,
-          );
+          let question = {
+            ...this.questionnaryStore.questions.find(
+              (question) => question.id === this.idQuestion,
+            ),
+          };
           question.answers = this.questionnaryStore.answers;
           return question;
         }
@@ -147,9 +151,11 @@
         return initQuestion;
       },
       getQuestionFromBank() {
-        let questionFromBank = this.questionnaryStore.privateQuestions.find(
-          (question) => question.id === this.idQuestion,
-        );
+        let questionFromBank = {
+          ...this.questionnaryStore.privateQuestions.find(
+            (question) => question.id === this.idQuestion,
+          ),
+        };
         this.questionnaryStore.idQuestionnary = questionFromBank.questionnaryId;
         return questionFromBank;
       },
@@ -173,7 +179,9 @@
         return this.question.answers;
       },
       addAnswer() {
-        this.question.answers.push({ content: '', isCorrect: false });
+        this.question.answers.length < 9
+          ? this.question.answers.push({ content: '', isCorrect: false })
+          : alert("You can't add more answer");
       },
 
       removeAnswer() {

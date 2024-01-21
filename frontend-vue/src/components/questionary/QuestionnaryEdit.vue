@@ -113,6 +113,7 @@
       ref="questionnaryComponent"
       id="quest"
       v-if="OnListQuestion"
+      @sendModifyingQuestion="sendModifyingQuestion"
       :is-from-bank="isFromBank"
       :selectedQuestionType="selectedType"
       :idQuestion="idQuestion" />
@@ -131,7 +132,11 @@
       <v-sheet v-for="(question, index) in this.useQ.questions" :key="index">
         <questionnary-list-one
           :numberLabel="question.content"
-          :typeLabel="question.type"
+          :typeLabel="
+            typeOptions.filter((type) => type.typeCode === question.type)[0]
+              .typeLabel
+          "
+          :typeCode="question.type"
           :idQuestion="question.id"
           @ChangeStatuss="changeStatus" />
       </v-sheet>
@@ -178,7 +183,7 @@
     /*props: {
       ChangeStatus: String,
     },*/ //USE IF WARNING IN CONSOLE
-    emits: ['returnToBank', 'GoList', 'child-mounted'],
+    emits: ['returnToBank', 'GoList', 'child-mounted', 'sendModifyingQuestion'],
     data() {
       return {
         // questionnary
@@ -187,6 +192,7 @@
         // question
         statusQ: 'add',
         idQuestion: null,
+        modifyingQuestion: null,
         isFromBank: false,
         // type
         OnList: true,
@@ -312,7 +318,11 @@
             .some((questionTag) => questionTag === tl.description),
         );
       },
+      sendModifyingQuestion(question) {
+        this.modifyingQuestion = question;
+      },
       async validQuestion() {
+        console.log('oh no');
         const index = this.$refs.questionnaryComponent.correct;
         const content = this.$refs.questionnaryComponent.question.content;
         const answers = this.$refs.questionnaryComponent.getAnswers();
@@ -361,6 +371,22 @@
         } else alert('Remplissez les champs vide avant de valider');
       },
       showConfirmationDialog() {
+        // const content = this.$refs.questionnaryComponent.question.content;
+        // const answers = this.$refs.questionnaryComponent.getAnswers();
+        // const type = this.typeOptions.find(
+        //   (option) => option.typeLabel === this.selectedType,
+        // ).typeCode;
+        //
+        // if (
+        //   this.modifyingQuestion.content !== content ||
+        //   this.modifyingQuestion.type !== type ||
+        //   JSON.stringify(this.modifyingQuestion.answers) !==
+        //     JSON.stringify(answers)
+        // ) {
+        //   this.confirmationDialog = true;
+        // } else {
+        //   this.leaveWithoutSaving();
+        // }
         this.confirmationDialog = true;
       },
       leaveWithoutSaving() {

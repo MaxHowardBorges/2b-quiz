@@ -16,7 +16,8 @@
     },
     props: {
       numberLabel: { type: String, default: 'N°' },
-      typeLabel: { type: String, default: 'type' },
+      typeLabel: { type: String, default: 'Unique' },
+      typeCode: { type: String, default: 'qcu' },
       idQuestion: { type: Number, default: null },
     },
     methods: {
@@ -29,7 +30,7 @@
         }
       },
       modifyQuest() {
-        this.$emit('ChangeStatuss', this.idQuestion, this.typeLabel);
+        this.$emit('ChangeStatuss', this.idQuestion, this.typeCode);
       },
     },
   };
@@ -39,7 +40,12 @@
   <div class="blocklist">
     <b>{{ numberLabel }}</b>
     <v-spacer></v-spacer>
-    <b>{{ typeLabel.toLocaleUpperCase() }}</b>
+    <b>
+      {{ typeCode.toLocaleUpperCase() }}
+      <v-tooltip activator="parent" location="top end" origin="bottom center">
+        {{ typeLabel.toLocaleUpperCase() }}
+      </v-tooltip>
+    </b>
     <v-btn icon="edit" @click="modifyQuest" class="mx-2"></v-btn>
     <v-btn
       elevation="2"
