@@ -1,5 +1,5 @@
 <template>
-  <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-5 pa-3">
+  <v-sheet elevation="3" rounded="lg" class="d-flex flex-column my-3 pa-3">
     <div>
       <input
         v-model="newTagName"
@@ -11,9 +11,9 @@
         id="ic"
         icon="edit"
         @click="updateTag"
-        size="30"
+        size="40"
         style="margin-right: 10px"></v-btn>
-      <v-btn id="ic" icon="delete" size="30" @click="deleteTag"></v-btn>
+      <v-btn id="ic" icon="delete" size="40" @click="deleteTag"></v-btn>
     </div>
   </v-sheet>
 </template>

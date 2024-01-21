@@ -11,6 +11,8 @@ import { Answer } from '../../question/entity/answer.entity';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { generateTeacherMock } from '../../../test/mock/user.mock';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { DisplaySettingsObject } from '../object/displaySettings.object';
+import { SettingsObject } from '../object/settings.object';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -33,6 +35,7 @@ describe('SessionService', () => {
   const mockQuestionnaryService = {
     findQuestionnary: jest.fn(),
     findQuestionsFromIdQuestionnary: jest.fn(),
+    findQuestionnaryWithQuestionsId: jest.fn(),
   };
 
   const mockQuestionnaryRepository = {
@@ -49,9 +52,9 @@ describe('SessionService', () => {
   };
 
   const mockEventService = {
-    createClientGroup: jest.fn(),
+    createSessionGroup: jest.fn(),
     sendEvent: jest.fn(),
-    closeClientGroup: jest.fn(),
+    closeSessionGroup: jest.fn(),
   };
 
   const hostTeacher = generateTeacherMock();
@@ -183,20 +186,29 @@ describe('SessionService', () => {
   questionnaryTest.author = hostTeacher;
   questionnaryTest.title = 'morocco';
 
-  // const session: SessionTemp = {
-  //   hasUser(user: ParticipantInterface): boolean {
-  //     return false;
-  //   },
-  //   id: '111111',
-  //   questionnaryList: [],
-  //   questionnaryNumber: 0,
-  //   questionNumber: 0,
-  //   connectedUser: null,
-  //   userAnswers: null,
-  //   endSession: false,
-  //   host: hostTeacher,
-  // };
-  // session.questionnaryList.push(questionnary);
+  const session: Session = {
+    whitelistGroups: [],
+    getCurrentQuestion(): Question {
+      return undefined;
+    },
+    getNbAnsweredForCurrentQuestion(): number {
+      return 0;
+    },
+    hasUser(user: ParticipantInterface): boolean {
+      return false;
+    },
+    id: '111111',
+    questionnaryList: [],
+    questionnaryNumber: 0,
+    questionNumber: 0,
+    connectedUser: null,
+    userAnswers: null,
+    endSession: false,
+    host: hostTeacher,
+    settings: new SettingsObject(new DisplaySettingsObject(true, true)),
+    whitelist: null,
+  };
+  session.questionnaryList.push(questionnary);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -242,13 +254,20 @@ describe('SessionService', () => {
     });
     //TODO BROKEN TEST
     /* it('initializeSession : should be not equal to the empty session', async () => {
-      const testSession = await service.initializeSession(hostTeacher, [
-        questionnary.id,
-      ]);
+      mockQuestionnaryService.findQuestionnaryWithQuestionsId.mockResolvedValue(
+        questionnary.questions,
+      );
+      const testSession = await service.initializeSession(
+        hostTeacher,
+        [questionnary.id],
+        new SettingsObject(new DisplaySettingsObject(true, true)),
+        [],
+        [],
+      );
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(SessionTemp);
       expect(testSession.id).not.toBeNull();
-      expect(testSession.id).not.toMatch(/[a-zA-ZÀ-ÿ]/);
+      expect(testSession.id).not.toMatch(/[a-zÀ-ÿ]/);
     });
   });
 
@@ -258,6 +277,7 @@ describe('SessionService', () => {
         service.generateIdSession(),
         hostTeacher,
         [questionnary],
+        new SettingsObject(new DisplaySettingsObject(true, true)),
       );
       expect(test).toBeInstanceOf(SessionTemp);
       expect(typeof test.id).toBe('string');

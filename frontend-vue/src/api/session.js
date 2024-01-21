@@ -1,24 +1,25 @@
-export async function joinSession(body, token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/session/join', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(body),
-  });
-}
-
-export async function getCurrentQuestion(body, token) {
+export async function joinSession(idSession, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/session/question/current',
+    import.meta.env.VITE_API_URL + `/session/${idSession}/join`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(body),
+    },
+  );
+}
+
+export async function getCurrentQuestion(idSession, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/question`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
   );
 }
@@ -88,6 +89,60 @@ export async function stopSession(idSession, token) {
 export async function getResults(idSession, token) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/session/getResults?idsession=' + idSession,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
+export async function getSessionStatus(token, idSession) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/status`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
+export async function setSessionSettings(token, idSession, body) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/settings`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    },
+  );
+}
+
+export async function addToWhitelist(token, idSession, body) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/whitelist/add`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    },
+  );
+}
+
+export async function getSessionDisplaySettings(token, idSession) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/display-settings`,
     {
       method: 'GET',
       headers: {

@@ -1,16 +1,21 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { SettingsDto } from './settings.dto';
+import { IsArray, IsNotEmpty, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateSessionDto {
-  //@IsNumber()
   @IsNotEmpty()
-  idsQuestionnarys: number[];
-  @IsBoolean()
+  @IsArray()
+  questionnaryList: number[];
+
   @IsNotEmpty()
-  isResult: boolean;
-  @IsBoolean()
-  @IsNotEmpty()
-  isGlobal: boolean;
-  @IsBoolean()
-  @IsNotEmpty()
-  isResponses: boolean;
+  @Type(() => SettingsDto)
+  settings: SettingsDto;
+
+  @IsOptional()
+  @IsArray()
+  whitelist?: number[];
+
+  @IsOptional()
+  @IsArray()
+  whitelistGroups?: number[];
 }

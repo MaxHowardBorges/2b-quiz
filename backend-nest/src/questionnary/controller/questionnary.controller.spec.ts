@@ -5,13 +5,13 @@ import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
 
 describe('QuestionnaryController', () => {
   let controller: QuestionnaryController;
-  let service: jest.Mocked<QuestionnaryService>;
+  let questionnaryService: jest.Mocked<QuestionnaryService>;
   let questionnaryMapper: jest.Mocked<QuestionnaryMapper>;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(QuestionnaryController).compile();
     controller = unit;
-    service = unitRef.get(QuestionnaryService);
+    questionnaryService = unitRef.get(QuestionnaryService);
     questionnaryMapper = unitRef.get(QuestionnaryMapper);
   });
   /*
@@ -175,6 +175,8 @@ describe('QuestionnaryController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(questionnaryService).toBeDefined();
+    expect(questionnaryMapper).toBeDefined();
   });
   /*
   describe('createQuestionnary', () => {

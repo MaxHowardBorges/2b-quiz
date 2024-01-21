@@ -1,67 +1,61 @@
 <template>
-  <v-sheet
-    rounded="lg"
-    width="90%"
-    class="mt-5 px-6 py-8 mx-auto"
-    elevation="5">
-    <h1>Session ended</h1>
-    <h2 v-if="userStore.isStudent">Thanks for participating</h2>
+  <h1>Session ended</h1>
+  <h2 v-if="sessionStore.isParticipant">Thanks for participating</h2>
 
-    <div class="mt-3 d-flex flex-wrap">
-      <v-btn
-        min-width="190px"
-        v-if="userStore.isTeacher"
-        @click="handleCreateSession"
-        color="primary"
-        class="pa-2 ma-2 flex-1-1"
-        style="flex-basis: 0 !important"
-        :loading="loading">
-        <p class="text-white font-weight-bold">Start a new session</p>
-      </v-btn>
-      <v-btn
-        min-width="190px"
-        @click="returnToMenu"
-        color="primary"
-        class="pa-2 ma-2 flex-1-1"
-        style="flex-basis: 0 !important">
-        <p class="text-white font-weight-bold">Return to menu</p>
-      </v-btn>
-      <v-btn
-        min-width="190px"
-        color="primary"
-        class="pa-2 ma-2 flex-1-1"
-        style="flex-basis: 0 !important">
-        <p class="text-white font-weight-bold">Settings</p>
-      </v-btn>
-    </div>
-    <div class="mb-4">
-      <b>{{ question }}</b>
-      <div class="mt-4 mb-4">
-        <v-row>
-          <v-col>
+  <div class="mt-3 d-flex flex-wrap">
+    <v-btn
+      min-width="190px"
+      v-if="sessionStore.isHost"
+      @click="handleCreateSession"
+      color="primary"
+      class="pa-2 ma-2 flex-1-1"
+      style="flex-basis: 0 !important"
+      :loading="loading">
+      <p class="text-white font-weight-bold">Start a new session</p>
+    </v-btn>
+    <v-btn
+      min-width="190px"
+      @click="returnToMenu"
+      color="primary"
+      class="pa-2 ma-2 flex-1-1"
+      style="flex-basis: 0 !important">
+      <p class="text-white font-weight-bold">Return to menu</p>
+    </v-btn>
+    <v-btn
+      min-width="190px"
+      color="primary"
+      class="pa-2 ma-2 flex-1-1"
+      style="flex-basis: 0 !important">
+      <p class="text-white font-weight-bold">Settings</p>
+    </v-btn>
+  </div>
+  <div class="mb-4">
+    <b>{{ question }}</b>
+    <div class="mt-4 mb-4">
+      <v-row>
+        <v-col>
             <span>
               <b>Date de création:</b>
               {{ creationDate }}
             </span>
-          </v-col>
-          <v-col>
+        </v-col>
+        <v-col>
             <span>
               <b>Créé par:</b>
               {{ createdBy }}
             </span>
-          </v-col>
-        </v-row>
-      </div>
-      <span class="spacer"></span>
-      <span class="spacer"></span>
-      <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
-        Gérer les résultats
-      </v-btn>
-      <v-btn v-if="userStore.isStudent" @click="SeeResults">
-        Voir les résultats
-      </v-btn>
+        </v-col>
+      </v-row>
     </div>
-  </v-sheet>
+    <span class="spacer"></span>
+    <span class="spacer"></span>
+    <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
+      Gérer les résultats
+    </v-btn>
+    <v-btn v-if="userStore.isStudent" @click="SeeResults">
+      Voir les résultats
+    </v-btn>
+  </div>
 </template>
 
 <script>

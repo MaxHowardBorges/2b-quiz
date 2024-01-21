@@ -12,12 +12,12 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <v-btn @click="handleSubmit" color="primary" v-if="userStore.isStudent">
+  <v-btn @click="handleSubmit" color="primary" v-if="userStore.isParticipant">
     <p class="text-white font-weight-bold">Send answer</p>
   </v-btn>
 
-  <v-divider v-if="userStore.isTeacher" class="mx-6 my-5"></v-divider>
-  <div class="d-flex flex-row justify-center" v-if="userStore.isTeacher">
+  <v-divider v-if="sessionStore.isHost" class="mx-6 my-5"></v-divider>
+  <div class="d-flex flex-row justify-center" v-if="sessionStore.isHost">
     <v-btn
       @click="handleStop"
       color="primary"
@@ -40,6 +40,7 @@
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
+  import { ValidationError } from '@/utils/valdiationError';
   import { th } from 'vuetify/locale';
 
   export default {
@@ -62,7 +63,14 @@
     emits: ['answer-sent'],
     methods: {
       async handleNextQuestion() {
-        await this.sessionStore.nextQuestion();
+        try {
+          const response = await this.sessionStore.nextQuestion();
+          await this.sessionStore.getCurrentQuestionForTeacher(response);
+        } catch (e) {
+          this.sessionStore.disconnectFromSession(
+            'Error handling next question: ' + e.message,
+          );
+        }
       },
       async handleStop() {
         this.dialogVisible = true;
@@ -71,6 +79,7 @@
         this.dialogVisible = false;
       },
       async yesCancel() {
+        this.sessionStore.sessionEnd();
         await router.push('/');
         this.sessionStore.stopSession();
       },
@@ -79,7 +88,15 @@
           await this.sessionStore.sendAnswer(this.selectedValue);
           this.$emit('answer-sent');
         } catch (e) {
-          console.error(e); //TODO manage error
+          if (e instanceof ValidationError) {
+            this.sessionStore.disconnectFromSession(
+              'Error while sending answer: ' + e.message,
+            );
+          } else {
+            this.sessionStore.disconnectFromSession(
+              'Error while sending answer',
+            );
+          }
         }
       },
     },

@@ -66,11 +66,16 @@
       @click="updateUserData">
       Validate
     </v-btn>
-    <v-btn class="mt-5" color="primary" @click="modification = !modification">
+    <v-btn
+      class="mt-5"
+      color="primary text-button"
+      @click="modification = !modification">
       {{ modification ? 'Cancel' : 'Modify' }}
     </v-btn>
     <v-divider class="my-5"></v-divider>
-    <v-btn @click="askDeleteDialog">Ask for delete account</v-btn>
+    <v-btn @click="askDeleteDialog" class="text-button">
+      Ask for delete account
+    </v-btn>
   </v-sheet>
 </template>
 

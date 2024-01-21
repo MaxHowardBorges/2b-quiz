@@ -85,10 +85,12 @@
       v-if="
         this.selectedQuestionType === 'Unique' ||
         this.selectedQuestionType === 'Multiple'
-      ">
-      <button @click="addAnswer">Add an answer</button>
-
-      <button @click="removeAnswer()">Delete an answer</button>
+      "
+      class="mb-3">
+      <v-btn color="primary" @click="addAnswer" class="mr-2">
+        Add an answer
+      </v-btn>
+      <v-btn color="error" @click="removeAnswer()">Delete an answer</v-btn>
     </v-sheet>
   </v-sheet>
 </template>
@@ -193,19 +195,9 @@
     font-size: 24px;
     margin-bottom: 20px;
   }
-  button {
-    background-color: #ffd700; /* Jaune */
-    color: #fff; /* Texte blanc */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-  }
   label {
     font-size: 16px;
-    color: #333; /* Couleur de texte normale */
+    color: #00afd7; /* Couleur de texte normale */
   }
   input[type='text'] {
     padding: 5px;

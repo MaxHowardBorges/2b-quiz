@@ -127,6 +127,15 @@ export class QuestionnaryService {
     });
   }
 
+  async findQuestionnaryWithQuestionsId(idQuestionnary: number) {
+    return await this.questionnaryRepository.findOne({
+      relations: {
+        questions: true,
+      },
+      where: { id: idQuestionnary },
+    });
+  }
+
   async findQuestionnariesFromIdUser(teacher: Teacher) {
     // questionnaires without questions
     //TODO get from user questionnary bank
@@ -136,6 +145,18 @@ export class QuestionnaryService {
         author: true,
       },
       where: { author: { id: teacher.id }, isCompilated: false },
+    });
+  }
+
+  async findQuestionnariesFromIdUserWithQuestions(teacher: Teacher) {
+    // questionnaires without questions
+
+    return await this.questionnaryRepository.find({
+      relations: {
+        author: true,
+        questions: true,
+      },
+      where: { author: { id: teacher.id } },
     });
   }
 

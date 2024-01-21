@@ -18,23 +18,23 @@
     position="relative">
     <h1 class="mb-6">Teacher Menu</h1>
 
-    <v-select
-      v-model="selectedQuestionnary"
-      :items="choosedQuestionnary"
-      item-title="title"
-      item-value="id"
-      multiple=""
-      label="Select Questionnary"
-      dense
-      outlined></v-select>
-
     <div class="">
       <v-btn
         @click="handleCreateSession"
         color="primary"
-        class="mx-6 my-3"
+        class="mx-6 my-3 w-100"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Create session</p>
+      </v-btn>
+    </div>
+
+    <div class="">
+      <v-btn
+        @click="handleJoinSession"
+        color="primary"
+        class="mx-6 my-3 w-100"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">Join session</p>
       </v-btn>
     </div>
 
@@ -42,7 +42,7 @@
       <v-btn
         @click="handleCreateQuestionnary"
         color="primary"
-        class="mx-6 my-3"
+        class="mx-6 my-3 w-100"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Create new Questionnary</p>
       </v-btn>
@@ -51,7 +51,7 @@
       <v-btn
         @click="redirectToSessionHistory"
         color="primary"
-        class="mx-6 my-3"
+        class="mx-6 my-3 w-100"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Session history</p>
       </v-btn>
@@ -75,7 +75,6 @@
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import router from '@/router';
-  import { ValidationError } from '@/utils/valdiationError';
   import { ref } from 'vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
 
@@ -115,23 +114,37 @@
     },
     methods: {
       async handleCreateSession() {
-        this.loading = false;
-        if (this.selectedQuestionnary.length > 0) {
-          this.sessionStore.questionnary = this.selectedQuestionnary;
-          try {
-            await this.sessionStore.createSession();
-            await router.push('/session');
-          } catch (error) {
-            if (error instanceof ValidationError) {
-              this.errorSnackbarContent = error.message;
-              this.$refs.errorSnackbar.setSnackbarError(true);
-            } else {
-              console.error('Error while creating session:', error);
-              this.$refs.dialogError.setDialogError(true);
-            }
-          }
-          this.loading = false;
-        } else alert('Selectionnez au moins 1 questionnaire');
+        await router.push({
+          path: '/session',
+          query: {
+            isCreating: 'true',
+          },
+        });
+        // this.loading = false;
+        // await router.push('/order-questionnary');
+        // if (this.selectedQuestionnary.length > 0) {
+        //   this.sessionStore.questionnary = this.selectedQuestionnary;
+        //
+        //   try {
+        //     await this.sessionStore.createSession();
+        //     await router.push('/session');
+        //     //await router.push('/order-questionnary');
+        //   } catch (error) {
+        //     if (error instanceof ValidationError) {
+        //       this.errorSnackbarContent = error.message;
+        //       this.$refs.errorSnackbar.setSnackbarError(true);
+        //     } else {
+        //       console.error('Error while creating session:', error);
+        //       this.$refs.dialogError.setDialogError(true);
+        //     }
+        //   }
+        //   this.loading = false;
+        // } else await router.push('/order-questionnary'); //else alert('Selectionnez au moins 1 questionnaire');
+      },
+      handleJoinSession() {
+        router.push({
+          path: '/session',
+        });
       },
       handleCreateQuestionnary() {
         router.push({
@@ -161,5 +174,18 @@
     align-items: center;
     align-content: center;
     align-self: center;
+  }
+
+  v-select {
+    color: blue;
+  }
+
+  v-list {
+    background-color: #007ea1 !important;
+    color: #00afd7 !important;
+  }
+
+  v-list-item {
+    color: #ffffff !important;
   }
 </style>

@@ -159,3 +159,23 @@ export async function rejectRequest(id, token) {
     },
   );
 }
+
+export async function getStudent(token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/students`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export async function getTeachers(token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/user/teachers`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

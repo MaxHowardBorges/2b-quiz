@@ -2,6 +2,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class AnswerNotOfCurrentQuestionException extends HttpException {
   constructor() {
-    super('Answer not of current question', HttpStatus.FORBIDDEN);
+    super('Answer not of current question', HttpStatus.REQUEST_TIMEOUT);
   }
 }

@@ -10,20 +10,37 @@ main {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
-    font-family: 'Roboto', sans-serif;
+    color: #007EA1;
 }
 
-div.custom_background {
+div.custom_background{
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+
+div.custom_background:before {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.25;
     content: '';
-    background-image: url('@/assets/hexagons.svg');
+    background-image: url('@/assets/UCA-Logo-1niveau-RVB-background.svg');
     background-repeat: no-repeat;
+    background-position: right center;
     background-attachment: fixed;
     background-size: cover;
-    z-index: -1;
-    opacity: 0.7;
+    transform: rotate(180deg);
 }
 
-.logo {
-    font-family: 'Damion', cursive;
+/*.logo {*/
+/*    font-family: 'Damion', cursive;*/
+/*}*/
+
+.bg-gradiant {
+    background: linear-gradient(90deg, #007EA1 0%, #00AFD7 100%) !important;
 }
