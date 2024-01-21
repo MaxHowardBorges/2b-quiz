@@ -11,12 +11,9 @@ import {
   Req,
   ValidationPipe,
 } from '@nestjs/common';
-import { Session } from '../session';
-import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
-import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
@@ -33,13 +30,13 @@ import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { DisplaySettingsDto } from '../dto/displaySettings.dto';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { CreateSessionDto } from '../dto/createSession.dto';
+import { SessionTemp } from '../temp/sessionTemp';
 
 @Controller('session')
 export class SessionController {
   constructor(
     private sessionService: SessionService,
     private readonly sessionMapper: SessionMapper,
-    private readonly questionnaryMapper: QuestionnaryMapper,
   ) {}
 
   @Roles([UserType.TEACHER])
@@ -47,17 +44,13 @@ export class SessionController {
   async createSession(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) createSessionDto: CreateSessionDto,
-  ): Promise<Session> {
+  ): Promise<SessionTemp> {
     return this.sessionService.initializeSession(
       request.user as Teacher,
       createSessionDto.questionnaryList,
       createSessionDto.settings,
       createSessionDto.whitelist,
       createSessionDto.whitelistGroups,
-      // paramSession.idsQuestionnarys,
-      // paramSession.isResult,
-      // paramSession.isGlobal,
-      // paramSession.isResponses,
     );
   }
 
@@ -89,7 +82,7 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Get('/getSessionsList')
+  @Get('/getSessionsList') //TODO replace with /:idSession/
   async getSessionsList(
     @Req() request: UserRequest,
     @Query('idsession') idSession: string,

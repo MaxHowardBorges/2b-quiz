@@ -6,7 +6,6 @@ import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { AnswerDto } from '../../question/dto/answer.dto';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
-import { Session } from '../session';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 import { QuestionnaryUsersAnswerMapDto } from '../dto/QuestionnaryUsersAnswerMap.dto';
@@ -75,7 +74,7 @@ export class SessionMapper {
     };
   }
 
-  mapSessionStatusDto(session: Session): SessionStatusDto {
+  mapSessionStatusDto(session: SessionTemp): SessionStatusDto {
     const sessionStatusDto = new SessionStatusDto();
     sessionStatusDto.nbJoined = session.connectedUser.size;
     sessionStatusDto.nbAnswered = session.getNbAnsweredForCurrentQuestion();
@@ -98,9 +97,9 @@ export class SessionMapper {
       connectedUser: sessionTemp.connectedUser,
       userAnswers: sessionTemp.userAnswers,
       endSession: sessionTemp.endSession,
-      isResult: sessionTemp.isResult,
-      isGlobal: sessionTemp.isGlobal,
-      isResponses: sessionTemp.isResponses,
+      isResult: sessionTemp.settings.isResult,
+      isGlobal: sessionTemp.settings.isGlobal,
+      isResponses: sessionTemp.settings.isResponses,
       host: sessionTemp.host,
     };
   }

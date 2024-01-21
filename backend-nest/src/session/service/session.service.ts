@@ -49,27 +49,22 @@ export class SessionService {
 
   async initializeSession(
     teacher: Teacher,
-    ids: number[],
+    idQuestionnaryList: number[],
     settings: SettingsObject,
     whitelist: number[] = [],
     whitelistGroups: number[] = [],
-    // idsQuestionnarys: number[],
-    // isResult: boolean,
-    // isGlobal: boolean,
-    // isResponses: boolean,
-  ): Promise<Session> {
+  ): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
     const questionnary =
       await this.questionnaryService.createQuestionnaryFromIdArray(
-        idsQuestionnarys,
+        idQuestionnaryList,
         teacher,
       );
 
-    //const questionnaries: Questionnary = //await this.questionnaryService.findQuestionnary(id));
-
+    //const questionnaries : Questionnary = //await this.questionnaryService.findQuestionnary(id));
     this.sessionMap.set(
       idSession,
       await this.createSession(
@@ -79,9 +74,6 @@ export class SessionService {
         settings,
         whitelist,
         whitelistGroups,
-        // isResult,
-        // isGlobal,
-        // isResponses,
       ),
     );
     this.eventService.createSessionGroup(idSession, teacher.id);
@@ -106,22 +98,11 @@ export class SessionService {
     settings: SettingsObject,
     whitelist: number[] = [],
     whitelistGroups: number[] = [],
-    // isResult: boolean,
-    // isGlobal: boolean,
-    // isResponses: boolean,
-  ): Promise<Session> {
-    const session = new Session(idSession, questionnaryTab, teacher, settings);
+  ): Promise<SessionTemp> {
+    const session = new SessionTemp(idSession, questionnary, teacher, settings);
     session.whitelist = whitelist;
     session.whitelistGroups = whitelistGroups;
     return session;
-    // return new SessionTemp(
-    //   idSession,
-    //   questionnary,
-    //   isResult,
-    //   isGlobal,
-    //   isResponses,
-    //   teacher,
-    // );
   }
 
   isSessionExists(idSession: string): boolean {
@@ -199,7 +180,7 @@ export class SessionService {
     }
   }
 
-  joinParticipant(session: Session, user: ParticipantInterface): void {
+  joinParticipant(session: SessionTemp, user: ParticipantInterface): void {
     session.connectedUser.add(user);
     session.userAnswers.set(user.id, new Map<Question, Answer>());
     this.eventService.sendHostEventWithPayload(
@@ -260,20 +241,20 @@ export class SessionService {
     }
 
     const answer = Array.isArray(idAnswer)
-        ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-        : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : question.type === QuestionType.OUV
-            ? answerdb
-            : question.type === QuestionType.QOC
-              ? answerdb //idAnswer.split(/[ _]/)[0]
-              : idAnswer;
+      ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+      : typeof idAnswer === 'number'
+      ? question.answers.find((answer) => answer.id === idAnswer)
+      : question.type === QuestionType.OUV
+      ? answerdb
+      : question.type === QuestionType.QOC
+      ? answerdb //idAnswer.split(/[ _]/)[0]
+      : idAnswer;
     session.userAnswers.get(user.id).set(question, answer);
     this.sendSaveAnswerEvent(session, answer, user);
   }
 
   sendSaveAnswerEvent(
-    session: Session,
+    session: SessionTemp,
     answer: string | Answer | Answer[],
     user: ParticipantInterface,
   ) {
@@ -293,9 +274,9 @@ export class SessionService {
     //save session into entity
     const sessionEntity = new Session();
     //Define all sessionEntity's attributes
-    sessionEntity.isGlobal = session.isGlobal;
-    sessionEntity.isResult = session.isResult;
-    sessionEntity.isResponses = session.isResponses;
+    sessionEntity.isGlobal = session.settings.isGlobal;
+    sessionEntity.isResult = session.settings.isResult;
+    sessionEntity.isResponses = session.settings.isResponses;
     sessionEntity.date = new Date();
     sessionEntity.teacher = session.host;
     sessionEntity.questionnary = session.questionnary;
