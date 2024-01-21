@@ -34,13 +34,22 @@
   </v-sheet>
 
   <v-dialog v-model="confirmationDialog" max-width="600">
-    <v-card>
+    <v-card v-if="!!this.selectedTag">
       <v-card-title class="headline">Confirmation</v-card-title>
       <v-card-text>
         Are you sure you want to delete the tag
-        {{ !!this.selectedTag ? this.selectedTag.description : '' }}
+        {{ this.selectedTag.description }}
         ?
       </v-card-text>
+      <v-card-text v-if="this.selectedTag.questionsName.length > 0">
+        this tag belong to the following questions :
+        <ul v-for="questionName in this.selectedTag.questionsName">
+          <li>
+            {{ questionName }}
+          </li>
+        </ul>
+      </v-card-text>
+      <v-card-text v-else>It is not assigned to any questions</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn @click="confirmationDialog = false" color="error">Cancel</v-btn>

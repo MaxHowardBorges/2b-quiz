@@ -11,6 +11,9 @@ export class TagMapper {
     return {
       idTag: tag.idTag,
       description: tag.description,
+      questionsName: !!tag.questions
+        ? tag.questions.map((question) => question.content)
+        : [],
     };
   }
 }

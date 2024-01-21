@@ -69,6 +69,7 @@ export class QuestionService {
   async getTags(teacher: Teacher) {
     return await this.tagRepository.find({
       where: { author: { id: teacher.id } },
+      relations: ['questions'],
     });
   }
 
