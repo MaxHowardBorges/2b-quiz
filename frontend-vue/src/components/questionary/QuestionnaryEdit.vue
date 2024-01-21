@@ -149,8 +149,11 @@
           Are you sure you want to leave without saving?
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="confirmationDialog = false">Cancel</v-btn>
-          <v-btn @click="leaveWithoutSaving">confirm</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn @click="confirmationDialog = false" color="error">
+            Cancel
+          </v-btn>
+          <v-btn @click="leaveWithoutSaving" color="success">confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -27,6 +27,7 @@
       :error-snackbar="errorSnackbar"
       :dialog-error="serverError" />
     <admin-block v-if="userStore.isAdmin" />
+    <template v-if="userStore.isTeacher || userStore.isStudent"></template>
   </div>
 </template>
 

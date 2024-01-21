@@ -8,7 +8,7 @@
         <b>{{ question.content }}</b>
       </p>
       <v-spacer></v-spacer>
-      <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
+      <v-btn class="ml-3" id="ic" icon="edit" @click="modifyQuestion"></v-btn>
       <v-btn
         id="ic"
         :icon="showDropdown ? 'visibility_off' : 'visibility'"
