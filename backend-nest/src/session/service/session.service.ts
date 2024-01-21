@@ -20,7 +20,6 @@ import { SessionClosedException } from '../exception/sessionClosed.exception';
 import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
 import { EventHostEnum } from '../../event/enum/eventHost.enum';
 import { SettingsObject } from '../object/settings.object';
-import { SettingsDto } from '../dto/settings.dto';
 import { DisplaySettingsObject } from '../object/displaySettings.object';
 import { EventObserverEnum } from '../../event/enum/eventObserver.enum';
 import { Session } from '../entity/session.entity';
@@ -31,6 +30,7 @@ import { Student } from '../../user/entity/student.entity';
 import { SessionMapper } from '../mapper/session.mapper';
 import { User } from '../../user/entity/user.entity';
 import { ResultsDto } from '../dto/results.dto';
+import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
 
 @Injectable()
 export class SessionService {
@@ -362,13 +362,12 @@ export class SessionService {
     return this.sessionMap.get(idSession);
   }
 
-  setSettings(idSession: string, settings: SettingsDto) {
+  setSettings(idSession: string, settings: SettingsInSessionDto) {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.settings.accessType = settings.accessType;
       this.setDisplaySettings(idSession, settings.displaySettings);
     }
-    console.log(session);
     return !!session;
   }
 

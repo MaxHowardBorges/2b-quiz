@@ -121,6 +121,27 @@
         v-model="displaySettings.displayAnswer"
         :disabled="!displaySettings.displayQuestion" />
     </div>
+    <v-divider class="ma-2" v-if="!isInSession"></v-divider>
+    <p class="text-h5" v-if="!isInSession">Results settings</p>
+    <div class="d-flex mt-1" v-if="!isInSession">
+      <!--      TODO add tooltip for "can be changed later"-->
+      <v-switch
+        color="primary"
+        label="Display personal result after the end of the questionnary"
+        v-model="isResult"
+        @update:model-value="isResponses = isResponses && isResult" />
+
+      <v-switch
+        color="primary"
+        label="Display correct reponses result after the end of the questionnary"
+        v-model="isResponses"
+        :disabled="!isResult" />
+
+      <v-switch
+        color="primary"
+        label="Display global result after the end of the questionnary"
+        v-model="isGlobal" />
+    </div>
   </div>
 </template>
 
@@ -148,6 +169,9 @@
           SessionType.FREE,
           SessionType.TIMED,
         ],
+        isResult: ref(false),
+        isResponses: ref(false),
+        isGlobal: ref(false),
         selectedSessionType: ref(SessionType.PILOTED),
         itemsAcces: [AccessType.PUBLIC, AccessType.PRIVATE, AccessType.CLOSED],
         selectedAcces: ref(AccessType.CLOSED),
@@ -282,6 +306,9 @@
           sessionType: this.selectedSessionType,
           accessType: this.selectedAcces,
           displaySettings: this.displaySettings,
+          isResult: this.isResult,
+          isResponses: this.isResponses,
+          isGlobal: this.isGlobal,
         };
       },
     },

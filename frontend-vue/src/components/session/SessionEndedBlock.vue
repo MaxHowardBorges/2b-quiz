@@ -3,16 +3,16 @@
   <h2 v-if="sessionStore.isParticipant">Thanks for participating</h2>
 
   <div class="mt-3 d-flex flex-wrap">
-    <v-btn
-      min-width="190px"
-      v-if="sessionStore.isHost"
-      @click="handleCreateSession"
-      color="primary"
-      class="pa-2 ma-2 flex-1-1"
-      style="flex-basis: 0 !important"
-      :loading="loading">
-      <p class="text-white font-weight-bold">Start a new session</p>
-    </v-btn>
+    <!--    <v-btn-->
+    <!--      min-width="190px"-->
+    <!--      v-if="sessionStore.isHost"-->
+    <!--      @click="handleCreateSession"-->
+    <!--      color="primary"-->
+    <!--      class="pa-2 ma-2 flex-1-1"-->
+    <!--      style="flex-basis: 0 !important"-->
+    <!--      :loading="loading">-->
+    <!--      <p class="text-white font-weight-bold">Start a new session</p>-->
+    <!--    </v-btn>-->
     <v-btn
       min-width="190px"
       @click="returnToMenu"
@@ -34,16 +34,16 @@
     <div class="mt-4 mb-4">
       <v-row>
         <v-col>
-            <span>
-              <b>Date de création:</b>
-              {{ creationDate }}
-            </span>
+          <span>
+            <b>Date de création:</b>
+            {{ creationDate }}
+          </span>
         </v-col>
         <v-col>
-            <span>
-              <b>Créé par:</b>
-              {{ createdBy }}
-            </span>
+          <span>
+            <b>Créé par:</b>
+            {{ createdBy }}
+          </span>
         </v-col>
       </v-row>
     </div>
@@ -94,7 +94,8 @@
       async handleCreateSession() {
         this.loading = true;
         try {
-          await this.sessionStore.createSession();
+          //await this.sessionStore.createSession();
+          //TODO: remove this
           this.$emit('reset');
         } catch (error) {
           if (error instanceof ValidationError) {

@@ -25,12 +25,11 @@ import { WhitelistDto } from '../dto/whitelist.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { IsNotParticipantException } from '../exception/isNotParticipant.exception';
 import { NextQuestionReturnDto } from '../dto/nextQuestionReturn.dto';
-import { SettingsDto } from '../dto/settings.dto';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { DisplaySettingsDto } from '../dto/displaySettings.dto';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { CreateSessionDto } from '../dto/createSession.dto';
-import { SessionTemp } from '../temp/sessionTemp';
+import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
 
 @Controller('session')
 export class SessionController {
@@ -44,13 +43,15 @@ export class SessionController {
   async createSession(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) createSessionDto: CreateSessionDto,
-  ): Promise<SessionTemp> {
-    return this.sessionService.initializeSession(
-      request.user as Teacher,
-      createSessionDto.questionnaryList,
-      createSessionDto.settings,
-      createSessionDto.whitelist,
-      createSessionDto.whitelistGroups,
+  ) {
+    return this.sessionMapper.mapSessionTempDto(
+      await this.sessionService.initializeSession(
+        request.user as Teacher,
+        createSessionDto.questionnaryList,
+        createSessionDto.settings,
+        createSessionDto.whitelist,
+        createSessionDto.whitelistGroups,
+      ),
     );
   }
 
@@ -168,7 +169,7 @@ export class SessionController {
   async setSessionSettings(
     @Req() request: UserRequest,
     @Param('idSession') idSession: string,
-    @Body(new ValidationPipe()) settings: SettingsDto,
+    @Body(new ValidationPipe()) settings: SettingsInSessionDto,
   ) {
     if (!this.sessionService.isSessionExists(idSession))
       throw new IdSessionNoneException();

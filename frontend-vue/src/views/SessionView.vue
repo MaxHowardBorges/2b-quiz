@@ -149,11 +149,6 @@
         } else {
           this.reset();
         }
-        console.log('prepareSession', isStarted);
-        console.log('waitingSessionStart', this.waitingSessionStart);
-        console.log('waiting', this.waiting);
-        console.log('echoQuestion', this.echoQuestion);
-        console.log('ended', this.ended);
         this.subscribeToEvents();
       },
     },

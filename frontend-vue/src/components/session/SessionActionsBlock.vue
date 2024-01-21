@@ -12,7 +12,10 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <v-btn @click="handleSubmit" color="primary" v-if="userStore.isParticipant">
+  <v-btn
+    @click="handleSubmit"
+    color="primary"
+    v-if="sessionStore.isParticipant">
     <p class="text-white font-weight-bold">Send answer</p>
   </v-btn>
 
@@ -41,7 +44,6 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
   import { ValidationError } from '@/utils/valdiationError';
-  import { th } from 'vuetify/locale';
 
   export default {
     name: 'SessionActionsBlock',

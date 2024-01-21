@@ -6,7 +6,6 @@ import {
   getNextQuestion,
   startEndingSession,
   getSessionDisplaySettings,
-  getSessionResults,
   getSessionStatus,
   joinSession,
   sendAnswer,
@@ -99,9 +98,6 @@ export const useSessionStore = defineStore('session', {
       selectedGroupsId = null,
     ) {
       this.setEnded(false);
-      // const isResult = true;
-      // const isGlobal = true;
-      // const isResponses = true;
       //this.setIsDisplay(true);
       const userStore = useUserStore();
       userStore.reloadState();
@@ -202,10 +198,7 @@ export const useSessionStore = defineStore('session', {
     //if stop session, delete questionnary compiled
     async stopSession() {
       const userStore = useUserStore();
-      const response = await stopSession(
-        this.idSession,
-        userStore.getToken(),
-      );
+      const response = await stopSession(this.idSession, userStore.getToken());
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setTabResult(await response.json());
