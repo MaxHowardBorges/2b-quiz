@@ -367,25 +367,23 @@
         } else alert('Remplissez les champs vide avant de valider');
       },
       showConfirmationDialog() {
-        const content = this.$refs.questionnaryComponent.question.content;
-        const answers = this.$refs.questionnaryComponent.getAnswers();
-        const type = this.typeOptions.find(
-          (option) => option.typeLabel === this.selectedType,
-        ).typeCode;
-        console.log(this.modifyingQuestion);
-        console.log(answers);
-        console.log(this.modifyingQuestion.answers !== answers);
-
-        if (
-          this.modifyingQuestion.content !== content ||
-          this.modifyingQuestion.type !== type ||
-          JSON.stringify(this.modifyingQuestion.answers) !==
-            JSON.stringify(answers)
-        ) {
-          this.confirmationDialog = true;
-        } else {
-          this.leaveWithoutSaving();
-        }
+        // const content = this.$refs.questionnaryComponent.question.content;
+        // const answers = this.$refs.questionnaryComponent.getAnswers();
+        // const type = this.typeOptions.find(
+        //   (option) => option.typeLabel === this.selectedType,
+        // ).typeCode;
+        //
+        // if (
+        //   this.modifyingQuestion.content !== content ||
+        //   this.modifyingQuestion.type !== type ||
+        //   JSON.stringify(this.modifyingQuestion.answers) !==
+        //     JSON.stringify(answers)
+        // ) {
+        //   this.confirmationDialog = true;
+        // } else {
+        //   this.leaveWithoutSaving();
+        // }
+        this.confirmationDialog = true;
       },
       leaveWithoutSaving() {
         this.selectedType = 'Unique';

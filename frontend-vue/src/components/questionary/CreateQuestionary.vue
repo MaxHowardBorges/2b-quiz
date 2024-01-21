@@ -115,7 +115,6 @@
       let question = this.isFromBank
         ? this.getQuestionFromBank()
         : this.getQuestion();
-      console.log(question);
       this.$emit('sendModifyingQuestion', { ...question });
       return {
         question,
@@ -135,8 +134,7 @@
               (question) => question.id === this.idQuestion,
             ),
           };
-          question.answers = this.questionnaryStore.answers; //TODO make a copy
-          console.log(question.answers);
+          question.answers = this.questionnaryStore.answers;
           return question;
         }
         let initQuestion = {
