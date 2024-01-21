@@ -10,7 +10,6 @@ import {
   Req,
   ValidationPipe,
 } from '@nestjs/common';
-import { SessionTemp } from '../temp/sessionTemp';
 import { JoinSessionDto } from '../dto/joinSession.dto';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
@@ -27,7 +26,6 @@ import { GetCurrentQuestionDto } from '../dto/getCurrentQuestion.dto';
 import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { CreateSessionDto } from '../dto/createSession.dto';
-import { Student } from '../../user/entity/student.entity';
 
 @Controller('session')
 export class SessionController {
@@ -44,7 +42,7 @@ export class SessionController {
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) paramSession: CreateSessionDto,
   ) {
-    const test = this.sessionMapper.mapSessionTempDto(
+    return this.sessionMapper.mapSessionTempDto(
       await this.sessionService.initializeSession(
         request.user as Teacher,
         paramSession.idsQuestionnarys,
@@ -53,7 +51,6 @@ export class SessionController {
         paramSession.isResponses,
       ),
     );
-    return test;
   }
 
   @Roles([UserType.TEACHER])
@@ -145,8 +142,7 @@ export class SessionController {
   ) {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
-    //TODO IMPLEMENTS
-    await this.sessionService.saveSession(idSession, this.sessionMapper);
+    await this.sessionService.saveSession(idSession);
     return HttpStatus.NO_CONTENT;
   }
 
@@ -158,7 +154,6 @@ export class SessionController {
   ) {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
-    //TODO IMPLEMENTS
     await this.sessionService.deleteQuestionnary(idSession);
     return HttpStatus.NO_CONTENT;
   }
