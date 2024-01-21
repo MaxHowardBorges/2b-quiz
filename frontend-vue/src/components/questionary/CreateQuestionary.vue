@@ -173,7 +173,9 @@
         return this.question.answers;
       },
       addAnswer() {
-        this.question.answers.push({ content: '', isCorrect: false });
+        this.question.answers.length < 9
+          ? this.question.answers.push({ content: '', isCorrect: false })
+          : alert("You can't add more answer");
       },
 
       removeAnswer() {
