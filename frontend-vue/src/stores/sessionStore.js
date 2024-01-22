@@ -37,6 +37,9 @@ export const useSessionStore = defineStore('session', {
       displayAnswer: true,
     },
   }),
+  getters: {
+    isInSession: (state) => state.idSession !== null && !state.ended,
+  },
   actions: {
     setQuestion(question) {
       this.question = question;
@@ -180,7 +183,7 @@ export const useSessionStore = defineStore('session', {
       if (responseText.isEnded) {
         await this.endSession();
         this.setEnded(true);
-        this.sessionEnd(); //TODO adapt to session result
+        //this.sessionEnd(); //TODO adapt to session result
       } else {
         await this.getCurrentQuestions();
       }

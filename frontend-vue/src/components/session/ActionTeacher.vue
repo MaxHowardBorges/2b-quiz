@@ -70,13 +70,16 @@
       },
       async yesCancel() {
         await this.sessionStore.stopSession();
-        await this.sessionStore.sessionEnd();
+        this.sessionStore.sessionEnd();
         await router.push('/');
       },
       async nextQuestion() {
         try {
           const response = await this.sessionStore.nextQuestion();
           await this.sessionStore.getCurrentQuestionForTeacher(response);
+          if (this.sessionStore.ended) {
+            this.$emit('session-end');
+          }
         } catch (e) {
           this.sessionStore.disconnectFromSession(
             'Error handling next question: ' + e.message,
@@ -87,6 +90,7 @@
         this.$refs.settingsDialog.openSettings();
       },
     },
+    emits: ['session-end'],
   };
 </script>
 
