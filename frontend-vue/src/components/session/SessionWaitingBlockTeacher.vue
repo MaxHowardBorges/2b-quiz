@@ -1,4 +1,17 @@
 <template>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Are you sure ?</v-card-title>
+
+      <v-card-text>
+        If you stop the session, all of results will be lost !
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="yesCancel">Yes</v-btn>
+        <v-btn @click="noCancel">No</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <!-- settings dialog-->
   <set-settings-dialog ref="settingsDialog"></set-settings-dialog>
   <h1>Waiting participants...</h1>
@@ -39,6 +52,7 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import SessionSetting from '@/components/session/SessionSetting.vue';
   import SetSettingsDialog from '@/components/session/SetSettingsDialog.vue';
+  import router from '@/router';
 
   export default {
     name: 'SessionWaitingBlockTeacher',
@@ -54,11 +68,21 @@
         switch3Value: ref(false),
       };
     },
+    data() {
+      return {
+        dialogVisible: false,
+      };
+    },
     emits: ['session-start'],
     methods: {
       async cancelSession() {
+        this.dialogVisible = true;
+      },
+      async noCancel() {
+        this.dialogVisible = false;
+      },
+      async yesCancel() {
         this.sessionStore.sessionEnd();
-        //TODO call api/store
         await this.sessionStore.stopSession();
         await router.push('/');
       },

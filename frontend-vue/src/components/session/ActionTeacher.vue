@@ -1,4 +1,17 @@
 <template>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Are you sure ?</v-card-title>
+
+      <v-card-text>
+        If you stop the session, all of results will be lost !
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="yesCancel">Yes</v-btn>
+        <v-btn @click="noCancel">No</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <div class="action-block">
     <div v-if="!sessionStore.status.nbAnswered">
       idSession: {{ sessionStore.idSession }}
@@ -12,7 +25,7 @@
         user answered
       </p>
     </div>
-    <v-btn @click="endSession" class="btn" color="primary">
+    <v-btn @click="cancelSession" class="btn" color="primary">
       Fin de la session
     </v-btn>
     <v-btn @click="nextQuestion" class="btn" color="success">
@@ -38,11 +51,27 @@
         sessionStore,
       };
     },
+    data() {
+      return {
+        dialogVisible: false,
+      };
+    },
     methods: {
       async endSession() {
         this.sessionStore.sessionEnd();
         await router.push('/');
         //TODO to finish
+      },
+      async cancelSession() {
+        this.dialogVisible = true;
+      },
+      async noCancel() {
+        this.dialogVisible = false;
+      },
+      async yesCancel() {
+        this.sessionStore.sessionEnd();
+        await this.sessionStore.stopSession();
+        await router.push('/');
       },
       async nextQuestion() {
         try {
