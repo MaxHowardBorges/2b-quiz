@@ -30,31 +30,6 @@
       </tbody>
     </table>
 
-    <v-dialog v-model="addDialog" max-width="500px">
-      <v-card>
-        <v-card-title>Add User</v-card-title>
-        <v-card-text>
-          <v-text-field label="Email" required></v-text-field>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn @click="closeDialogs">Add</v-btn>
-          <v-btn @click="closeDialogs">Cancel</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="leaveDialog" max-width="500px">
-      <v-card>
-        <v-card-title>Leave Group</v-card-title>
-        <v-card-text>Are you sure to leave this Group?</v-card-text>
-        <v-card-actions>
-          <v-btn @click="closeDialogs">Yes</v-btn>
-          <v-btn @click="closeDialogs">No</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <v-dialog v-model="deleteDialog" max-width="500px">
       <v-card>
         <v-card-title>Delete Group</v-card-title>
@@ -160,27 +135,6 @@
         DisplayGroupDialog: false,
         DisplayAddUser: false,
         isDeletedUsers: false,
-        sorting: {
-          id: null,
-          username: null,
-          name: null,
-          surname: null,
-          type: null,
-          validate: null,
-        },
-        loading: ref(false),
-        nbItemsOptions: [10, 20, 50, 100],
-        indexPage: 1,
-        itemsPerPage: 10,
-        columns1: [
-          { id: 'id', label: 'ID' },
-          { id: 'username', label: 'Username' },
-          { id: 'name', label: 'Name' },
-          { id: 'surname', label: 'Surname' },
-          { id: 'type', label: 'Type' },
-          { id: 'askedDelete', label: 'Asked delete', icon: 'feedback' },
-          { id: 'validate', label: 'Validated' },
-        ],
         nameOFGroup: ref(''),
         usersOfGroup: ref([]),
         usersToAdd: ref([]),
@@ -194,112 +148,31 @@
         userStore,
         useGroup,
         ListOFGroup: ref([{ id: 17, groupName: 'test' }]),
-        users: ref([
-          {
-            id: 18,
-            username: 'Apolline.Lecomte',
-            name: 'Apolline',
-            surname: 'Lecomte',
-            type: 'student',
-          },
-          {
-            id: 19,
-            username: 'Dimitri35',
-            name: 'Dimitri',
-            surname: 'Laurent',
-            type: 'student',
-          },
-          {
-            id: 20,
-            username: 'Martine_Hubert30',
-            name: 'Martine',
-            surname: 'Hubert',
-            type: 'student',
-          },
-          {
-            id: 21,
-            username: 'Angelique.Sanchez',
-            name: 'Angélique',
-            surname: 'Sanchez',
-            type: 'student',
-          },
-          {
-            id: 22,
-            username: 'Maud.Rousseau',
-            name: 'Maud',
-            surname: 'Rousseau',
-            type: 'student',
-          },
-          {
-            id: 23,
-            username: 'Paterne_Lemoine80',
-            name: 'Paterne',
-            surname: 'Lemoine',
-            type: 'student',
-          },
-          {
-            id: 24,
-            username: 'Jade_Garnier',
-            name: 'Jade',
-            surname: 'Garnier',
-            type: 'student',
-          },
-          {
-            id: 25,
-            username: 'Eulalie60',
-            name: 'Eulalie',
-            surname: 'Fabre',
-            type: 'student',
-          },
-        ]),
-        nbPage: ref(1),
         SelectGroupID: ref(0),
       };
     },
     async mounted() {
-      this.ListOFGroup = await this.useGroup.getGroups(); //this.useGroup.tabsGroups;
-      console.log('groups of ListOFGroup', this.ListOFGroup);
-    },
-    computed: {
-      filteredUsers() {
-        return this.users.filter((user) =>
-          user.name.toLowerCase().includes(this.search.toLowerCase()),
-        );
-      },
+      this.ListOFGroup = await this.useGroup.getGroups();
     },
     methods: {
-      openAdd() {
-        this.addDialog = true;
-      },
-      openLeave() {
-        this.leaveDialog = true;
-      },
       openDelete(id) {
         this.SelectGroupID = id;
         this.deleteDialog = true;
       },
       openDisplay(id) {
         this.SelectGroupID = this.ListOFGroup[id].id;
-        //this.usersOfGroup = this.useGroup.getGroup(id);
-        console.log('users of group', this.ListOFGroup[id].tabUsers);
         this.usersOfGroup = this.ListOFGroup[id].tabUsers;
         this.DisplayGroupDialog = true;
-
       },
       openCreate() {
         this.CreateGroupDialog = true;
       },
       async openAddUser(id,index) {
         this.usersToAdd = await this.useGroup.getStudents();
-        console.log('users to add', this.usersToAdd);
-        console.log('index', index);
-        console.log(this.ListOFGroup[index]);
         this.usersOfGroup = this.ListOFGroup[index].tabUsers;
-
         //Pour enlever les users déjà dans le groupe
         const existingUserIds = this.usersOfGroup.map(user => user.id);
         this.usersToAdd = this.usersToAdd.filter(user => !existingUserIds.includes(user.id));
-
         this.DisplayAddUser = true;
         this.SelectGroupID = id;
       },
@@ -328,9 +201,7 @@
         this.closeDialogs();
       },
       async addUserToGroup() {
-        console.log('selected users', this.selectedUsers);
         for (let i = 0; i < this.selectedUsers.length; i++) {
-          console.log("boucle for", this.selectedUsers[i]);
           await this.useGroup.addStudentToAGroup(this.SelectGroupID, this.selectedUsers[i]);
         }
         this.selectedUsers = [];
@@ -343,8 +214,6 @@
         this.closeDialogs();
       },
     },
-
-
   };
 </script>
 
