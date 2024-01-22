@@ -27,11 +27,11 @@
         <!--        </td>-->
         <!--      </tr>-->
         <tr class="ma-2" v-for="group in ListOFGroup">
-          <td class="text-center">{{ group.id }}</td>
-          <td class="text-center" @click="openDisplay">
+          <td class="text-center" @click="openDisplay(group.id)">{{ group.id }}</td>
+          <td class="text-center" @click="openDisplay(group.id)">
             {{ group.groupName }}
           </td>
-          <td class="text-center">{{ group.nbTabUsers }}</td>
+          <td class="text-center" @click="openDisplay(group.id)">{{ group.nbTabUsers }}</td>
           <td class="text-center">
             <v-btn @click="openAddUser" icon="add"></v-btn>
             <v-btn @click="openLeave" icon="logout"></v-btn>
@@ -112,7 +112,7 @@
               <td class="text-center">Axel</td>
               <td class="text-center">GUILLOU</td>
               <td class="text-center">
-                <v-btn @click="openDelete" icon="delete"></v-btn>
+                <v-btn @click="" icon="delete"></v-btn>
               </td>
             </tr>
           </tbody>
@@ -205,6 +205,7 @@
           { id: 'validate', label: 'Validated' },
         ],
         nameOFGroup: ref(''),
+        usersOfGroup: ref([]),
       };
     },
     setup() {
@@ -298,8 +299,12 @@
         this.SelectGroupID = id;
         this.deleteDialog = true;
       },
-      openDisplay() {
+      openDisplay(id) {
+        this.SelectGroupID = id;
+        this.usersOfGroup = this.useGroup.getGroup(id);
+        console.log('users of group', this.usersOfGroup);
         this.DisplayGroupDialog = true;
+
       },
       openCreate() {
         this.CreateGroupDialog = true;
@@ -346,10 +351,6 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-  }
-
-  th {
-    background-color: #f2f2f2;
   }
 
   tr:hover {
