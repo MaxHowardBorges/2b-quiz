@@ -12,6 +12,7 @@ import {
   getResults,
   stopSession,
   setSessionSettings,
+  getSessionList,
 } from '@/api/session';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
@@ -259,6 +260,21 @@ export const useSessionStore = defineStore('session', {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
         userStore.updateToken(response.headers.get('Authorization'));
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getSessions() {
+      console.log('ok');
+      const userStore = useUserStore();
+      try {
+        const response = await getSessionList(this.idSession, userStore.token);
+        // console.log(await response.json());
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question'); // TODO manage error
+        }
+        userStore.updateToken(response.headers.get('Authorization'));
+        return await response.json();
       } catch (error) {
         console.error(error);
       }

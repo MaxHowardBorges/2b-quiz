@@ -76,6 +76,7 @@
       async nextQuestion() {
         try {
           const response = await this.sessionStore.nextQuestion();
+          console.log('ok');
           await this.sessionStore.getCurrentQuestionForTeacher(response);
         } catch (e) {
           this.sessionStore.disconnectFromSession(

@@ -1,7 +1,3 @@
-<script setup>
-  import HistoryItem from '@/components/session/HistoryItem.vue';
-</script>
-
 <template>
   <v-sheet
     rounded="lg"
@@ -10,16 +6,13 @@
     elevation="5">
     <div style="display: flex">
       <div style="align-self: start" id="divButton">
-        <v-btn id="ic" icon="undo" @click=""></v-btn>
+        <v-btn id="ic" icon="undo" @click="returnHome"></v-btn>
       </div>
       <h1>Session History</h1>
     </div>
 
-    <v-sheet class="list">
-      <HistoryItem
-        :questionName="questionnary"
-        :questionnaryId="1"
-        @nextQuestionE="emitNextQuestion"></HistoryItem>
+    <v-sheet class="list" v-for="session in sessions">
+      <HistoryItem></HistoryItem>
     </v-sheet>
   </v-sheet>
 </template>
@@ -30,3 +23,37 @@
     left: 18%;
   }
 </style>
+
+<script>
+  import HistoryItem from '@/components/session/HistoryItem.vue';
+  import { useSessionStore } from '@/stores/sessionStore';
+
+  export default {
+    name: 'SessionHistoryView',
+    components: { HistoryItem },
+    setup() {
+      const sessionStore = useSessionStore();
+      return {
+        sessionStore,
+      };
+    },
+    data() {
+      return { sessions: null };
+    },
+    async mounted() {
+      this.sessions = await this.getSessionList();
+      console.log(this.sessions);
+    },
+    methods: {
+      async returnHome() {
+        await this.router.push('/');
+      },
+      //Get all session where user is participant
+      async getSessionList() {
+        const sessions = await this.sessionStore.getSessions();
+        return sessions;
+        //console.log(sessions);
+      },
+    },
+  };
+</script>

@@ -47,6 +47,7 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import { ValidationError } from '@/utils/valdiationError';
   import { useSessionEventStore } from '@/stores/sessionEventStore';
+  import router from '@/router';
 
   export default {
     name: 'JoinForm',
@@ -85,8 +86,8 @@
         }
         this.loading = false;
       },
-      redirectToSessionHistory() {
-        router.push('/session-history');
+      async redirectToSessionHistory() {
+        await router.push('/session-history');
       },
     },
   };

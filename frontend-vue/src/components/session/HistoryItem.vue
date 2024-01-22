@@ -82,16 +82,19 @@
 </template>
 
 <script>
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import router from '@/router';
   import { useUserStore } from '@/stores/userStore';
+  import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
     name: 'QuestionItem',
     setup() {
       const userStore = useUserStore();
+      const sessionStore = useSessionStore();
       return {
         userStore,
+        sessionStore,
         question: ref('Session 1'),
         creationDate: ref('2024-01-11'),
         createdBy: ref('Nom Prénom'),
@@ -127,6 +130,7 @@
         ],
       };
     },
+
     methods: {
       handleManageResults() {
         router.push('/session-handle-results');

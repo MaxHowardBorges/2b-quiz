@@ -99,6 +99,21 @@ export async function getResults(idSession, token) {
   );
 }
 
+export async function getSessionList(idSession, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL +
+      '/session/getSessionsList?idsession=' +
+      idSession,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
 export async function getSessionStatus(token, idSession) {
   return await fetch(
     import.meta.env.VITE_API_URL + `/session/${idSession}/status`,
