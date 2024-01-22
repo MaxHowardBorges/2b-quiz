@@ -30,7 +30,7 @@
       </tbody>
     </table>
 
-    <v-dialog v-model="deleteDialog" max-width="500px">
+    <v-dialog v-model="deleteDialog" max-height='700px' max-width="700px">
       <v-card>
         <v-card-title>Delete Group</v-card-title>
         <v-card-text>Are you sure to delete this Group?</v-card-text>
@@ -58,10 +58,10 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="DisplayGroupDialog" max-height='700px' max-width="700px">
-      <v-card>
-        <v-card-title>Display group</v-card-title>
-        <v-card-text>List of users in the group</v-card-text>
+    <v-dialog v-model="DisplayGroupDialog" max-height='700px' max-width="1000px">
+      <v-card class=" d-flex align-center">
+        <v-card-title class="headline font-weight-bold">Display group</v-card-title>
+        <v-card-text class="subtitle-1">List of users in the group</v-card-text>
 
         <table>
           <thead>
@@ -78,7 +78,7 @@
             <td class="text-center">{{ user.name }}</td>
             <td class="text-center">{{ user.surname }}</td>
             <td class="text-center">
-              <v-btn @click="deleteUserFromGroup(user.id)" icon="delete"></v-btn>
+              <v-btn @click='openDeleteUser(user.id)' icon="delete"></v-btn>
             </td>
           </tr>
           </tbody>
@@ -89,12 +89,23 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="DeleteUserDialog" max-height='700px' max-width="700px">
+      <v-card>
+        <v-card-title>Delete user</v-card-title>
+        <v-card-text>Are you sure to delete this user of the group?</v-card-text>
+        <v-card-actions>
+          <v-btn @click="deleteUserFromGroup(this.SelectedUserID)">Yes</v-btn>
+          <v-btn @click="closeDialogs">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-btn class="mt-5" color="primary" @click="openCreate">
       Create a group
     </v-btn>
 
-    <v-dialog v-model="DisplayAddUser" max-width="1000px">
-      <v-card>
+    <v-dialog v-model="DisplayAddUser" max-height='700px' max-width="700px">
+      <v-card class=" d-flex align-center">
         <v-card-title>Add user to a group</v-card-title>
         <v-card-text>List of users to add</v-card-text>
 
@@ -103,9 +114,10 @@
           :items="usersToAdd"
           item-value="id"
           item-title="username"
-          label="Choisir un utilisateur"
+          label="Select a user"
           clearable
           multiple
+          class="w-50"
         ></v-autocomplete>
 
         <v-card-actions>
@@ -135,10 +147,12 @@
         DisplayGroupDialog: false,
         DisplayAddUser: false,
         isDeletedUsers: false,
+        DeleteUserDialog: false,
         nameOFGroup: ref(''),
         usersOfGroup: ref([]),
         usersToAdd: ref([]),
         selectedUsers: [],
+        SelectedUserID: ref(0),
       };
     },
     setup() {
@@ -176,6 +190,10 @@
         this.DisplayAddUser = true;
         this.SelectGroupID = id;
       },
+      openDeleteUser(id) {
+        this.SelectedUserID = id;
+        this.DeleteUserDialog = true;
+      },
       closeAddUser() {
         this.DisplayAddUser = false;
       },
@@ -185,6 +203,8 @@
         this.deleteDialog = false;
         this.CreateGroupDialog = false;
         this.DisplayGroupDialog = false;
+        this.DisplayAddUser = false;
+        this.DeleteUserDialog = false;
       },
       async HandleCreateGroup() {
         if (this.nameOFGroup === '') {
