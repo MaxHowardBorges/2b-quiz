@@ -35,7 +35,7 @@
           <td class="text-center">
             <v-btn @click="openAddUser" icon="add"></v-btn>
             <v-btn @click="openLeave" icon="logout"></v-btn>
-            <v-btn @click="openDelete" icon="delete"></v-btn>
+            <v-btn @click="openDelete(group.id)" icon="delete"></v-btn>
           </td>
         </tr>
       </tbody>
@@ -71,7 +71,7 @@
         <v-card-title>Delete Group</v-card-title>
         <v-card-text>Are you sure to delete this Group?</v-card-text>
         <v-card-actions>
-          <v-btn @click="closeDialogs">Yes</v-btn>
+          <v-btn @click="deleteGroup(this.SelectGroupID)">Yes</v-btn>
           <v-btn @click="closeDialogs">No</v-btn>
         </v-card-actions>
       </v-card>
@@ -273,6 +273,7 @@
           },
         ]),
         nbPage: ref(1),
+        SelectGroupID: ref(0),
       };
     },
     async mounted() {
@@ -293,7 +294,8 @@
       openLeave() {
         this.leaveDialog = true;
       },
-      openDelete() {
+      openDelete(id) {
+        this.SelectGroupID = id;
         this.deleteDialog = true;
       },
       openDisplay() {
@@ -315,12 +317,18 @@
         this.CreateGroupDialog = false;
         this.DisplayGroupDialog = false;
       },
-      HandleCreateGroup() {
+      async HandleCreateGroup() {
         if (this.nameOFGroup === '') {
           alert('Please enter a name for the group');
           return;
         }
-        this.useGroup.createGroup(this.nameOFGroup);
+        await this.useGroup.createGroup(this.nameOFGroup);
+        this.ListOFGroup = await this.useGroup.getGroups();
+        this.closeDialogs();
+      },
+      async deleteGroup(id) {
+        await this.useGroup.deleteGroupID(id);
+        this.ListOFGroup = await this.useGroup.getGroups();
         this.closeDialogs();
       },
     },

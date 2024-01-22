@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getGroup, createGroup, getGroupsOfTeacher } from '@/api/group';
+import { getGroup, createGroup, getGroupsOfTeacher, deleteGroup } from '@/api/group';
 import { useUserStore } from '@/stores/userStore';
 
 export const useGroupStore = defineStore('group', {
@@ -38,6 +38,7 @@ export const useGroupStore = defineStore('group', {
       const response = await getGroupsOfTeacher(userStoreU.token);
       console.log('response : ');
       console.log(response);
+      userStoreU.updateToken(response.headers.get('Authorization'));
       const groups = await response.json();
       await this.setTabsGroups(groups);
       return this.getTabsGroup();
@@ -56,11 +57,10 @@ export const useGroupStore = defineStore('group', {
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = JSON.parse(await response.text());
-        //this.idGroup = JSON.parse(await response.text()).id;
-        await this.getGroups();
         this.setTabsGroups(group);
         console.log('group : ');
         console.log(group);
+        await this.getGroups();
       } catch (error) {
         console.error(error);
       }
@@ -81,7 +81,7 @@ export const useGroupStore = defineStore('group', {
       }
     },
 
-    async deleteGroup(idGroup) {
+    async deleteGroupID(idGroup) {
       const userStoreU = useUserStore();
       try {
         const response = await deleteGroup(idGroup, userStoreU.token);
