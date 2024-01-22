@@ -9,9 +9,6 @@ export class Migration1705159390773 implements MigrationInterface {
     );
     await queryRunner.query(`ALTER TABLE \`tag\` ADD \`authorId\` int NULL`);
     await queryRunner.query(
-      `UPDATE \`question\` SET \`authorId\` = (SELECT id FROM \`user\` WHERE type = 'Teacher' AND deleted = 0 LIMIT 1) WHERE \`authorId\` IS NULL`,
-    );
-    await queryRunner.query(
       `ALTER TABLE \`question\` CHANGE \`authorId\` \`authorId\` int NULL`,
     );
     await queryRunner.query(
