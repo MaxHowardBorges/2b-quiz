@@ -16,26 +16,15 @@
         </tr>
       </thead>
       <tbody>
-        <!--      <tr class="ma-2">-->
-        <!--        <td class="text-center">1</td>-->
-        <!--        <td class="text-center" @click="openDisplay">group.groupName</td>-->
-        <!--        <td class="text-center">7</td>-->
-        <!--        <td class="text-center">-->
-        <!--          <v-btn @click="openAddUser" icon="add"></v-btn>-->
-        <!--          <v-btn @click="openLeave" icon="logout"></v-btn>-->
-        <!--          <v-btn @click="openDelete" icon="delete"></v-btn>-->
-        <!--        </td>-->
-        <!--      </tr>-->
-        <tr class="ma-2" v-for="group in ListOFGroup">
-          <td class="text-center" @click="openDisplay(group.id)">{{ group.id }}</td>
-          <td class="text-center" @click="openDisplay(group.id)">
+        <tr class="ma-2" v-for="(group, index) in ListOFGroup" :key="index">
+          <td class="text-center" @click="openDisplay(index)">{{ group.id }}</td>
+          <td class="text-center" @click="openDisplay(index)">
             {{ group.groupName }}
           </td>
-          <td class="text-center" @click="openDisplay(group.id)">{{ group.nbTabUsers }}</td>
+          <td class="text-center" @click="openDisplay(index)">{{ group.nbTabUsers }}</td>
           <td class="text-center">
-            <v-btn @click="openAddUser(group.id)" icon="add"></v-btn>
-            <v-btn @click="openLeave" icon="logout"></v-btn>
-            <v-btn @click="openDelete(group.id)" icon="delete"></v-btn>
+            <v-btn class='ma-1' @click="openAddUser(group.id,index)" icon="add"></v-btn>
+            <v-btn class='ma-1' @click="openDelete(group.id)" icon="delete"></v-btn>
           </td>
         </tr>
       </tbody>
@@ -94,7 +83,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="DisplayGroupDialog" max-width="500px">
+    <v-dialog v-model="DisplayGroupDialog" max-height='700px' max-width="700px">
       <v-card>
         <v-card-title>Display group</v-card-title>
         <v-card-text>List of users in the group</v-card-text>
@@ -102,24 +91,25 @@
         <table>
           <thead>
             <tr>
+              <th class="text-center">ID</th>
               <th class="text-center">Name</th>
               <th class="text-center">Surname</th>
               <th class="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="ma-2">
-              <td class="text-center">Axel</td>
-              <td class="text-center">GUILLOU</td>
-              <td class="text-center">
-                <v-btn @click="" icon="delete"></v-btn>
-              </td>
-            </tr>
+          <tr class="ma-2" v-for="(user, index) in usersOfGroup" :key="index">
+            <td class="text-center">{{ user.id }}</td>
+            <td class="text-center">{{ user.name }}</td>
+            <td class="text-center">{{ user.surname }}</td>
+            <td class="text-center">
+              <v-btn @click="deleteUserFromGroup(user.id)" icon="delete"></v-btn>
+            </td>
+          </tr>
           </tbody>
         </table>
         <v-card-actions>
-          <v-btn @click="closeDialogs">Create</v-btn>
-          <v-btn @click="closeDialogs">Cancel</v-btn>
+          <v-btn @click="closeDialogs">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -139,33 +129,10 @@
           item-value="id"
           item-title="username"
           label="Choisir un utilisateur"
+          clearable
           multiple
         ></v-autocomplete>
 
-<!--        <table>-->
-<!--          <thead>-->
-<!--            <tr>-->
-<!--              <th class="text-center">ID</th>-->
-<!--              <th class="text-center">Username</th>-->
-<!--              <th class="text-center">Name</th>-->
-<!--              <th class="text-center">Surname</th>-->
-<!--              <th class="text-center">Type</th>-->
-<!--              <th class="text-center">Actions</th>-->
-<!--            </tr>-->
-<!--          </thead>-->
-<!--          <tbody>-->
-<!--            <tr v-for="user in users" :key="user.id" class="ma-2">-->
-<!--              <td class="text-center">{{ user.id }}</td>-->
-<!--              <td class="text-center">{{ user.username }}</td>-->
-<!--              <td class="text-center">{{ user.name }}</td>-->
-<!--              <td class="text-center">{{ user.surname }}</td>-->
-<!--              <td class="text-center">{{ user.type }}</td>-->
-<!--              <td class="text-center">-->
-<!--                <v-btn @click="openDelete" text="add"></v-btn>-->
-<!--              </td>-->
-<!--            </tr>-->
-<!--          </tbody>-->
-<!--        </table>-->
         <v-card-actions>
           <v-btn @click="addUserToGroup">Add</v-btn>
           <v-btn @click="closeAddUser">Close</v-btn>
@@ -312,18 +279,27 @@
         this.deleteDialog = true;
       },
       openDisplay(id) {
-        this.SelectGroupID = id;
-        this.usersOfGroup = this.useGroup.getGroup(id);
-        console.log('users of group', this.usersOfGroup);
+        this.SelectGroupID = this.ListOFGroup[id].id;
+        //this.usersOfGroup = this.useGroup.getGroup(id);
+        console.log('users of group', this.ListOFGroup[id].tabUsers);
+        this.usersOfGroup = this.ListOFGroup[id].tabUsers;
         this.DisplayGroupDialog = true;
 
       },
       openCreate() {
         this.CreateGroupDialog = true;
       },
-      async openAddUser(id) {
+      async openAddUser(id,index) {
         this.usersToAdd = await this.useGroup.getStudents();
         console.log('users to add', this.usersToAdd);
+        console.log('index', index);
+        console.log(this.ListOFGroup[index]);
+        this.usersOfGroup = this.ListOFGroup[index].tabUsers;
+
+        //Pour enlever les users déjà dans le groupe
+        const existingUserIds = this.usersOfGroup.map(user => user.id);
+        this.usersToAdd = this.usersToAdd.filter(user => !existingUserIds.includes(user.id));
+
         this.DisplayAddUser = true;
         this.SelectGroupID = id;
       },
@@ -358,7 +334,13 @@
           await this.useGroup.addStudentToAGroup(this.SelectGroupID, this.selectedUsers[i]);
         }
         this.selectedUsers = [];
+        this.ListOFGroup = await this.useGroup.getGroups();
         this.closeAddUser();
+      },
+      async deleteUserFromGroup(id) {
+        await this.useGroup.removeStudentFromAGroup(this.SelectGroupID, id);
+        this.ListOFGroup = await this.useGroup.getGroups();
+        this.closeDialogs();
       },
     },
 

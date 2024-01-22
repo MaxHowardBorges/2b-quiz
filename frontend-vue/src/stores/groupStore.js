@@ -1,5 +1,12 @@
 import { defineStore } from 'pinia';
-import { getGroup, createGroup, getGroupsOfTeacher, deleteGroup, addStudentToGroup } from '@/api/group';
+import {
+  getGroup,
+  createGroup,
+  getGroupsOfTeacher,
+  deleteGroup,
+  addStudentToGroup,
+  removeStudentFromGroup,
+} from '@/api/group';
 import { useUserStore } from '@/stores/userStore';
 import { getStudent } from '@/api/user';
 
@@ -119,7 +126,7 @@ export const useGroupStore = defineStore('group', {
       }
     },
 
-    async removeStudentFromGroup(idGroup, idStudent) {
+    async removeStudentFromAGroup(idGroup, idStudent) {
       const userStoreU = useUserStore();
       try {
         const response = await removeStudentFromGroup(
