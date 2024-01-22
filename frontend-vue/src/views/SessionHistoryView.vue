@@ -27,6 +27,7 @@
 <script>
   import HistoryItem from '@/components/session/HistoryItem.vue';
   import { useSessionStore } from '@/stores/sessionStore';
+  import router from '@/router';
 
   export default {
     name: 'SessionHistoryView',
@@ -46,7 +47,7 @@
     },
     methods: {
       async returnHome() {
-        await this.router.push('/');
+        await router.push('/');
       },
       //Get all session where user is participant
       async getSessionList() {
