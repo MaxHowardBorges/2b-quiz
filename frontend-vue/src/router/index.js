@@ -28,9 +28,10 @@ const routes = [
     component: SessionQuestionResults, //
   },
   {
-    path: '/session-history',
-    name: 'SessionHistory',
+    path: '/history',
+    name: 'Session History',
     component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
+    meta: { inMenu: true },
   },
 
   {

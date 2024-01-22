@@ -56,7 +56,7 @@
   import router from '@/router';
 
   export default {
-    name: 'QuestionItem',
+    name: 'seeResultsStudents',
     setup() {
       const studentGrade = ref(''); // Note de l'étudiant
       const sessionAverage = ref(''); // Moyenne de la session

@@ -88,7 +88,7 @@ export async function stopSession(idSession, token) {
 
 export async function getResults(idSession, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL + '/session/getResults?idsession=' + idSession,
+    import.meta.env.VITE_API_URL + '/session/' + idSession + '/result',
     {
       method: 'GET',
       headers: {

@@ -254,10 +254,10 @@ export const useSessionStore = defineStore('session', {
       this.settings = null;
       this.setIdSession(null);
     },
-    async getResults() {
+    async getResults(idSession) {
       const userStore = useUserStore();
       try {
-        const response = await getResults(1, userStore.token);
+        const response = await getResults(idSession, userStore.token);
         console.log(await response.json());
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
