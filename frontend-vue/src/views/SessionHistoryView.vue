@@ -11,8 +11,8 @@
       <h1>Session History</h1>
     </div>
 
-    <v-sheet class="list" v-for="session in sessions">
-      <HistoryItem></HistoryItem>
+    <v-sheet class="list" v-for="(session, index) in sessions" :key="index">
+      <HistoryItem :session="session"></HistoryItem>
     </v-sheet>
   </v-sheet>
 </template>
@@ -51,9 +51,7 @@
       },
       //Get all session where user is participant
       async getSessionList() {
-        const sessions = await this.sessionStore.getSessions();
-        return sessions;
-        //console.log(sessions);
+        return await this.sessionStore.getSessions();
       },
     },
   };

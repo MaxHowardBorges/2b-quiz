@@ -83,11 +83,8 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Get('/getSessionsList') //TODO replace with /:idSession/
-  async getSessionsList(
-    @Req() request: UserRequest,
-    @Query('idsession') idSession: string,
-  ) {
+  @Get('/getSessionsList')
+  async getSessionsList(@Req() request: UserRequest) {
     //Return the results of the session
     return await this.sessionService.getListSession(request.user);
   }

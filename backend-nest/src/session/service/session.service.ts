@@ -427,6 +427,7 @@ export class SessionService {
         //Find all session where student is connected
         relations: {
           userSession: { student: true, teacher: true, answer: true },
+          teacher: true,
         },
         where: [
           { userSession: { teacher: { id: user.id } } },
@@ -440,6 +441,7 @@ export class SessionService {
         //Find all session where student is connected
         relations: {
           userSession: { student: true, teacher: true, answer: true },
+          teacher: true,
         },
         where: { userSession: { student: { id: user.id } } },
       });

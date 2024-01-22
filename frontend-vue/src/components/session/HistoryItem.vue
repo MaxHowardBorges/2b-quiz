@@ -1,19 +1,19 @@
 <template>
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
     <div class="mb-4">
-      <b>{{ question }}</b>
+      <b>Session</b>
       <div class="mt-4 mb-4">
         <v-row>
           <v-col>
             <span>
               <b>Date de création:</b>
-              {{ creationDate }}
+              {{ session.date }}
             </span>
           </v-col>
           <v-col>
             <span>
               <b>Créé par:</b>
-              {{ createdBy }}
+              {{ session.teacher.username }}
             </span>
           </v-col>
         </v-row>
@@ -74,13 +74,16 @@
 </template>
 
 <script>
-  import { onMounted, ref } from 'vue';
+  import { ref } from 'vue';
   import router from '@/router';
   import { useUserStore } from '@/stores/userStore';
   import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
     name: 'QuestionItem',
+    props: {
+      session: Object,
+    },
     setup() {
       const userStore = useUserStore();
       const sessionStore = useSessionStore();

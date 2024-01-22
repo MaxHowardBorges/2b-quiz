@@ -99,11 +99,9 @@ export async function getResults(idSession, token) {
   );
 }
 
-export async function getSessionList(idSession, token) {
+export async function getSessionList(token) {
   return await fetch(
-    import.meta.env.VITE_API_URL +
-      '/session/getSessionsList?idsession=' +
-      idSession,
+    import.meta.env.VITE_API_URL + '/session/getSessionsList',
     {
       method: 'GET',
       headers: {
