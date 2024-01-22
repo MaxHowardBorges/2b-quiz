@@ -422,15 +422,18 @@ export class SessionService {
 
   async getListSession(user: User) {
     if (user instanceof Teacher) {
+      console.log('ok');
       return this.sessionRepository.find({
         //Find all session where student is connected
         relations: {
           userSession: { student: true, teacher: true, answer: true },
         },
-        where: {
-          userSession: { teacher: { id: user.id } },
-          teacher: { id: user.id },
-        },
+        where: [
+          { userSession: { teacher: { id: user.id } } },
+          { teacher: { id: user.id } },
+          // Ajoutez ici votre deuxième condition avec le "OR"
+          // Exemple: { userSession: { student: { id: user.id } } }
+        ],
       });
     } else if (user instanceof Student) {
       return this.sessionRepository.find({
