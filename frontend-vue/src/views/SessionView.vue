@@ -32,7 +32,9 @@
 
           <session-ended-block @reset="reset" v-if="ended" />
 
-          <action-teacher v-if="!waiting"></action-teacher>
+          <action-teacher
+            @session-end="ended = true"
+            v-if="!waiting && !ended"></action-teacher>
         </div>
       </div>
       <v-divider :vertical="true"></v-divider>
@@ -114,6 +116,9 @@
     },
     beforeMount() {
       this.toggleValue = this.isCreating ? 'true' : 'false';
+      if (!!this.sessionStore.idSession) {
+        this.subscribeToEvents();
+      }
     },
     methods: {
       subscribeToEvents() {

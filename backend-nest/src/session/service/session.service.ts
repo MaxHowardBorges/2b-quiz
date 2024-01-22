@@ -473,7 +473,7 @@ export class SessionService {
       question.answers = await this.questionService.findAnswers(question.id);
     }
 
-    let resultTab = new ResultsDto();
+    const resultTab = new ResultsDto();
     let average = 0;
     let openQuestions = 0;
     let isCurrentUser = false;
@@ -492,7 +492,7 @@ export class SessionService {
         if (question.type === 'ouv' || question.type === 'qoc') {
           openQuestions++;
         } else {
-          let questionResult = this.percentSuccess(question, userSession);
+          const questionResult = this.percentSuccess(question, userSession);
           average += questionResult.nbCorrectAnswer;
           if (isCurrentUser) {
             session.isResult
@@ -537,19 +537,22 @@ export class SessionService {
     );
     const rightAnswer = question.answers.filter((answer) => answer.isCorrect);
 
-    if (
-      question.type === QuestionType.QCM &&
-      userAnswer
-        .map((answer) => answer.id)
-        .every((idAnswerUser) =>
+    if (userAnswer.length > 0) {
+      if (question.type === QuestionType.QCM) {
+        if (
           rightAnswer
             .map((answer) => answer.id)
-            .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
-        )
-    ) {
-      nbCorrectAnswer++;
-    } else if (userAnswer[0].isCorrect) {
-      nbCorrectAnswer++;
+            .every((idAnswerUser) =>
+              userAnswer
+                .map((answer) => answer.id)
+                .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
+            )
+        ) {
+          nbCorrectAnswer++;
+        }
+      } else if (userAnswer[0].isCorrect) {
+        nbCorrectAnswer++;
+      }
     }
     return { nbCorrectAnswer, rightAnswer };
   }
