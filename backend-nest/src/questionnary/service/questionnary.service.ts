@@ -156,7 +156,7 @@ export class QuestionnaryService {
         author: true,
         questions: true,
       },
-      where: { author: { id: teacher.id } },
+      where: { author: { id: teacher.id }, isCompilated: false },
     });
   }
 

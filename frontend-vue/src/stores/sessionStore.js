@@ -198,6 +198,7 @@ export const useSessionStore = defineStore('session', {
     //if stop session, delete questionnary compiled
     async stopSession() {
       const userStore = useUserStore();
+      console.log(this.idSession);
       const response = await stopSession(this.idSession, userStore.getToken());
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
