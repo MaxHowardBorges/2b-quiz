@@ -33,7 +33,7 @@
           </td>
           <td class="text-center" @click="openDisplay(group.id)">{{ group.nbTabUsers }}</td>
           <td class="text-center">
-            <v-btn @click="openAddUser" icon="add"></v-btn>
+            <v-btn @click="openAddUser(group.id)" icon="add"></v-btn>
             <v-btn @click="openLeave" icon="logout"></v-btn>
             <v-btn @click="openDelete(group.id)" icon="delete"></v-btn>
           </td>
@@ -133,31 +133,41 @@
         <v-card-title>Add user to a group</v-card-title>
         <v-card-text>List of users to add</v-card-text>
 
-        <table>
-          <thead>
-            <tr>
-              <th class="text-center">ID</th>
-              <th class="text-center">Username</th>
-              <th class="text-center">Name</th>
-              <th class="text-center">Surname</th>
-              <th class="text-center">Type</th>
-              <th class="text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="user in users" :key="user.id" class="ma-2">
-              <td class="text-center">{{ user.id }}</td>
-              <td class="text-center">{{ user.username }}</td>
-              <td class="text-center">{{ user.name }}</td>
-              <td class="text-center">{{ user.surname }}</td>
-              <td class="text-center">{{ user.type }}</td>
-              <td class="text-center">
-                <v-btn @click="openDelete" text="add"></v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <v-autocomplete
+          v-model="selectedUsers"
+          :items="usersToAdd"
+          item-value="id"
+          item-title="username"
+          label="Choisir un utilisateur"
+          multiple
+        ></v-autocomplete>
+
+<!--        <table>-->
+<!--          <thead>-->
+<!--            <tr>-->
+<!--              <th class="text-center">ID</th>-->
+<!--              <th class="text-center">Username</th>-->
+<!--              <th class="text-center">Name</th>-->
+<!--              <th class="text-center">Surname</th>-->
+<!--              <th class="text-center">Type</th>-->
+<!--              <th class="text-center">Actions</th>-->
+<!--            </tr>-->
+<!--          </thead>-->
+<!--          <tbody>-->
+<!--            <tr v-for="user in users" :key="user.id" class="ma-2">-->
+<!--              <td class="text-center">{{ user.id }}</td>-->
+<!--              <td class="text-center">{{ user.username }}</td>-->
+<!--              <td class="text-center">{{ user.name }}</td>-->
+<!--              <td class="text-center">{{ user.surname }}</td>-->
+<!--              <td class="text-center">{{ user.type }}</td>-->
+<!--              <td class="text-center">-->
+<!--                <v-btn @click="openDelete" text="add"></v-btn>-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--          </tbody>-->
+<!--        </table>-->
         <v-card-actions>
+          <v-btn @click="addUserToGroup">Add</v-btn>
           <v-btn @click="closeAddUser">Close</v-btn>
         </v-card-actions>
       </v-card>
@@ -206,6 +216,8 @@
         ],
         nameOFGroup: ref(''),
         usersOfGroup: ref([]),
+        usersToAdd: ref([]),
+        selectedUsers: [],
       };
     },
     setup() {
@@ -309,8 +321,11 @@
       openCreate() {
         this.CreateGroupDialog = true;
       },
-      openAddUser() {
+      async openAddUser(id) {
+        this.usersToAdd = await this.useGroup.getStudents();
+        console.log('users to add', this.usersToAdd);
         this.DisplayAddUser = true;
+        this.SelectGroupID = id;
       },
       closeAddUser() {
         this.DisplayAddUser = false;
@@ -336,7 +351,18 @@
         this.ListOFGroup = await this.useGroup.getGroups();
         this.closeDialogs();
       },
+      async addUserToGroup() {
+        console.log('selected users', this.selectedUsers);
+        for (let i = 0; i < this.selectedUsers.length; i++) {
+          console.log("boucle for", this.selectedUsers[i]);
+          await this.useGroup.addStudentToAGroup(this.SelectGroupID, this.selectedUsers[i]);
+        }
+        this.selectedUsers = [];
+        this.closeAddUser();
+      },
     },
+
+
   };
 </script>
 
@@ -353,7 +379,4 @@
     text-align: left;
   }
 
-  tr:hover {
-    background-color: #f5f5f5;
-  }
 </style>
