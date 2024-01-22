@@ -1,10 +1,9 @@
 <template>
-  <div class="blocklist">
+  <div class="blocklist w-100">
     <b>{{ questionnaryName.title }}</b>
-    <span class="spacer"></span>
-    <span class="spacer"></span>
+    <v-spacer></v-spacer>
     <!--    <v-btn icon="play_arrow" @click='startQuestionnary'></v-btn>-->
-    <v-btn icon="edit" @click="modifyQuestionnary"></v-btn>
+    <v-btn icon="edit" @click="modifyQuestionnary" class="mx-3"></v-btn>
     <v-btn icon="delete" @click="deleteQuestionnary"></v-btn>
   </div>
 
@@ -54,10 +53,10 @@
           this.useQ.deleteQuestionnary(this.questionnaryId);
         }
       },
-      modifyQuestionnary() {
+      async modifyQuestionnary() {
         this.useQ.idQuestionnary = this.questionnaryName.id;
-        this.useQ.getQuestionnary();
-        this.useQ.getQuestions();
+        await this.useQ.getQuestionnary();
+        await this.useQ.getQuestions();
         this.$emit('nextQuestionE');
       },
       startQuestionnary() {

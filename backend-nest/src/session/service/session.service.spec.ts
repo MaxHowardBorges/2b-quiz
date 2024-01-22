@@ -11,6 +11,8 @@ import { Answer } from '../../question/entity/answer.entity';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { generateTeacherMock } from '../../../test/mock/user.mock';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { DisplaySettingsObject } from '../object/displaySettings.object';
+import { SettingsObject } from '../object/settings.object';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -33,6 +35,7 @@ describe('SessionService', () => {
   const mockQuestionnaryService = {
     findQuestionnary: jest.fn(),
     findQuestionsFromIdQuestionnary: jest.fn(),
+    findQuestionnaryWithQuestionsId: jest.fn(),
   };
 
   const mockQuestionnaryRepository = {
@@ -49,12 +52,12 @@ describe('SessionService', () => {
   };
 
   const mockEventService = {
-    createClientGroup: jest.fn(),
+    createSessionGroup: jest.fn(),
     sendEvent: jest.fn(),
-    closeClientGroup: jest.fn(),
+    closeSessionGroup: jest.fn(),
   };
 
-  let hostTeacher = generateTeacherMock();
+  const hostTeacher = generateTeacherMock();
 
   const questionnary: Questionnary = {
     id: 15,
@@ -69,6 +72,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 37,
@@ -76,6 +81,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
     {
       id: 38,
@@ -83,6 +90,8 @@ describe('SessionService', () => {
       questionnary: questionnary,
       type: QuestionType.QCU,
       answers: [],
+      tags: [],
+      author: null,
     },
   ];
 
@@ -171,13 +180,20 @@ describe('SessionService', () => {
 
   questionnary.questions = questions;
 
-  let questionnaryTest = new Questionnary();
+  const questionnaryTest = new Questionnary();
   questionnaryTest.questions = questions;
   questionnaryTest.id = 15;
   questionnaryTest.author = hostTeacher;
   questionnaryTest.title = 'morocco';
 
   const session: Session = {
+    whitelistGroups: [],
+    getCurrentQuestion(): Question {
+      return undefined;
+    },
+    getNbAnsweredForCurrentQuestion(): number {
+      return 0;
+    },
     hasUser(user: ParticipantInterface): boolean {
       return false;
     },
@@ -189,6 +205,8 @@ describe('SessionService', () => {
     userAnswers: null,
     endSession: false,
     host: hostTeacher,
+    settings: new SettingsObject(new DisplaySettingsObject(true, true)),
+    whitelist: null,
   };
   session.questionnaryList.push(questionnary);
 
@@ -235,22 +253,30 @@ describe('SessionService', () => {
       expect(typeof test).not.toBe('Integer');
     });
     it('initializeSession : should be not equal to the empty session', async () => {
-      const testSession = await service.initializeSession(hostTeacher, [
-        questionnary.id,
-      ]);
+      mockQuestionnaryService.findQuestionnaryWithQuestionsId.mockResolvedValue(
+        questionnary.questions,
+      );
+      const testSession = await service.initializeSession(
+        hostTeacher,
+        [questionnary.id],
+        new SettingsObject(new DisplaySettingsObject(true, true)),
+        [],
+        [],
+      );
       expect(testSession).not.toEqual(session);
       expect(testSession).toBeInstanceOf(Session);
       expect(testSession.id).not.toBeNull();
-      expect(testSession.id).not.toMatch(/[a-zA-ZÀ-ÿ]/);
+      expect(testSession.id).not.toMatch(/[a-zÀ-ÿ]/);
     });
   });
 
   describe('CreateSession', () => {
     it('should create a session and return a Session', async () => {
-      let test = await service.createSession(
+      const test = await service.createSession(
         service.generateIdSession(),
         hostTeacher,
         [questionnary],
+        new SettingsObject(new DisplaySettingsObject(true, true)),
       );
       expect(test).toBeInstanceOf(Session);
       expect(typeof test.id).toBe('string');
@@ -268,17 +294,17 @@ describe('SessionService', () => {
       mockSessionMap.set('111111', session);
       (service as any).sessionMap = mockSessionMap;
 
-      let test = await service.nextQuestion('111111');
+      const test = await service.nextQuestion('111111');
       expect(test).not.toBeNull();
       expect(test).not.toEqual(session);
-      let session2: Session = session;
-      let quest = new Question();
+      const session2: Session = session;
+      const quest = new Question();
       quest.answers = [];
 
       session2.questionNumber = 0;
       mockSessionMap.set('111111', session2);
       (service as any).sessionMap = mockSessionMap;
-      let test2 = await service.nextQuestion('111111');
+      const test2 = await service.nextQuestion('111111');
       expect(test2).not.toEqual(quest);
     });
   });

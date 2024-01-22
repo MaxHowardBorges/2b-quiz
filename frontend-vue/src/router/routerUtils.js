@@ -10,8 +10,13 @@ export function getPublicRoutes() {
   return getRoutes().filter((route) => route.meta.public);
 }
 
-export function getAllRoutes() {
-  return getRoutes();
+export function getAllRoutes(userRole) {
+  return getRoutes().filter((route) => {
+    if (route.meta.roles) {
+      return route.meta.roles.includes(userRole);
+    }
+    return true;
+  });
 }
 
 export async function serverError() {

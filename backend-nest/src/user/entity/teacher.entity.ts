@@ -6,6 +6,8 @@ import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { OneToMany } from 'typeorm/decorator/relations/OneToMany';
 import { Group } from './group.entity';
 import { IsArray } from 'class-validator';
+import { Tag } from '../../question/entity/tag.entity';
+import { Question } from '../../question/entity/question.entity';
 
 @ChildEntity()
 export class Teacher extends User implements ParticipantInterface {
@@ -18,6 +20,12 @@ export class Teacher extends User implements ParticipantInterface {
   @ManyToMany(() => Group, (group) => group.tabUsers)
   @JoinTable()
   joinedGroups: Group[];
+
+  @OneToMany(() => Tag, (tag) => tag.author)
+  tags: Tag[];
+
+  @OneToMany(() => Question, (question) => question.author)
+  questions: Question[];
 
   constructor(username: string, validate: boolean) {
     super(username, validate);

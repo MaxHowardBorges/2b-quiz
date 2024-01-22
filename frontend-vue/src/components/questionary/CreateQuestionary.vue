@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mt-20px align-center">
+  <v-sheet class="mt-20px align-center" v-if="question">
     <v-text-field
       type="text"
       id="question"
@@ -85,10 +85,12 @@
       v-if="
         this.selectedQuestionType === 'Unique' ||
         this.selectedQuestionType === 'Multiple'
-      ">
-      <button @click="addAnswer">Add an answer</button>
-
-      <button @click="removeAnswer()">Delete an answer</button>
+      "
+      class="mb-3">
+      <v-btn color="primary" @click="addAnswer" class="mr-2">
+        Add an answer
+      </v-btn>
+      <v-btn color="error" @click="removeAnswer()">Delete an answer</v-btn>
     </v-sheet>
   </v-sheet>
 </template>
@@ -98,6 +100,7 @@
 
   export default {
     props: {
+      isFromBank: { Boolean, default: false },
       selectedQuestionType: { String, default: 'Unique' },
       idQuestion: { Number, default: null },
     },
@@ -107,9 +110,10 @@
         questionnaryStore,
       };
     },
-    computed() {},
     data() {
-      let question = this.getQuestion();
+      let question = this.isFromBank
+        ? this.getQuestionFromBank()
+        : this.getQuestion();
       return {
         question,
         indexD: 0,
@@ -141,6 +145,13 @@
           initQuestion.answers.push({ content: '', isCorrect: false });
         }
         return initQuestion;
+      },
+      getQuestionFromBank() {
+        let questionFromBank = this.questionnaryStore.privateQuestions.find(
+          (question) => question.id === this.idQuestion,
+        );
+        this.questionnaryStore.idQuestionnary = questionFromBank.questionnaryId;
+        return questionFromBank;
       },
       getAnswers() {
         if (this.selectedQuestionType === 'True-False') {
@@ -184,19 +195,9 @@
     font-size: 24px;
     margin-bottom: 20px;
   }
-  button {
-    background-color: #ffd700; /* Jaune */
-    color: #fff; /* Texte blanc */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-  }
   label {
     font-size: 16px;
-    color: #333; /* Couleur de texte normale */
+    color: #00afd7; /* Couleur de texte normale */
   }
   input[type='text'] {
     padding: 5px;

@@ -1,11 +1,16 @@
 <template>
   <v-card-title>
-    <div class="text-h5 text-center" style="white-space: normal">
+    <div
+      v-if="
+        !sessionStore.isDisplay || sessionStore.displaySettings.displayQuestion
+      "
+      class="text-h5 text-center"
+      style="white-space: normal">
       <p>{{ sessionStore.question.content }}</p>
     </div>
   </v-card-title>
-  <!--    <template v-slot:subtitle>some hint ??</template> TODO check utility -->
   <answer-group
+    v-if="!sessionStore.isDisplay || sessionStore.displaySettings.displayAnswer"
     @new-selected-value="relayEvent"
     :type="sessionStore.question.type"
     :answers="sessionStore.question.answers"
@@ -39,5 +44,3 @@
     },
   };
 </script>
-
-<style scoped></style>

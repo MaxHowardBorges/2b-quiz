@@ -212,4 +212,20 @@ export class UserController {
   async rejectAskDeleteUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.rejectAskDeleteUser(idUser);
   }
+
+  @Roles([UserType.TEACHER])
+  @Get('/students')
+  async getStudents(@Req() request: UserRequest) {
+    return this.userMapper.partialUserDtoListMap(
+      await this.userService.getStudents(request.user),
+    );
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/teachers')
+  async getOtherTeacher(@Req() request: UserRequest) {
+    return this.userMapper.partialUserDtoListMap(
+      await this.userService.getOtherTeacher(request.user),
+    );
+  }
 }
