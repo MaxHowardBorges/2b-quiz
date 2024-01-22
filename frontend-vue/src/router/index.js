@@ -39,6 +39,7 @@ const routes = [
       serverError: !!route.query.serverError,
       ticket: route.query.ticket,
       sessionError: route.query.sessionError,
+      from: decodeURIComponent(route.query.from),
     }),
     component: HomeView,
     meta: { public: true, inMenu: true },
@@ -83,7 +84,7 @@ router.beforeEach((to, from, next) => {
     return;
   }
   if (!userStore.isAuthenticated) {
-    next({ name: 'Login' });
+    next({ name: 'Home', query: { from: encodeURIComponent(to.fullPath) } });
     return;
   }
   next();

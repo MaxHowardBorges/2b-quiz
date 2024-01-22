@@ -157,14 +157,12 @@
     methods: {
       async joinSession() {
         try {
-          console.log('joinSession', this.idSession);
           const isStarted = await this.sessionStore.joinSession(this.idSession);
           await this.prepareSession(isStarted, this.idSession);
           const sessionEventStore = useSessionEventStore();
           sessionEventStore.connectToSSEStudent();
         } catch (error) {
           if (error instanceof ValidationError) {
-            console.log('error instanceof ValidationError', error.message);
             await router.replace({
               name: 'Session',
               query: { errorSnackbar: error.message },

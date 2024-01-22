@@ -11,14 +11,15 @@
 <script setup>
   import HeaderBlock from '@/components/layout/HeaderBlock.vue';
   import FooterBlock from '@/components/layout/FooterBlock.vue';
-  import { onMounted } from 'vue';
+  import { onBeforeMount, onMounted } from 'vue';
   import { useActivityStore } from '@/stores/activityStore';
   import { useUserStore } from '@/stores/userStore';
+  import router from '@/router';
 
   const activityStore = useActivityStore();
   const userStore = useUserStore();
 
-  onMounted(async () => {
+  onBeforeMount(async () => {
     document.addEventListener('click', () => {
       activityStore.updateActivityTime();
     });

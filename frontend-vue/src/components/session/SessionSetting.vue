@@ -86,6 +86,7 @@
         class="mt-4 mx-3"
         outlined
         dense
+        :disabled="true"
         required></v-select>
 
       <v-select
