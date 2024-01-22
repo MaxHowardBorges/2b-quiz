@@ -1,10 +1,9 @@
 <template>
   <v-sheet
-    max-width="1500px"
-    rounded="lg"
-    width="70%"
-    class="mt-5 px-6 py-8 mx-auto"
-    elevation="5">
+    class="mt-5 p-6 mx-auto"
+    elevation="5"
+    style="max-width: 1500px; width: 100%;">
+
     <h1 class="text-h4 ma-5">List of groups</h1>
     <table class="w-full">
       <thead>
@@ -100,7 +99,7 @@
       </v-card>
     </v-dialog>
 
-    <v-btn class="mt-5" color="primary" @click="openCreate">
+    <v-btn class="ma-4" color="primary" @click="openCreate">
       Create a group
     </v-btn>
 
@@ -239,15 +238,39 @@
 
 <style scoped>
   table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
   }
 
-  th,
-  td {
+  th, td {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    text-align: center;
   }
 
+  .d-flex {
+    display: flex;
+  }
+
+  .align-center {
+    align-items: center;
+  }
+
+  .w-50 {
+    width: 50%;
+  }
+
+  @media (max-width: 600px) {
+    table {
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 6px;
+    }
+
+    .w-50 {
+      width: 100%;
+    }
+  }
 </style>
