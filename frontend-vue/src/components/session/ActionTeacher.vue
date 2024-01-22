@@ -69,8 +69,8 @@
         this.dialogVisible = false;
       },
       async yesCancel() {
-        this.sessionStore.sessionEnd();
         await this.sessionStore.stopSession();
+        await this.sessionStore.sessionEnd();
         await router.push('/');
       },
       async nextQuestion() {
