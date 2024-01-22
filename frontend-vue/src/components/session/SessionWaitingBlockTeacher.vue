@@ -39,6 +39,7 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import SessionSetting from '@/components/session/SessionSetting.vue';
   import SetSettingsDialog from '@/components/session/SetSettingsDialog.vue';
+  import router from '@/router';
 
   export default {
     name: 'SessionWaitingBlockTeacher',
