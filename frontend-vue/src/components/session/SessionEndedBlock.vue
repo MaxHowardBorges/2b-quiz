@@ -13,21 +13,6 @@
     <!--      :loading="loading">-->
     <!--      <p class="text-white font-weight-bold">Start a new session</p>-->
     <!--    </v-btn>-->
-    <v-btn
-      min-width="190px"
-      @click="returnToMenu"
-      color="primary"
-      class="pa-2 ma-2 flex-1-1"
-      style="flex-basis: 0 !important">
-      <p class="text-white font-weight-bold">Return to menu</p>
-    </v-btn>
-    <v-btn
-      min-width="190px"
-      color="primary"
-      class="pa-2 ma-2 flex-1-1"
-      style="flex-basis: 0 !important">
-      <p class="text-white font-weight-bold">Settings</p>
-    </v-btn>
   </div>
   <div class="mb-4">
     <b>{{ question }}</b>
@@ -49,11 +34,19 @@
     </div>
     <span class="spacer"></span>
     <span class="spacer"></span>
-    <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
+    <v-btn v-if="sessionStore.isHost" @click="handleManageResults">
       Gérer les résultats
     </v-btn>
-    <v-btn v-if="userStore.isStudent" @click="SeeResults">
+    <v-btn v-if="sessionStore.isParticipant" @click="SeeResults">
       Voir les résultats
+    </v-btn>
+    <v-btn
+      min-width="190px"
+      @click="returnToMenu"
+      color="primary"
+      class="pa-2 ma-2 flex-1-1"
+      style="flex-basis: 0 !important">
+      <p class="text-white font-weight-bold">Return to menu</p>
     </v-btn>
   </div>
 </template>
@@ -89,6 +82,7 @@
         router.push('/see-results-students');
       },
       returnToMenu() {
+        this.sessionStore.sessionEnd();
         router.push('/');
       },
       async handleCreateSession() {
@@ -114,6 +108,7 @@
         this.loading = false;
       },
     },
+    emits: ['reset'],
   };
 </script>
 

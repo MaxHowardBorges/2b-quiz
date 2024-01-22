@@ -28,7 +28,11 @@
     <v-btn @click="cancelSession" class="btn" color="primary">
       Fin de la session
     </v-btn>
-    <v-btn @click="nextQuestion" class="btn" color="success">
+    <v-btn
+      @click="nextQuestion"
+      class="btn"
+      color="success"
+      :loading="loadingNextQuestion">
       Question suivante
     </v-btn>
     <v-btn @click="openSettings" class="btn" color="info">Settings</v-btn>
@@ -54,6 +58,7 @@
     data() {
       return {
         dialogVisible: false,
+        loadingNextQuestion: false,
       };
     },
     methods: {
@@ -70,23 +75,29 @@
       },
       async yesCancel() {
         await this.sessionStore.stopSession();
-        await this.sessionStore.sessionEnd();
+        this.sessionStore.sessionEnd();
         await router.push('/');
       },
       async nextQuestion() {
+        this.loadingNextQuestion = true;
         try {
           const response = await this.sessionStore.nextQuestion();
           await this.sessionStore.getCurrentQuestionForTeacher(response);
+          if (this.sessionStore.ended) {
+            this.$emit('session-end');
+          }
         } catch (e) {
           this.sessionStore.disconnectFromSession(
             'Error handling next question: ' + e.message,
           );
         }
+        this.loadingNextQuestion = false;
       },
       openSettings() {
         this.$refs.settingsDialog.openSettings();
       },
     },
+    emits: ['session-end'],
   };
 </script>
 

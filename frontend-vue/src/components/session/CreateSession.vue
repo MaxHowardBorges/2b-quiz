@@ -60,7 +60,13 @@
           :isInSession="false"></session-setting>
       </v-sheet>
 
-      <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
+      <v-btn
+        @click="handleCreateSession"
+        class="mt-4"
+        :loading="loadingStart"
+        color="primary">
+        Start the session
+      </v-btn>
 
       <!-- Fenêtre pop-up -->
       <v-dialog v-model="popup" max-width="600">
@@ -130,6 +136,7 @@
         availableQuestionnaires: [],
         displayedAvailableQuestionnaires: [],
         selectedQuestionnary: [],
+        loadingStart: false,
       };
     },
     methods: {
@@ -179,6 +186,7 @@
         }
       },
       async handleCreateSession() {
+        this.loadingStart = true;
         await this.addSelectId();
         if (this.selectedQuestionnary.length > 0) {
           const settings = this.$refs.sessionSettings.getSettings();
@@ -191,7 +199,7 @@
             alert('Aucun utilisateur ou groupe ont été sélectionné');
           } else {
             this.sessionStore.questionnary = this.selectedQuestionnary;
-            this.loading = true;
+            this.loadingStart = true;
             try {
               if (settings.accessType === AccessType.PRIVATE) {
                 const selectedUsersId =
@@ -216,8 +224,9 @@
               }
             }
           }
-          this.loading = false;
+          this.loadingStart = false;
         } else alert('Selectionnez au moins 1 questionnaire');
+        this.loadingStart = false;
       },
     },
   };
