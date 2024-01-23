@@ -103,12 +103,16 @@
               <template v-for="column in columns" :key="column.key">
                 <td>
                   <span
+                    v-if="column.key !== 'studentName'"
                     class="mr-2 cursor-pointer"
                     @click="() => toggleSort(column)">
                     N°{{ column.key }}
                     <v-tooltip activator="parent" location="bottom">
                       {{ column.title.content }}
                     </v-tooltip>
+                  </span>
+                  <span v-else>
+                    {{ column.title }}
                   </span>
                   <template v-if="isSorted(column)">
                     <v-fade-transition>
