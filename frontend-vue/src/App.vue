@@ -11,10 +11,9 @@
 <script setup>
   import HeaderBlock from '@/components/layout/HeaderBlock.vue';
   import FooterBlock from '@/components/layout/FooterBlock.vue';
-  import { onBeforeMount, onMounted } from 'vue';
+  import { onBeforeMount } from 'vue';
   import { useActivityStore } from '@/stores/activityStore';
   import { useUserStore } from '@/stores/userStore';
-  import router from '@/router';
 
   const activityStore = useActivityStore();
   const userStore = useUserStore();
@@ -29,6 +28,7 @@
     if (!userStore.interval) {
       userStore.intervalChecker();
     }
+    document.title = 'Système de Vote en Direct';
   });
 </script>
 
