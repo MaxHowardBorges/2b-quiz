@@ -14,7 +14,8 @@
     "PTL": "Please, try later.",
     "ErrorConnectingSession": "Error while connecting to the session",
     "TheServerOffline": "The Server is offline",
-    "PleaseTryLater": "Please, try later."
+    "PleaseTryLater": "Please, try later.",
+    "JoinSession": "Join session"
   },
 
   "teacher": {
@@ -168,5 +169,33 @@
     "ActionIrreversible": "This action is irreversible, you will not be able to recover this user.",
     "AnonymizeUser": "This user will be anonymized. You can restore it later.",
     "AnonymizeAction": "This action is reversible, you can restore the user later."
+  },
+
+  "group": {
+    "PENGroup": "Please enter a name for the group",
+    "DeleteGroupTitle": "Delete group",
+    "DeleteGroupConfirmation": "Are you sure you want to delete this group ?",
+    "Yes": "Yes",
+    "No": "No",
+    "CreateGroupButton": "Create a group",
+    "CreateGroupDialogTitle": "Create a group",
+    "ID": "ID",
+    "GroupName": "Group name",
+    "NumberOfPeople": "Number of people",
+    "Actions": "Actions",
+    "CreateButton": "Create",
+    "CancelButton": "Cancel",
+    "UsersListTitle": "List of users in the group",
+    "UserName": "name",
+    "UserSurname": "surname",
+    "DeleteUserTitle": "Delete user from group",
+    "DeleteUserConfirmation": "Are you sure you want to delete this user from the group ?",
+    "AddUserTitle": "Add user to a group",
+    "UsersListToAdd": "List of users to add",
+    "Students": "Students",
+    "Teachers": "Teachers",
+    "SelectUserLabel": "Select a user",
+    "AddButton": "Add",
+    "CloseButton": "Close"
   }
 }

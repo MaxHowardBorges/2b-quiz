@@ -3,15 +3,15 @@
     class="mt-5 p-6 mx-auto"
     elevation="5"
     style="max-width: 1500px; width: 100%">
-    <h1 class="text-h4 ma-5">List of groups</h1>
+    <h1 class="text-h4 ma-5">{{ $t('group.GroupName') }}</h1>
     <table class="w-full">
       <thead>
-        <tr>
-          <th class="text-center">id</th>
-          <th class="text-center">Group name</th>
-          <th class="text-center">Number of people</th>
-          <th class="text-center">Actions</th>
-        </tr>
+      <tr>
+        <th class="text-center">{{ $t('group.ID') }}</th>
+        <th class="text-center">{{ $t('group.GroupName') }}</th>
+        <th class="text-center">{{ $t('group.NumberOfPeople') }}</th>
+        <th class="text-center">{{ $t('group.Actions') }}</th>
+      </tr>
       </thead>
       <tbody>
         <tr class="ma-2" v-for="(group, index) in ListOFGroup" :key="index">
@@ -40,18 +40,18 @@
 
     <v-dialog v-model="deleteDialog" max-height="700px" max-width="700px">
       <v-card>
-        <v-card-title>Delete Group</v-card-title>
-        <v-card-text>Are you sure to delete this Group?</v-card-text>
+        <v-card-title>{{ $t('group.DeleteGroupTitle') }}</v-card-title>
+        <v-card-text>{{ $t('group.DeleteGroupConfirmation') }} </v-card-text>
         <v-card-actions>
-          <v-btn @click="deleteGroup(this.SelectGroupID)">Yes</v-btn>
-          <v-btn @click="closeDialogs">No</v-btn>
+          <v-btn @click="deleteGroup(this.SelectGroupID)">{{ $t('group.Yes') }}</v-btn>
+          <v-btn @click="closeDialogs">{{ $t('group.No') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-dialog v-model="CreateGroupDialog" max-width="500px">
       <v-card>
-        <v-card-title>Create a group</v-card-title>
+        <v-card-title>{{ $t('group.CreateGroupDialogTitle') }}</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="nameOFGroup"
@@ -60,8 +60,8 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn @click="HandleCreateGroup">Create</v-btn>
-          <v-btn @click="closeDialogs">Cancel</v-btn>
+          <v-btn @click="HandleCreateGroup">{{ $t('group.CreateButton') }}</v-btn>
+          <v-btn @click="closeDialogs">{{ $t('group.CancelButton') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -74,15 +74,15 @@
         <v-card-title class="headline font-weight-bold">
           Display group
         </v-card-title>
-        <v-card-text class="subtitle-1">List of users in the group</v-card-text>
+        <v-card-text class="subtitle-1">{{ $t('group.UsersListTitle') }}</v-card-text>
 
         <table>
           <thead>
             <tr>
-              <th class="text-center">ID</th>
-              <th class="text-center">Name</th>
-              <th class="text-center">Surname</th>
-              <th class="text-center">Actions</th>
+              <th class="text-center">{{ $t('group.ID') }}</th>
+              <th class="text-center">{{ $t('group.UserName') }}</th>
+              <th class="text-center">{{ $t('group.UserSurname') }}</th>
+              <th class="text-center">{{ $t('group.Actions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -97,36 +97,36 @@
           </tbody>
         </table>
         <v-card-actions>
-          <v-btn @click="closeDialogs">Close</v-btn>
+          <v-btn @click="closeDialogs">{{ $t('admin.close') }} </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-dialog v-model="DeleteUserDialog" max-height="700px" max-width="700px">
       <v-card>
-        <v-card-title>Delete user</v-card-title>
+        <v-card-title>{{ $t('group.DeleteUserTitle') }}</v-card-title>
         <v-card-text>
-          Are you sure to delete this user of the group?
+          {{ $t('group.DeleteUserConfirmation') }}
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="deleteUserFromGroup(this.SelectedUserID)">Yes</v-btn>
-          <v-btn @click="closeDialogs">Cancel</v-btn>
+          <v-btn @click="deleteUserFromGroup(this.SelectedUserID)">{{ $t('group.Yes') }}</v-btn>
+          <v-btn @click="closeDialogs">{{ $t('group.CancelButton') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-btn class="ma-4" color="primary" @click="openCreate">
-      Create a group
+      {{ $t('group.CreateGroupButton') }}
     </v-btn>
 
     <v-dialog v-model="DisplayAddUser" max-height="700px" max-width="700px">
       <v-card class="d-flex align-center">
-        <v-card-title>Add user to a group</v-card-title>
-        <v-card-text>List of users to add</v-card-text>
+        <v-card-title>{{ $t('group.AddUserTitle') }}</v-card-title>
+        <v-card-text>{{ $t('group.UsersListToAdd') }}</v-card-text>
 
         <v-btn-toggle class="ma-2">
-          <v-btn @click="switchStudent">Students</v-btn>
-          <v-btn @click="switchTeacher">Teachers</v-btn>
+          <v-btn @click="switchStudent">{{ $t('group.Students') }}</v-btn>
+          <v-btn @click="switchTeacher">{{ $t('group.Teachers') }}</v-btn>
         </v-btn-toggle>
         <v-autocomplete
           v-model="selectedUsers"
@@ -134,7 +134,7 @@
           :items="usersToAdd"
           item-value="id"
           item-title="username"
-          label="Select a user"
+          :label="$t('group.SelectUserLabel')"
           chips
           closable-chips
           clearable
@@ -154,7 +154,7 @@
           :items="usersToAdd"
           item-value="id"
           item-title="username"
-          label="Select a user"
+          :label="$t('group.SelectUserLabel')"
           chips
           closable-chips
           clearable
@@ -169,8 +169,8 @@
         </v-autocomplete>
 
         <v-card-actions>
-          <v-btn @click="addUserToGroup">Add</v-btn>
-          <v-btn @click="closeAddUser">Close</v-btn>
+          <v-btn @click="addUserToGroup">{{ $t('group.AddButton') }}</v-btn>
+          <v-btn @click="closeAddUser">{{ $t('group.CloseButton') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -208,7 +208,7 @@
       return {
         userStore,
         useGroup,
-        ListOFGroup: ref([{ id: 17, groupName: 'test' }]),
+        ListOFGroup: ref([]),
         SelectGroupID: ref(0),
       };
     },
@@ -277,7 +277,7 @@
       },
       async HandleCreateGroup() {
         if (this.nameOFGroup === '') {
-          alert('Please enter a name for the group');
+          alert(this.$t('group.PENGroup'));
           return;
         }
         await this.useGroup.createGroup(this.nameOFGroup);

@@ -14,7 +14,8 @@
     "PTL": "Kérlek, próbáld újra később.",
     "ErrorConnectingSession": "Hiba a munkamenethez való csatlakozás közben",
     "TheServerOffline": "A szerver nem elérhető",
-    "PleaseTryLater": "Kérlek, próbáld újra később."
+    "PleaseTryLater": "Kérlek, próbáld újra később.",
+    "JoinSession": "Csatlakozás munkamenethez"
   },
 
   "teacher": {
@@ -167,6 +168,34 @@
     "ActionIrreversible": "Ez a művelet visszafordíthatatlan, nem fogod tudni visszaállítani ezt a felhasználót.",
     "AnonymizeUser": "Ez a felhasználó névtelenné válik. Később visszaállíthatod.",
     "AnonymizeAction": "Ez a művelet visszafordítható, később visszaállíthatod a felhasználót."
+  },
+
+  "group": {
+    "PENGroup": "Kérlek, adj meg egy nevet a csoportnak",
+    "DeleteGroupTitle": "Csoport törlése",
+    "DeleteGroupConfirmation": "Biztosan törölni szeretnéd ezt a csoportot?",
+    "Yes": "Igen",
+    "No": "Nem",
+    "CreateGroupButton": "Csoport létrehozása",
+    "CreateGroupDialogTitle": "Csoport létrehozása",
+    "ID": "Azonosító",
+    "GroupName": "Csoport neve",
+    "NumberOfPeople": "Résztvevők száma",
+    "Actions": "Műveletek",
+    "CreateButton": "Létrehozás",
+    "CancelButton": "Mégse",
+    "UsersListTitle": "A csoportban lévő felhasználók listája",
+    "UserName": "Felhasználónév",
+    "UserSurname": "Vezetéknév",
+    "DeleteUserTitle": "Hongrois Supprimer l'utilisateur du groupe",
+    "DeleteUserConfirmation": "Biztosan törölni szeretnéd ezt a felhasználót a csoportból?",
+    "AddUserTitle": "Felhasználó hozzáadása csoportba",
+    "UsersListToAdd": "Felhasználók listája hozzáadáshoz",
+    "Students": "Diákok",
+    "Teachers": "Tanárok",
+    "SelectUserLabel": "Válasszon felhasználót",
+    "AddButton": "Hozzáadás",
+    "CloseButton": "Bezárás"
   }
 
 }

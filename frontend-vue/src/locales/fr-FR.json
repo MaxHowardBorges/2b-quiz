@@ -14,7 +14,8 @@
     "PTL": "Veuillez réessayer plus tard.",
     "ErrorConnectingSession": "Erreur lors de la connexion à la session",
     "TheServerOffline": "Le serveur est hors ligne",
-    "PleaseTryLater": "Veuillez réessayer plus tard."
+    "PleaseTryLater": "Veuillez réessayer plus tard.",
+    "JoinSession": "Rejoindre une session"
   },
 
   "teacher": {
@@ -169,5 +170,33 @@
     "RestoreUser": "Restaurer l'utilisateur",
     "SureDeleteUser": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
     "ActionIrreversible": "Cette action est irréversible."
+  },
+
+  "group": {
+    "PENGroup": "Veuillez entrer un nom pour le groupe",
+    "DeleteGroupTitle": "Supprimer le groupe",
+    "DeleteGroupConfirmation": "Êtes-vous sûr de vouloir supprimer ce groupe ?",
+    "Yes": "Oui",
+    "No": "Non",
+    "CreateGroupButton": "Créer un groupe",
+    "CreateGroupDialogTitle": "Créer un groupe",
+    "ID": "ID",
+    "GroupName": "Nom du groupe",
+    "NumberOfPeople": "Nombre de personnes",
+    "Actions": "Actions",
+    "CreateButton": "Créer",
+    "CancelButton": "Annuler",
+    "UsersListTitle": "Liste des utilisateurs dans le groupe",
+    "UserName": "Nom",
+    "UserSurname": "Prénom",
+    "DeleteUserTitle": "Supprimer l'utilisateur",
+    "DeleteUserConfirmation": "Êtes-vous sûr de vouloir supprimer cet utilisateur du groupe ?",
+    "AddUserTitle": "Ajouter un utilisateur à un groupe",
+    "UsersListToAdd": "Liste des utilisateurs à ajouter",
+    "Students": "Étudiants",
+    "Teachers": "Enseignants",
+    "SelectUserLabel": "Sélectionnez un utilisateur",
+    "AddButton": "Ajouter",
+    "CloseButton": "Fermer"
   }
 }
