@@ -100,8 +100,11 @@ export class SessionController {
 
   @Roles([UserType.TEACHER])
   @Get('/:idSession/result/global')
-  async getGlobalResults(@Param('idSession') idSession: number) {
-    return await this.sessionService.getGlobalResults(idSession);
+  async getGlobalResults(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: number,
+  ) {
+    return await this.sessionService.getGlobalResults(idSession, request.user);
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])

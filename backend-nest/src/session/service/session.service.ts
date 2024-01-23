@@ -448,13 +448,8 @@ export class SessionService {
     }
   }
 
-  async getGlobalResults(idSession: number) {
-    const session = await this.getSession(idSession);
-    const tabResults: ResultsDto[] = [];
-    for (const userSession of session.userSession) {
-      tabResults.push(await this.getResults(idSession, userSession.student));
-    }
-    return tabResults;
+  async getGlobalResults(idSession: number, user: User) {
+    return <ResultsDto[]>await this.getResults(idSession, user, true);
   }
 
   async getSession(idSession: number) {
@@ -474,7 +469,11 @@ export class SessionService {
     });
   }
 
-  async getResults(idSession: number, masterUser: User) {
+  async getResults(
+    idSession: number,
+    masterUser: User,
+    returnList: boolean = false,
+  ) {
     //TODO option to return resultDto[]
     const session = await this.getSession(idSession);
     session.isResponses = session.isResult && session.isResponses;
@@ -493,68 +492,147 @@ export class SessionService {
       question.answers = await this.questionService.findAnswers(question.id);
     }
 
-    const resultTab = new ResultsDto();
+    const resultTab: ResultsDto | ResultsDto[] = !returnList
+      ? new ResultsDto()
+      : [];
     let average = 0;
     let openQuestions = 0;
     let isCurrentUser = false;
 
     const usersSession = session.userSession;
     for (const userSession of usersSession) {
-      if (userSession.student.id === masterUser.id) {
+      if (!returnList && userSession.student.id === masterUser.id) {
         isCurrentUser = !isCurrentUser;
-        resultTab.username = userSession.student.username;
+        (<ResultsDto>resultTab).username = userSession.student.username;
+      } else if (session.isResult && returnList) {
+        (<ResultsDto[]>resultTab).push(new ResultsDto());
       }
       for (const question of questionnary.questions) {
-        session.isResult && isCurrentUser
-          ? resultTab.questions.push(
-              this.sessionMapper.mapQuestionResult(question),
-            )
-          : '';
+        if (session.isResult && !returnList && isCurrentUser) {
+          (<ResultsDto>resultTab).questions.push(
+            this.sessionMapper.mapQuestionResult(question),
+          );
+        } else if (session.isResult && returnList) {
+          (<ResultsDto[]>resultTab)[
+            (<ResultsDto[]>resultTab).length - 1
+          ].questions.push(this.sessionMapper.mapQuestionResult(question));
+        }
         if (question.type === 'ouv' || question.type === 'qoc') {
           openQuestions++;
         } else {
           const questionResult = this.percentSuccess(question, userSession);
           average += questionResult.nbCorrectAnswer;
-          if (isCurrentUser) {
+          if (!returnList && isCurrentUser) {
             questionResult.userAnswer
               .map((userAnswer) => userAnswer.content)
               .every((userAnswer) =>
-                resultTab.questions[
-                  resultTab.questions.length - 1
+                (<ResultsDto>resultTab).questions[
+                  (<ResultsDto>resultTab).questions.length - 1
                 ].studentAnswers.push(userAnswer),
               );
             session.isResult
-              ? (resultTab.questions[
-                  resultTab.questions.length - 1
+              ? ((<ResultsDto>resultTab).questions[
+                  (<ResultsDto>resultTab).questions.length - 1
                 ].hasAnsweredCorrectly = questionResult.nbCorrectAnswer == 1)
               : '';
             session.isResponses
               ? questionResult.rightAnswer
                   .map((answer) => answer.content)
                   .every((correctAnswer) =>
-                    resultTab.questions[
-                      resultTab.questions.length - 1
+                    (<ResultsDto>resultTab).questions[
+                      (<ResultsDto>resultTab).questions.length - 1
                     ].correctAnswers.push(correctAnswer),
                   )
               : '';
-            resultTab.personnalResult += questionResult.nbCorrectAnswer;
+            (<ResultsDto>resultTab).personnalResult +=
+              questionResult.nbCorrectAnswer;
+          } else if (returnList) {
+            questionResult.userAnswer
+              .map((userAnswer) => userAnswer.content)
+              .every((userAnswer) =>
+                (<ResultsDto[]>resultTab)[
+                  (<ResultsDto[]>resultTab).length - 1
+                ].questions[
+                  (<ResultsDto[]>resultTab)[
+                    (<ResultsDto[]>resultTab).length - 1
+                  ].questions.length - 1
+                ].studentAnswers.push(userAnswer),
+              );
+            session.isResult
+              ? ((<ResultsDto[]>resultTab)[
+                  (<ResultsDto[]>resultTab).length - 1
+                ].questions[
+                  (<ResultsDto[]>resultTab)[
+                    (<ResultsDto[]>resultTab).length - 1
+                  ].questions.length - 1
+                ].hasAnsweredCorrectly = questionResult.nbCorrectAnswer == 1)
+              : '';
+            session.isResponses
+              ? questionResult.rightAnswer
+                  .map((answer) => answer.content)
+                  .every((correctAnswer) =>
+                    (<ResultsDto[]>resultTab)[
+                      (<ResultsDto[]>resultTab).length - 1
+                    ].questions[
+                      (<ResultsDto[]>resultTab)[
+                        (<ResultsDto[]>resultTab).length - 1
+                      ].questions.length - 1
+                    ].correctAnswers.push(correctAnswer),
+                  )
+              : '';
+            (<ResultsDto[]>resultTab)[
+              (<ResultsDto[]>resultTab).length - 1
+            ].personnalResult += questionResult.nbCorrectAnswer;
           }
         }
       }
-    }
-    session.isGlobal
-      ? (resultTab.globalResult =
-          (average /
-            usersSession.length /
+      if (returnList) {
+        if (session.isResult) {
+          (<ResultsDto[]>resultTab)[
+            (<ResultsDto[]>resultTab).length - 1
+          ].username = userSession.student.username;
+        }
+        (<ResultsDto[]>resultTab)[
+          (<ResultsDto[]>resultTab).length - 1
+        ].personnalResult =
+          ((<ResultsDto[]>resultTab)[(<ResultsDto[]>resultTab).length - 1]
+            .personnalResult /
             (questionnary.questions.length - openQuestions)) *
-          100)
-      : '';
-    resultTab.personnalResult =
-      (resultTab.personnalResult /
-        (questionnary.questions.length - openQuestions)) *
-      100;
-    resultTab.teacherSurname = session.teacher.surname;
-    resultTab.sessionDate = session.date;
+          100;
+        (<ResultsDto[]>resultTab)[
+          (<ResultsDto[]>resultTab).length - 1
+        ].teacherSurname = session.teacher.surname;
+        (<ResultsDto[]>resultTab)[
+          (<ResultsDto[]>resultTab).length - 1
+        ].sessionDate = session.date;
+      }
+    }
+    if (returnList) {
+      if (session.isGlobal) {
+        (<ResultsDto[]>resultTab).every(
+          (user) =>
+            (user.globalResult =
+              (average /
+                usersSession.length /
+                (questionnary.questions.length - openQuestions)) *
+              100),
+        );
+      }
+    } else {
+      session.isGlobal
+        ? ((<ResultsDto>resultTab).globalResult =
+            (average /
+              usersSession.length /
+              (questionnary.questions.length - openQuestions)) *
+            100)
+        : '';
+      (<ResultsDto>resultTab).personnalResult =
+        ((<ResultsDto>resultTab).personnalResult /
+          (questionnary.questions.length - openQuestions)) *
+        100;
+      (<ResultsDto>resultTab).teacherSurname = session.teacher.surname;
+      (<ResultsDto>resultTab).sessionDate = session.date;
+    }
     return resultTab;
   }
 
