@@ -80,7 +80,7 @@
   import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
-    name: 'QuestionItem',
+    name: 'SessionItem',
     props: {
       session: Object,
     },
@@ -134,7 +134,10 @@
         });
       },
       SeeResults() {
-        router.push('/history/:idSession');
+        router.push({
+          name: 'Session Handle Results',
+          params: { idSession: this.session.id },
+        });
       },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;

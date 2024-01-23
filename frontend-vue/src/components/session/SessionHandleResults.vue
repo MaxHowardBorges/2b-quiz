@@ -50,18 +50,14 @@
 
       <!-- Global Results -->
       <v-sheet v-if="showGlobal" class="mt-2">
-        <v-list-item-group>
-          <v-list-item v-for="(answer, index) in answers2" :key="index">
-            <template #default>
-              <v-list-item-content>
-                <v-list-item-title class="text-h6">
-                  Question {{ index + 1 }}
-                </v-list-item-title>
-                {{ answer }}
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item>
+          <template #default>
+            <v-list-item-title class="text-h6">
+              Résultats globaux :
+            </v-list-item-title>
+            {{ results.globalResult }}% de réussite
+          </template>
+        </v-list-item>
       </v-sheet>
 
       <!-- Tableau des réponses des étudiants -->
@@ -155,6 +151,8 @@
         results: {
           sessionDate: '',
           teacherSurname: '',
+          globalResults: '',
+          questions: [],
         },
       };
     },
