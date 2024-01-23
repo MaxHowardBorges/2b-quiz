@@ -81,15 +81,48 @@
 
       <!-- Tableau des réponses des étudiants -->
       <v-sheet v-if="showStudentResponsesTable" class="mt-2">
-        <v-data-table
-          :headers="studentResponsesHeaders"
-          :items="studentResponses"
-          hide-default-footer>
-          <template v-slot:items="props">
-            <td>{{ props.item.studentName }}</td>
-            <td>{{ props.item.answer1 }}</td>
-            <td>{{ props.item.answer2 }}</td>
-            <td>{{ props.item.answer3 }}</td>
+        <v-data-table :headers="getHeaders()" :items="results.usersResults">
+          <template
+            v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+            <tr>
+              <template v-for="column in columns" :key="column.key">
+                <td>
+                  <span
+                    class="mr-2 cursor-pointer"
+                    @click="() => toggleSort(column)">
+                    N°{{ column.key }}
+                    <v-tooltip activator="parent" location="bottom">
+                      {{ column.title.content }}
+                    </v-tooltip>
+                  </span>
+                  <template v-if="isSorted(column)">
+                    <v-fade-transition>
+                      <v-icon :icon="getSortIcon(column)"></v-icon>
+                    </v-fade-transition>
+                  </template>
+                </td>
+              </template>
+            </tr>
+          </template>
+          <template v-slot:item="{ item }">
+            <tr>
+              <td>{{ item.username }}</td>
+              <td
+                v-for="question in item.questions"
+                :class="
+                  question.studentAnswers.length === 0 ||
+                  !question.hasAnsweredCorrectly
+                    ? 'bg-error'
+                    : 'bg-success'
+                ">
+                <template v-if="question.studentAnswers.length === 0">
+                  Aucune réponse
+                </template>
+                <template v-else>
+                  {{ question.studentAnswers.join(', ') }}
+                </template>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </v-sheet>
@@ -176,7 +209,7 @@
           teacherSurname: '',
           globalResults: '',
           questions: [],
-          personnalResult: '',
+          usersResults: [],
         },
         user: {
           username: '',
@@ -212,6 +245,13 @@
         this.showDropdown = false;
         this.showGlobal = false;
         this.showStudentResponsesTable = true;
+      },
+      getHeaders() {
+        const headers = [{ title: 'Étudiant', key: 'studentName' }];
+        for (const question of this.results.questions) {
+          headers.push({ title: question, key: question.id });
+        }
+        return headers;
       },
       handleSwitchChange() {
         // Handle switch changes here

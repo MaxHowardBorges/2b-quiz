@@ -1,4 +1,5 @@
 import { ResultsDto } from './results.dto';
+import { QuestionDto } from '../../question/dto/question.dto';
 
 export class ResultsHostDto {
   constructor() {
@@ -15,4 +16,6 @@ export class ResultsHostDto {
   sessionDate: Date;
 
   usersResults: ResultsDto[];
+
+  questions: QuestionDto[];
 }

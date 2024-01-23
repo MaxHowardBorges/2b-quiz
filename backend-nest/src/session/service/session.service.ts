@@ -618,6 +618,7 @@ export class SessionService {
         usersSession.length /
         (questionnary.questions.length - openQuestions)) *
       100;
+    resultHostTab.questions = questionnary.questions;
     return resultHostTab;
   }
 
