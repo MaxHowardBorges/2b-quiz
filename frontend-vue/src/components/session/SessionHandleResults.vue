@@ -1,6 +1,7 @@
 <template>
   <v-sheet
     max-width="1400px"
+    min-width="400px"
     elevation="5"
     rounded="lg"
     class="d-flex flex-column my-2 pa-3 mx-auto">
@@ -147,21 +148,28 @@
       </v-sheet>
     </v-sheet>
     <!-- New switches added below -->
-    <v-switch
-      label="Visibility Results"
-      class="mx-2 my-3"
-      v-model="switch1Value"
-      @change="handleSwitchChange"></v-switch>
-    <v-switch
-      label="Visibility Responses"
-      class="mx-2 my-3"
-      v-model="switch2Value"
-      @change="handleSwitchChange"></v-switch>
-    <v-switch
-      label="Visibility Globals"
-      class="mx-2 my-3"
-      v-model="switch3Value"
-      @change="handleSwitchChange"></v-switch>
+    <v-sheet
+      max-width="800px"
+      class="d-flex flex-row justify-center align-content-center align-self-center flex-wrap">
+      <v-switch
+        class="mx-5"
+        color="primary"
+        label="Visibility Results"
+        v-model="switch1Value"
+        @change="handleSwitchChange"></v-switch>
+      <v-switch
+        class="mx-5"
+        color="primary"
+        label="Visibility Responses"
+        v-model="switch2Value"
+        @change="handleSwitchChange"></v-switch>
+      <v-switch
+        class="mx-5"
+        color="primary"
+        label="Visibility Globals"
+        v-model="switch3Value"
+        @change="handleSwitchChange"></v-switch>
+    </v-sheet>
   </v-sheet>
 </template>
 
