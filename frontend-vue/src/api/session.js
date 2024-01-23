@@ -86,6 +86,19 @@ export async function stopSession(idSession, token) {
   );
 }
 
+export async function getGlobalResults(idSession, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/session/' + idSession + '/result/global',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
 export async function getResults(idSession, token) {
   return await fetch(
     import.meta.env.VITE_API_URL + '/session/' + idSession + '/result',

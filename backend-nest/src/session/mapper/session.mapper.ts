@@ -109,7 +109,8 @@ export class SessionMapper {
       id: question.id,
       content: question.content,
       type: question.type,
-      answers: [],
+      correctAnswers: [],
+      studentAnswers: [],
       hasAnsweredCorrectly: false,
     };
   }

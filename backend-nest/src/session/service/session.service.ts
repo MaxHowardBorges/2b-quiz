@@ -448,8 +448,17 @@ export class SessionService {
     }
   }
 
-  async getResults(idSession: number, masterUser: User) {
-    const session = await this.sessionRepository.findOne({
+  async getGlobalResults(idSession: number) {
+    const session = await this.getSession(idSession);
+    const tabResults: ResultsDto[] = [];
+    for (const userSession of session.userSession) {
+      tabResults.push(await this.getResults(idSession, userSession.student));
+    }
+    return tabResults;
+  }
+
+  async getSession(idSession: number) {
+    return await this.sessionRepository.findOne({
       where: {
         id: idSession,
       },
@@ -463,6 +472,11 @@ export class SessionService {
         },
       },
     });
+  }
+
+  async getResults(idSession: number, masterUser: User) {
+    //TODO option to return resultDto[]
+    const session = await this.getSession(idSession);
     session.isResponses = session.isResult && session.isResponses;
 
     //get session's questionnary
@@ -488,6 +502,7 @@ export class SessionService {
     for (const userSession of usersSession) {
       if (userSession.student.id === masterUser.id) {
         isCurrentUser = !isCurrentUser;
+        resultTab.username = userSession.student.username;
       }
       for (const question of questionnary.questions) {
         session.isResult && isCurrentUser
@@ -501,6 +516,13 @@ export class SessionService {
           const questionResult = this.percentSuccess(question, userSession);
           average += questionResult.nbCorrectAnswer;
           if (isCurrentUser) {
+            questionResult.userAnswer
+              .map((userAnswer) => userAnswer.content)
+              .every((userAnswer) =>
+                resultTab.questions[
+                  resultTab.questions.length - 1
+                ].studentAnswers.push(userAnswer),
+              );
             session.isResult
               ? (resultTab.questions[
                   resultTab.questions.length - 1
@@ -512,7 +534,7 @@ export class SessionService {
                   .every((correctAnswer) =>
                     resultTab.questions[
                       resultTab.questions.length - 1
-                    ].answers.push(correctAnswer),
+                    ].correctAnswers.push(correctAnswer),
                   )
               : '';
             resultTab.personnalResult += questionResult.nbCorrectAnswer;
@@ -562,6 +584,6 @@ export class SessionService {
         nbCorrectAnswer++;
       }
     }
-    return { nbCorrectAnswer, rightAnswer };
+    return { nbCorrectAnswer, rightAnswer, userAnswer };
   }
 }
