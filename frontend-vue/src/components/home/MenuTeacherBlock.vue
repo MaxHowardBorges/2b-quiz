@@ -159,7 +159,7 @@
         });
       },
       redirectToSessionHistory() {
-        router.push('/session-history');
+        router.push('/history');
       },
     },
   };

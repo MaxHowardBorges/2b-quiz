@@ -1,6 +1,12 @@
 <template>
   <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
     <div class="mb-4">
+      <div
+        style="align-self: start"
+        id="divButton"
+        class="d-flex justify-start">
+        <v-btn id="ic" icon="undo" @click="returnHome"></v-btn>
+      </div>
       <b>{{ question }}</b>
       <div class="mt-4 mb-4">
         <v-row>
@@ -190,6 +196,9 @@
         console.log('Switch 1:', this.switch1Value);
         console.log('Switch 2:', this.switch2Value);
         console.log('Switch 3:', this.switch3Value);
+      },
+      async returnHome() {
+        await router.push('/');
       },
     },
   };

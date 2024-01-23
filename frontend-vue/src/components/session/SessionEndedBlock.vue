@@ -74,12 +74,26 @@
         userStore,
       };
     },
+    data() {
+      return {
+        results: {
+          sessionDate: '',
+          teacherSurname: '',
+          globalResults: '',
+          questions: [],
+          personnalResult: '',
+        },
+      };
+    },
+
     methods: {
       handleManageResults() {
-        router.push('/session-handle-results');
+        this.sessionStore.sessionEnd();
+        router.push('/history');
       },
       SeeResults() {
-        router.push('/see-results-students');
+        this.sessionStore.sessionEnd();
+        router.push('/history');
       },
       returnToMenu() {
         this.sessionStore.sessionEnd();
