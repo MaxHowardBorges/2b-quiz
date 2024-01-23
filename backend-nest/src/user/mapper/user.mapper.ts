@@ -4,6 +4,7 @@ import { UserFullDataDto } from '../dto/userFullData.dto';
 import { UserListDto } from '../dto/userList.dto';
 import { UserSelfDataDto } from '../dto/userSelfData.dto';
 import { UserDeletedFullDataDto } from '../dto/userDeletedFullData.dto';
+import { TeacherGroupDataDto } from '../dto/teacherGroupData.dto';
 import { PartialUserDto } from '../dto/partialUser.dto';
 
 @Injectable()
@@ -51,6 +52,15 @@ export class UserMapper {
       userList.push(this.userDeleteDtoMap(user));
     }
     return { userList, nbPage };
+  }
+
+  teacherGroupDataDtoMap(user: User) {
+    const dto = new TeacherGroupDataDto();
+    dto.id = user.id;
+    dto.username = user.username;
+    dto.name = user.name;
+    dto.surname = user.surname;
+    return dto;
   }
 
   partialUserDtoMap(user: User) {

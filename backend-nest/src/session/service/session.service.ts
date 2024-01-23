@@ -23,6 +23,7 @@ import { SettingsObject } from '../object/settings.object';
 import { SettingsDto } from '../dto/settings.dto';
 import { DisplaySettingsObject } from '../object/displaySettings.object';
 import { EventObserverEnum } from '../../event/enum/eventObserver.enum';
+import { UserService } from '../../user/service/user.service';
 
 @Injectable()
 export class SessionService {
@@ -30,6 +31,7 @@ export class SessionService {
   constructor(
     private questionService: QuestionService,
     private questionnaryService: QuestionnaryService,
+    private userService: UserService,
     private answerMapper: AnswerMapper,
     private eventService: EventService,
   ) {}
@@ -167,7 +169,13 @@ export class SessionService {
         this.joinParticipant(session, user);
         break;
       case AccessTypeEnum.Private:
-        if (session.whitelist.includes(user.id)) {
+        if (
+          session.whitelist.includes(user.id) ||
+          session.whitelistGroups.some(
+            async (groupId) =>
+              await this.userService.isAlreadyInGroup(groupId, user.id),
+          )
+        ) {
           this.joinParticipant(session, user);
         } else {
           throw new UserNotInWhitelistException();
