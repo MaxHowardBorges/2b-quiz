@@ -83,6 +83,7 @@
     name: 'SessionItem',
     props: {
       session: Object,
+      idSession: String,
     },
     setup() {
       const userStore = useUserStore();

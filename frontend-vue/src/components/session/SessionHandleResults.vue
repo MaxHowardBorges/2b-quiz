@@ -46,18 +46,14 @@
     <v-sheet class="list">
       <!-- Dropdown menu -->
       <v-list v-if="showDropdown" id="dropdown" class="mt-2">
-        <v-list-item-group>
-          <v-list-item v-for="(answer, index) in answers" :key="index">
-            <template #default>
-              <v-list-item-content>
-                <v-list-item-title class="text-h6">
-                  Question {{ index + 1 }}
-                </v-list-item-title>
-                {{ answer }}
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item v-for="(answer, index) in answers" :key="index">
+          <template #default>
+            <v-list-item-title class="text-h6">
+              Question {{ index + 1 }}
+            </v-list-item-title>
+            {{ answer }}
+          </template>
+        </v-list-item>
       </v-list>
 
       <!-- Global Results -->
@@ -115,7 +111,7 @@
   export default {
     name: 'SessionResult',
     props: {
-      idSession: Number,
+      idSession: String,
     },
     setup() {
       const sessionStore = useSessionStore();
