@@ -435,6 +435,7 @@ export class SessionService {
           // Ajoutez ici votre deuxième condition avec le "OR"
           // Exemple: { userSession: { student: { id: user.id } } }
         ],
+        order: { date: 'DESC' },
       });
     } else if (user instanceof Student) {
       return this.sessionRepository.find({

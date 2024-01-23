@@ -38,13 +38,11 @@
       </div>
       <span class="spacer"></span>
       <span class="spacer"></span>
-      <v-btn id="ic" @click="showGlobalResults" text>
+      <v-btn id="ic" @click="showGlobalResults">
         Voir les résultats globaux
       </v-btn>
-      <v-btn id="ic" @click="toggleDropdown" text>
-        Voir les réponses correctes
-      </v-btn>
-      <v-btn id="ic" @click="showStudentResponses" text>
+      <v-btn id="ic" @click="toggleDropdown">Voir les réponses correctes</v-btn>
+      <v-btn id="ic" @click="showStudentResponses">
         Voir les réponses des étudiants
       </v-btn>
     </div>
@@ -198,7 +196,9 @@
         console.log('Switch 3:', this.switch3Value);
       },
       async returnHome() {
-        await router.push('/');
+        await router.push({
+          name: 'Session History',
+        });
       },
     },
   };

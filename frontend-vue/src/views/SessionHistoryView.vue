@@ -1,28 +1,24 @@
 <template>
   <v-sheet
     rounded="lg"
-    width="70%"
+    max-width="1000px"
+    min-width="400px"
     class="mt-5 px-6 py-8 mx-auto mb-5 d-flex flex-column align-center"
     elevation="5">
+    <div class="align-self-start mb-n4">
+      <v-btn id="ic" icon="undo" @click="returnHome"></v-btn>
+    </div>
     <div style="display: flex">
-      <div style="align-self: start" id="divButton">
-        <v-btn id="ic" icon="undo" @click="returnHome"></v-btn>
-      </div>
       <h1>Session History</h1>
     </div>
 
-    <v-sheet class="list" v-for="(session, index) in sessions" :key="index">
-      <HistoryItem :session="session"></HistoryItem>
-    </v-sheet>
+    <div class="w-100" v-for="(session, index) in sessions" :key="index">
+      <history-item :session="session"></history-item>
+    </div>
   </v-sheet>
 </template>
 
-<style scoped>
-  #divButton {
-    position: absolute;
-    left: 18%;
-  }
-</style>
+<style scoped></style>
 
 <script>
   import HistoryItem from '@/components/session/HistoryItem.vue';
@@ -43,7 +39,6 @@
     },
     async mounted() {
       this.sessions = await this.getSessionList();
-      console.log(this.sessions);
     },
     methods: {
       async returnHome() {

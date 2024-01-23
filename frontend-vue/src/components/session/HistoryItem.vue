@@ -1,16 +1,22 @@
 <template>
-  <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
+  <v-sheet
+    elevation="3"
+    rounded="lg"
+    max-width="800px"
+    class="d-flex flex-column my-2 pa-3 w-100 mx-auto">
     <div class="mb-4">
       <b>Session</b>
       <div class="mt-4 mb-4">
         <v-row>
-          <v-col>
+          <v-col class="text-left ml-1">
             <span>
               <b>Date de création:</b>
-              {{ session.date }}
+              {{ parseDate(session.date).replace(' ', '&nbsp;') }} à&nbsp;{{
+                getTimeFromDate(session.date).replace(' ', '&nbsp;')
+              }}
             </span>
           </v-col>
-          <v-col>
+          <v-col class="text-right mr-1">
             <span>
               <b>Créé par:</b>
               {{ session.teacher.username }}
@@ -22,10 +28,13 @@
       <span class="spacer"></span>
 
       <!-- Un seul bouton pour gérer les résultats -->
-      <v-btn v-if="userStore.isTeacher" @click="handleManageResults">
+      <v-btn
+        v-if="userStore.isTeacher"
+        @click="handleManageResults"
+        color="primary">
         Gérer les résultats
       </v-btn>
-      <v-btn v-if="userStore.isStudent" @click="SeeResults">
+      <v-btn v-if="userStore.isStudent" @click="SeeResults" color="primary">
         Voir les résultats
       </v-btn>
     </div>
@@ -139,6 +148,14 @@
           name: 'Session Handle Results',
           params: { idSession: this.session.id },
         });
+      },
+      parseDate(date) {
+        if (!date) return new Date().toLocaleDateString('fr-CA');
+        return new Date(date).toLocaleDateString('fr-CA'); //TODO add locales
+      },
+      getTimeFromDate(date) {
+        if (!date) return new Date().toLocaleTimeString('fr-CA');
+        return new Date(date).toLocaleTimeString('fr-CA'); //TODO add locales
       },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;
