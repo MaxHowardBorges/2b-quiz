@@ -459,7 +459,9 @@ export class SessionService {
         id: idSession,
       },
       relations: {
-        questionnary: true,
+        questionnary: {
+          questions: { answers: true },
+        },
         teacher: true,
         userSession: {
           student: true,
@@ -468,6 +470,18 @@ export class SessionService {
         },
       },
     });
+  }
+
+  async isHostOfSession(idSession: number, user: User) {
+    const session = await this.getSession(idSession);
+    return session.teacher.id == user.id;
+  }
+
+  async isParticipantOfSession(idSession: number, user: User) {
+    const session = await this.getSession(idSession);
+    return session.userSession.some(
+      (userSession) => userSession.student.id == user.id,
+    );
   }
 
   async getResults(
@@ -639,6 +653,74 @@ export class SessionService {
       (<ResultsDto>resultTab).teacherUsername = session.teacher.username;
     }
     return resultTab;
+  }
+
+  async getResultsForHost(idSession: number) {
+    //TODO option to return resultDto[]
+    const session = await this.getSession(idSession);
+
+    //get session's questionnary
+    const questionnary = session.questionnary;
+
+    const resultTab: ResultsDto[] = [];
+
+    const usersSession = session.userSession;
+    let average = 0;
+    let openQuestions = 0;
+
+    for (const userSession of usersSession) {
+      const userResult = new ResultsDto();
+
+      for (const question of questionnary.questions) {
+        const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
+        userResult.questions.push(mappedQuestion);
+        if (question.type === 'ouv' || question.type === 'qoc') {
+          openQuestions++;
+        } else {
+          const questionResult = this.percentSuccess(question, userSession);
+          average += questionResult.nbCorrectAnswer;
+          questionResult.userAnswer
+            .map((userAnswer) => userAnswer.content)
+            .every((userAnswer) =>
+              mappedQuestion.studentAnswers.push(userAnswer),
+            );
+
+          mappedQuestion.hasAnsweredCorrectly =
+            questionResult.nbCorrectAnswer == 1;
+
+          questionResult.rightAnswer
+            .map((answer) => answer.content)
+            .every((correctAnswer) =>
+              mappedQuestion.correctAnswers.push(correctAnswer),
+            );
+
+          userResult.personnalResult += questionResult.nbCorrectAnswer;
+        }
+      }
+      userResult.username = userSession.student.username;
+      userResult.personnalResult =
+        (userResult.personnalResult /
+          (questionnary.questions.length - openQuestions)) *
+        100;
+      userResult.teacherSurname = session.teacher.surname;
+      userResult.teacherUsername = session.teacher.username;
+      userResult.sessionDate = session.date;
+
+      resultTab.every(
+        (user) =>
+          (user.globalResult =
+            (average /
+              usersSession.length /
+              (questionnary.questions.length - openQuestions)) *
+            100),
+      );
+      resultTab.push(userResult);
+    }
+    return resultTab;
+  }
+
+  async getAccessSettings(idSession: number) {
+    //TODO
   }
 
   //Calculate the percent of success of a student

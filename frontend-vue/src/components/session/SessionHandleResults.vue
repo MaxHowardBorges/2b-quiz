@@ -59,7 +59,7 @@
       <v-list v-if="showDropdown" id="dropdown" class="mt-2">
         <v-list-item v-for="(answer, index) in answers" :key="index">
           <template #default>
-            <v-list-item-title class="text-h6">
+            <v-list-item-title class="text-h5">
               Question {{ index + 1 }}
             </v-list-item-title>
             {{ answer }}
@@ -71,7 +71,7 @@
       <v-sheet v-if="showGlobal" class="mt-2">
         <v-list-item>
           <template #default>
-            <v-list-item-title class="text-h6">
+            <v-list-item-title class="text-h5">
               Résultats globaux :
             </v-list-item-title>
             {{ results.globalResult }}% de réussite

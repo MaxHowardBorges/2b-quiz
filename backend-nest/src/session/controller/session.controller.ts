@@ -94,8 +94,18 @@ export class SessionController {
     @Req() request: UserRequest,
     @Param('idSession') idSession: number,
   ) {
-    //Return the results of the session
-    return await this.sessionService.getResults(idSession, request.user);
+    if (
+      await this.sessionService.isHostOfSession(
+        idSession,
+        request.user as Teacher,
+      )
+    )
+      return await this.sessionService.getResultsForHost(idSession);
+    else if (
+      await this.sessionService.isParticipantOfSession(idSession, request.user)
+    )
+      return await this.sessionService.getResults(idSession, request.user);
+    else throw new IsNotParticipantException();
   }
 
   @Roles([UserType.TEACHER])
@@ -104,6 +114,7 @@ export class SessionController {
     @Req() request: UserRequest,
     @Param('idSession') idSession: number,
   ) {
+    //TODO not used anymore
     return await this.sessionService.getGlobalResults(idSession, request.user);
   }
 
