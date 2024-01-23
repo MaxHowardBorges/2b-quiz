@@ -252,6 +252,8 @@ export class UserService {
 
   async deleteGroup(idGroup: number) {
     const group = await this.getGroup(idGroup);
+    group.tabUsers = [];
+    await this.groupRepository.save(group);
     await this.groupRepository.delete(idGroup);
 
     return !!group;
@@ -268,23 +270,22 @@ export class UserService {
     return group;
   }
 
-  async addUserToGroup(idGroup: number, idStudent: number) {
+  async addUserToGroup(idGroup: number, idUser: number) {
     const group = await this.getGroup(idGroup);
-    const newUser = await this.getStudent(idStudent);
+    const newUser = await this.getUser(idUser);
 
-    if (newUser.getUserType() !== UserType.STUDENT) {
+    if (newUser.getUserType() === UserType.ADMIN) {
       throw new AdminCantJoinException();
     }
-
     group.tabUsers.push(newUser);
     await this.groupRepository.save(group);
 
     return !!(group && newUser);
   }
 
-  async removeStudentFromGroup(idGroup: number, idStudent: number) {
+  async removeUserFromGroup(idGroup: number, idUser: number) {
     const group = await this.getGroup(idGroup);
-    const user = await this.getStudent(idStudent);
+    const user = await this.getUser(idUser);
 
     group.tabUsers = group.tabUsers.filter((tabUser) => tabUser.id !== user.id);
     await this.groupRepository.save(group);
@@ -304,9 +305,9 @@ export class UserService {
     return group.teacher.id === user.id;
   }
 
-  async isAlreadyInGroup(idGroup: number, idStudent: number) {
+  async isAlreadyInGroup(idGroup: number, idUser: number) {
     const group = await this.getGroup(idGroup);
-    const newUser = await this.getStudent(idStudent);
+    const newUser = await this.getUser(idUser);
     return group.tabUsers.some((user) => user.id === newUser.id);
   }
 }

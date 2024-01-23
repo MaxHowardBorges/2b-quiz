@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
 import {
-  getGroup,
-  createGroup,
-  getGroupsOfTeacher,
-  deleteGroup,
   addStudentToGroup,
+  createGroup,
+  deleteGroup,
+  getGroup,
+  getGroupsOfTeacher,
   removeStudentFromGroup,
 } from '@/api/group';
 import { useUserStore } from '@/stores/userStore';
-import { getStudent } from '@/api/user';
+import { getStudent, getTeachers } from '@/api/user';
 
 export const useGroupStore = defineStore('group', {
   state: () => ({
@@ -91,20 +91,29 @@ export const useGroupStore = defineStore('group', {
 
     async getStudents() {
       const userStoreU = useUserStore();
-      console.log("he ohhhhh");
       try {
-        console.log('getStudents');
         const response = await getStudent(userStoreU.token);
-        console.log('response : ');
         if (!response.ok) {
           throw new Error('Erreur de chargement du groupe'); // TODO manage error
         }
+        userStoreU.updateToken(response.headers.get('Authorization'));
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async getTeachers() {
+      const userStoreU = useUserStore();
+      try {
+        console.log('getTeachers');
+        const response = await getTeachers(userStoreU.token);
+        console.log('response : ');
         console.log(response);
         userStoreU.updateToken(response.headers.get('Authorization'));
-
-        const students = await response.json();
-        console.log('Studenttttts',students);
-        return students;
+        const teachers = await response.json();
+        console.log('Teacher', teachers);
+        return teachers;
       } catch (error) {
         console.error(error);
       }

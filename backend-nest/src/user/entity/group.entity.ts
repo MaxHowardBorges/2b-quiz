@@ -20,6 +20,12 @@ export class Group {
   @ManyToOne(() => Teacher, (teacher) => teacher.createdGroups)
   teacher: Teacher;
 
-  @ManyToMany(() => Student, (student) => student.joinedGroups)
+  @ManyToMany(
+    () => User,
+    (user) =>
+      typeof user === typeof Student
+        ? (user as Student).joinedGroups
+        : (user as Teacher).joinedGroups,
+  )
   tabUsers: User[];
 }

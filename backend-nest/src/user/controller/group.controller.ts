@@ -77,7 +77,7 @@ export class GroupController {
 
   @Roles([UserType.TEACHER])
   @Delete('/:id/user/:idUser')
-  async removeStudentFromGroup(
+  async removeUserFromGroup(
     @Req() request: UserRequest,
     @Param('id', ParseIntPipe) idGroup: number,
     @Param('idUser', ParseIntPipe) idUser: number,
@@ -92,7 +92,7 @@ export class GroupController {
     } else if (!(await this.userService.isAlreadyInGroup(idGroup, idUser))) {
       throw new StudentNotInGroupException();
     }
-    return this.userService.removeStudentFromGroup(idGroup, idUser);
+    return this.userService.removeUserFromGroup(idGroup, idUser);
   }
 
   @Get('/:id/user') //TODO to test weirder than before
