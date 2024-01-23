@@ -108,16 +108,6 @@ export class SessionController {
     else throw new IsNotParticipantException();
   }
 
-  @Roles([UserType.TEACHER])
-  @Get('/:idSession/result/global')
-  async getGlobalResults(
-    @Req() request: UserRequest,
-    @Param('idSession') idSession: number,
-  ) {
-    //TODO not used anymore
-    return await this.sessionService.getGlobalResults(idSession, request.user);
-  }
-
   @Roles([UserType.TEACHER, UserType.STUDENT])
   @Get('/endSession')
   async saveSession(

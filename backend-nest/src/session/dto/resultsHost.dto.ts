@@ -1,9 +1,9 @@
-import { QuestionResultDto } from './questionResult.dto';
 import { ResultsDto } from './results.dto';
 
 export class ResultsHostDto {
   constructor() {
     this.globalResult = 0;
+    this.usersResults = [];
   }
 
   globalResult: number;
@@ -14,5 +14,5 @@ export class ResultsHostDto {
 
   sessionDate: Date;
 
-  results: ResultsDto[];
+  usersResults: ResultsDto[];
 }

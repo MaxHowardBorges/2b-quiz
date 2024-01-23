@@ -5,7 +5,6 @@ export class ResultsDto {
     this.username = '';
     this.personnalResult = 0;
     this.questions = [];
-    this.globalResult = 0;
   }
   username: string;
 
@@ -13,11 +12,11 @@ export class ResultsDto {
 
   questions: QuestionResultDto[];
 
-  globalResult: number;
+  globalResult?: number;
 
-  teacherSurname: string;
+  teacherSurname?: string;
 
-  teacherUsername: string;
+  teacherUsername?: string;
 
-  sessionDate: Date;
+  sessionDate?: Date;
 }
