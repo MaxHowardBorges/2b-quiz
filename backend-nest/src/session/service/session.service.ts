@@ -8,14 +8,22 @@ import { UserUnknownException } from '../exception/userUnknown.exception';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { AnswersNoneException } from '../exception/answersNone.exception';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
-import { UserAlreadyJoinedException } from '../exception/userAlreadyJoined.exception';
 import { Answer } from '../../question/entity/answer.entity';
-import { EventEnum } from '../../event/enum/event.enum';
+import { EventParticipantEnum } from '../../event/enum/eventParticipant.enum';
 import { EventService } from '../../event/service/event.service';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../question/constants/questionType.constant';
+import { AccessTypeEnum } from '../enum/accessType.enum';
+import { SessionClosedException } from '../exception/sessionClosed.exception';
+import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
+import { EventHostEnum } from '../../event/enum/eventHost.enum';
+import { SettingsObject } from '../object/settings.object';
+import { SettingsDto } from '../dto/settings.dto';
+import { DisplaySettingsObject } from '../object/displaySettings.object';
+import { EventObserverEnum } from '../../event/enum/eventObserver.enum';
+import { UserService } from '../../user/service/user.service';
 
 @Injectable()
 export class SessionService {
@@ -23,48 +31,76 @@ export class SessionService {
   constructor(
     private questionService: QuestionService,
     private questionnaryService: QuestionnaryService,
+    private userService: UserService,
     private answerMapper: AnswerMapper,
     private eventService: EventService,
   ) {}
 
-  async initializeSession(teacher: Teacher, ids: number[]): Promise<Session> {
+  async initializeSession(
+    teacher: Teacher,
+    ids: number[],
+    settings: SettingsObject,
+    whitelist: number[] = [],
+    whitelistGroups: number[] = [],
+  ): Promise<Session> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
     const questionnaries: Questionnary[] = [];
     for (const id of ids) {
-      questionnaries.push(await this.questionnaryService.findQuestionnary(id));
+      questionnaries.push(
+        await this.questionnaryService.findQuestionnaryWithQuestionsId(id),
+      );
     }
     this.sessionMap.set(
       idSession,
-      await this.createSession(idSession, teacher, questionnaries),
+      await this.createSession(
+        idSession,
+        teacher,
+        questionnaries,
+        settings,
+        whitelist,
+        whitelistGroups,
+      ),
     );
-    this.eventService.createClientGroup(idSession);
+    this.eventService.createSessionGroup(idSession, teacher.id);
     return this.sessionMap.get(idSession);
   }
 
   generateIdSession(): string {
-    //TODO change to 6 characters
-    return Math.floor(Math.random() * (1000000 - 100000) + 100000).toString(); // nombre aléatoire de 6 chiffres
+    //generate 6 characters random string A-Z 0-9
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    for (let counter = 0; counter < 6; counter++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 
   async createSession(
     idSession: string,
     teacher: Teacher,
     questionnaryTab: Questionnary[],
+    settings: SettingsObject,
+    whitelist: number[] = [],
+    whitelistGroups: number[] = [],
   ): Promise<Session> {
-    return new Session(idSession, questionnaryTab, teacher);
+    const session = new Session(idSession, questionnaryTab, teacher, settings);
+    session.whitelist = whitelist;
+    session.whitelistGroups = whitelistGroups;
+    return session;
   }
 
-  startSession(idSession: string): boolean {
+  isSessionExists(idSession: string): boolean {
     return this.sessionMap.has(idSession);
   }
 
-  async nextQuestion(idSession: string) {
+  async nextQuestion(idSession: string): Promise<boolean> {
     const currentSession = this.sessionMap.get(idSession);
     // check for next question in the current questionnary
-    if (currentSession.endSession) return null;
+    if (currentSession.endSession) return false;
     if (
       currentSession.questionNumber + 1 <
       (
@@ -74,14 +110,11 @@ export class SessionService {
       ).length
     ) {
       currentSession.questionNumber = currentSession.questionNumber + 1;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        );
-      return await this.questionService.findQuestion(
-        questionTab[currentSession.questionNumber].id,
+      this.eventService.sendEvent(
+        EventParticipantEnum.NEXT_QUESTION,
+        idSession,
       );
+      return true;
       // else check for next questionnary in the current session
     } else if (
       currentSession.questionnaryNumber + 1 <
@@ -89,19 +122,16 @@ export class SessionService {
     ) {
       currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
       currentSession.questionNumber = 0;
-      this.eventService.sendEvent(EventEnum.NEXT_QUESTION, idSession);
-      let questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
-        );
-      return await this.questionService.findQuestion(
-        questionTab[currentSession.questionNumber].id,
+      this.eventService.sendEvent(
+        EventParticipantEnum.NEXT_QUESTION,
+        idSession,
       );
+      return true;
     }
-    this.eventService.sendEvent(EventEnum.END_SESSION, idSession);
+    this.eventService.sendEvent(EventParticipantEnum.END_SESSION, idSession);
     currentSession.endSession = true;
-    this.eventService.closeClientGroup(idSession);
-    return null;
+    this.eventService.closeSessionGroup(idSession);
+    return false;
   }
 
   getMap() {
@@ -114,13 +144,13 @@ export class SessionService {
     }
     const currentSession = this.sessionMap.get(idSession);
     const questionnaries = currentSession.questionnaryList;
-    for (let questionnary of questionnaries) {
-      let questionTab =
+    for (const questionnary of questionnaries) {
+      const questionTab =
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
           questionnary.id,
         );
       questionnary.questions = [];
-      for (let question of questionTab) {
+      for (const question of questionTab) {
         questionnary.questions.push(
           await this.questionService.findQuestion(question.id),
         );
@@ -130,15 +160,40 @@ export class SessionService {
   }
 
   join(idSession: string, user: ParticipantInterface): void {
-    if (this.sessionMap.has(idSession) == false) {
+    if (!this.sessionMap.has(idSession)) {
       throw new IdSessionNoneException();
     }
     const session = this.sessionMap.get(idSession);
-    if (session.connectedUser.has(user)) {
-      throw new UserAlreadyJoinedException();
+    switch (session.settings.accessType) {
+      case AccessTypeEnum.Public:
+        this.joinParticipant(session, user);
+        break;
+      case AccessTypeEnum.Private:
+        if (
+          session.whitelist.includes(user.id) ||
+          session.whitelistGroups.some(
+            async (groupId) =>
+              await this.userService.isAlreadyInGroup(groupId, user.id),
+          )
+        ) {
+          this.joinParticipant(session, user);
+        } else {
+          throw new UserNotInWhitelistException();
+        }
+        break;
+      default:
+        throw new SessionClosedException();
     }
+  }
+
+  joinParticipant(session: Session, user: ParticipantInterface): void {
     session.connectedUser.add(user);
     session.userAnswers.set(user.id, new Map<Question, Answer>());
+    this.eventService.sendHostEventWithPayload(
+      EventHostEnum.NEW_CONNECTION,
+      session.id,
+      user,
+    );
   }
 
   async currentQuestion(idSession: string) {
@@ -177,18 +232,30 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
-    session.userAnswers
-      .get(user.id)
-      .set(
-        question,
-        Array.isArray(idAnswer)
-          ? question.answers.filter((answer) => idAnswer.includes(answer.id))
-          : typeof idAnswer === 'number'
-          ? question.answers.find((answer) => answer.id === idAnswer)
-          : question.type === QuestionType.QOC
-          ? idAnswer.split(/[ _]/)[0]
-          : idAnswer,
-      );
+    const answer = Array.isArray(idAnswer)
+      ? question.answers.filter((answer) => idAnswer.includes(answer.id))
+      : typeof idAnswer === 'number'
+      ? question.answers.find((answer) => answer.id === idAnswer)
+      : question.type === QuestionType.QOC
+      ? idAnswer.split(/[ _]/)[0]
+      : idAnswer;
+    session.userAnswers.get(user.id).set(question, answer);
+    this.sendSaveAnswerEvent(session, answer, user);
+  }
+
+  sendSaveAnswerEvent(
+    session: Session,
+    answer: string | Answer | Answer[],
+    user: ParticipantInterface,
+  ) {
+    this.eventService.sendHostEventWithPayload(
+      EventHostEnum.NEW_ANSWER,
+      session.id,
+      {
+        user: user,
+        answer: answer,
+      },
+    );
   }
 
   getMapUser(idSession: string) {
@@ -211,6 +278,13 @@ export class SessionService {
     );
   }
 
+  isParticipant(idSession: string, user: ParticipantInterface): boolean {
+    return (
+      this.sessionMap.get(idSession) != undefined &&
+      this.sessionMap.get(idSession).hasUser(user)
+    );
+  }
+
   async getCurrentQuestion(session: Session) {
     const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
@@ -226,5 +300,64 @@ export class SessionService {
       throw new IdSessionNoneException();
     }
     return this.sessionMap.get(idSession);
+  }
+
+  setSettings(idSession: string, settings: SettingsDto) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.settings.accessType = settings.accessType;
+      this.setDisplaySettings(idSession, settings.displaySettings);
+    }
+    console.log(session);
+    return !!session;
+  }
+
+  addToWhitelist(idSession: string, whitelist: number[]) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.whitelist = session.whitelist.concat(whitelist);
+    }
+    return !!session;
+  }
+
+  getDisplaySettings(idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      return session.settings.displaySettings;
+    }
+    return null;
+  }
+
+  setDisplaySettings(
+    idSession: string,
+    displaySettings: DisplaySettingsObject,
+  ) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      session.settings.displaySettings = displaySettings;
+      this.eventService.sendObserverEvent(
+        EventObserverEnum.NEW_DISPLAY_SETTINGS,
+        idSession,
+      );
+    }
+    return !!session;
+  }
+
+  getSessionStatus(idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      return session;
+    }
+    return null;
+  }
+
+  isStarted(idSession: string) {
+    const session = this.sessionMap.get(idSession);
+    if (!!session) {
+      return !(
+        session.questionNumber === -1 && session.questionnaryNumber === 0
+      );
+    }
+    return null;
   }
 }

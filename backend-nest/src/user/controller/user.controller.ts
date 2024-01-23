@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   ValidationPipe,
@@ -30,6 +31,10 @@ import { UserRegisterArrayDto } from '../dto/userRegisterArray.dto';
 import { UsernamesAlreadyUsedException } from '../exception/usernamesAlreadyUsed.exception';
 import { UsernamesDuplicatedUsedException } from '../exception/usernamesDuplicatedUsed.exception';
 import { UserDataRestoreDto } from '../dto/userDataRestore.dto';
+import { Teacher } from '../entity/teacher.entity';
+import { CreateGroupDto } from '../dto/createGroup.dto';
+import { AddStudentToGroupDto } from '../dto/addStudentToGroup.dto';
+import { RemoveStudentFromGroupDto } from '../dto/removeStudentFromGroup.dto';
 
 @Controller('user')
 export class UserController {
@@ -206,5 +211,21 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async rejectAskDeleteUser(@Param('id', ParseIntPipe) idUser: number) {
     await this.userService.rejectAskDeleteUser(idUser);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/students')
+  async getStudents(@Req() request: UserRequest) {
+    return this.userMapper.partialUserDtoListMap(
+      await this.userService.getStudents(request.user),
+    );
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/teachers')
+  async getOtherTeacher(@Req() request: UserRequest) {
+    return this.userMapper.partialUserDtoListMap(
+      await this.userService.getOtherTeacher(request.user),
+    );
   }
 }

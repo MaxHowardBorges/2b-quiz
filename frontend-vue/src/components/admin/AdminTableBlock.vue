@@ -17,7 +17,7 @@
     <template v-slot:header="">
       <div
         class="text-h4 font-weight-bold d-flex justify-space-between mb-4 align-center">
-        <div class="text-truncate">{{ this.$t('admin.ListUsers') }}</div>
+        <div class="text-h3">{{ this.$t('admin.ListUsers') }}</div>
         <v-spacer></v-spacer>
         <v-switch
           color="primary"

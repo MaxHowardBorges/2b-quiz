@@ -1,4 +1,4 @@
-import { Events } from '@/utils/events';
+import { Events, HostEvents, ObserverEvents } from '@/utils/events';
 import { defineStore } from 'pinia';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useUserStore } from '@/stores/userStore';
@@ -6,25 +6,87 @@ import { useUserStore } from '@/stores/userStore';
 export const useSessionEventStore = defineStore('sessionEvent', {
   state: () => ({
     eventSource: null,
+    eventList: [],
   }),
   actions: {
     setEventSource(eventSource) {
       this.eventSource = eventSource;
     },
-    connectToSSE() {
-      //TODO catch error if SSE fails
+    connectToSSEStudent() {
       const sessionStore = useSessionStore();
       const userStore = useUserStore();
       const url =
         import.meta.env.VITE_API_URL +
         '/event/' +
         sessionStore.idSession +
-        '?token=' +
-        userStore.token;
+        '/student?token=' +
+        userStore.getToken();
       const eventSource = new EventSource(url);
-
+      eventSource.onerror = () => {
+        sessionStore.disconnectFromSession('Error on SSE');
+      };
       this.setEventSource(eventSource);
       this.listenToEvents();
+    },
+    connectToSSEObserver() {
+      const sessionStore = useSessionStore();
+      const userStore = useUserStore();
+      const url =
+        import.meta.env.VITE_API_URL +
+        '/event/' +
+        sessionStore.idSession +
+        '/observer?token=' +
+        userStore.getToken();
+      const eventSource = new EventSource(url);
+      eventSource.onerror = () => {
+        sessionStore.disconnectFromSession('Error on SSE');
+      };
+      this.setEventSource(eventSource);
+      this.listenToEvents();
+    },
+    connectToSSEHost() {
+      const sessionStore = useSessionStore();
+      const userStore = useUserStore();
+      this.eventList = [];
+      const url =
+        import.meta.env.VITE_API_URL +
+        '/event/' +
+        sessionStore.idSession +
+        '/host?token=' +
+        userStore.getToken();
+      const eventSource = new EventSource(url);
+      eventSource.onerror = () => {
+        sessionStore.disconnectFromSession('Error on SSE');
+      };
+      this.setEventSource(eventSource);
+      this.listenToHostEvents();
+    },
+    listenToHostEvents() {
+      const eventSource = this.eventSource;
+      const sessionStore = useSessionStore();
+      if (eventSource) {
+        eventSource.onmessage = async (message) => {
+          message = JSON.parse(message.data);
+          let user = message.payload;
+          switch (message.event) {
+            case HostEvents.NEW_ANSWER:
+              user = message.payload.user;
+              this.eventList.push(
+                user.username + ' answered ' + message.payload.answer.content,
+              );
+              await sessionStore.getSessionStatus();
+              break;
+            case HostEvents.NEW_CONNECTION:
+              user = message.payload;
+              this.eventList.push(user.username + ' joined the session');
+              await sessionStore.getSessionStatus();
+              break;
+            default:
+              console.error('not used data ' + message.data);
+              break;
+          }
+        };
+      }
     },
     listenToEvents() {
       const eventSource = this.eventSource;
@@ -37,6 +99,12 @@ export const useSessionEventStore = defineStore('sessionEvent', {
             case Events.END_SESSION:
               this.loadEnd();
               break;
+            case ObserverEvents.NEW_DISPLAY_SETTINGS:
+              const sessionStore = useSessionStore();
+              if (sessionStore.isDisplay) {
+                await sessionStore.getSessionDisplaySettings();
+              }
+              break;
             default:
               console.error('not used data ' + message.data);
               break;
@@ -46,7 +114,11 @@ export const useSessionEventStore = defineStore('sessionEvent', {
     },
     async loadNextQuestion() {
       const sessionStore = useSessionStore();
-      await sessionStore.getQuestions();
+      try {
+        await sessionStore.getCurrentQuestions();
+      } catch (error) {
+        sessionStore.disconnectFromSession(error.message);
+      }
     },
     loadEnd() {
       const sessionStore = useSessionStore();

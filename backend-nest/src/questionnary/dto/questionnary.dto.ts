@@ -1,9 +1,14 @@
 import { QuestionDto } from '../../question/dto/question.dto';
-import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class QuestionnaryDto {
-
   @IsNumber()
   @IsNotEmpty()
   id: number;
@@ -12,11 +17,7 @@ export class QuestionnaryDto {
   @IsNotEmpty()
   title: string;
 
-  @IsString()
-  @IsNotEmpty()
-  author: string;
-
-  @IsNotEmpty({ each: true })
+  @IsOptional({ each: true })
   @ValidateNested({ each: true })
   @Type(() => QuestionDto)
   questions: QuestionDto[];

@@ -4,6 +4,8 @@ import { UserFullDataDto } from '../dto/userFullData.dto';
 import { UserListDto } from '../dto/userList.dto';
 import { UserSelfDataDto } from '../dto/userSelfData.dto';
 import { UserDeletedFullDataDto } from '../dto/userDeletedFullData.dto';
+import { TeacherGroupDataDto } from '../dto/teacherGroupData.dto';
+import { PartialUserDto } from '../dto/partialUser.dto';
 
 @Injectable()
 export class UserMapper {
@@ -21,7 +23,7 @@ export class UserMapper {
 
   userFullDataDtoListMap(users: User[], nbPage: number): UserListDto {
     const userList = [];
-    for (let user of users) {
+    for (const user of users) {
       userList.push(this.userFullDataDtoMap(user));
     }
     return { userList, nbPage };
@@ -46,9 +48,35 @@ export class UserMapper {
 
   userDeleteDtoListMap(users: User[], nbPage: number): UserListDto {
     const userList = [];
-    for (let user of users) {
+    for (const user of users) {
       userList.push(this.userDeleteDtoMap(user));
     }
     return { userList, nbPage };
+  }
+
+  teacherGroupDataDtoMap(user: User) {
+    const dto = new TeacherGroupDataDto();
+    dto.id = user.id;
+    dto.username = user.username;
+    dto.name = user.name;
+    dto.surname = user.surname;
+    return dto;
+  }
+
+  partialUserDtoMap(user: User) {
+    const dto = new PartialUserDto();
+    dto.id = user.id;
+    dto.username = user.username;
+    dto.name = user.name;
+    dto.surname = user.surname;
+    return dto;
+  }
+
+  partialUserDtoListMap(users: User[]): PartialUserDto[] {
+    const userList = [];
+    for (const user of users) {
+      userList.push(this.partialUserDtoMap(user));
+    }
+    return userList;
   }
 }

@@ -66,11 +66,13 @@
       @click="updateUserData">
       {{ $t('user.validate') }}
     </v-btn>
-    <v-btn class="mt-5" color="primary" @click="modification = !modification">
+    <v-btn class="mt-5" color="primary text-button" @click="modification = !modification">
       {{ modification ? $t('user.cancel') : $t('user.modify') }}
     </v-btn>
     <v-divider class="my-5"></v-divider>
-    <v-btn @click="askDeleteDialog">{{ $t('user.askDelete') }}</v-btn>
+    <v-btn @click="askDeleteDialog" class="text-button">
+      {{ $t('user.askDelete') }}
+    </v-btn>
   </v-sheet>
 </template>
 

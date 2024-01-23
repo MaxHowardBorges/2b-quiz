@@ -123,7 +123,7 @@
             this.accountType,
           );
         } catch (e) {
-          //TODO redirection & remove token
+          this.userStore.forceLogout();
         }
       },
     },

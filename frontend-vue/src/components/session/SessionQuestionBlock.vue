@@ -1,5 +1,5 @@
 <template>
-  <div class="d-inline-flex w-100 align-center flex-column px-6">
+  <div class="d-inline-flex align-center flex-column px-6 widthQuest">
     <v-card
       min-width="200px"
       max-width="1000px"
@@ -8,9 +8,12 @@
       class="mt-5 mb-6 px-6 py-8 w-100">
       <question-block
         @new-selected-value-relay="updateSelectedValue"
-        :disabled="userStore.isTeacher"></question-block>
+        :disabled="
+          sessionStore.isHost || sessionStore.isDisplay
+        "></question-block>
 
       <session-actions-block
+        v-if="!sessionStore.isDisplay && !sessionStore.isHost"
         @answer-sent="relayEvent"
         ref="session-actions-block"></session-actions-block>
     </v-card>
@@ -18,7 +21,6 @@
 </template>
 
 <script>
-  import AnswerGroup from '@/components/question/AnswerGroup.vue';
   import SessionActionsBlock from '@/components/session/SessionActionsBlock.vue';
   import QuestionBlock from '@/components/question/QuestionBlock.vue';
   import { useSessionStore } from '@/stores/sessionStore';
@@ -29,7 +31,6 @@
     components: {
       QuestionBlock,
       SessionActionsBlock,
-      AnswerGroup,
     },
     emits: ['answer-sent-relay'],
     setup() {
@@ -62,4 +63,8 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .widthQuest {
+    width: 100%;
+  }
+</style>

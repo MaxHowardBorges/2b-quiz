@@ -2,25 +2,28 @@
   <v-sheet
     rounded="lg"
     width="70%"
-    class="mt-5 px-6 py-8 mx-auto d-flex flex-column align-center"
+    class="mt-5 px-6 py-8 mb-2 mx-auto d-flex flex-column align-center"
     elevation="5">
     <h1>{{ $t('questionnary.viewquestionnary') }}</h1>
 
-    <v-sheet class="list">
+    <v-sheet class="list w-75 mt-2">
       <v-sheet
+        v-if="this.useQ.questionnaryList.length > 0"
         v-for="(questionnary, index) in this.useQ.questionnaryList"
         :key="index">
         <QuestionnaryItem
           :questionnaryName="questionnary"
           :questionnaryId="questionnary.id"
-          @nextQuestionE="emitNextQuestion"></QuestionnaryItem>
+          @nextQuestionE="edit"></QuestionnaryItem>
       </v-sheet>
+      <v-sheet v-else>No Questionnaries</v-sheet>
     </v-sheet>
 
-    <v-card class="mt-25">
-      <v-btn @click="backHome">{{$t('questionnary.BackHome')}}</v-btn>
-      <v-btn @click="emitNextQuestion">{{$t('questionnary.newquestionnary')}}</v-btn>
-    </v-card>
+    <v-sheet class="d-flex flex-row w-100">
+      <v-btn @click="backHome" class="flex-1-1 ma-2">{{$t('questionnary.BackHome')}}</v-btn>
+      <v-btn @click="bank" class="flex-1-1 ma-2">Private question bank</v-btn>
+      <v-btn @click="edit" class="flex-1-1 ma-2">{{$t('questionnary.newquestionnary')}}</v-btn>
+    </v-sheet>
   </v-sheet>
 </template>
 
@@ -32,7 +35,6 @@
   import router from '@/router';
 
   export default {
-    //TODO Pas de questionnaire
     data() {
       return {};
     },
@@ -44,12 +46,15 @@
       };
     },
     methods: {
-      emitNextQuestion() {
-        this.$emit('nextQuestion');
+      edit() {
+        this.$emit('edit');
       },
 
       backHome() {
         router.push('/');
+      },
+      bank() {
+        this.$emit('bank');
       },
     },
     name: 'ListOfQuestionnary',
@@ -60,4 +65,12 @@
   };
 </script>
 
-<style></style>
+<style scoped>
+  * {
+    color: #007ea1;
+  }
+
+  h1 {
+    color: black;
+  }
+</style>

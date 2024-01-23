@@ -41,9 +41,9 @@
   import { ref } from 'vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
-  import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { ValidationError } from '@/utils/valdiationError';
+  import { useSessionEventStore } from '@/stores/sessionEventStore';
 
   export default {
     name: 'JoinForm',
@@ -63,13 +63,15 @@
         snackbarError: ref(false),
       };
     },
+    emits: ['joined-session'],
     methods: {
       async handleJoinSession() {
         this.loading = true;
         try {
-          const body = { idSession: this.idSession };
-          await this.sessionStore.joinSession(body);
-          await router.push('/session');
+          const isStarted = await this.sessionStore.joinSession(this.idSession);
+          this.$emit('joined-session', isStarted, this.idSession);
+          const sessionEventStore = useSessionEventStore();
+          sessionEventStore.connectToSSEStudent();
         } catch (error) {
           if (error instanceof ValidationError) {
             this.errorSnackbarContent = error.message;
@@ -84,5 +86,3 @@
     },
   };
 </script>
-
-<style scoped></style>

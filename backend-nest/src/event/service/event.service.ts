@@ -1,39 +1,126 @@
 import { Injectable } from '@nestjs/common';
-import { EventEnum } from '../enum/event.enum';
+import { EventParticipantEnum } from '../enum/eventParticipant.enum';
 import { Subject } from 'rxjs';
+import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
+import { UserUnauthorisedException } from '../exception/userUnauthorised.exception';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { ParticipantSessionObject } from '../object/participantSession.object';
+import { EventHostEnum } from '../enum/eventHost.enum';
+import { EventObserverEnum } from '../enum/eventObserver.enum';
 
 @Injectable()
 export class EventService {
   constructor() {}
 
-  private clientGroups: Map<string, Set<Subject<string>>> = new Map<
+  private sessionMap: Map<string, ParticipantSessionObject> = new Map<
     string,
-    Set<Subject<string>>
+    ParticipantSessionObject
   >();
 
-  sendEvent(event: EventEnum, clientGroup: string): void {
-    this.clientGroups.get(clientGroup).forEach((client) => client.next(event));
-  }
-
-  createClient(clientGroup: string): Subject<string> {
-    const client = new Subject<string>();
-    if (!this.clientGroups.get(clientGroup)) {
-      this.clientGroups.set(clientGroup, new Set<Subject<string>>());
-    }
-    this.clientGroups.get(clientGroup).add(client);
-    return client;
-  }
-
-  removeClient(clientGroup: string, client: Subject<string>): void {
-    if (this.clientGroups.get(clientGroup)) {
-      this.clientGroups.get(clientGroup).delete(client);
+  sendEvent(event: EventParticipantEnum, idSession: string): void {
+    if (this.sessionMap.get(idSession)) {
+      this.sessionMap
+        .get(idSession)
+        .getParticipantSubjectList()
+        .forEach((subject) => {
+          subject.next(event);
+        });
+      this.sessionMap.get(idSession).getObserverSubject().next(event);
     }
   }
 
-  createClientGroup(clientGroup: string) {
-    this.clientGroups.set(clientGroup, new Set<Subject<string>>());
+  sendHostEventWithPayload(
+    event: EventHostEnum,
+    idSession: string,
+    payload: any,
+  ): void {
+    if (this.sessionMap.get(idSession)) {
+      this.sessionMap
+        .get(idSession)
+        .getHostSubject()
+        .next(JSON.stringify({ event, payload: payload }));
+    }
   }
-  closeClientGroup(clientGroup: string) {
-    this.clientGroups.delete(clientGroup);
+
+  sendObserverEvent(event: EventObserverEnum, idSession: string): void {
+    if (this.sessionMap.get(idSession)) {
+      this.sessionMap.get(idSession).getObserverSubject().next(event);
+    }
+  }
+  async createClient(
+    idSession: string,
+    idUser: number,
+  ): Promise<Subject<string>> {
+    if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
+    const studentSession = this.sessionMap.get(idSession);
+    if (
+      studentSession.isPrivateSession() &&
+      !studentSession.checkIdParticipant(idUser)
+    )
+      throw new UserUnauthorisedException();
+    return studentSession.getParticipants(idUser).getSubject();
+  }
+
+  async removeClient(idSession: string, idUser: number): Promise<void> {
+    if (this.sessionMap.get(idSession)) {
+      if (this.sessionMap.get(idSession).checkIdParticipant(idUser))
+        this.sessionMap.get(idSession).removeParticipant(idUser);
+    }
+  }
+
+  async createObserver(
+    idSession: string,
+    idUser: number,
+  ): Promise<Subject<string>> {
+    if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
+    const observerSession = this.sessionMap.get(idSession);
+    if (!observerSession.checkIdHost(idUser))
+      throw new UserUnauthorisedException();
+    return observerSession.getObserverSubject();
+  }
+
+  async removeObserver(idSession: string, idHost: number): Promise<void> {
+    const observerSession = this.sessionMap.get(idSession);
+    if (observerSession) {
+      if (observerSession.checkIdHost(idHost))
+        observerSession.resetObserverSubject();
+    }
+  }
+
+  async createHost(
+    idSession: string,
+    idUser: number,
+  ): Promise<Subject<string>> {
+    if (!this.sessionMap.get(idSession)) throw new SessionNotFoundException();
+    const hostSession = this.sessionMap.get(idSession);
+    if (!hostSession.checkIdHost(idUser)) throw new UserUnauthorisedException();
+    return hostSession.getHostSubject();
+  }
+
+  async removeHost(idSession: string, idHost: number): Promise<void> {
+    const hostSession = this.sessionMap.get(idSession);
+    if (hostSession) {
+      if (hostSession.checkIdHost(idHost)) hostSession.resetHostSubject();
+    }
+  }
+
+  createSessionGroup(
+    idSession: string,
+    idHost: number,
+    participantInterfaces?: ParticipantInterface[],
+  ) {
+    const participantSessionObject = new ParticipantSessionObject(
+      idSession,
+      idHost,
+      participantInterfaces,
+    );
+    this.sessionMap.set(idSession, participantSessionObject);
+  }
+  closeSessionGroup(idSession: string) {
+    this.sessionMap.delete(idSession);
+  }
+
+  getSession(idSession: string) {
+    return this.sessionMap.get(idSession);
   }
 }

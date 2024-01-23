@@ -1,7 +1,6 @@
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class AnswerDto {
-
   @IsNumber()
   @IsNotEmpty()
   id: number;
