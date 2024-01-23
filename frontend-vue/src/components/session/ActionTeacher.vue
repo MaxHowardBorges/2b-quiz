@@ -5,20 +5,22 @@
     </div>
     <div>
       <p v-if="!sessionStore.status.nbAnswered">
-        {{ sessionStore.status.nbJoined }} user joined
+        {{ sessionStore.status.nbJoined }} {{ $t('session.UserJoined') }}
       </p>
       <p v-else>
         {{ sessionStore.status.nbAnswered }}/{{ sessionStore.status.nbJoined }}
-        user answered
+        {{ $t('session.UsersAnswered')}}
       </p>
     </div>
     <v-btn @click="endSession" class="btn" color="primary">
-      Fin de la session
+      {{ $t('session.EndSession') }}
     </v-btn>
     <v-btn @click="nextQuestion" class="btn" color="success">
-      Question suivante
+      {{ $t('session.NextQuestion') }}
     </v-btn>
-    <v-btn @click="openSettings" class="btn" color="info">Settings</v-btn>
+    <v-btn @click="openSettings" class="btn" color="info">
+      {{ $t('session.Settings') }}
+    </v-btn>
 
     <set-settings-dialog ref="settingsDialog"></set-settings-dialog>
   </div>

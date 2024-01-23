@@ -23,7 +23,7 @@
       <v-btn v-if="userStore.isAuthenticated" icon="" disabled=""></v-btn>
     </template>
 
-    <div class="logo ma-2 pa-2">Système de Vote en Direct</div>
+    <div class="logo ma-2 pa-2">{{ $t('layout.LogoText')}}</div>
 
     <template
       v-if="

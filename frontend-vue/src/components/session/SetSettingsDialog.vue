@@ -2,10 +2,10 @@
   <v-dialog v-model="setting" max-width="600px">
     <v-card class="pa-4 px-6">
       <v-card-title>
-        <span class="headline">Paramètres</span>
+        <span class="headline">{{ $t('session.SettingsTitle') }}</span>
       </v-card-title>
 
-      <v-card-text>A complété</v-card-text>
+      <v-card-text>{{ $t('session.CompletedText') }}</v-card-text>
 
       <session-setting
         :isInSession="true"
@@ -13,8 +13,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="this.setting = false">Annuler</v-btn>
-        <v-btn color="primary" @click="saveSettings">Enregistrer</v-btn>
+        <v-btn color="primary" @click="this.setting = false">{{ $t('session.CancelButton') }}</v-btn>
+        <v-btn color="primary" @click="saveSettings">{{ $t('session.SaveButton') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -40,7 +40,10 @@
     "Confirmation": "Confirmation",
     "NoQuestion": "Veuillez noter que votre questionnaire ne comporte aucune question. Si vous le quittez, il ne sera pas sauvegardé.",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce questionnaire ?",
-    "AreSureDeleteQuestion": "Êtes-vous sûr de vouloir supprimer cette question :"
+    "AreSureDeleteQuestion": "Êtes-vous sûr de vouloir supprimer cette question :",
+    "True": "Vrai",
+    "False": "Faux",
+    "NoQuestionnaries": "Aucun questionnaire"
   },
 
   "question": {
@@ -56,7 +59,10 @@
     "Choice": "Choix",
     "True": "Vrai",
     "False": "Faux",
-    "CreateQuiz": "Créer un quiz"
+    "CreateQuiz": "Créer un quiz",
+    "PrivateQuestionBankTitle": "Banque de questions privées",
+    "QuestionnaryListTitle": "Liste des questionnaires",
+    "NoQuestionnariesMessage": "Aucun questionnaire"
   },
 
 
@@ -74,7 +80,43 @@
     "Thanks": "Merci pour votre participation",
     "StartNewSession": "Démarrer une nouvelle session",
     "ReturnMenu": "Retour au menu",
-    "SessionEnded": "Session terminée"
+    "SessionEnded": "Session terminée",
+    "UserJoined": " utilisateur connecté",
+    "UsersAnswered": " utilisateurs ont répondu",
+    "EndSession": "Fin de la session",
+    "Settings": "Paramètres",
+    "CreateSessionTitle": "Créer une session",
+    "Questionnaire": "Questionnaire",
+    "NumQuestions": "Nombre de questions",
+    "AddQuestionnaireButton": "Ajouter un questionnaire",
+    "NoQuestionnarySelected": "Aucun questionnaire sélectionné",
+    "SessionSettingsTitle": "Paramètres de la session",
+    "StartSessionButton": "Démarrer la session",
+    "AddQuestionnaireTitle": "Ajouter un questionnaire",
+    "ComposedOfNumQuestions": "composé de",
+    "questions": "questions",
+    "AddButton": "Ajouter",
+    "CloseButton": "Fermer",
+    "ChooseMembersTitle": "Choisir les membres",
+    "StudentsButton": "Étudiants",
+    "TeachersButton": "Enseignants",
+    "GroupsButton": "Groupes",
+    "UsersSelected": "Utilisateurs sélectionnés",
+    "And": "et",
+    "GroupSelected": "Groupe sélectionné",
+    "SessionTypeLabel": "Type de session",
+    "AccessTypeLabel": "Type d'accès",
+    "ChooseStudentsButton": "Choisir étudiants",
+    "DisplaySettingsTitle": "Paramètres d'affichage",
+    "DisplayQuestionOnPublicScreenLabel": "Afficher la question sur l'écran public",
+    "DisplayAnswersOnPublicScreenLabel": "Afficher les réponses sur l'écran public",
+    "UsersJoined": " utilisateur(s) ont rejoint",
+    "LaunchPublicScreenButton": "Lancer l'écran public",
+    "SettingsButton": "Paramètres",
+    "SettingsTitle": "Paramètres",
+    "CompletedText": "A complété",
+    "CancelButton": "Annuler",
+    "SaveButton": "Enregistrer"
   },
 
   "Result": {
@@ -84,6 +126,7 @@
   },
 
   "user": {
+    "SVD": "SVD",
     "username": "Nom d'utilisateur",
     "name": "Prénom",
     "surname": "Nom",
@@ -109,7 +152,8 @@
     "ValidateAccount": "Valider le compte",
     "UserAskedDelete": "L'utilisateur a demandé la suppression de son compte",
     "AnonymizeUser": "This user will be anonymized. You can restore it later.",
-    "AnonymizeAction": "This action is reversible, you can restore the user later."
+    "AnonymizeAction": "This action is reversible, you can restore the user later.",
+    "Required": "Champ requis"
   },
 
   "login": {
@@ -198,5 +242,9 @@
     "SelectUserLabel": "Sélectionnez un utilisateur",
     "AddButton": "Ajouter",
     "CloseButton": "Fermer"
+  },
+
+  "layout": {
+    "LogoText": "Système de Vote en Direct"
   }
 }

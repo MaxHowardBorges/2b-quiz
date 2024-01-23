@@ -6,12 +6,12 @@
     :persistent="true"
     class="pa-2">
     <v-card class="pa-2">
-      <v-card-title>Choose members</v-card-title>
+      <v-card-title>{{ $t('session.ChooseMembersTitle') }}</v-card-title>
       <v-card-text>
         <v-btn-toggle v-model="toggleTable" color="primary">
-          <v-btn @click="openDisplayUserStudent">Etudiants</v-btn>
-          <v-btn @click="openDisplayUserTeacher">Enseignants</v-btn>
-          <v-btn @click="openDisplayUserGroup">Groupes</v-btn>
+          <v-btn @click="openDisplayUserStudent">{{ $t('session.StudentsButton') }}</v-btn>
+          <v-btn @click="openDisplayUserTeacher">{{ $t('session.TeachersButton') }}</v-btn>
+          <v-btn @click="openDisplayUserGroup">{{ $t('session.GroupsButton') }}</v-btn>
         </v-btn-toggle>
         <v-text-field
           v-model="search"
@@ -60,19 +60,19 @@
         :title="selectedUsers.length + selectedGroups.length + ' selected'"
         type="info">
         <template v-if="selectedUsers.length !== 0">
-          {{ selectedUsers.length }} users selected
+          {{ selectedUsers.length }} {{ $t('session.UsersSelected') }}
         </template>
         <template
           v-if="selectedUsers.length !== 0 && selectedGroups.length !== 0">
-          and
+          {{ $t('session.And') }}
         </template>
         <template v-if="selectedGroups.length !== 0">
-          {{ selectedGroups.length }} group selected
+          {{ selectedGroups.length }} {{ $t('session.GroupSelected') }}
         </template>
       </v-alert>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="closeSelectionDialog">Fermer</v-btn>
+        <v-btn @click="closeSelectionDialog">{{ $t('session.CloseButton') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -82,7 +82,7 @@
         v-if="!isInSession"
         v-model="selectedSessionType"
         :items="sessionTypes"
-        label="Type de session"
+        :label="$t('session.SessionTypeLabel')"
         class="mt-4 mx-3"
         outlined
         dense
@@ -91,7 +91,7 @@
       <v-select
         v-model="selectedAcces"
         :items="itemsAcces"
-        label="Type d'accès"
+        :label=" $t('session.AccessTypeLabel')"
         class="mt-4 mx-3"
         outlined
         dense
@@ -101,15 +101,15 @@
         v-if="selectedAcces === AccessType.PRIVATE"
         @click="openSelectionDialog"
         class="mt-4 mx-3">
-        Choisir étudiants
+        {{ $t('session.ChooseStudentsButton') }}
       </v-btn>
     </div>
     <v-divider class="ma-2"></v-divider>
-    <p class="text-h5">Display settings</p>
+    <p class="text-h5">{{ $t('session.DisplaySettingsTitle') }}</p>
     <div class="d-flex">
       <v-switch
         color="primary"
-        label="Display question on public screen"
+        :label="$t('session.DisplayQuestionOnPublicScreenLabel')"
         v-model="displaySettings.displayQuestion"
         @update:model-value="
           displaySettings.displayAnswer =
@@ -117,7 +117,7 @@
         " />
       <v-switch
         color="primary"
-        label="Display answers on public screen"
+        :label="$t('session.DisplayAnswersOnPublicScreenLabel')"
         v-model="displaySettings.displayAnswer"
         :disabled="!displaySettings.displayQuestion" />
     </div>

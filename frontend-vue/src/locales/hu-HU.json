@@ -40,7 +40,10 @@
     "confirmation": "Megerősítés",
     "NoQuestion": "Kérlek, vedd észre, hogy a kérdőív nem tartalmaz kérdéseket, ha elhagyod, nem lesz mentve.",
     "confirmDelete": "Biztosan törölni szeretnéd ezt a kérdőívet?",
-    "AreSureDeleteQuestion": "Biztosan törölni szeretnéd ezt a kérdést:"
+    "AreSureDeleteQuestion": "Biztosan törölni szeretnéd ezt a kérdést:",
+    "True": "Igaz",
+    "False": "Hamis",
+    "NoQuestionnaries": "Nincs kérdőív"
   },
 
   "question": {
@@ -56,7 +59,10 @@
     "Choice": "Választás",
     "True": "Igaz",
     "False": "Hamis",
-    "CreateQuiz": "Kvíz létrehozása"
+    "CreateQuiz": "Kvíz létrehozása",
+    "PrivateQuestionBankTitle": "Privát kérdésbank",
+    "QuestionnaryListTitle": "Kérdőív lista",
+    "NoQuestionnariesMessage": "Nincs kérdőív"
   },
 
   "session": {
@@ -73,7 +79,43 @@
     "Thanks": "Köszönjük, hogy részt veszel",
     "StartNewSession": "Új munkamenet indítása",
     "ReturnMenu": "Vissza a menübe",
-    "SessionEnded": "A munkamenet véget ért"
+    "SessionEnded": "A munkamenet véget ért",
+    "UserJoined": " felhasználó csatlakozott",
+    "UsersAnswered": " felhasználó válaszolt",
+    "EndSession": "A szakasz véget ért",
+    "Settings": "Beállítások",
+    "CreateSessionTitle": "Ülés létrehozása",
+    "Questionnaire": "Kérdőív",
+    "NumQuestions": "Kérdések száma",
+    "AddQuestionnaireButton": "Kérdőív hozzáadása",
+    "NoQuestionnarySelected": "Nincs kiválasztott kérdőív",
+    "SessionSettingsTitle": "Ülés beállítások",
+    "StartSessionButton": "Ülés indítása",
+    "AddQuestionnaireTitle": "Kérdőív hozzáadása",
+    "ComposedOfNumQuestions": "összesen {count} kérdésből áll",
+    "questions": "kérdések",
+    "AddButton": "Hozzáadás",
+    "CloseButton": "Bezárás",
+    "ChooseMembersTitle": "Tagok kiválasztása",
+    "StudentsButton": "Hallgatók",
+    "TeachersButton": "Tanárok",
+    "GroupsButton": "Csoportok",
+    "UsersSelected": "Kiválasztott felhasználók",
+    "And": "és",
+    "GroupSelected": "Kiválasztott csoport",
+    "SessionTypeLabel": "Ülés típusa",
+    "AccessTypeLabel": "Hozzáférés típusa",
+    "ChooseStudentsButton": "Diákok kiválasztása",
+    "DisplaySettingsTitle": "Megjelenítési beállítások",
+    "DisplayQuestionOnPublicScreenLabel": "Kérdés megjelenítése a nyilvános képernyőn",
+    "DisplayAnswersOnPublicScreenLabel": "Válaszok megjelenítése a nyilvános képernyőn",
+    "UsersJoined": " felhasználó csatlakozott",
+    "LaunchPublicScreenButton": "Nyilvános képernyő indítása",
+    "SettingsButton": "Beállítások",
+    "SettingsTitle": "Beállítások",
+    "CompletedText": "Kész",
+    "CancelButton": "Mégse",
+    "SaveButton": "Mentés"
   },
 
   "Result": {
@@ -82,6 +124,7 @@
     "NoParticipantdataAvailable": "Nincs résztvevői adat elérhető"
   },
   "user": {
+    "SVD": "ÉSR",
     "username": "Felhasználónév",
     "name": "Név",
     "surname": "Vezetéknév",
@@ -105,7 +148,8 @@
     "waiting_for_admin_validation": "Várnod kell, amíg egy adminisztrátor jóváhagyja a fiókodat",
     "confirmIReadAcceptThe": "Megerősítem, hogy elolvastam és elfogadom a",
     "ValidateAccount": "Fiók megerősítése",
-    "UserAskedDelete": "Felhasználó törölte a fiókot"
+    "UserAskedDelete": "Felhasználó törölte a fiókot",
+    "Required": "Champ requis"
   },
 
   "login": {
@@ -196,6 +240,9 @@
     "SelectUserLabel": "Válasszon felhasználót",
     "AddButton": "Hozzáadás",
     "CloseButton": "Bezárás"
-  }
+  },
 
+  "layout": {
+    "LogoText": "Élő szavazási rendszer"
+  }
 }

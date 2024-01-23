@@ -9,7 +9,7 @@
       <div style="align-self: start" id="divButton">
         <v-btn id="ic" icon="undo" @click="toggleVisibility"></v-btn>
       </div>
-      <h1>Private Question Bank</h1>
+      <h1>{{ $t('question.PrivateQuestionBankTitle') }}</h1>
     </div>
 
     <div class="d-flex justify-center flex-column w-75">
@@ -83,12 +83,12 @@
   </v-sheet>
   <v-dialog v-model="dialogVisible" max-width="500">
     <v-card>
-      <v-card-title>Questionnary list</v-card-title>
+      <v-card-title>{{ $t('question.QuestionnaryListTitle') }}</v-card-title>
 
       <v-card-text>
         <v-list>
           <v-list-item v-if="this.questionnaries.length < 1">
-            No questionnaries
+            {{ $t('question.NoQuestionnariesMessage') }}
           </v-list-item>
           <v-list-item
             v-else
@@ -103,7 +103,7 @@
         </v-list>
       </v-card-text>
       <v-card-actions class="text-center">
-        <v-btn @click="AddQuestion">Add</v-btn>
+        <v-btn @click="AddQuestion">{{ $t('group.AddButton') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

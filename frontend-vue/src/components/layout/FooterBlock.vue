@@ -6,7 +6,7 @@
     elevation="5"
     class="bg-gradiant">
     <div>
-      <p class="logo">Système de Vote en Direct</p>
+      <p class="logo">{{ $t('layout.LogoText')}}</p>
       <p>
         2023 -
         <strong>Équipe 2b</strong>

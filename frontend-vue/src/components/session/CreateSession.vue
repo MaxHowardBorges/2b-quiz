@@ -6,18 +6,18 @@
     elevation="4"
     rounded="lg">
     <div class="w-75 mx-auto">
-      <h2 class="text-center text-h2">Create a session</h2>
+      <h2 class="text-center text-h2">{{ $t('session.CreateSessionTitle') }}</h2>
 
       <table class="questionnary-table mx-auto w-100">
         <thead>
           <tr>
-            <th colspan="3">Questionnaire</th>
-            <th>Nombre de question</th>
+            <th colspan="3">{{ $t('session.Questionnaire') }}</th>
+            <th>{{ $t('session.NumQuestions') }}</th>
             <th colspan="2">
               <template class="d-flex justify-end">
                 <!-- Bouton pour ouvrir la fenêtre pop-up -->
                 <v-btn @click="openPopup" class="d-flex justify-center">
-                  Add Questionnaire
+                  {{ $t('session.AddQuestionnaireButton') }}
                 </v-btn>
               </template>
             </th>
@@ -47,25 +47,25 @@
         <tbody v-else>
           <tr>
             <td colspan="6" class="text-center text-warning">
-              No questionnary selected
+              {{ $t('session.NoQuestionnarySelected') }}
             </td>
           </tr>
         </tbody>
       </table>
 
       <v-sheet border="sm" rounded="lg" class="px-4">
-        <p class="text-h4 mt-2">Session settings</p>
+        <p class="text-h4 mt-2">{{ $t('session.SessionSettingsTitle') }}</p>
         <session-setting
           ref="sessionSettings"
           :isInSession="false"></session-setting>
       </v-sheet>
 
-      <v-btn @click="handleCreateSession" class="mt-4">Start the session</v-btn>
+      <v-btn @click="handleCreateSession" class="mt-4">{{ $t('session.StartSessionButton') }}</v-btn>
 
       <!-- Fenêtre pop-up -->
       <v-dialog v-model="popup" max-width="600">
         <v-card>
-          <v-card-title>Ajouter un questionnaire</v-card-title>
+          <v-card-title>{{ $t('session.AddQuestionnaireTitle') }}</v-card-title>
           <v-card-text>
             <!-- Contenu de votre fenêtre pop-up (peut inclure une barre de recherche, etc.) -->
             <v-text-field
@@ -83,18 +83,18 @@
                   {{ availableQuestionnaire.title }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  composé de {{ availableQuestionnaire.nbQuestion }} questions
+                  {{ $t('session.ComposedOfNumQuestions')}} {{ availableQuestionnaire.nbQuestion }} {{ $t('session.questions')}}
                 </v-list-item-subtitle>
                 <template v-slot:append>
                   <v-btn @click="addQuestionnaire(availableQuestionnaire, i)">
-                    Ajouter
+                    {{ $t('session.AddButton') }}
                   </v-btn>
                 </template>
               </v-list-item>
             </v-list>
           </v-card-text>
           <v-card-actions>
-            <v-btn @click="closePopup">Fermer</v-btn>
+            <v-btn @click="closePopup">{{ $t('session.CloseButton') }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

@@ -74,8 +74,8 @@
       <!-- Réponses possibles -->
       <div class="answers">
         <v-radio-group v-model="correct">
-          <v-radio :id="'correct-answer-1'" :value="0">True</v-radio>
-          <v-radio :id="'correct-answer-2'" :value="1">False</v-radio>
+          <v-radio :id="'correct-answer-1'" :value="0">{{ $t('questionnary.True') }}</v-radio>
+          <v-radio :id="'correct-answer-2'" :value="1">{{ $t('questionnary.False') }}</v-radio>
         </v-radio-group>
       </div>
     </v-sheet>

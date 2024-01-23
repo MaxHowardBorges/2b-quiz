@@ -34,7 +34,7 @@
         color="primary"
         class="mx-6 my-3 w-100"
         max-width="250px">
-        <p class="text-white font-weight-bold pa-2">Join session</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('home.JoinSession') }}</p>
       </v-btn>
     </div>
 

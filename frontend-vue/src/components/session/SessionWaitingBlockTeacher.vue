@@ -8,15 +8,15 @@
   </div>
 
   <div>
-    <p>{{ sessionStore.status.nbJoined }} user joined</p>
+    <p>{{ sessionStore.status.nbJoined }} {{ $t('session.UsersJoined')}}</p>
   </div>
   <v-divider class="ma-3"></v-divider>
   <div>
     <v-btn color="primary" class="mx-6 my-3" @click="launchWindows">
-      <p class="text-white font-weight-bold pa-2">Launch public screen</p>
+      <p class="text-white font-weight-bold pa-2">{{ $t('session.LaunchPublicScreenButton') }}</p>
     </v-btn>
     <v-btn color="primary" class="mx-6 my-3" @click="openSettings">
-      Settings
+      {{ $t('session.SettingsButton') }}
     </v-btn>
   </div>
   <div>
