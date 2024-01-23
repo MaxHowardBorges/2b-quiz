@@ -17,5 +17,7 @@ export class ResultsDto {
 
   teacherSurname: string;
 
+  teacherUsername: string;
+
   sessionDate: Date;
 }

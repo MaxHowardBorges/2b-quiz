@@ -604,6 +604,9 @@ export class SessionService {
         ].teacherSurname = session.teacher.surname;
         (<ResultsDto[]>resultTab)[
           (<ResultsDto[]>resultTab).length - 1
+        ].teacherUsername = session.teacher.username;
+        (<ResultsDto[]>resultTab)[
+          (<ResultsDto[]>resultTab).length - 1
         ].sessionDate = session.date;
       }
     }
@@ -632,6 +635,7 @@ export class SessionService {
         100;
       (<ResultsDto>resultTab).teacherSurname = session.teacher.surname;
       (<ResultsDto>resultTab).sessionDate = session.date;
+      (<ResultsDto>resultTab).teacherUsername = session.teacher.username;
     }
     return resultTab;
   }
