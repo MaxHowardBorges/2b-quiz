@@ -128,10 +128,13 @@
 
     methods: {
       handleManageResults() {
-        router.push('/session-handle-results');
+        router.push({
+          name: 'Session Handle Results',
+          params: { idSession: this.session.id },
+        });
       },
       SeeResults() {
-        router.push('/session-question-results');
+        router.push('/history/:idSession');
       },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;

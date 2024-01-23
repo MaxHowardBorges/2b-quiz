@@ -4,15 +4,15 @@ import {
   createSession,
   getCurrentQuestion,
   getNextQuestion,
-  startEndingSession,
+  getResults,
   getSessionDisplaySettings,
+  getSessionList,
   getSessionStatus,
   joinSession,
   sendAnswer,
-  getResults,
-  stopSession,
   setSessionSettings,
-  getSessionList,
+  startEndingSession,
+  stopSession,
 } from '@/api/session';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
@@ -258,16 +258,30 @@ export const useSessionStore = defineStore('session', {
       const userStore = useUserStore();
       try {
         const response = await getResults(idSession, userStore.token);
-        console.log(await response.json());
         if (!response.ok) {
           throw new Error('Erreur de chargement de la question'); // TODO manage error
         }
         userStore.updateToken(response.headers.get('Authorization'));
+        return await response.json();
       } catch (error) {
         console.error(error);
       }
     },
     async getSessions() {
+      const userStore = useUserStore();
+      try {
+        const response = await getSessionList(userStore.token);
+        if (!response.ok) {
+          throw new Error('Erreur de chargement de la question'); // TODO manage error
+        }
+        userStore.updateToken(response.headers.get('Authorization'));
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async getSession(idSession) {
       const userStore = useUserStore();
       try {
         const response = await getSessionList(userStore.token);

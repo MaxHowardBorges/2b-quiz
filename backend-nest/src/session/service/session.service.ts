@@ -455,6 +455,7 @@ export class SessionService {
       },
       relations: {
         questionnary: true,
+        teacher: true,
         userSession: {
           student: true,
           teacher: true,
@@ -530,6 +531,8 @@ export class SessionService {
       (resultTab.personnalResult /
         (questionnary.questions.length - openQuestions)) *
       100;
+    resultTab.teacherSurname = session.teacher.surname;
+    resultTab.sessionDate = session.date;
     return resultTab;
   }
 

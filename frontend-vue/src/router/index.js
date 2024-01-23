@@ -18,9 +18,12 @@ const routes = [
   },
 
   {
-    path: '/session-handle-results',
-    name: SessionHandleResults,
+    path: '/history/:idSession',
+    name: 'Session Handle Results',
     component: SessionHandleResults, //
+    props: (route) => ({
+      idSession: route.params.idSession,
+    }),
   },
   {
     path: '/session-question-results',

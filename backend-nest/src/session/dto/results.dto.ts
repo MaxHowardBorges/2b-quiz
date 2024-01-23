@@ -12,4 +12,8 @@ export class ResultsDto {
   questions: QuestionResultDto[];
 
   globalResult: number;
+
+  teacherSurname: string;
+
+  sessionDate: Date;
 }

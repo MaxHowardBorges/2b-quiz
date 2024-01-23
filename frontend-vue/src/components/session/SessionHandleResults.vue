@@ -7,13 +7,13 @@
           <v-col>
             <span>
               <b>Date de création:</b>
-              {{ creationDate }}
+              {{ results.sessionDate }}
             </span>
           </v-col>
           <v-col>
             <span>
               <b>Créé par:</b>
-              {{ createdBy }}
+              {{ results.teacherSurname }}
             </span>
           </v-col>
         </v-row>
@@ -101,11 +101,17 @@
 <script>
   import { ref } from 'vue';
   import router from '@/router';
+  import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
-    name: 'QuestionItem',
+    name: 'SessionResult',
+    props: {
+      idSession: Number,
+    },
     setup() {
+      const sessionStore = useSessionStore();
       return {
+        sessionStore,
         switch1Value: ref(false),
         switch2Value: ref(false),
         switch3Value: ref(false),
@@ -144,7 +150,22 @@
         ],
       };
     },
+    data() {
+      return {
+        results: {
+          sessionDate: '',
+          teacherSurname: '',
+        },
+      };
+    },
+    async beforeMount() {
+      await this.loadData();
+    },
     methods: {
+      async loadData() {
+        this.results = await this.sessionStore.getResults(this.idSession);
+        console.log(this.results);
+      },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;
       },
