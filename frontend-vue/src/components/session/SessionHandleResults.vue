@@ -1,5 +1,9 @@
 <template>
-  <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
+  <v-sheet
+    max-width="1400px"
+    elevation="5"
+    rounded="lg"
+    class="d-flex flex-column my-2 pa-3 mx-auto">
     <div class="mb-4">
       <div
         style="align-self: start"
@@ -77,6 +81,16 @@
             {{ results.globalResult }}% de réussite
           </template>
         </v-list-item>
+        <v-sheet
+          max-width="1000px"
+          class="list mx-auto"
+          v-for="(question, index) in this.results.questions"
+          :key="index">
+          <question-item
+            class="w-100 my-3"
+            :question="question"
+            :global="getAverage(question.id)"></question-item>
+        </v-sheet>
       </v-sheet>
 
       <!-- Tableau des réponses des étudiants -->
@@ -152,9 +166,11 @@
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
   import { getTimeFromDate, parseDate } from 'frontend-vue/src/utils/dates';
+  import QuestionItem from '@/components/question/QuestionItem.vue';
 
   export default {
     name: 'SessionResult',
+    components: { QuestionItem },
     props: {
       idSession: String,
     },
@@ -210,6 +226,7 @@
           globalResults: '',
           questions: [],
           usersResults: [],
+          averagePerQuestion: [],
         },
         user: {
           username: '',
@@ -230,6 +247,10 @@
       },
       isHost() {
         return this.results.teacherUsername === this.user.username;
+      },
+      getAverage(id) {
+        return this.results.averagePerQuestion.find((q) => q.question === id)
+          .average;
       },
       toggleDropdown() {
         this.showDropdown = true;

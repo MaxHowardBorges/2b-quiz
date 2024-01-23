@@ -8,13 +8,26 @@
         <b>{{ question.content }}</b>
       </p>
       <v-spacer></v-spacer>
-      <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
+      <div class="mt-3 mr-5 text-h5">
+        Taux de réussite:
+        <br />
+        {{ global }}/{{ total }}
+      </div>
+      <v-btn
+        v-if="!global && global !== 0"
+        id="ic"
+        icon="edit"
+        @click="modifyQuestion"></v-btn>
       <v-btn
         id="ic"
         :icon="showDropdown ? 'visibility_off' : 'visibility'"
         class="mx-2"
         @click="toggleDropdown"></v-btn>
-      <v-btn id="ic" icon="library_add" @click="addToQuestionnary"></v-btn>
+      <v-btn
+        v-if="!global && global !== 0"
+        id="ic"
+        icon="library_add"
+        @click="addToQuestionnary"></v-btn>
     </div>
     <div class="text-button text-start">
       <b>
@@ -34,6 +47,7 @@
                 Réponse {{ index + 1 }}
               </v-list-item-title>
               {{ answer.content }}
+              <template v-if="results"></template>
               <v-icon v-if="answer.isCorrect">check</v-icon>
             </v-list-item>
           </template>
@@ -51,6 +65,8 @@
         type: Object,
         required: true,
       },
+      global: Number | null,
+      total: Number | null,
     },
     data() {
       return {
@@ -63,6 +79,9 @@
           { typeLabel: 'Open-Ended-Constraint', typeCode: 'qoc' },
         ],
       };
+    },
+    mounted() {
+      console.log(this.global);
     },
     emits: ['modifyQuestionFromBank', 'showQuestionnaryList'],
     methods: {

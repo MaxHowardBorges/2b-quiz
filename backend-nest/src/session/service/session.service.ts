@@ -574,6 +574,11 @@ export class SessionService {
     let average = 0;
     let openQuestions = 0;
 
+    const averagePerQuestion = [];
+    for (const question of questionnary.questions) {
+      averagePerQuestion.push({ question: question.id, average: 0 });
+    }
+
     for (const userSession of usersSession) {
       const userResult = new ResultsDto();
 
@@ -585,6 +590,8 @@ export class SessionService {
         } else {
           const questionResult = this.percentSuccess(question, userSession);
           average += questionResult.nbCorrectAnswer;
+          averagePerQuestion.find((q) => q.question === question.id).average +=
+            questionResult.nbCorrectAnswer;
           questionResult.userAnswer
             .map((userAnswer) => userAnswer.content)
             .every((userAnswer) =>
@@ -619,6 +626,7 @@ export class SessionService {
         (questionnary.questions.length - openQuestions)) *
       100;
     resultHostTab.questions = questionnary.questions;
+    resultHostTab.averagePerQuestion = averagePerQuestion;
     return resultHostTab;
   }
 

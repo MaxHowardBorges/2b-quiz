@@ -18,4 +18,6 @@ export class ResultsHostDto {
   usersResults: ResultsDto[];
 
   questions: QuestionDto[];
+
+  averagePerQuestion: { id: number; average: number }[];
 }
