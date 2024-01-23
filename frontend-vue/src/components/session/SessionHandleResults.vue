@@ -13,17 +13,20 @@
           <v-col>
             <span>
               <b>Date de création:</b>
-              {{ results.sessionDate }}
+              {{ parseDate(results.sessionDate).replace(' ', '&nbsp;') }}
+              à&nbsp;{{
+                getTimeFromDate(results.sessionDate).replace(' ', '&nbsp;')
+              }}
             </span>
           </v-col>
           <v-col>
             <span>
               <b>Créé par:</b>
-              {{ results.teacherSurname }}
+              {{ getSurname() }}
             </span>
           </v-col>
         </v-row>
-        <div class="mt-4 mb-4">
+        <div class="mt-4 mb-4" v-if="!isHost">
           <v-row>
             <v-col>
               <span>
@@ -38,13 +41,17 @@
       </div>
       <span class="spacer"></span>
       <span class="spacer"></span>
-      <v-btn id="ic" @click="showGlobalResults">
-        Voir les résultats globaux
-      </v-btn>
-      <v-btn id="ic" @click="toggleDropdown">Voir les réponses correctes</v-btn>
-      <v-btn id="ic" @click="showStudentResponses">
-        Voir les réponses des étudiants
-      </v-btn>
+      <v-btn-toggle color="primary" border="sm">
+        <v-btn id="ic" @click="showGlobalResults">
+          Voir les résultats globaux
+        </v-btn>
+        <v-btn id="ic" @click="toggleDropdown">
+          Voir les réponses correctes
+        </v-btn>
+        <v-btn id="ic" @click="showStudentResponses">
+          Voir les réponses des étudiants
+        </v-btn>
+      </v-btn-toggle>
     </div>
 
     <v-sheet class="list">
@@ -111,6 +118,7 @@
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
+  import { getTimeFromDate, parseDate } from 'frontend-vue/src/utils/dates';
 
   export default {
     name: 'SessionResult',
@@ -170,24 +178,40 @@
           questions: [],
           personnalResult: '',
         },
+        user: {
+          username: '',
+          surname: '',
+        },
       };
     },
     async beforeMount() {
       await this.loadData();
     },
     methods: {
+      getTimeFromDate,
+      parseDate,
       async loadData() {
         this.results = await this.sessionStore.getResults(this.idSession);
+        this.user = await this.userStore.getSelf();
         console.log(this.results);
       },
+      isHost() {
+        return this.results.teacherUsername === this.user.username;
+      },
       toggleDropdown() {
-        this.showDropdown = !this.showDropdown;
+        this.showDropdown = true;
+        this.showGlobal = false;
+        this.showStudentResponsesTable = false;
       },
       showGlobalResults() {
-        this.showGlobal = !this.showGlobal;
+        this.showDropdown = false;
+        this.showGlobal = true;
+        this.showStudentResponsesTable = false;
       },
       showStudentResponses() {
-        this.showStudentResponsesTable = !this.showStudentResponsesTable;
+        this.showDropdown = false;
+        this.showGlobal = false;
+        this.showStudentResponsesTable = true;
       },
       handleSwitchChange() {
         // Handle switch changes here
@@ -199,6 +223,13 @@
         await router.push({
           name: 'Session History',
         });
+      },
+      getSurname() {
+        if (this.isHost()) {
+          return 'Vous';
+        } else {
+          return this.results.teacherSurname;
+        }
       },
     },
   };

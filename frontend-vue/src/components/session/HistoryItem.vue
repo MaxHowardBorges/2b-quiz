@@ -87,6 +87,7 @@
   import router from '@/router';
   import { useUserStore } from '@/stores/userStore';
   import { useSessionStore } from '@/stores/sessionStore';
+  import { getTimeFromDate, parseDate } from 'frontend-vue/src/utils/dates';
 
   export default {
     name: 'SessionItem',
@@ -137,6 +138,8 @@
     },
 
     methods: {
+      getTimeFromDate,
+      parseDate,
       handleManageResults() {
         router.push({
           name: 'Session Handle Results',
@@ -148,14 +151,6 @@
           name: 'Session Handle Results',
           params: { idSession: this.session.id },
         });
-      },
-      parseDate(date) {
-        if (!date) return new Date().toLocaleDateString('fr-CA');
-        return new Date(date).toLocaleDateString('fr-CA'); //TODO add locales
-      },
-      getTimeFromDate(date) {
-        if (!date) return new Date().toLocaleTimeString('fr-CA');
-        return new Date(date).toLocaleTimeString('fr-CA'); //TODO add locales
       },
       toggleDropdown() {
         this.showDropdown = !this.showDropdown;
