@@ -89,7 +89,8 @@
           <question-item
             class="w-100 my-3"
             :question="question"
-            :global="getAverage(question.id)"></question-item>
+            :global="getAverage(question.id)"
+            :total="results.usersResults.length"></question-item>
         </v-sheet>
       </v-sheet>
 
