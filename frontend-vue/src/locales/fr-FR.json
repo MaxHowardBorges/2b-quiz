@@ -106,7 +106,9 @@
     "waiting_for_admin_validation": "En attente de validation par l'administrateur",
     "confirmIReadAcceptThe": "Je confirme avoir lu et accepté les",
     "ValidateAccount": "Valider le compte",
-    "UserAskedDelete": "L'utilisateur a demandé la suppression de son compte"
+    "UserAskedDelete": "L'utilisateur a demandé la suppression de son compte",
+    "AnonymizeUser": "This user will be anonymized. You can restore it later.",
+    "AnonymizeAction": "This action is reversible, you can restore the user later."
   },
 
   "login": {
@@ -164,6 +166,8 @@
     "Student": "Étudiant",
     "Teacher": "Enseignant",
     "save": "Sauvegarder",
-    "RestoreUser": "Restaurer l'utilisateur"
+    "RestoreUser": "Restaurer l'utilisateur",
+    "SureDeleteUser": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+    "ActionIrreversible": "Cette action est irréversible."
   }
 }

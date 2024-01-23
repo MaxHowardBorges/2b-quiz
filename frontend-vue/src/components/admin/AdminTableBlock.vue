@@ -112,9 +112,9 @@
     data() {
       return {
         confirmationDialogContent:
-          'Are you sure you want to delete this user ?',
+        this.$t('admin.SureDeleteUser'),
         confirmationDialogTextCaption:
-          'This action is irreversible, you will not be able to recover this user.',
+          this.$t('admin.ActionIrreversible'),
         loading: ref(false),
         sorting: {
           id: null,
@@ -192,17 +192,17 @@
       async deleteUser(id) {
         this.echoUserToRemove = id;
         this.confirmationDialogTextCaption =
-          'This action is irreversible, you will not be able to recover this user.';
+          this.$t('admin.ActionIrreversible'),
         this.confirmationDialogContent =
-          'Are you sure you want to delete this user ?';
+          this.$t('admin.SureDeleteUser');
         this.$refs.confirmationDialog.dialog = true;
       },
       async softDeleteUser(id) {
         this.echoUserToRemove = id;
         this.confirmationDialogTextCaption =
-          'This user will be anonymized. You can restore it later.';
+          this.$t('admin.AnonymizeAction');
         this.confirmationDialogContent =
-          'Are you sure you want to delete this user ?';
+          this.$t('admin.SureDeleteUser');
         this.$refs.confirmationDialog.dialog = true;
       },
       async deleteConfirmation() {

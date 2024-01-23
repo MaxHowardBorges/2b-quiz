@@ -163,6 +163,10 @@
     "Student": "Student",
     "Teacher": "Teacher",
     "save": "Save",
-    "RestoreUser": "Restore User"
+    "RestoreUser": "Restore User",
+    "SureDeleteUser": "Are you sure you want to delete this user ?",
+    "ActionIrreversible": "This action is irreversible, you will not be able to recover this user.",
+    "AnonymizeUser": "This user will be anonymized. You can restore it later.",
+    "AnonymizeAction": "This action is reversible, you can restore the user later."
   }
 }
