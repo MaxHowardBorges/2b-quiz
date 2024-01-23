@@ -17,6 +17,18 @@
             </span>
           </v-col>
         </v-row>
+        <div class="mt-4 mb-4">
+          <v-row>
+            <v-col>
+              <span>
+                <b>Voici ta note :</b>
+                {{ results.personnalResult }}% de réussite
+              </span>
+            </v-col>
+          </v-row>
+        </div>
+        <span class="spacer"></span>
+        <span class="spacer"></span>
       </div>
       <span class="spacer"></span>
       <span class="spacer"></span>
@@ -98,6 +110,7 @@
   import { ref } from 'vue';
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
+  import { useUserStore } from '@/stores/userStore';
 
   export default {
     name: 'SessionResult',
@@ -106,8 +119,10 @@
     },
     setup() {
       const sessionStore = useSessionStore();
+      const userStore = useUserStore();
       return {
         sessionStore,
+        userStore,
         switch1Value: ref(false),
         switch2Value: ref(false),
         switch3Value: ref(false),
@@ -153,6 +168,7 @@
           teacherSurname: '',
           globalResults: '',
           questions: [],
+          personnalResult: '',
         },
       };
     },
