@@ -132,7 +132,11 @@
                   :isHost="isHost()"
                   :question="question"
                   :global="getAverage(question.id)"
-                  :total="results.totalUsers"></question-item>
+                  :total="
+                    results.totalUsers
+                      ? results.totalUsers
+                      : results.usersResults.length
+                  "></question-item>
               </v-sheet>
             </template>
           </v-sheet>
@@ -256,6 +260,7 @@
       async loadData() {
         try {
           this.results = await this.sessionStore.getResults(this.idSession);
+          console.log(this.results);
           this.user = await this.userStore.getSelf();
           if (this.isHost()) {
             const settings = await this.sessionStore.getSessionResultSettings(

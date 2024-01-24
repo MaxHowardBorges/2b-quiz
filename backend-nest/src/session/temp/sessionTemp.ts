@@ -65,9 +65,8 @@ export class SessionTemp {
   ): Answer | string | Answer[] {
     let question: Question;
     if (this.questionNumber === -1) return null;
-    question =
-      this.questionnaryList[this.questionnaryNumber].questions[idQuestion];
-    const answers = [...userAnswers.entries()].find(([q, a]) =>
+    question = this.questionnary.questions[idQuestion];
+    const answers = [...userAnswers.entries()].find(([q]) =>
       q.equals(question),
     );
     if (answers === undefined) return null;

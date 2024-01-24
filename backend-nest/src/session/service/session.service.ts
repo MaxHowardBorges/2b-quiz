@@ -486,7 +486,9 @@ export class SessionService {
   async isParticipantOfSession(idSession: number, user: User) {
     const session = await this.getSession(idSession);
     return session.userSession.some(
-      (userSession) => userSession.student.id == user.id,
+      (userSession) =>
+        userSession.student?.id == user.id ||
+        userSession.teacher?.id == user.id,
     );
   }
 
@@ -519,9 +521,15 @@ export class SessionService {
     const usersSession = session.userSession;
     if (session.isResult || session.isGlobal) {
       for (const userSession of usersSession) {
-        if (userSession.student.id === masterUser.id) {
+        if (userSession.student && userSession.student.id === masterUser.id) {
           isCurrentUser = true;
           resultTab.username = userSession.student.username;
+        } else if (
+          userSession.teacher &&
+          userSession.teacher.id === masterUser.id
+        ) {
+          isCurrentUser = true;
+          resultTab.username = userSession.teacher.username;
         } else {
           isCurrentUser = false;
         }
@@ -630,7 +638,9 @@ export class SessionService {
           userResult.personnalResult += questionResult.nbCorrectAnswer;
         }
       }
-      userResult.username = userSession.student.username;
+      if (userSession.student != null)
+        userResult.username = userSession.student.username;
+      else userResult.username = userSession.teacher.username;
       userResult.personnalResult =
         (userResult.personnalResult /
           (questionnary.questions.length - openQuestions)) *

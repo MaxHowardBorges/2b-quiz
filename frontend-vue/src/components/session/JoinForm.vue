@@ -36,7 +36,6 @@
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import router from '@/router';
-  import router from '@/router';
 
   export default {
     name: 'JoinForm',

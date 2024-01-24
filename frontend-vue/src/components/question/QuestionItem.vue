@@ -105,6 +105,7 @@
     },
     data() {
       return {
+        results: false,
         showDropdown: false,
         typeOptions: [
           { typeLabel: 'Unique', typeCode: 'qcu' },
