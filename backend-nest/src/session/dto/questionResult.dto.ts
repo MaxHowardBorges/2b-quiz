@@ -5,6 +5,6 @@ export class QuestionResultDto {
   id: number;
   type: QuestionType;
   hasAnsweredCorrectly: boolean;
-  correctAnswers: string[];
-  studentAnswers: string[];
+  correctAnswers: string[] = [];
+  studentAnswers: string[] = [];
 }

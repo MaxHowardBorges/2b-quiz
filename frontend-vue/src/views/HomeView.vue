@@ -11,9 +11,8 @@
   <div
     v-if="userStore.isAuthenticated"
     class="h-100 d-flex align-center justify-center ma-2">
-    <div class="">
+    <div class="" v-if="userStore.isStudent">
       <v-btn
-        v-if="userStore.isStudent"
         @click="handleJoinSession"
         color="primary"
         class="mx-6 my-3"

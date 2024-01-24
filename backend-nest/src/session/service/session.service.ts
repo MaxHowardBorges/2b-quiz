@@ -479,7 +479,6 @@ export class SessionService {
 
     const resultTab: ResultsDto = new ResultsDto();
     let average = 0;
-    let openQuestions = 0;
     let isCurrentUser = false;
     const averagePerQuestion = [];
     for (const question of questionnary.questions) {
@@ -505,49 +504,42 @@ export class SessionService {
           if (session.isResponses && isCurrentUser) {
             resultTab.questions.push(mappedQuestion);
           }
-          if (question.type === 'ouv' || question.type === 'qoc') {
-            openQuestions++;
-          } else {
-            const questionResult = this.percentSuccess(question, userSession);
-            average += questionResult.nbCorrectAnswer;
-            averagePerQuestion.find(
-              (q) => q.question === question.id,
-            ).average += questionResult.nbCorrectAnswer;
-            if (isCurrentUser) {
-              questionResult.userAnswer
-                .map((userAnswer) => userAnswer.content)
-                .every((userAnswer) =>
-                  mappedQuestion.studentAnswers.push(userAnswer),
-                );
-              session.isResult
-                ? (mappedQuestion.hasAnsweredCorrectly =
-                    questionResult.nbCorrectAnswer == 1)
-                : '';
-              session.isResponses
-                ? questionResult.rightAnswer
-                    .map((answer) => answer.content)
-                    .every((correctAnswer) =>
-                      mappedQuestion.correctAnswers.push(correctAnswer),
-                    )
-                : '';
-              resultTab.personnalResult += questionResult.nbCorrectAnswer;
-            }
+          const questionResult = this.percentSuccess(question, userSession);
+          average += questionResult.nbCorrectAnswer;
+          averagePerQuestion.find((q) => q.question === question.id).average +=
+            questionResult.nbCorrectAnswer;
+          if (isCurrentUser) {
+            questionResult.userAnswer
+              .map((userAnswer) => userAnswer.content)
+              .every((userAnswer) =>
+                mappedQuestion.studentAnswers.push(userAnswer),
+              );
+            session.isResult
+              ? (mappedQuestion.hasAnsweredCorrectly =
+                  questionResult.nbCorrectAnswer === 1 ||
+                  question.type === 'ouv' ||
+                  question.type === 'qoc')
+              : '';
+            session.isResponses &&
+            !(question.type === 'ouv' || question.type === 'qoc')
+              ? questionResult.rightAnswer
+                  .map((answer) => answer.content)
+                  .every((correctAnswer) =>
+                    mappedQuestion.correctAnswers.push(correctAnswer),
+                  )
+              : '';
+            resultTab.personnalResult += questionResult.nbCorrectAnswer;
           }
         }
       }
     }
     session.isGlobal
       ? (resultTab.globalResult =
-          (average /
-            usersSession.length /
-            (questionnary.questions.length - openQuestions)) *
-          100)
+          (average / usersSession.length / questionnary.questions.length) * 100)
       : '';
     if (session.isResult)
       resultTab.personnalResult =
-        (resultTab.personnalResult /
-          (questionnary.questions.length - openQuestions)) *
-        100;
+        (resultTab.personnalResult / questionnary.questions.length) * 100;
     else resultTab.personnalResult = null;
     resultTab.teacherSurname = session.teacher.surname;
     resultTab.sessionDate = session.date;
@@ -567,7 +559,6 @@ export class SessionService {
 
     const usersSession = session.userSession;
     let average = 0;
-    let openQuestions = 0;
 
     const averagePerQuestion = [];
     for (const question of questionnary.questions) {
@@ -580,49 +571,48 @@ export class SessionService {
       for (const question of questionnary.questions) {
         const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
         userResult.questions.push(mappedQuestion);
-        if (question.type === 'ouv' || question.type === 'qoc') {
-          openQuestions++;
-        } else {
-          const questionResult = this.percentSuccess(question, userSession);
-          average += questionResult.nbCorrectAnswer;
-          averagePerQuestion.find((q) => q.question === question.id).average +=
-            questionResult.nbCorrectAnswer;
-          questionResult.userAnswer
-            .map((userAnswer) => userAnswer.content)
-            .every((userAnswer) =>
-              mappedQuestion.studentAnswers.push(userAnswer),
-            );
+        const questionResult = this.percentSuccess(question, userSession);
+        average += questionResult.nbCorrectAnswer;
+        averagePerQuestion.find((q) => q.question === question.id).average +=
+          questionResult.nbCorrectAnswer;
+        questionResult.userAnswer
+          .map((userAnswer) => userAnswer.content)
+          .every((userAnswer) =>
+            mappedQuestion.studentAnswers.push(userAnswer),
+          );
 
-          mappedQuestion.hasAnsweredCorrectly =
-            questionResult.nbCorrectAnswer == 1;
+        mappedQuestion.hasAnsweredCorrectly =
+          questionResult.nbCorrectAnswer === 1 ||
+          question.type === 'ouv' ||
+          question.type === 'qoc';
 
-          questionResult.rightAnswer
-            .map((answer) => answer.content)
-            .every((correctAnswer) =>
-              mappedQuestion.correctAnswers.push(correctAnswer),
-            );
+        questionResult.rightAnswer
+          .map((answer) => answer.content)
+          .every((correctAnswer) =>
+            mappedQuestion.correctAnswers.push(correctAnswer),
+          );
 
-          userResult.personnalResult += questionResult.nbCorrectAnswer;
-        }
+        userResult.personnalResult += questionResult.nbCorrectAnswer;
       }
       if (userSession.student != null)
         userResult.username = userSession.student.username;
       else userResult.username = userSession.teacher.username;
       userResult.personnalResult =
-        (userResult.personnalResult /
-          (questionnary.questions.length - openQuestions)) *
-        100;
+        (userResult.personnalResult / questionnary.questions.length) * 100;
       resultHostTab.usersResults.push(userResult);
     }
     resultHostTab.teacherUsername = session.teacher.username;
     resultHostTab.teacherSurname = session.teacher.surname;
     resultHostTab.sessionDate = session.date;
     resultHostTab.globalResult =
-      (average /
-        usersSession.length /
-        (questionnary.questions.length - openQuestions)) *
-      100;
-    resultHostTab.questions = questionnary.questions;
+      (average / usersSession.length / questionnary.questions.length) * 100;
+    //get questions from questionnary but if the question type is open or qoc, we don't get the answers from existing questionnary
+    resultHostTab.questions = questionnary.questions.map((question) => {
+      question.type === 'ouv' || question.type === 'qoc'
+        ? (question.answers = [])
+        : '';
+      return question;
+    });
     resultHostTab.averagePerQuestion = averagePerQuestion;
     return resultHostTab;
   }

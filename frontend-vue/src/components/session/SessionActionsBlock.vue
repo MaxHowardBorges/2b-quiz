@@ -74,10 +74,10 @@
           );
         }
       },
-      async handleStop() {
+      handleStop() {
         this.dialogVisible = true;
       },
-      async noCancel() {
+      noCancel() {
         this.dialogVisible = false;
       },
       async yesCancel() {

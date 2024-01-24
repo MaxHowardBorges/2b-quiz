@@ -75,10 +75,6 @@
     data() {
       return {
         dialogVisible: false,
-      };
-    },
-    data() {
-      return {
         value: this.getCurrentLocation() + this.sessionStore.idSession,
         size: 200,
       };
@@ -91,10 +87,10 @@
       async copyLinkToClipboard() {
         await navigator.clipboard.writeText(this.value);
       },
-      async cancelSession() {
+      cancelSession() {
         this.dialogVisible = true;
       },
-      async noCancel() {
+      noCancel() {
         this.dialogVisible = false;
       },
       async yesCancel() {
