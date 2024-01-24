@@ -19,4 +19,8 @@ export class ResultsDto {
   teacherUsername?: string;
 
   sessionDate?: Date;
+
+  averagePerQuestion: { id: number; average: number }[];
+
+  totalUsers: number;
 }

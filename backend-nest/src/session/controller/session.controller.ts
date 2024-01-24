@@ -135,6 +135,7 @@ export class SessionController {
   @Roles([UserType.TEACHER])
   @Get('/getMap2')
   async getMap2() {
+    //TODO remove
     return this.sessionService.getMap();
   }
 

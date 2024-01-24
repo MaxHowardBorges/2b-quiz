@@ -14,7 +14,7 @@ const routes = [
   {
     path: '/see-results-students',
     name: SeeResultsStudents,
-    component: SeeResultsStudents, //
+    component: SeeResultsStudents, //TODO remove
   },
 
   {
@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/history',
-    name: 'Session History',
+    name: 'History',
     component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
     meta: { inMenu: true },
   },

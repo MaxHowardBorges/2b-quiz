@@ -503,43 +503,51 @@ export class SessionService {
     let average = 0;
     let openQuestions = 0;
     let isCurrentUser = false;
-
+    const averagePerQuestion = [];
+    for (const question of questionnary.questions) {
+      averagePerQuestion.push({ question: question.id, average: 0 });
+    }
     const usersSession = session.userSession;
-    for (const userSession of usersSession) {
-      if (userSession.student.id === masterUser.id) {
-        isCurrentUser = true;
-        resultTab.username = userSession.student.username;
-      } else {
-        isCurrentUser = false;
-      }
-      for (const question of questionnary.questions) {
-        const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
-        if (session.isResult && isCurrentUser) {
-          resultTab.questions.push(mappedQuestion);
-        }
-        if (question.type === 'ouv' || question.type === 'qoc') {
-          openQuestions++;
+    if (session.isResult || session.isGlobal) {
+      for (const userSession of usersSession) {
+        if (userSession.student.id === masterUser.id) {
+          isCurrentUser = true;
+          resultTab.username = userSession.student.username;
         } else {
-          const questionResult = this.percentSuccess(question, userSession);
-          average += questionResult.nbCorrectAnswer;
-          if (isCurrentUser) {
-            questionResult.userAnswer
-              .map((userAnswer) => userAnswer.content)
-              .every((userAnswer) =>
-                mappedQuestion.studentAnswers.push(userAnswer),
-              );
-            session.isResult
-              ? (mappedQuestion.hasAnsweredCorrectly =
-                  questionResult.nbCorrectAnswer == 1)
-              : '';
-            session.isResponses
-              ? questionResult.rightAnswer
-                  .map((answer) => answer.content)
-                  .every((correctAnswer) =>
-                    mappedQuestion.correctAnswers.push(correctAnswer),
-                  )
-              : '';
-            resultTab.personnalResult += questionResult.nbCorrectAnswer;
+          isCurrentUser = false;
+        }
+        for (const question of questionnary.questions) {
+          const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
+          if (session.isResponses && isCurrentUser) {
+            resultTab.questions.push(mappedQuestion);
+          }
+          if (question.type === 'ouv' || question.type === 'qoc') {
+            openQuestions++;
+          } else {
+            const questionResult = this.percentSuccess(question, userSession);
+            average += questionResult.nbCorrectAnswer;
+            averagePerQuestion.find(
+              (q) => q.question === question.id,
+            ).average += questionResult.nbCorrectAnswer;
+            if (isCurrentUser) {
+              questionResult.userAnswer
+                .map((userAnswer) => userAnswer.content)
+                .every((userAnswer) =>
+                  mappedQuestion.studentAnswers.push(userAnswer),
+                );
+              session.isResult
+                ? (mappedQuestion.hasAnsweredCorrectly =
+                    questionResult.nbCorrectAnswer == 1)
+                : '';
+              session.isResponses
+                ? questionResult.rightAnswer
+                    .map((answer) => answer.content)
+                    .every((correctAnswer) =>
+                      mappedQuestion.correctAnswers.push(correctAnswer),
+                    )
+                : '';
+              resultTab.personnalResult += questionResult.nbCorrectAnswer;
+            }
           }
         }
       }
@@ -551,14 +559,17 @@ export class SessionService {
             (questionnary.questions.length - openQuestions)) *
           100)
       : '';
-    resultTab.personnalResult =
-      (resultTab.personnalResult /
-        (questionnary.questions.length - openQuestions)) *
-      100;
+    if (session.isResult)
+      resultTab.personnalResult =
+        (resultTab.personnalResult /
+          (questionnary.questions.length - openQuestions)) *
+        100;
+    else resultTab.personnalResult = null;
     resultTab.teacherSurname = session.teacher.surname;
     resultTab.sessionDate = session.date;
     resultTab.teacherUsername = session.teacher.username;
-
+    if (session.isGlobal) resultTab.totalUsers = usersSession.length;
+    if (session.isGlobal) resultTab.averagePerQuestion = averagePerQuestion;
     return resultTab;
   }
 
