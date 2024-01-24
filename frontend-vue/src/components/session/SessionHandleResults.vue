@@ -50,9 +50,6 @@
         <v-btn id="ic" @click="showGlobalResults">
           Voir les résultats globaux
         </v-btn>
-        <v-btn id="ic" @click="toggleDropdown">
-          Voir les réponses correctes
-        </v-btn>
         <v-btn id="ic" @click="showStudentResponses">
           Voir les réponses des étudiants
         </v-btn>
@@ -150,7 +147,8 @@
     <!-- New switches added below -->
     <v-sheet
       max-width="800px"
-      class="d-flex flex-row justify-center align-content-center align-self-center flex-wrap">
+      class="d-flex flex-row justify-center align-content-center align-self-center flex-wrap"
+      v-if="isHost">
       <v-switch
         class="mx-5"
         color="primary"
