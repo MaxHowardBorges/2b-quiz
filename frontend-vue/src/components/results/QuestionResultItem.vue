@@ -1,4 +1,5 @@
 <script>
+  // UNUSED COMPONENT
   export default {
     props: {
       answer: {
@@ -10,6 +11,7 @@
 </script>
 
 <template>
+  <!--  UNUSED COMPONENT-->
   <v-card
     class="d-flex align-center pa-5"
     :class="isSelected ? 'selected-item' : ''"

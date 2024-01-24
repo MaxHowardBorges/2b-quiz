@@ -80,7 +80,6 @@
             this.errorSnackbarContent = error.message;
             this.$refs.errorSnackbar.setSnackbarError(true);
           } else {
-            console.error('Error while joining session:', error);
             this.$refs.dialogError.setDialogError(true);
           }
         }

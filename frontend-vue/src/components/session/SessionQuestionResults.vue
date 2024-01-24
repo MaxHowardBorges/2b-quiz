@@ -1,6 +1,7 @@
 <script>
   import QuestionResult from '@/components/results/QuestionResult.vue';
 
+  // UNUSED COMPONENT
   export default {
     components: { QuestionResult },
     data() {
@@ -12,6 +13,7 @@
 </script>
 
 <template>
+  <!--  UNUSED COMPONENT-->
   <QuestionResult :question="question"></QuestionResult>
 </template>
 

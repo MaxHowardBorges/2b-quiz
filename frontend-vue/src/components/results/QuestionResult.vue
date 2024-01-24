@@ -1,6 +1,5 @@
-<script setup></script>
-
 <template>
+  <!--  UNUSED COMPONENT-->
   <div
     class="d-flex justify-space-between align-center"
     style="margin-top: 100px">
@@ -22,11 +21,11 @@
       </v-card-title>
 
       <div class="d-flex flex-wrap" style="margin-left: 15px">
-        <QuestionResultItem
+        <question-result-item
           v-for="(answer, index) in answers"
           :key="index"
           :answer="answer"
-          class="mr-2 mb-2"></QuestionResultItem>
+          class="mr-2 mb-2"></question-result-item>
       </div>
       <div style="margin-top: 20px">
         <b>Résultats Session : 9/20</b>
@@ -38,7 +37,7 @@
 
 <script>
   import QuestionResultItem from '@/components/results/QuestionResultItem.vue';
-
+  // UNUSED COMPONENT
   export default {
     components: {
       QuestionResultItem,

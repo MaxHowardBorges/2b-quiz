@@ -83,7 +83,7 @@
       },
       async yesCancel() {
         await this.sessionStore.stopSession();
-        await this.sessionStore.sessionEnd();
+        this.sessionStore.sessionEnd();
         await router.push('/');
       },
       async handleLaunch() {
@@ -96,7 +96,6 @@
             const response = await this.sessionStore.nextQuestion();
             await this.sessionStore.getCurrentQuestionForTeacher(response);
           } catch (error) {
-            console.log('Error while launching session', error);
             this.sessionStore.disconnectFromSession(
               'Error while launching session',
             );
@@ -117,12 +116,6 @@
       },
       openSettings() {
         this.$refs.settingsDialog.openSettings();
-      },
-      handleSwitchChange() {
-        // Handle switch changes here
-        console.log('Switch 1:', this.switch1Value);
-        console.log('Switch 2:', this.switch2Value);
-        console.log('Switch 3:', this.switch3Value);
       },
     },
   };

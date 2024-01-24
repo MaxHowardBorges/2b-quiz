@@ -7,16 +7,8 @@ import DisplayView from '@/views/DisplayView.vue';
 import { UserRoles } from '@/utils/userRoles';
 import SessionHistoryView from '@/views/SessionHistoryView.vue';
 import SessionHandleResults from '@/components/session/SessionHandleResults.vue';
-import SeeResultsStudents from '@/views/SeeResultsStudents.vue';
-import SessionQuestionResults from '@/components/session/SessionQuestionResults.vue';
 
 const routes = [
-  {
-    path: '/see-results-students',
-    name: SeeResultsStudents,
-    component: SeeResultsStudents, //TODO remove
-  },
-
   {
     path: '/history/:idSession',
     name: 'Session Handle Results',
@@ -24,11 +16,6 @@ const routes = [
     props: (route) => ({
       idSession: route.params.idSession,
     }),
-  },
-  {
-    path: '/session-question-results',
-    name: 'SessionQuestionResults',
-    component: SessionQuestionResults, //
   },
   {
     path: '/history',

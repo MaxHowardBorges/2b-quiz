@@ -83,7 +83,7 @@
       async yesCancel() {
         this.sessionStore.sessionEnd();
         await router.push('/');
-        this.sessionStore.stopSession();
+        await this.sessionStore.stopSession();
       },
       async handleSubmit() {
         try {

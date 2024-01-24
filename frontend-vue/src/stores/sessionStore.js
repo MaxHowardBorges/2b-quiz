@@ -3,7 +3,6 @@ import {
   addToWhitelist,
   createSession,
   getCurrentQuestion,
-  getGlobalResults,
   getNextQuestion,
   getResults,
   getSessionDisplaySettings,
@@ -259,58 +258,18 @@ export const useSessionStore = defineStore('session', {
     },
     async getResults(idSession) {
       const userStore = useUserStore();
-      try {
-        const response = await getResults(idSession, userStore.token);
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async getGlobalResults(idSession) {
-      const userStore = useUserStore();
-      try {
-        const response = await getGlobalResults(idSession, userStore.token);
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await getResults(idSession, userStore.token);
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
     },
     async getSessions() {
       const userStore = useUserStore();
-      try {
-        const response = await getSessionList(userStore.token);
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await getSessionList(userStore.token);
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
     },
-
-    async getSession(idSession) {
-      const userStore = useUserStore();
-      try {
-        const response = await getSessionList(userStore.token);
-        if (!response.ok) {
-          throw new Error('Erreur de chargement de la question'); // TODO manage error
-        }
-        userStore.updateToken(response.headers.get('Authorization'));
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-
     async getSessionResultSettings(idSession) {
       const userStore = useUserStore();
       const response = await getSessionResultSettings(

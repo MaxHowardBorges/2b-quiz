@@ -115,9 +115,6 @@
         ],
       };
     },
-    mounted() {
-      console.log(this.global);
-    },
     emits: ['modifyQuestionFromBank', 'showQuestionnaryList'],
     methods: {
       getColor() {

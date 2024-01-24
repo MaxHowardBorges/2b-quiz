@@ -46,7 +46,11 @@
       },
       //Get all session where user is participant
       async getSessionList() {
-        return await this.sessionStore.getSessions();
+        try {
+          return await this.sessionStore.getSessions();
+        } catch (e) {
+          alert('Error while getting session list');
+        }
       },
     },
   };

@@ -19,7 +19,7 @@
           <v-col class="text-right mr-1">
             <span>
               <b>Créé par:</b>
-              {{ session.teacher.username }}
+              {{ isHost() ? 'Vous' : session.teacher.username }}
             </span>
           </v-col>
         </v-row>
@@ -28,57 +28,13 @@
       <span class="spacer"></span>
 
       <!-- Un seul bouton pour gérer les résultats -->
-      <v-btn
-        v-if="userStore.isTeacher"
-        @click="handleManageResults"
-        color="primary">
+      <v-btn v-if="isHost()" @click="handleManageResults" color="primary">
         Gérer les résultats
       </v-btn>
-      <v-btn v-if="userStore.isStudent" @click="SeeResults" color="primary">
+      <v-btn v-else @click="SeeResults" color="primary">
         Voir les résultats
       </v-btn>
     </div>
-
-    <v-sheet class="list">
-      <!-- Dropdown menu -->
-      <v-list v-if="showDropdown" id="dropdown" class="mt-2">
-        <v-list-item v-for="(answer, index) in answers" :key="index">
-          <template #default>
-            <v-list-item-title class="text-h6">
-              Question {{ index + 1 }}
-            </v-list-item-title>
-            {{ answer }}
-          </template>
-        </v-list-item>
-      </v-list>
-
-      <!-- Global Results -->
-      <v-sheet v-if="showGlobal" class="mt-2">
-        <v-list-item v-for="(answer, index) in answers2" :key="index">
-          <template #default>
-            <v-list-item-title class="text-h6">
-              Question {{ index + 1 }}
-            </v-list-item-title>
-            {{ answer }}
-          </template>
-        </v-list-item>
-      </v-sheet>
-
-      <!-- Tableau des réponses des étudiants -->
-      <v-sheet v-if="showStudentResponsesTable" class="mt-2">
-        <v-data-table
-          :headers="studentResponsesHeaders"
-          :items="studentResponses"
-          hide-default-footer>
-          <template v-slot:items="props">
-            <td>{{ props.item.studentName }}</td>
-            <td>{{ props.item.answer1 }}</td>
-            <td>{{ props.item.answer2 }}</td>
-            <td>{{ props.item.answer3 }}</td>
-          </template>
-        </v-data-table>
-      </v-sheet>
-    </v-sheet>
   </v-sheet>
 </template>
 
@@ -87,12 +43,14 @@
   import router from '@/router';
   import { useUserStore } from '@/stores/userStore';
   import { useSessionStore } from '@/stores/sessionStore';
-  import { getTimeFromDate, parseDate } from 'frontend-vue/src/utils/dates';
+  import { getTimeFromDate, parseDate } from '@/utils/dates';
 
   export default {
     name: 'SessionItem',
     props: {
-      session: Object,
+      session: {
+        date: String,
+      },
       idSession: String,
     },
     setup() {
@@ -102,44 +60,17 @@
         userStore,
         sessionStore,
         question: ref('Session 1'),
-        creationDate: ref('2024-01-11'),
-        createdBy: ref('Nom Prénom'),
         showDropdown: ref(false),
         showGlobal: ref(false),
         showStudentResponsesTable: ref(false),
-        answers: ['Réponse 1', 'Réponse 2', 'Réponse 3'],
-        answers2: [
-          '30 % ont répondu A',
-          '25 % ont répondu B',
-          '45 % ont répondu C',
-        ],
-        studentResponsesHeaders: [
-          { text: 'Étudiant', value: 'studentName' },
-          { text: 'Réponse 1', value: 'answer1' },
-          { text: 'Réponse 2', value: 'answer2' },
-          { text: 'Réponse 3', value: 'answer3' },
-        ],
-        studentResponses: [
-          {
-            studentName: 'Étudiant 1',
-            answer1: 'Réponse A',
-            answer2: 'Réponse B',
-            answer3: 'Réponse C',
-          },
-          {
-            studentName: 'Étudiant 2',
-            answer1: 'Réponse B',
-            answer2: 'Réponse C',
-            answer3: 'Réponse A',
-          },
-          // Ajoutez d'autres lignes d'étudiants avec leurs réponses
-        ],
       };
     },
-
     methods: {
       getTimeFromDate,
       parseDate,
+      isHost() {
+        return this.session.userSession;
+      },
       handleManageResults() {
         router.push({
           name: 'Session Handle Results',
@@ -151,15 +82,6 @@
           name: 'Session Handle Results',
           params: { idSession: this.session.id },
         });
-      },
-      toggleDropdown() {
-        this.showDropdown = !this.showDropdown;
-      },
-      showGlobalResults() {
-        this.showGlobal = !this.showGlobal;
-      },
-      showStudentResponses() {
-        this.showStudentResponsesTable = !this.showStudentResponsesTable;
       },
     },
   };

@@ -266,10 +266,7 @@
             this.isResult = settings.isResult;
             this.isResponses = settings.isResponses;
           }
-        } catch (e) {
-          return;
-        }
-        console.log(this.results);
+        } catch (e) {}
       },
       isHost() {
         if (this.results.username) return false;

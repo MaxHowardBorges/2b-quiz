@@ -424,7 +424,6 @@ export class SessionService {
 
   async getListSession(user: User) {
     if (user instanceof Teacher) {
-      console.log('ok');
       return this.sessionRepository.find({
         //Find all session where student is connected
         relations: {
@@ -443,7 +442,6 @@ export class SessionService {
       return this.sessionRepository.find({
         //Find all session where student is connected
         relations: {
-          userSession: { student: true, teacher: true, answer: true },
           teacher: true,
         },
         where: { userSession: { student: { id: user.id } } },

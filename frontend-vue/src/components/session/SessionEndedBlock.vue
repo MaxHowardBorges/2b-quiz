@@ -81,7 +81,7 @@
           teacherSurname: '',
           globalResults: '',
           questions: [],
-          personnalResult: '',
+          personalResult: '',
         },
       };
     },
