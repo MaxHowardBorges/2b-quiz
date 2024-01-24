@@ -3,6 +3,7 @@ import { Question } from '../../src/question/entity/question.entity';
 import { Questionnary } from '../../src/questionnary/entity/questionnary.entity';
 import { QuestionType } from '../../src/question/constants/questionType.constant';
 import { Teacher } from '../../src/user/entity/teacher.entity';
+import { Tag } from '../../src/question/entity/tag.entity';
 
 export function generateQuestionnaryMock(teacher: Teacher) {
   const questionnary = new Questionnary();
@@ -29,6 +30,7 @@ export function generateQuestionMock(teacher: Teacher) {
   question.originalQuestion = undefined;
   question.originalId = undefined;
   question.author = teacher;
+  question.tags = [];
   return question;
 }
 
@@ -46,4 +48,13 @@ export function generateAnswerMock() {
     content: faker.lorem.sentence(5),
     isCorrect: false,
   };
+}
+
+export function generateTagMock(teacher: Teacher): Tag {
+  const tag = new Tag();
+  tag.idTag = undefined;
+  tag.description = faker.lorem.sentence(2);
+  tag.author = teacher;
+  tag.questions = [];
+  return tag;
 }

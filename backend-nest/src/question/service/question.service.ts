@@ -245,6 +245,7 @@ export class QuestionService {
 
   async isQuestionFromTeacher(idQuestion: number, teacher: Teacher) {
     const question = await this.findOneQuestion(idQuestion, ['author']);
+    if (!question) return false;
     return question.author.id === teacher.id;
   }
 
