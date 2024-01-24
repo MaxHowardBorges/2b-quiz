@@ -30,6 +30,7 @@ import { DisplaySettingsDto } from '../dto/displaySettings.dto';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { CreateSessionDto } from '../dto/createSession.dto';
 import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
+import { ResultsSettingsDto } from '../dto/resultsSettings.dto';
 
 @Controller('session')
 export class SessionController {
@@ -106,6 +107,39 @@ export class SessionController {
     )
       return await this.sessionService.getResults(idSession, request.user);
     else throw new IsNotParticipantException();
+  }
+
+  @Roles([UserType.TEACHER])
+  @Get('/:idSession/result-settings')
+  async getResultsSettings(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: number,
+  ): Promise<ResultsSettingsDto> {
+    if (
+      !(await this.sessionService.isHostOfSession(
+        idSession,
+        request.user as Teacher,
+      ))
+    )
+      throw new IsNotHostException();
+    return await this.sessionService.getResultSettings(idSession);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Patch('/:idSession/result-settings')
+  async setResultsSettings(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: number,
+    @Body(new ValidationPipe()) body: ResultsSettingsDto,
+  ) {
+    if (
+      !(await this.sessionService.isHostOfSession(
+        idSession,
+        request.user as Teacher,
+      ))
+    )
+      throw new IsNotHostException();
+    await this.sessionService.setResultSettings(idSession, body);
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])

@@ -178,3 +178,30 @@ export async function getSessionDisplaySettings(token, idSession) {
     },
   );
 }
+
+export async function getSessionResultSettings(token, idSession) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/result-settings`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
+
+export async function setSessionResultSettings(token, idSession, body) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + `/session/${idSession}/result-settings`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    },
+  );
+}

@@ -11,7 +11,7 @@
           style="align-self: start"
           id="divButton"
           class="d-flex justify-start">
-          <v-btn id="ic" icon="undo" @click="returnHome"></v-btn>
+          <v-btn id="ic" icon="undo" @click="returnHistory"></v-btn>
         </div>
         <b>{{ question }}</b>
         <div class="mt-4 mb-4">
@@ -61,111 +61,135 @@
               Voir les réponses des étudiants
             </v-btn>
           </v-btn-toggle>
+          <v-btn
+            class="ml-2"
+            color="primary"
+            icon="settings"
+            @click="() => (viewSettings = !viewSettings)"></v-btn>
         </template>
       </div>
 
+      <v-expand-transition>
+        <v-sheet
+          border="sm"
+          rounded="lg"
+          max-width="800px"
+          class="mx-auto"
+          v-if="isHost() && viewSettings">
+          <p class="mt-2 text-h5">Session results visibility settings</p>
+          <v-sheet class="d-flex mx-auto flex-wrap">
+            <v-switch
+              class="mx-5 mt-3"
+              color="primary"
+              label="Display personal result after the end of the questionnary"
+              v-model="isResult"
+              @update:model-value="isResponses = isResponses && isResult" />
+
+            <v-switch
+              class="mx-5"
+              color="primary"
+              label="Display correct reponses result after the end of the questionnary"
+              v-model="isResponses"
+              :disabled="!isResult" />
+
+            <v-switch
+              class="mx-5"
+              color="primary"
+              label="Display global result after the end of the questionnary"
+              v-model="isGlobal" />
+          </v-sheet>
+          <v-expand-transition>
+            <v-btn
+              class="mb-3"
+              v-if="!isEqualsToSettings()"
+              @click="saveChanges()">
+              Save changes
+            </v-btn>
+          </v-expand-transition>
+        </v-sheet>
+      </v-expand-transition>
+
       <v-sheet class="list">
         <!-- Global Results -->
-        <v-sheet v-if="showGlobal || !isHost()" class="mt-2">
-          <v-list-item v-if="results.globalResult">
-            <template #default>
-              <v-list-item-title class="text-h5">
-                Résultats globaux :
-              </v-list-item-title>
-              {{ results.globalResult }}% de réussite
+        <v-fade-transition>
+          <v-sheet v-if="showGlobal || !isHost()" class="mt-2">
+            <v-list-item v-if="results.globalResult">
+              <template #default>
+                <v-list-item-title class="text-h5">
+                  Résultats globaux :
+                </v-list-item-title>
+                {{ results.globalResult }}% de réussite
+              </template>
+            </v-list-item>
+            <template v-if="this.results.questions.length > 0">
+              <v-sheet
+                max-width="1000px"
+                class="list mx-auto"
+                v-for="(question, index) in this.results.questions"
+                :key="index">
+                <question-item
+                  class="w-100 my-3"
+                  :isHost="isHost()"
+                  :question="question"
+                  :global="getAverage(question.id)"
+                  :total="results.totalUsers"></question-item>
+              </v-sheet>
             </template>
-          </v-list-item>
-          <template v-if="this.results.questions.length > 0">
-            <v-sheet
-              max-width="1000px"
-              class="list mx-auto"
-              v-for="(question, index) in this.results.questions"
-              :key="index">
-              <question-item
-                class="w-100 my-3"
-                :isHost="isHost()"
-                :question="question"
-                :global="getAverage(question.id)"
-                :total="results.totalUsers"></question-item>
-            </v-sheet>
-          </template>
-        </v-sheet>
-
-        <!-- Tableau des réponses des étudiants -->
-        <v-sheet v-if="showStudentResponsesTable" class="mt-2">
-          <v-data-table :headers="getHeaders()" :items="results.usersResults">
-            <template
-              v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-              <tr>
-                <template v-for="column in columns" :key="column.key">
-                  <td>
-                    <span
-                      v-if="column.key !== 'studentName'"
-                      class="mr-2 cursor-pointer"
-                      @click="() => toggleSort(column)">
-                      N°{{ column.key }}
-                      <v-tooltip activator="parent" location="bottom">
-                        {{ column.title.content }}
-                      </v-tooltip>
-                    </span>
-                    <span v-else>
-                      {{ column.title }}
-                    </span>
-                    <template v-if="isSorted(column)">
-                      <v-fade-transition>
-                        <v-icon :icon="getSortIcon(column)"></v-icon>
-                      </v-fade-transition>
+          </v-sheet>
+        </v-fade-transition>
+        <v-fade-transition>
+          <!-- Tableau des réponses des étudiants -->
+          <v-sheet v-if="showStudentResponsesTable" class="mt-2">
+            <v-data-table :headers="getHeaders()" :items="results.usersResults">
+              <template
+                v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
+                <tr>
+                  <template v-for="column in columns" :key="column.key">
+                    <td>
+                      <span
+                        v-if="column.key !== 'studentName'"
+                        class="mr-2 cursor-pointer"
+                        @click="() => toggleSort(column)">
+                        N°{{ column.key }}
+                        <v-tooltip activator="parent" location="bottom">
+                          {{ column.title.content }}
+                        </v-tooltip>
+                      </span>
+                      <span v-else>
+                        {{ column.title }}
+                      </span>
+                      <template v-if="isSorted(column)">
+                        <v-fade-transition>
+                          <v-icon :icon="getSortIcon(column)"></v-icon>
+                        </v-fade-transition>
+                      </template>
+                    </td>
+                  </template>
+                </tr>
+              </template>
+              <template v-slot:item="{ item }">
+                <tr>
+                  <td>{{ item.username }}</td>
+                  <td
+                    v-for="question in item.questions"
+                    :class="
+                      question.studentAnswers.length === 0 ||
+                      !question.hasAnsweredCorrectly
+                        ? 'bg-error'
+                        : 'bg-success'
+                    ">
+                    <template v-if="question.studentAnswers.length === 0">
+                      Aucune réponse
+                    </template>
+                    <template v-else>
+                      {{ question.studentAnswers.join(', ') }}
                     </template>
                   </td>
-                </template>
-              </tr>
-            </template>
-            <template v-slot:item="{ item }">
-              <tr>
-                <td>{{ item.username }}</td>
-                <td
-                  v-for="question in item.questions"
-                  :class="
-                    question.studentAnswers.length === 0 ||
-                    !question.hasAnsweredCorrectly
-                      ? 'bg-error'
-                      : 'bg-success'
-                  ">
-                  <template v-if="question.studentAnswers.length === 0">
-                    Aucune réponse
-                  </template>
-                  <template v-else>
-                    {{ question.studentAnswers.join(', ') }}
-                  </template>
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-sheet>
-      </v-sheet>
-      <!-- New switches added below -->
-      <v-sheet
-        max-width="800px"
-        class="d-flex flex-row justify-center align-content-center align-self-center flex-wrap"
-        v-if="isHost()">
-        <v-switch
-          class="mx-5"
-          color="primary"
-          label="Visibility Results"
-          v-model="switch1Value"
-          @change="handleSwitchChange"></v-switch>
-        <v-switch
-          class="mx-5"
-          color="primary"
-          label="Visibility Responses"
-          v-model="switch2Value"
-          @change="handleSwitchChange"></v-switch>
-        <v-switch
-          class="mx-5"
-          color="primary"
-          label="Visibility Globals"
-          v-model="switch3Value"
-          @change="handleSwitchChange"></v-switch>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-sheet>
+        </v-fade-transition>
       </v-sheet>
     </v-sheet>
   </v-sheet>
@@ -176,7 +200,7 @@
   import router from '@/router';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
-  import { getTimeFromDate, parseDate } from 'frontend-vue/src/utils/dates';
+  import { getTimeFromDate, parseDate } from '@/utils/dates';
   import QuestionItem from '@/components/question/QuestionItem.vue';
 
   export default {
@@ -191,19 +215,18 @@
       return {
         sessionStore,
         userStore,
-        switch1Value: ref(false),
-        switch2Value: ref(false),
-        switch3Value: ref(false),
         question: ref('Session 1'),
-        creationDate: ref('2024-01-11'),
-        createdBy: ref('Nom Prénom'),
         showDropdown: ref(false),
-        showGlobal: ref(false),
+        showGlobal: ref(true),
         showStudentResponsesTable: ref(false),
       };
     },
     data() {
       return {
+        viewSettings: false,
+        isGlobal: false,
+        isResult: false,
+        isResponses: false,
         results: {
           sessionDate: '',
           teacherSurname: '',
@@ -211,10 +234,16 @@
           questions: [],
           usersResults: [],
           averagePerQuestion: [],
+          teacherUsername: '',
         },
         user: {
           username: '',
           surname: '',
+        },
+        settings: {
+          isGlobal: false,
+          isResult: false,
+          isResponses: false,
         },
       };
     },
@@ -225,8 +254,21 @@
       getTimeFromDate,
       parseDate,
       async loadData() {
-        this.results = await this.sessionStore.getResults(this.idSession);
-        this.user = await this.userStore.getSelf();
+        try {
+          this.results = await this.sessionStore.getResults(this.idSession);
+          this.user = await this.userStore.getSelf();
+          if (this.isHost()) {
+            const settings = await this.sessionStore.getSessionResultSettings(
+              this.idSession,
+            );
+            this.settings = settings;
+            this.isGlobal = settings.isGlobal;
+            this.isResult = settings.isResult;
+            this.isResponses = settings.isResponses;
+          }
+        } catch (e) {
+          return;
+        }
         console.log(this.results);
       },
       isHost() {
@@ -254,15 +296,16 @@
         }
         return headers;
       },
-      handleSwitchChange() {
-        // Handle switch changes here
-        console.log('Switch 1:', this.switch1Value);
-        console.log('Switch 2:', this.switch2Value);
-        console.log('Switch 3:', this.switch3Value);
+      isEqualsToSettings() {
+        return (
+          this.isGlobal === this.settings.isGlobal &&
+          this.isResult === this.settings.isResult &&
+          this.isResponses === this.settings.isResponses
+        );
       },
-      async returnHome() {
+      async returnHistory() {
         await router.push({
-          name: 'Session History',
+          name: 'History',
         });
       },
       getSurname() {
@@ -270,6 +313,19 @@
           return 'Vous';
         } else {
           return this.results.teacherSurname;
+        }
+      },
+      saveChanges() {
+        try {
+          this.settings.isGlobal = this.isGlobal;
+          this.settings.isResult = this.isResult;
+          this.settings.isResponses = this.isResponses;
+          this.sessionStore.setSessionResultSettings(
+            this.idSession,
+            this.settings,
+          );
+        } catch (e) {
+          alert('Erreur lors de la sauvegarde des paramètres');
         }
       },
     },

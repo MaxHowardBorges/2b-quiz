@@ -32,6 +32,7 @@ import { User } from '../../user/entity/user.entity';
 import { ResultsDto } from '../dto/results.dto';
 import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
 import { ResultsHostDto } from '../dto/resultsHost.dto';
+import { ResultsSettingsDto } from '../dto/resultsSettings.dto';
 
 @Injectable()
 export class SessionService {
@@ -446,6 +447,7 @@ export class SessionService {
           teacher: true,
         },
         where: { userSession: { student: { id: user.id } } },
+        order: { date: 'DESC' },
       });
     }
   }
@@ -641,8 +643,13 @@ export class SessionService {
     return resultHostTab;
   }
 
-  async getAccessSettings(idSession: number) {
-    //TODO make something of this function
+  async getResultSettings(idSession: number) {
+    const session = await this.getSession(idSession);
+    return {
+      isGlobal: session.isGlobal,
+      isResult: session.isResult,
+      isResponses: session.isResponses,
+    };
   }
 
   //Calculate the percent of success of a student
@@ -672,5 +679,13 @@ export class SessionService {
       }
     }
     return { nbCorrectAnswer, rightAnswer, userAnswer };
+  }
+
+  async setResultSettings(idSession: number, body: ResultsSettingsDto) {
+    const session = await this.getSession(idSession);
+    session.isGlobal = body.isGlobal;
+    session.isResult = body.isResult;
+    session.isResponses = body.isResponses;
+    await this.sessionRepository.save(session);
   }
 }

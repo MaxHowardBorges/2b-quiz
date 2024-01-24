@@ -8,9 +8,11 @@ import {
   getResults,
   getSessionDisplaySettings,
   getSessionList,
+  getSessionResultSettings,
   getSessionStatus,
   joinSession,
   sendAnswer,
+  setSessionResultSettings,
   setSessionSettings,
   startEndingSession,
   stopSession,
@@ -307,6 +309,27 @@ export const useSessionStore = defineStore('session', {
       } catch (error) {
         console.error(error);
       }
+    },
+
+    async getSessionResultSettings(idSession) {
+      const userStore = useUserStore();
+      const response = await getSessionResultSettings(
+        userStore.getToken(),
+        idSession,
+      );
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async setSessionResultSettings(idSession, body) {
+      const userStore = useUserStore();
+      const response = await setSessionResultSettings(
+        userStore.getToken(),
+        idSession,
+        body,
+      );
+      await throwIfNotOK(response, 204);
+      userStore.updateToken(response.headers.get('Authorization'));
     },
   },
 });
