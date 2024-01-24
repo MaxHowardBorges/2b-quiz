@@ -10,6 +10,28 @@ import SessionHandleResults from '@/components/session/SessionHandleResults.vue'
 
 const routes = [
   {
+    path: '/',
+    name: 'Home',
+    props: (route) => ({
+      errorSnackbar: route.query.errorSnackbar,
+      expiredError: !!route.query.expiredError,
+      serverError: !!route.query.serverError,
+      ticket: route.query.ticket,
+      sessionError: route.query.sessionError,
+    }),
+    component: HomeView,
+    meta: { public: true, inMenu: true },
+  },
+  {
+    path: '/session',
+    name: 'Session',
+    component: SessionView,
+    meta: { inMenu: true },
+    props: (route) => ({
+      isCreating: !!route.query.isCreating,
+    }),
+  },
+  {
     path: '/history/:idSession',
     name: 'Session Handle Results',
     component: SessionHandleResults, //
@@ -22,29 +44,6 @@ const routes = [
     name: 'History',
     component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
     meta: { inMenu: true },
-  },
-
-  {
-    path: '/session',
-    name: 'Session',
-    component: SessionView,
-    meta: { inMenu: true },
-    props: (route) => ({
-      isCreating: !!route.query.isCreating,
-    }),
-  },
-  {
-    path: '/',
-    name: 'Home',
-    props: (route) => ({
-      errorSnackbar: route.query.errorSnackbar,
-      expiredError: !!route.query.expiredError,
-      serverError: !!route.query.serverError,
-      ticket: route.query.ticket,
-      sessionError: route.query.sessionError,
-    }),
-    component: HomeView,
-    meta: { public: true, inMenu: true },
   },
   {
     path: '/user',
@@ -74,10 +73,10 @@ const routes = [
   },
   {
     path: '/group',
-    name: 'group',
+    name: 'Group',
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/GroupView.vue'),
-    meta: { inMenu: true },
+    meta: { inMenu: true, roles: [UserRoles.TEACHER] },
   },
 ];
 

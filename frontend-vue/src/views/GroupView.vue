@@ -1,21 +1,14 @@
 <template>
-
-  <ListOFGroup></ListOFGroup>
+  <list-of-group class="mx-auto"></list-of-group>
 </template>
 
 <script>
+  import ListOfGroup from '@/components/group/ListOfGroup.vue';
 
-  import ListOFGroup from '@/components/group/ListOFGroup.vue';
-  import { useUserStore } from '@/stores/userStore';
   export default {
     name: 'GroupView',
-    components: { ListOFGroup },
-
-  }
+    components: { ListOfGroup },
+  };
 </script>
 
-
-
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="mt-5 p-6 mx-auto"
+    class="mt-5 p-6 mx-4"
     elevation="5"
     style="max-width: 1500px; width: 100%">
     <h1 class="text-h4 ma-5">List of groups</h1>
@@ -15,13 +15,13 @@
       </thead>
       <tbody>
         <tr class="ma-2" v-for="(group, index) in ListOFGroup" :key="index">
-          <td class="text-center" @click="openDisplay(index)">
+          <td class="text-center">
             {{ group.id }}
           </td>
-          <td class="text-center" @click="openDisplay(index)">
+          <td class="text-center">
             {{ group.groupName }}
           </td>
-          <td class="text-center" @click="openDisplay(index)">
+          <td class="text-center">
             {{ group.nbTabUsers }}
           </td>
           <td class="text-center">
@@ -29,6 +29,10 @@
               class="ma-1"
               @click="openAddUser(group.id, index)"
               icon="add"></v-btn>
+            <v-btn
+              @click="openDisplay(index)"
+              class="ma-1"
+              icon="visibility"></v-btn>
             <v-btn
               class="ma-1"
               @click="openDelete(group.id)"
@@ -70,13 +74,13 @@
       v-model="DisplayGroupDialog"
       max-height="700px"
       max-width="1000px">
-      <v-card class="d-flex align-center">
+      <v-card class="d-flex align-center pa-2">
         <v-card-title class="headline font-weight-bold">
           Display group
         </v-card-title>
         <v-card-text class="subtitle-1">List of users in the group</v-card-text>
 
-        <table>
+        <table class="mx-2">
           <thead>
             <tr>
               <th class="text-center">ID</th>
@@ -135,10 +139,10 @@
           item-value="id"
           item-title="username"
           label="Select a user"
-          chips
-          closable-chips
-          clearable
-          multiple
+          :chips="true"
+          :closable-chips="true"
+          :clearable="true"
+          multiple=""
           class="w-50">
           <template v-slot:item="{ props, item }">
             <v-list-item
@@ -155,10 +159,10 @@
           item-value="id"
           item-title="username"
           label="Select a user"
-          chips
-          closable-chips
-          clearable
-          multiple
+          :chips="true"
+          :closable-chips="true"
+          :clearable="true"
+          multiple=""
           class="w-50">
           <template v-slot:item="{ props, item }">
             <v-list-item
@@ -183,6 +187,7 @@
   import { useGroupStore } from '@/stores/groupStore';
 
   export default {
+    name: 'ListOfGroup',
     data() {
       return {
         addDialog: false,
@@ -195,7 +200,7 @@
         DeleteUserDialog: false,
         nameOFGroup: ref(''),
         usersOfGroup: ref([]),
-        usersToAdd: ref([]),
+        usersToAdd: [],
         selectedUsers: [],
         SelectedUserID: ref(0),
         seeStudent: ref(false),
