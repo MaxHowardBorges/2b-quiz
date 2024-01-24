@@ -106,3 +106,25 @@ export function generateRandomParticipantMockList(
   }
   return users;
 }
+
+export function generateRandomStudentTeacherMockList(
+  nb: number,
+  deteleUser: boolean = false,
+  validate: boolean = true,
+) {
+  const users: User[] = [];
+  for (let i = 0; i < nb; i++) {
+    let user = null;
+    const random = Math.floor(Math.random() * 2);
+    switch (random) {
+      case 0:
+        user = generateTeacherMock(deteleUser, validate);
+        break;
+      case 1:
+        user = generateStudentMock(deteleUser, validate);
+        break;
+    }
+    users.push(user);
+  }
+  return users;
+}
