@@ -13,17 +13,15 @@
     </v-card>
   </v-dialog>
   <div class="action-block">
-    <div v-if="!sessionStore.status.nbAnswered">
+    <div v-if="sessionStore.status.nbAnswered !== null">
       idSession: {{ sessionStore.idSession }}
     </div>
     <div>
-      <p v-if="!sessionStore.status.nbAnswered">
-        {{ sessionStore.status.nbJoined }} user joined
-      </p>
-      <p v-else>
+      <p v-if="sessionStore.status.nbAnswered !== null">
         {{ sessionStore.status.nbAnswered }}/{{ sessionStore.status.nbJoined }}
         user answered
       </p>
+      <p v-else>{{ sessionStore.status.nbJoined }} user joined</p>
     </div>
     <v-btn @click="cancelSession" class="btn" color="primary">
       Fin de la session
@@ -99,6 +97,9 @@
       },
     },
     emits: ['session-end'],
+    watch: {
+      'sessionStore.status.nbAnswered': true,
+    },
   };
 </script>
 

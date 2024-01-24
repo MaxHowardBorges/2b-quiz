@@ -27,6 +27,7 @@
       :error-snackbar="errorSnackbar"
       :dialog-error="serverError" />
     <admin-block v-if="userStore.isAdmin" />
+    <template v-if="userStore.isTeacher || userStore.isStudent"></template>
   </div>
 </template>
 
@@ -56,6 +57,7 @@
       expiredError: Boolean,
       serverError: Boolean,
       ticket: null,
+      from: null,
     },
     setup() {
       const userStore = useUserStore();
@@ -70,6 +72,9 @@
       };
     },
     mounted() {
+      if (this.from) {
+        console.log('routeFrom', this.from);
+      }
       if (this.sessionError) {
         this.sessionErrorTitle = 'Error in the session';
         this.sessionErrorContent =

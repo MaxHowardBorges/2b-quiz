@@ -50,4 +50,8 @@ export class Question {
 
   @ManyToOne(() => Teacher, (teacher) => teacher.questions)
   author: Teacher;
+
+  equals(question: Question): boolean {
+    return this.id === question.id;
+  }
 }

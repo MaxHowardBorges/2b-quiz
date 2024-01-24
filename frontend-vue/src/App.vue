@@ -11,14 +11,14 @@
 <script setup>
   import HeaderBlock from '@/components/layout/HeaderBlock.vue';
   import FooterBlock from '@/components/layout/FooterBlock.vue';
-  import { onMounted } from 'vue';
+  import { onBeforeMount } from 'vue';
   import { useActivityStore } from '@/stores/activityStore';
   import { useUserStore } from '@/stores/userStore';
 
   const activityStore = useActivityStore();
   const userStore = useUserStore();
 
-  onMounted(async () => {
+  onBeforeMount(async () => {
     document.addEventListener('click', () => {
       activityStore.updateActivityTime();
     });
@@ -28,6 +28,7 @@
     if (!userStore.interval) {
       userStore.intervalChecker();
     }
+    document.title = 'Système de Vote en Direct';
   });
 </script>
 

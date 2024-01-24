@@ -9,7 +9,7 @@
         <b>{{ question.content }}</b>
       </p>
       <v-spacer></v-spacer>
-      <div v-if="global || global === 0" class="mt-3 mr-5 text-h5">
+      <div v-if="global || global === 0" class="mt-3 ml-3 mr-5 text-h5">
         Taux de réussite:
         <br />
         {{ global }}/{{ total }}

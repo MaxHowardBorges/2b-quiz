@@ -115,6 +115,7 @@
   import { ValidationError } from '@/utils/valdiationError';
   import SessionSetting from '@/components/session/SessionSetting.vue';
   import { AccessType } from '@/utils/accesType';
+  import router from '@/router';
 
   export default {
     name: 'CreateSession',
@@ -211,8 +212,16 @@
                   selectedUsersId,
                   selectedGroupsId,
                 );
+                await router.replace({
+                  name: 'SessionRouted',
+                  params: { idSession: this.sessionStore.idSession },
+                });
               } else {
                 await this.sessionStore.createSession(settings);
+                await router.replace({
+                  name: 'SessionRouted',
+                  params: { idSession: this.sessionStore.idSession },
+                });
               }
             } catch (error) {
               if (error instanceof ValidationError) {

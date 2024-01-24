@@ -1,14 +1,4 @@
 <template>
-  <error-dialog
-    title="The Server is offline"
-    content="Please, try later."
-    ref="dialogError"></error-dialog>
-
-  <error-snackbar
-    title="Error while connecting to the session"
-    :content="errorSnackbarContent"
-    ref="errorSnackbar"></error-snackbar>
-
   <v-sheet
     max-width="450px"
     min-width="150px"
@@ -45,8 +35,7 @@
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
   import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import { useSessionStore } from '@/stores/sessionStore';
-  import { ValidationError } from '@/utils/valdiationError';
-  import { useSessionEventStore } from '@/stores/sessionEventStore';
+  import router from '@/router';
   import router from '@/router';
 
   export default {
@@ -60,29 +49,19 @@
     components: { ErrorSnackbar, ErrorDialog },
     data() {
       return {
-        errorSnackbarContent: '',
         idSession: ref(''),
         loading: false,
-        snackbarError: ref(false),
       };
     },
     emits: ['joined-session'],
     methods: {
       async handleJoinSession() {
         this.loading = true;
-        try {
-          const isStarted = await this.sessionStore.joinSession(this.idSession);
-          this.$emit('joined-session', isStarted, this.idSession);
-          const sessionEventStore = useSessionEventStore();
-          sessionEventStore.connectToSSEStudent();
-        } catch (error) {
-          if (error instanceof ValidationError) {
-            this.errorSnackbarContent = error.message;
-            this.$refs.errorSnackbar.setSnackbarError(true);
-          } else {
-            this.$refs.dialogError.setDialogError(true);
-          }
-        }
+        await router.replace({
+          name: 'SessionRouted',
+          params: { idSession: this.idSession.toString() },
+        });
+        router.go(0);
         this.loading = false;
       },
       async redirectToSessionHistory() {

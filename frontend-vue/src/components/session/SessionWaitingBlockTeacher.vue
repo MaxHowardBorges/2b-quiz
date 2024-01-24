@@ -17,7 +17,10 @@
   <h1>Waiting participants...</h1>
   <div class="session-info">
     <p>Session ID: {{ sessionStore.idSession }}</p>
-    <img alt="Qr code" src="../../assets/QR_CODE.png" style="width: 200px" />
+    <qrcode-vue :value="value" :size="size" />
+    <p>
+      <a>{{ getCurrentLocation() }}</a>
+    </p>
   </div>
 
   <div>
@@ -53,10 +56,11 @@
   import SessionSetting from '@/components/session/SessionSetting.vue';
   import SetSettingsDialog from '@/components/session/SetSettingsDialog.vue';
   import router from '@/router';
+  import QrcodeVue from 'qrcode.vue';
 
   export default {
     name: 'SessionWaitingBlockTeacher',
-    components: { SetSettingsDialog, SessionSetting },
+    components: { SetSettingsDialog, SessionSetting, QrcodeVue },
     setup() {
       const sessionStore = useSessionStore();
 
@@ -73,8 +77,20 @@
         dialogVisible: false,
       };
     },
+    data() {
+      return {
+        value: this.getCurrentLocation() + this.sessionStore.idSession,
+        size: 200,
+      };
+    },
     emits: ['session-start'],
     methods: {
+      getCurrentLocation() {
+        return window.location.origin + this.$route.path;
+      },
+      async copyLinkToClipboard() {
+        await navigator.clipboard.writeText(this.value);
+      },
       async cancelSession() {
         this.dialogVisible = true;
       },
