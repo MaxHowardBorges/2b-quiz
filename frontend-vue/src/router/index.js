@@ -72,6 +72,13 @@ const routes = [
       idSession: route.query.idSession,
     }),
   },
+  {
+    path: '/group',
+    name: 'group',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/GroupView.vue'),
+    meta: { inMenu: true },
+  },
 ];
 
 const router = createRouter({

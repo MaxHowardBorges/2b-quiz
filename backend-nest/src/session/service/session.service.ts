@@ -33,6 +33,7 @@ import { ResultsDto } from '../dto/results.dto';
 import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
 import { ResultsHostDto } from '../dto/resultsHost.dto';
 import { ResultsSettingsDto } from '../dto/resultsSettings.dto';
+import { UserService } from '../../user/service/user.service';
 
 @Injectable()
 export class SessionService {
@@ -40,6 +41,7 @@ export class SessionService {
   constructor(
     private questionService: QuestionService,
     private questionnaryService: QuestionnaryService,
+    private userService: UserService,
     private answerMapper: AnswerMapper,
     private readonly sessionMapper: SessionMapper,
     private eventService: EventService,
@@ -171,7 +173,13 @@ export class SessionService {
         this.joinParticipant(session, user);
         break;
       case AccessTypeEnum.Private:
-        if (session.whitelist.includes(user.id)) {
+        if (
+          session.whitelist.includes(user.id) ||
+          session.whitelistGroups.some(
+            async (groupId) =>
+              await this.userService.isAlreadyInGroup(groupId, user.id),
+          )
+        ) {
           this.joinParticipant(session, user);
         } else {
           throw new UserNotInWhitelistException();

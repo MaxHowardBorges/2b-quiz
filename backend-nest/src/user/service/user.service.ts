@@ -11,12 +11,19 @@ import { UserNotFoundException } from '../../auth/exception/userNotFound.excepti
 import { NotValidatedUserException } from '../exception/notValidatedUser.exception';
 import { SortUserParam } from '../constants/sortUserParam.enum';
 import { SortOrder } from '../../constants/sortOrder.enum';
+import { Group } from '../entity/group.entity';
+import { GroupNotFoundException } from '../../questionnary/exception/groupNotFound.exception';
+import { AdminCantJoinException } from '../exception/adminCantJoin.exception';
+import { GroupMapper } from '../mapper/group.mapper';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Group)
+    private readonly groupRepository: Repository<Group>,
+    private readonly teacherMapper: GroupMapper,
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
     @InjectRepository(Teacher)
@@ -78,7 +85,41 @@ export class UserService {
   }
 
   async getUser(id: number) {
-    return await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  async getStudent(id: number) {
+    const user = <Student>await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['joinedGroups'],
+    });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
+  }
+
+  async getUserWithGroup(idUser: number) {
+    if (
+      (<User>(
+        await this.userRepository.findOne({ where: { id: idUser } })
+      )).getUserType() == UserType.TEACHER
+    ) {
+      return await this.userRepository.findOne({
+        relations: ['joinedGroups', 'createdGroups'],
+        where: { id: idUser },
+      });
+    }
+    return await this.userRepository.findOne({
+      relations: ['joinedGroups'],
+      where: { id: idUser },
+    });
   }
 
   async getUserByUsername(username: string, deleted: boolean = false) {
@@ -198,5 +239,75 @@ export class UserService {
         id: Not(user.id),
       },
     });
+  }
+
+  async createGroup(name: string, teacher: Teacher) {
+    const group: Group = new Group();
+    group.groupName = name;
+    group.tabUsers = [];
+    group.teacher = teacher;
+    await this.groupRepository.save(group);
+    return group;
+  }
+
+  async deleteGroup(idGroup: number) {
+    const group = await this.getGroup(idGroup);
+    group.tabUsers = [];
+    await this.groupRepository.save(group);
+    await this.groupRepository.delete(idGroup);
+
+    return !!group;
+  }
+
+  async getGroup(idGroup: number) {
+    const group = await this.groupRepository.findOne({
+      relations: ['teacher', 'tabUsers'],
+      where: { id: idGroup },
+    });
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+    return group;
+  }
+
+  async addUserToGroup(idGroup: number, idUser: number) {
+    const group = await this.getGroup(idGroup);
+    const newUser = await this.getUser(idUser);
+
+    if (newUser.getUserType() === UserType.ADMIN) {
+      throw new AdminCantJoinException();
+    }
+    group.tabUsers.push(newUser);
+    await this.groupRepository.save(group);
+
+    return !!(group && newUser);
+  }
+
+  async removeUserFromGroup(idGroup: number, idUser: number) {
+    const group = await this.getGroup(idGroup);
+    const user = await this.getUser(idUser);
+
+    group.tabUsers = group.tabUsers.filter((tabUser) => tabUser.id !== user.id);
+    await this.groupRepository.save(group);
+
+    return !!(group && user);
+  }
+
+  async getGroupsFromTeacher(teacher: Teacher) {
+    return (<Teacher>await this.userRepository.findOne({
+      where: { id: teacher.id },
+      relations: ['createdGroups.tabUsers'],
+    })).createdGroups;
+  }
+
+  async isGroupFromTeacher(idGroup: number, user: Teacher) {
+    const group = await this.getGroup(idGroup);
+    return group.teacher.id === user.id;
+  }
+
+  async isAlreadyInGroup(idGroup: number, idUser: number) {
+    const group = await this.getGroup(idGroup);
+    const newUser = await this.getUser(idUser);
+    return group.tabUsers.some((user) => user.id === newUser.id);
   }
 }

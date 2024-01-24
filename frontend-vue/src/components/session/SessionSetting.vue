@@ -151,6 +151,7 @@
   import { useUserStore } from '@/stores/userStore';
   import { SessionType } from '@/utils/sessionType';
   import { useSessionStore } from '@/stores/sessionStore';
+  import { useGroupStore } from '@/stores/groupStore';
 
   export default {
     name: 'SessionSetting',
@@ -193,8 +194,8 @@
         groups: [],
         headersGroups: [
           { title: 'ID', key: 'id' },
-          { title: 'Name', key: 'name' },
-          { title: 'Nb Users', key: 'nb' },
+          { title: 'Name', key: 'groupName' },
+          { title: 'Nb Users', key: 'nbTabUsers' },
           { title: 'Selected', key: 'selected' },
         ],
         headers: [
@@ -209,7 +210,8 @@
     setup() {
       const userStore = useUserStore();
       const sessionStore = useSessionStore();
-      return { userStore, sessionStore };
+      const groupStore = useGroupStore();
+      return { userStore, sessionStore, groupStore };
     },
     async beforeMount() {
       await this.getUsersAndGroups();
@@ -235,8 +237,7 @@
       async getUsersAndGroups() {
         this.students = await this.userStore.getStudentForTeacher();
         this.teachers = await this.userStore.getTeacherForTeacher();
-        //TODO get groups
-        this.groups = [];
+        this.groups = await this.groupStore.getGroups();
       },
       isIdInWhitelist(id) {
         if (!this.sessionStore.whitelist && !this.sessionStore.whitelistGroups)
