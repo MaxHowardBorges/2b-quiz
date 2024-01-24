@@ -239,9 +239,11 @@
         this.groups = [];
       },
       isIdInWhitelist(id) {
+        if (!this.sessionStore.whitelist && !this.sessionStore.whitelistGroups)
+          return false;
         return (
-          this.sessionStore.whitelist.includes(id) ||
-          this.sessionStore.whitelistGroups.includes(id)
+          this.sessionStore.whitelist?.includes(id) ||
+          this.sessionStore.whitelistGroups?.includes(id)
         );
       },
       openSelectionDialog() {

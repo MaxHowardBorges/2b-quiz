@@ -155,6 +155,7 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER])
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Get('/stopSession') //TODO replace with /:idSession/
   async stopSession(
     @Req() request: UserRequest,
@@ -162,8 +163,8 @@ export class SessionController {
   ) {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
+    await this.sessionService.stopSession(idSession);
     await this.sessionService.deleteQuestionnary(idSession);
-    return HttpStatus.NO_CONTENT;
   }
 
   @Roles([UserType.TEACHER])

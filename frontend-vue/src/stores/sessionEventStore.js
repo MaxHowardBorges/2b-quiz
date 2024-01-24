@@ -90,6 +90,7 @@ export const useSessionEventStore = defineStore('sessionEvent', {
     },
     listenToEvents() {
       const eventSource = this.eventSource;
+      const sessionStore = useSessionStore();
       if (eventSource) {
         eventSource.onmessage = async (message) => {
           switch (message.data) {
@@ -99,8 +100,10 @@ export const useSessionEventStore = defineStore('sessionEvent', {
             case Events.END_SESSION:
               this.loadEnd();
               break;
+            case Events.PREMATURE_END_SESSION:
+              sessionStore.disconnectFromSession('Session ended by host');
+              break;
             case ObserverEvents.NEW_DISPLAY_SETTINGS:
-              const sessionStore = useSessionStore();
               if (sessionStore.isDisplay) {
                 await sessionStore.getSessionDisplaySettings();
               }

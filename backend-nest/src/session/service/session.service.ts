@@ -317,6 +317,7 @@ export class SessionService {
   //delete questionnary of a session only with idsession
   async deleteQuestionnary(idSession: string) {
     const session = this.getSessionOrThrow(idSession);
+    if (session.questionnary == undefined) return;
     await this.questionnaryService.deleteQuestionnary(session.questionnary.id);
   }
 
@@ -685,5 +686,15 @@ export class SessionService {
     session.isResult = body.isResult;
     session.isResponses = body.isResponses;
     await this.sessionRepository.save(session);
+  }
+
+  async stopSession(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    session.endSession = true;
+    this.eventService.sendEvent(
+      EventParticipantEnum.PREMATURE_END_SESSION,
+      idSession,
+    );
+    this.eventService.closeSessionGroup(idSession);
   }
 }

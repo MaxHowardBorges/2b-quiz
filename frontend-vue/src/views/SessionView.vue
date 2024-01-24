@@ -98,6 +98,7 @@
     },
     setup() {
       const sessionStore = useSessionStore();
+      sessionStore.$reset();
       const userStore = useUserStore();
       return {
         sessionStore,
@@ -123,9 +124,9 @@
     methods: {
       subscribeToEvents() {
         this.subscribe = this.sessionStore.$subscribe((mutation, state) => {
+          console.log(this.ended, state.ended);
           if (state.ended !== this.ended) {
             this.ended = true;
-            this.sessionStore.sessionEnd();
           } else if (
             this.echoQuestion !== state.question &&
             this.sessionStore.isParticipant

@@ -36,7 +36,6 @@ export async function sendAnswer(body, token) {
 }
 
 export async function createSession(token, body) {
-  console.log(body);
   return await fetch(import.meta.env.VITE_API_URL + '/session/create', {
     method: 'POST',
     headers: {

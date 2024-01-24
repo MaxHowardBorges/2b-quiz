@@ -1,6 +1,7 @@
 export const Events = {
   NEXT_QUESTION: 'next_question',
   END_SESSION: 'end_session',
+  PREMATURE_END_SESSION: 'premature_end_session',
 };
 
 export const HostEvents = {
