@@ -108,6 +108,7 @@ export class SessionMapper {
   mapCurrentSessionDto(sessionTemp: SessionTemp): CurrentSessionDto {
     return {
       idSession: sessionTemp.id,
+      teacherUsername: sessionTemp.host.username,
     };
   }
 
