@@ -19,6 +19,7 @@ describe('QuestionnaryService', () => {
 
   // TODO deplace questionnary/question generation in /test/mock
   const questionnary: Questionnary = {
+    isCompilated: false,
     id: 15,
     title: 'morocco',
     author: mockTeacher,
@@ -34,6 +35,9 @@ describe('QuestionnaryService', () => {
       tags: [],
       author: mockTeacher,
       originalId: null,
+      equals(question: Question): boolean {
+        return this.id === question.id;
+      },
     },
     {
       id: 37,
@@ -44,6 +48,9 @@ describe('QuestionnaryService', () => {
       tags: [],
       author: mockTeacher,
       originalId: null,
+      equals(question: Question): boolean {
+        return this.id === question.id;
+      },
     },
     {
       id: 38,
@@ -54,6 +61,9 @@ describe('QuestionnaryService', () => {
       tags: [],
       author: mockTeacher,
       originalId: null,
+      equals(question: Question): boolean {
+        return this.id === question.id;
+      },
     },
   ];
 

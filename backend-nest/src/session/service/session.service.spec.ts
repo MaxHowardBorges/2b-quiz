@@ -13,49 +13,24 @@ import { generateTeacherMock } from '../../../test/mock/user.mock';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
 import { DisplaySettingsObject } from '../object/displaySettings.object';
 import { SettingsObject } from '../object/settings.object';
+import { TestBed } from '@automock/jest';
+import { UserService } from '../../user/service/user.service';
+import { SessionMapper } from '../mapper/session.mapper';
+import { Repository } from 'typeorm';
+import { Session } from '../entity/session.entity';
+import { UserSession } from '../entity/userSession.entity';
 
 describe('SessionService', () => {
   let service: SessionService;
-  let questionService: QuestionService;
-  let questionnaryService: QuestionnaryService;
-  let answerMapper: AnswerMapper;
-  let eventService: EventService;
+  let questionService: jest.Mocked<QuestionService>;
+  let questionnaryService: jest.Mocked<QuestionnaryService>;
+  let userService: jest.Mocked<UserService>;
+  let answerMapper: jest.Mocked<AnswerMapper>;
+  let eventService: jest.Mocked<EventService>;
+  let sessionMapper: jest.Mocked<SessionMapper>;
+  let sessionRepository: jest.Mocked<Repository<Session>>;
+  let userSessionRepository: jest.Mocked<Repository<UserSession>>;
   let sessionMap: Map<string, SessionTemp>;
-
-  const mockQuestionService = {
-    createQuestion: jest.fn(),
-    deleteQuestions: jest.fn(),
-    deleteQuestion: jest.fn(),
-    findQuestion: jest.fn(),
-    findQuestions: jest.fn(),
-    modifyQuestion: jest.fn(),
-    findAllWithQuestion: jest.fn(),
-  };
-
-  const mockQuestionnaryService = {
-    findQuestionnary: jest.fn(),
-    findQuestionsFromIdQuestionnary: jest.fn(),
-    findQuestionnaryWithQuestionsId: jest.fn(),
-  };
-
-  const mockQuestionnaryRepository = {
-    findOne: jest.fn(),
-  };
-
-  const mockMap = {
-    set: jest.fn(),
-    get: jest.fn(),
-  };
-
-  const mockAnswerMapper = {
-    mapAnswersStudentDtos: jest.fn(),
-  };
-
-  const mockEventService = {
-    createSessionGroup: jest.fn(),
-    sendEvent: jest.fn(),
-    closeSessionGroup: jest.fn(),
-  };
 
   const hostTeacher = generateTeacherMock();
 
@@ -64,6 +39,7 @@ describe('SessionService', () => {
     title: 'morocco',
     author: hostTeacher,
     questions: [],
+    isCompilated: false,
   };
   const questions: Question[] = [
     {
@@ -74,6 +50,9 @@ describe('SessionService', () => {
       answers: [],
       tags: [],
       author: null,
+      equals(question: Question): boolean {
+        return this.id === question.id;
+      },
     },
     {
       id: 37,
@@ -83,6 +62,9 @@ describe('SessionService', () => {
       answers: [],
       tags: [],
       author: null,
+      equals(question: Question): boolean {
+        return this.id === question.id;
+      },
     },
     {
       id: 38,
@@ -92,6 +74,9 @@ describe('SessionService', () => {
       answers: [],
       tags: [],
       author: null,
+      equals(question: Question): boolean {
+        return this.id === question.id;
+      },
     },
   ];
 
@@ -186,63 +171,18 @@ describe('SessionService', () => {
   questionnaryTest.author = hostTeacher;
   questionnaryTest.title = 'morocco';
 
-  const session: Session = {
-    whitelistGroups: [],
-    getCurrentQuestion(): Question {
-      return undefined;
-    },
-    getNbAnsweredForCurrentQuestion(): number {
-      return 0;
-    },
-    hasUser(user: ParticipantInterface): boolean {
-      return false;
-    },
-    id: '111111',
-    questionnaryList: [],
-    questionnaryNumber: 0,
-    questionNumber: 0,
-    connectedUser: null,
-    userAnswers: null,
-    endSession: false,
-    host: hostTeacher,
-    settings: new SettingsObject(new DisplaySettingsObject(true, true)),
-    whitelist: null,
-  };
-  session.questionnaryList.push(questionnary);
+  beforeAll(() => {
+    const { unit, unitRef } = TestBed.create(SessionService).compile();
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SessionService,
-        {
-          provide: QuestionService,
-          useValue: mockQuestionService,
-        },
-        {
-          provide: QuestionnaryService,
-          useValue: mockQuestionnaryService,
-        },
-        {
-          provide: AnswerMapper,
-          useValue: mockAnswerMapper,
-        },
-        {
-          provide: EventService,
-          useValue: mockEventService,
-        },
-        {
-          provide: Map<string, SessionTemp>,
-          useValue: mockMap,
-        },
-      ],
-    }).compile();
-
-    service = module.get<SessionService>(SessionService);
-    answerMapper = module.get<AnswerMapper>(AnswerMapper);
-    questionService = module.get<QuestionService>(QuestionService);
-    questionnaryService = module.get<QuestionnaryService>(QuestionnaryService);
-    eventService = module.get<EventService>(EventService);
-    sessionMap = module.get<Map<string, SessionTemp>>(Map<string, SessionTemp>);
+    service = unit;
+    questionService = unitRef.get(QuestionService);
+    questionnaryService = unitRef.get(QuestionnaryService);
+    userService = unitRef.get(UserService);
+    answerMapper = unitRef.get(AnswerMapper);
+    eventService = unitRef.get(EventService);
+    sessionMapper = unitRef.get(SessionMapper);
+    sessionRepository = unitRef.get('SessionRepository');
+    userSessionRepository = unitRef.get('UserSessionRepository');
   });
 
   describe('initializeSession', () => {
