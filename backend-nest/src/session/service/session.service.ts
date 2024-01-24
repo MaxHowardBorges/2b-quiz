@@ -507,10 +507,10 @@ export class SessionService {
     const usersSession = session.userSession;
     for (const userSession of usersSession) {
       if (userSession.student.id === masterUser.id) {
-        isCurrentUser = !isCurrentUser;
+        isCurrentUser = true;
         resultTab.username = userSession.student.username;
       } else {
-        isCurrentUser = !isCurrentUser;
+        isCurrentUser = false;
       }
       for (const question of questionnary.questions) {
         const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
