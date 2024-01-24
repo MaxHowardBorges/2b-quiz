@@ -3,6 +3,7 @@ import {
   addToWhitelist,
   createSession,
   getCurrentQuestion,
+  getCurrentSessions,
   getNextQuestion,
   getResults,
   getSessionDisplaySettings,
@@ -213,6 +214,7 @@ export const useSessionStore = defineStore('session', {
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.status = await response.json();
+      console.log(this.status);
     },
     disconnectFromSession(error) {
       const sessionEventStore = useSessionEventStore();
@@ -282,6 +284,13 @@ export const useSessionStore = defineStore('session', {
       );
       await throwIfNotOK(response, 204);
       userStore.updateToken(response.headers.get('Authorization'));
+    },
+    async getCurrentSessions() {
+      const userStore = useUserStore();
+      const response = await getCurrentSessions(userStore.getToken());
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
     },
   },
 });

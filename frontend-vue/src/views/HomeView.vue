@@ -20,6 +20,7 @@
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Join session</p>
       </v-btn>
+      <session-activity></session-activity>
     </div>
     <new-user-block v-if="userStore.isNotChoose" />
     <menu-teacher
@@ -40,10 +41,12 @@
   import AdminBlock from '@/components/admin/AdminBlock.vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
   import router from '@/router';
+  import SessionActivity from '@/components/session/activity/SessionActivity.vue';
 
   export default {
     name: 'HomeView',
     components: {
+      SessionActivity,
       ErrorDialog,
       AdminBlock,
       MenuTeacher,

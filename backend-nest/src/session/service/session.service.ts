@@ -143,26 +143,6 @@ export class SessionService {
     return [...this.sessionMap];
   }
 
-  async getQuestionList(idSession: string) {
-    if (this.sessionMap.has(idSession) == false) {
-      throw new IdSessionNoneException();
-    }
-    const currentSession = this.sessionMap.get(idSession);
-    const questionnary = currentSession.questionnary;
-    const questionTab =
-      await this.questionnaryService.findQuestionsFromIdQuestionnary(
-        questionnary.id,
-      );
-    questionnary.questions = [];
-    for (const question of questionTab) {
-      questionnary.questions.push(
-        await this.questionService.findQuestion(question.id),
-      );
-    }
-
-    return questionnary.questions;
-  }
-
   join(idSession: string, user: ParticipantInterface): void {
     if (!this.sessionMap.has(idSession)) {
       throw new IdSessionNoneException();
@@ -327,19 +307,6 @@ export class SessionService {
     const session = this.getSessionOrThrow(idSession);
     if (session.questionnary == undefined) return;
     await this.questionnaryService.deleteQuestionnary(session.questionnary.id);
-  }
-
-  getMapUser(idSession: string) {
-    //map userAnswers with connectedUser
-    const session = this.sessionMap.get(idSession);
-    const mapUser = new Map<
-      ParticipantInterface,
-      Map<Question, Answer | string | Answer[]>
-    >();
-    for (const user of session.connectedUser) {
-      mapUser.set(user, session.userAnswers.get(user.id));
-    }
-    return mapUser;
   }
 
   isHost(idSession: string, teacher: Teacher): boolean {
@@ -714,5 +681,16 @@ export class SessionService {
       idSession,
     );
     this.eventService.closeSessionGroup(idSession);
+  }
+
+  async getSessionWhereUserIsInWhitelist(user: User) {
+    const groups = await this.userService.getGroups(user);
+    return [...this.sessionMap.values()].filter(
+      (session) =>
+        session.whitelist.includes(user.id) ||
+        session.whitelistGroups.some((groupId) =>
+          groups.some((group) => group.id === groupId),
+        ),
+    );
   }
 }

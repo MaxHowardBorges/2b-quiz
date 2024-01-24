@@ -82,7 +82,6 @@ export class SessionTemp {
         if (this.getCurrentQuestionInMap(questionMap, this.questionNumber))
           sum++;
     }
-    // TODO: Not work see branch dev/pri-session-types
     return sum;
   }
 }

@@ -14,6 +14,7 @@ import { SessionTemp } from '../temp/sessionTemp';
 import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
 import { Question } from '../../question/entity/question.entity';
 import { QuestionResultDto } from '../dto/questionResult.dto';
+import { CurrentSessionDto } from '../dto/currentSession.dto';
 
 @Injectable()
 export class SessionMapper {
@@ -102,6 +103,18 @@ export class SessionMapper {
       isResponses: sessionTemp.settings.isResponses,
       host: sessionTemp.host,
     };
+  }
+
+  mapCurrentSessionDto(sessionTemp: SessionTemp): CurrentSessionDto {
+    return {
+      idSession: sessionTemp.id,
+    };
+  }
+
+  mapCurrentSessionDtoList(sessionTemps: SessionTemp[]): CurrentSessionDto[] {
+    return sessionTemps.map((sessionTemp) =>
+      this.mapCurrentSessionDto(sessionTemp),
+    );
   }
 
   mapQuestionResult(question: Question): QuestionResultDto {

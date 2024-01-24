@@ -204,3 +204,13 @@ export async function setSessionResultSettings(token, idSession, body) {
     },
   );
 }
+
+export async function getCurrentSessions(token) {
+  return await fetch(import.meta.env.VITE_API_URL + `/session/current`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

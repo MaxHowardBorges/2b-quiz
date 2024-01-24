@@ -167,11 +167,12 @@ export class SessionController {
     await this.sessionService.deleteQuestionnary(idSession);
   }
 
-  @Roles([UserType.TEACHER])
-  @Get('/getMap2')
-  async getMap2() {
-    //TODO remove
-    return this.sessionService.getMap();
+  @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/current')
+  async getCurrentSessions(@Req() request: UserRequest) {
+    return this.sessionMapper.mapCurrentSessionDtoList(
+      await this.sessionService.getSessionWhereUserIsInWhitelist(request.user),
+    );
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])

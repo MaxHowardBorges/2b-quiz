@@ -18,7 +18,9 @@
     </div>
     <div>
       <p v-if="sessionStore.status.nbAnswered !== null">
-        {{ sessionStore.status.nbAnswered }}/{{ sessionStore.status.nbJoined }}
+        {{
+          sessionStore.status.nbAnswered ? sessionStore.status.nbAnswered : 0
+        }}/{{ sessionStore.status.nbJoined }}
         user answered
       </p>
       <p v-else>{{ sessionStore.status.nbJoined }} user joined</p>

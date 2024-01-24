@@ -52,6 +52,6 @@ export class Question {
   author: Teacher;
 
   equals(question: Question): boolean {
-    return this.id === question.id;
+    return this.content === question.content && this.type === question.type;
   }
 }

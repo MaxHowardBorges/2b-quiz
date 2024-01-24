@@ -8,7 +8,7 @@
     @click="rail = false">
     <v-list>
       <v-list-item :nav="true">
-        <v-list-item-title class="text-h4 py-4">Activity</v-list-item-title>
+        <v-list-item-title class="text-h4 py-4">Invitations</v-list-item-title>
         <template v-slot:prepend>
           <v-btn variant="text" @click.stop="rail = !rail" icon>
             <v-fade-transition>
@@ -35,47 +35,29 @@
 
 <script>
   import SessionActivityItem from '@/components/session/activity/SessionActivityItem.vue';
+  import { useSessionStore } from '@/stores/sessionStore';
 
   export default {
     name: 'SessionActivity',
     components: { SessionActivityItem },
     data() {
+      const sessionStore = useSessionStore();
       return {
         drawer: true,
         rail: true,
-        sessions: [
-          {
-            title: 'Session title',
-            end: '2024-02-01T00:00:00',
-            idSession: 'DHFG51',
-          },
-          {
-            title: 'Session title',
-            end: '2024-02-01T00:00:00',
-            idSession: 'DHFG51',
-          },
-          {
-            title: 'Session title',
-            end: '2024-02-01T00:00:00',
-            idSession: 'DHFG51',
-          },
-          {
-            title: 'Session title',
-            end: '2024-02-01T00:00:00',
-            idSession: 'DHFG51',
-          },
-          {
-            title: 'Session title',
-            end: '2024-02-01T00:00:00',
-            idSession: 'DHFG51',
-          },
-          {
-            title: 'Session title',
-            end: '2024-02-01T00:00:00',
-            idSession: 'DHFG51',
-          },
-        ],
+        sessionStore,
+        sessions: [],
       };
+    },
+    async mounted() {
+      await this.getSessions();
+    },
+    methods: {
+      async getSessions() {
+        try {
+          this.sessions = await this.sessionStore.getCurrentSessions();
+        } catch (error) {}
+      },
     },
   };
 </script>
