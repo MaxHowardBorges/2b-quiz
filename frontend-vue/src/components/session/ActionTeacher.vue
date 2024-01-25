@@ -21,9 +21,11 @@
         {{
           sessionStore.status.nbAnswered ? sessionStore.status.nbAnswered : 0
         }}/{{ sessionStore.status.nbJoined }}
-        {{ $t('session.UsersAnswered')}}
+        {{ $t('session.UsersAnswered') }}
       </p>
-      <p v-else>{{ sessionStore.status.nbJoined }} {{ $t('session.UserJoined') }}</p>
+      <p v-else>
+        {{ sessionStore.status.nbJoined }} {{ $t('session.UserJoined') }}
+      </p>
     </div>
     <v-btn @click="cancelSession" class="btn" color="primary">
       {{ $t('session.EndSession') }}
@@ -59,6 +61,7 @@
     },
     data() {
       return {
+        nbAnswered: null,
         dialogVisible: false,
         loadingNextQuestion: false,
       };
@@ -101,7 +104,9 @@
     },
     emits: ['session-end'],
     watch: {
-      'sessionStore.status.nbAnswered': true,
+      'sessionStore.status.nbAnswered': function (newVal, oldVal) {
+        this.nbAnswered = newVal;
+      },
     },
   };
 </script>

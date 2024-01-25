@@ -133,9 +133,7 @@
                   :question="question"
                   :global="getAverage(question.id)"
                   :total="
-                    results.totalUsers
-                      ? results.totalUsers
-                      : results.usersResults.length
+                    !isHost() ? results.totalUsers : results.usersResults.length
                   "></question-item>
               </v-sheet>
             </template>
@@ -240,6 +238,7 @@
           usersResults: [],
           averagePerQuestion: [],
           teacherUsername: '',
+          totalUsers: 0,
         },
         user: {
           username: '',
@@ -254,6 +253,7 @@
     },
     async beforeMount() {
       await this.loadData();
+      console.log(this.results);
     },
     methods: {
       getTimeFromDate,
@@ -281,7 +281,7 @@
       },
       getAverage(id) {
         if (!this.isHost() && !this.results.globalResult) return null;
-        if (!this.isHost() && !this.results.averagePerQuestion) return null;
+        if (!this.results.averagePerQuestion) return null;
         return this.results.averagePerQuestion.find((q) => q.question === id)
           .average;
       },
