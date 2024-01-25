@@ -68,8 +68,8 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/UserView.vue'),
   },
   {
-    path: '/questionary',
-    name: 'questionary',
+    path: '/questionnary',
+    name: 'questionnary',
     props: (route) => ({
       toCreateBool: route.query.toCreateBool === 'true',
       toBankBool: route.query.toBankBool === 'true',

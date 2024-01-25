@@ -1,16 +1,16 @@
 <template>
-  <v-sheet class="mx-auto bg-transparent">
+  <v-sheet class="mx-auto bg-transparent d-flex flex-wrap justify-center">
     <v-sheet
       max-width="1400px"
       min-width="400px"
       elevation="5"
       rounded="lg"
-      class="d-flex flex-column my-2 pa-3 mx-4">
+      class="d-flex flex-column my-2 pa-3 mx-4 align-center flex-1-0-100">
       <div class="mb-4">
         <div
           style="align-self: start"
           id="divButton"
-          class="d-flex justify-start">
+          class="d-flex justify-center">
           <v-btn id="ic" icon="undo" @click="returnHistory"></v-btn>
         </div>
         <b>{{ question }}</b>
@@ -175,7 +175,8 @@
                 <tr>
                   <td>{{ item.username }}</td>
                   <td
-                    v-for="question in item.questions"
+                    v-for="(question, index) in item.questions"
+                    :key="index"
                     :class="
                       question.studentAnswers.length === 0 ||
                       !question.hasAnsweredCorrectly
@@ -271,7 +272,9 @@
             this.isResult = settings.isResult;
             this.isResponses = settings.isResponses;
           }
-        } catch (e) {}
+        } catch (e) {
+          alert('Erreur lors du chargement des résultats');
+        }
       },
       isHost() {
         if (this.results.username) return false;

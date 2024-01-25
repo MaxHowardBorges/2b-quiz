@@ -32,8 +32,6 @@
 
 <script>
   import { ref } from 'vue';
-  import ErrorDialog from '@/components/commun/ErrorDialog.vue';
-  import ErrorSnackbar from '@/components/commun/ErrorSnackbar.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import router from '@/router';
 
@@ -45,7 +43,6 @@
         sessionStore,
       };
     },
-    components: { ErrorSnackbar, ErrorDialog },
     data() {
       return {
         idSession: ref(''),
@@ -64,7 +61,7 @@
         this.loading = false;
       },
       async redirectToSessionHistory() {
-        await router.push('/session-history');
+        await router.push('/history');
       },
     },
   };

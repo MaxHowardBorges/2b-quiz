@@ -85,8 +85,8 @@
     name: 'MenuTeacherBlock',
     components: { SessionActivity, ErrorSnackbar, ErrorDialog },
     props: {
-      dialogError: false,
-      errorSnackbar: false,
+      dialogError: { type: Boolean, default: false },
+      errorSnackbar: { type: Boolean, default: false },
     },
     setup() {
       const sessionStore = useSessionStore();
@@ -151,13 +151,13 @@
       },
       handleCreateQuestionnary() {
         router.push({
-          name: 'questionary',
+          name: 'questionnary',
           query: { toCreateBool: true, toBankBool: false },
         });
       },
       handleGoToQuestionBank() {
         router.push({
-          name: 'questionary',
+          name: 'questionnary',
           query: { toCreateBool: false, toBankBool: true },
         });
       },
