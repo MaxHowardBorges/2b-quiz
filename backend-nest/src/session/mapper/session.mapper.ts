@@ -6,14 +6,22 @@ import { AnswerQuestionDto } from '../dto/answerQuestion.dto';
 import { QuestionDto } from '../../question/dto/question.dto';
 import { AnswerDto } from '../../question/dto/answer.dto';
 import { ParticipantInterface } from '../../user/interface/participant.interface';
-import { Session } from '../session';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 import { QuestionnaryUsersAnswerMapDto } from '../dto/QuestionnaryUsersAnswerMap.dto';
+import { SessionDto } from '../dto/session.dto';
+import { SessionTemp } from '../temp/sessionTemp';
+import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
+import { Question } from '../../question/entity/question.entity';
+import { QuestionResultDto } from '../dto/questionResult.dto';
+import { CurrentSessionDto } from '../dto/currentSession.dto';
 
 @Injectable()
 export class SessionMapper {
-  constructor(private readonly answerMapper: AnswerMapper) {}
+  constructor(
+    private readonly answerMapper: AnswerMapper,
+    private readonly questionnaryMapper: QuestionnaryMapper,
+  ) {}
 
   mapCurrentQuestionDto(question: QuestionDto): CurrentQuestionDto {
     return {
@@ -67,7 +75,7 @@ export class SessionMapper {
     };
   }
 
-  mapSessionStatusDto(session: Session): SessionStatusDto {
+  mapSessionStatusDto(session: SessionTemp): SessionStatusDto {
     const sessionStatusDto = new SessionStatusDto();
     sessionStatusDto.nbJoined = session.connectedUser.size;
     sessionStatusDto.nbAnswered = session.getNbAnsweredForCurrentQuestion();
@@ -75,5 +83,49 @@ export class SessionMapper {
     sessionStatusDto.displaySettings = session.settings.displaySettings;
     sessionStatusDto.whitelist = session.whitelist;
     return sessionStatusDto;
+  }
+
+  //map sessionTemp into a dto with the same arguments, shoud return a sessionTempDto
+  mapSessionTempDto(sessionTemp: SessionTemp): SessionDto {
+    const questionnaryDto = this.questionnaryMapper.entityToQuestionnaryDto(
+      sessionTemp.questionnary,
+    );
+    return {
+      id: sessionTemp.id,
+      questionnary: questionnaryDto,
+      questionnaryNumber: sessionTemp.questionnaryNumber,
+      questionNumber: sessionTemp.questionNumber,
+      connectedUser: sessionTemp.connectedUser,
+      userAnswers: sessionTemp.userAnswers,
+      endSession: sessionTemp.endSession,
+      isResult: sessionTemp.settings.isResult,
+      isGlobal: sessionTemp.settings.isGlobal,
+      isResponses: sessionTemp.settings.isResponses,
+      host: sessionTemp.host,
+    };
+  }
+
+  mapCurrentSessionDto(sessionTemp: SessionTemp): CurrentSessionDto {
+    return {
+      idSession: sessionTemp.id,
+      teacherUsername: sessionTemp.host.username,
+    };
+  }
+
+  mapCurrentSessionDtoList(sessionTemps: SessionTemp[]): CurrentSessionDto[] {
+    return sessionTemps.map((sessionTemp) =>
+      this.mapCurrentSessionDto(sessionTemp),
+    );
+  }
+
+  mapQuestionResult(question: Question): QuestionResultDto {
+    return {
+      id: question.id,
+      content: question.content,
+      type: question.type,
+      correctAnswers: [],
+      studentAnswers: [],
+      hasAnsweredCorrectly: false,
+    };
   }
 }

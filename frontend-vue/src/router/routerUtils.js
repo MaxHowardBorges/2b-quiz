@@ -12,6 +12,9 @@ export function getPublicRoutes() {
 
 export function getAllRoutes(userRole) {
   return getRoutes().filter((route) => {
+    if (route.path.includes(':idSession')) {
+      route.path = route.path.replace(':idSession', '');
+    }
     if (route.meta.roles) {
       return route.meta.roles.includes(userRole);
     }

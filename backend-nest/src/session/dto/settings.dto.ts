@@ -11,4 +11,13 @@ export class SettingsDto {
   @IsNotEmpty()
   @Type(() => DisplaySettingsDto)
   displaySettings: DisplaySettingsDto;
+
+  @IsNotEmpty()
+  isResult: boolean;
+
+  @IsNotEmpty()
+  isGlobal: boolean;
+
+  @IsNotEmpty()
+  isResponses: boolean;
 }

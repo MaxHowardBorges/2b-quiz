@@ -11,11 +11,9 @@ import {
   Req,
   ValidationPipe,
 } from '@nestjs/common';
-import { Session } from '../session';
 import { CurrentQuestionDto } from '../dto/currentQuestion.dto';
 import { SessionService } from '../service/session.service';
 import { SessionMapper } from '../mapper/session.mapper';
-import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
 import { Roles } from '../../decorators/roles.decorator';
 import { UserType } from '../../user/constants/userType.constant';
 import { UserRequest } from '../../auth/config/user.request';
@@ -27,18 +25,18 @@ import { WhitelistDto } from '../dto/whitelist.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { IsNotParticipantException } from '../exception/isNotParticipant.exception';
 import { NextQuestionReturnDto } from '../dto/nextQuestionReturn.dto';
-import { SettingsDto } from '../dto/settings.dto';
 import { IdSessionNoneException } from '../exception/idSessionNone.exception';
 import { DisplaySettingsDto } from '../dto/displaySettings.dto';
 import { SessionStatusDto } from '../dto/sessionStatus.dto';
 import { CreateSessionDto } from '../dto/createSession.dto';
+import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
+import { ResultsSettingsDto } from '../dto/resultsSettings.dto';
 
 @Controller('session')
 export class SessionController {
   constructor(
     private sessionService: SessionService,
     private readonly sessionMapper: SessionMapper,
-    private readonly questionnaryMapper: QuestionnaryMapper,
   ) {}
 
   @Roles([UserType.TEACHER])
@@ -46,13 +44,15 @@ export class SessionController {
   async createSession(
     @Req() request: UserRequest,
     @Body(new ValidationPipe()) createSessionDto: CreateSessionDto,
-  ): Promise<Session> {
-    return this.sessionService.initializeSession(
-      request.user as Teacher,
-      createSessionDto.questionnaryList,
-      createSessionDto.settings,
-      createSessionDto.whitelist,
-      createSessionDto.whitelistGroups,
+  ) {
+    return this.sessionMapper.mapSessionTempDto(
+      await this.sessionService.initializeSession(
+        request.user as Teacher,
+        createSessionDto.questionnaryList,
+        createSessionDto.settings,
+        createSessionDto.whitelist,
+        createSessionDto.whitelistGroups,
+      ),
     );
   }
 
@@ -83,29 +83,96 @@ export class SessionController {
     );
   }
 
+  @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/getSessionsList')
+  async getSessionsList(@Req() request: UserRequest) {
+    //Return the results of the session
+    return await this.sessionService.getListSession(request.user);
+  }
+  @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/:idSession/result')
+  async getResults(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: number,
+  ) {
+    if (
+      await this.sessionService.isHostOfSession(
+        idSession,
+        request.user as Teacher,
+      )
+    )
+      return await this.sessionService.getResultsForHost(idSession);
+    else if (
+      await this.sessionService.isParticipantOfSession(idSession, request.user)
+    )
+      return await this.sessionService.getResults(idSession, request.user);
+    else throw new IsNotParticipantException();
+  }
+
   @Roles([UserType.TEACHER])
-  @Get('/getMap') //TODO replace with /:idSession/
-  async getMap(
+  @Get('/:idSession/result-settings')
+  async getResultsSettings(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: number,
+  ): Promise<ResultsSettingsDto> {
+    if (
+      !(await this.sessionService.isHostOfSession(
+        idSession,
+        request.user as Teacher,
+      ))
+    )
+      throw new IsNotHostException();
+    return await this.sessionService.getResultSettings(idSession);
+  }
+
+  @Roles([UserType.TEACHER])
+  @Patch('/:idSession/result-settings')
+  async setResultsSettings(
+    @Req() request: UserRequest,
+    @Param('idSession') idSession: number,
+    @Body(new ValidationPipe()) body: ResultsSettingsDto,
+  ) {
+    if (
+      !(await this.sessionService.isHostOfSession(
+        idSession,
+        request.user as Teacher,
+      ))
+    )
+      throw new IsNotHostException();
+    await this.sessionService.setResultSettings(idSession, body);
+  }
+
+  @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/endSession')
+  async saveSession(
     @Req() request: UserRequest,
     @Query('idsession') idSession: string,
   ) {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
-    const a = this.sessionService.getMapUser(idSession); //TODO refactor
-    this.sessionService.getMap();
-
-    return this.sessionMapper.mapQuestionnaryUsersAnswer(
-      this.questionnaryMapper.entityToQuestionnaryDtoTab(
-        await this.sessionService.getQuestionList(idSession),
-      ),
-      this.sessionMapper.mapUserAnswerDto(a),
-    );
+    await this.sessionService.saveSession(idSession);
+    return HttpStatus.NO_CONTENT;
   }
 
   @Roles([UserType.TEACHER])
-  @Get('/getMap2')
-  async getMap2() {
-    return this.sessionService.getMap();
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Get('/stopSession') //TODO replace with /:idSession/
+  async stopSession(
+    @Req() request: UserRequest,
+    @Query('idsession') idSession: string,
+  ) {
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
+      throw new IsNotHostException();
+    await this.sessionService.stopSession(idSession);
+    await this.sessionService.deleteQuestionnary(idSession);
+  }
+
+  @Roles([UserType.TEACHER, UserType.STUDENT])
+  @Get('/current')
+  async getCurrentSessions(@Req() request: UserRequest) {
+    return this.sessionMapper.mapCurrentSessionDtoList(
+      await this.sessionService.getSessionWhereUserIsInWhitelist(request.user),
+    );
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
@@ -146,7 +213,7 @@ export class SessionController {
   async setSessionSettings(
     @Req() request: UserRequest,
     @Param('idSession') idSession: string,
-    @Body(new ValidationPipe()) settings: SettingsDto,
+    @Body(new ValidationPipe()) settings: SettingsInSessionDto,
   ) {
     if (!this.sessionService.isSessionExists(idSession))
       throw new IdSessionNoneException();

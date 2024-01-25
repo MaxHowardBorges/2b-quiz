@@ -1,102 +1,143 @@
 <template>
-  <v-table class="table mt-7 text-center" hover="">
-    <thead>
-    <tr>
-      <th rowspan='2' class='thclass text-center'>Participant</th>
-      <th v-for="(questionnary, index) in sessionStore.results.questionnaries" :key="index" :colspan="questionnary.questions.length" class='thclass text-center'>
-        {{ questionnary.title }}
-      </th>
-    </tr>
-    <th class='thclass' id='questions' v-for="(question, index) in this.sessionStore.results.questionnaries.flatMap(questionnary => questionnary.questions)" :key="index">
-      <th class='text-center pa-2'>{{ question.content }}</th>
-    </th>
-    </thead>
-    <tbody>
-    <tr v-for="(participant, index) in sessionStore.results.usersAnswer" :key="index">
-      <td v-if="participant" class="text-center">{{ participant.username }}</td>
-      <td v-else class="text-center">No participant data available</td>
-      <td
-        id='answers'
-        v-for="(question, index) in sessionStore.results.questionnaries.flatMap(questionnary => questionnary.questions)"
-        :key="index"
-        :style="{
-          'background-color': (() => {
-            const questionType = question.type;
-            if (questionType === 'qcu' ||questionType === 'tof') {
-              return isAnswerCorrect(getAnswer(question.id, participant)) ? 'lightgreen' : 'tomato';
-            }else if(questionType === 'qcm' ){
-              return 'yellow'
-            } else {
-              return 'white';
-            }
-          })()
-        }"
-        class="text-left text-truncate">
-        {{ getAnswerContent(getAnswer(question.id, participant)) }}
-      </td>
-    </tr>
-    </tbody>
-  </v-table>
+  <v-sheet elevation="5" rounded="lg" class="d-flex flex-column my-2 pa-3">
+    <div class="mb-4">
+      <b>{{ question }}</b>
+      <div class="mt-4 mb-4">
+        <v-row>
+          <v-col>
+            <span>
+              <b>Date de création:</b>
+              {{ creationDate }}
+            </span>
+          </v-col>
+          <v-col>
+            <span>
+              <b>Créé par:</b>
+              {{ createdBy }}
+            </span>
+          </v-col>
+        </v-row>
+      </div>
+      <span class="spacer"></span>
+      <span class="spacer"></span>
+      <v-btn id="ic" @click="showGlobalResults" text>
+        Voir les résultats globaux
+      </v-btn>
+      <v-btn id="ic" @click="toggleDropdown" text>
+        Voir les réponses correctes
+      </v-btn>
+      <v-btn id="ic" @click="showStudentResponses" text>
+        Voir les réponses des étudiants
+      </v-btn>
+    </div>
+
+    <v-sheet class="list">
+      <!-- Dropdown menu -->
+      <v-list v-if="showDropdown" id="dropdown" class="mt-2">
+        <v-list-item-group>
+          <v-list-item v-for="(answer, index) in answers" :key="index">
+            <template #default>
+              <v-list-item-content>
+                <v-list-item-title class="text-h6">
+                  Question {{ index + 1 }}
+                </v-list-item-title>
+                {{ answer }}
+              </v-list-item-content>
+            </template>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+
+      <!-- Global Results -->
+      <v-sheet v-if="showGlobal" class="mt-2">
+        <v-list-item-group>
+          <v-list-item v-for="(answer, index) in answers2" :key="index">
+            <template #default>
+              <v-list-item-content>
+                <v-list-item-title class="text-h6">
+                  Question {{ index + 1 }}
+                </v-list-item-title>
+                {{ answer }}
+              </v-list-item-content>
+            </template>
+          </v-list-item>
+        </v-list-item-group>
+      </v-sheet>
+
+      <!-- Tableau des réponses des étudiants -->
+      <v-sheet v-if="showStudentResponsesTable" class="mt-2">
+        <v-data-table
+          :headers="studentResponsesHeaders"
+          :items="studentResponses"
+          hide-default-footer>
+          <template v-slot:items="props">
+            <td>{{ props.item.studentName }}</td>
+            <td>{{ props.item.answer1 }}</td>
+            <td>{{ props.item.answer2 }}</td>
+            <td>{{ props.item.answer3 }}</td>
+          </template>
+        </v-data-table>
+      </v-sheet>
+    </v-sheet>
+  </v-sheet>
 </template>
 
 <script>
-  import { useSessionStore } from '@/stores/sessionStore';
+  import { ref } from 'vue';
 
   export default {
-    name: 'ResultTable',
+    name: 'QuestionItem',
     setup() {
-      const sessionStore = useSessionStore();
       return {
-        sessionStore,
+        question: ref('Session 1'),
+        creationDate: ref('2024-01-11'),
+        createdBy: ref('Nom Prénom'),
+        showDropdown: ref(false),
+        showGlobal: ref(false),
+        showStudentResponsesTable: ref(false),
+        answers: ['Réponse 1', 'Réponse 2', 'Réponse 3'],
+        answers2: [
+          '30 % ont répondu A',
+          '25 % ont répondu B',
+          '45 % ont répondu C',
+        ],
+        studentResponsesHeaders: [
+          { text: 'Étudiant', value: 'studentName' },
+          { text: 'Réponse 1', value: 'answer1' },
+          { text: 'Réponse 2', value: 'answer2' },
+          { text: 'Réponse 3', value: 'answer3' },
+        ],
+        studentResponses: [
+          {
+            studentName: 'Étudiant 1',
+            answer1: 'Réponse A',
+            answer2: 'Réponse B',
+            answer3: 'Réponse C',
+          },
+          {
+            studentName: 'Étudiant 2',
+            answer1: 'Réponse B',
+            answer2: 'Réponse C',
+            answer3: 'Réponse A',
+          },
+          // Ajoutez d'autres lignes d'étudiants avec leurs réponses
+        ],
       };
     },
     methods: {
-      getAnswer(idQuestion, participant) {
-        const question = this.getQuestion(idQuestion);
-        const answerQuestion = participant.tab.find(
-          (participantAnswer) => participantAnswer.idQuestion === question.id,
-        );
-        if (!answerQuestion) return null;
-        return answerQuestion;
+      toggleDropdown() {
+        this.showDropdown = !this.showDropdown;
       },
-      getAnswerContent(answerQuestion) {
-        if (!answerQuestion) return '-';
-        const question = this.getQuestion(answerQuestion.idQuestion);
-        let userAnswer = answerQuestion.idAnswer;
-
-        // join all answers from multiple question into one string
-        Array.isArray(answerQuestion.idAnswer) ?  userAnswer = answerQuestion.idAnswer.map((answer) => answer.content).join(' | ') : '';
-
-        typeof answerQuestion.idAnswer !== 'string' &&  !Array.isArray(answerQuestion.idAnswer)?
-          userAnswer = question?.answers.find(
-            (answer) => answer.id === answerQuestion.idAnswer.id,
-          ).content : ''
-
-
-        return userAnswer;
+      showGlobalResults() {
+        this.showGlobal = !this.showGlobal;
       },
-      getQuestion(idQuestion) {
-        return this.sessionStore.results.questionnaries.flatMap(questionnary => questionnary.questions).find(
-          (question) => question.id === idQuestion,
-        );
-      },
-      isAnswerCorrect(answerQuestion) {
-        if (!answerQuestion) return false;
-        const question = this.getQuestion(answerQuestion.idQuestion);
-
-        return question.answers.find(
-          (answer) => answer.id === answerQuestion.idAnswer.id,
-        ).isCorrect;
+      showStudentResponses() {
+        this.showStudentResponsesTable = !this.showStudentResponsesTable;
       },
     },
   };
 </script>
 
 <style scoped>
-
-  td, .thclass{
-    border: black solid 1px;
-    text-align: center;
-  }
-
+  /* Ajoutez du style au besoin */
 </style>

@@ -5,8 +5,6 @@
         <span class="headline">Paramètres</span>
       </v-card-title>
 
-      <v-card-text>A complété</v-card-text>
-
       <session-setting
         :isInSession="true"
         ref="sessionSetting"></session-setting>

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Session } from '../session';
+import { SessionTemp } from '../temp/sessionTemp';
 import { QuestionService } from '../../question/service/question.service';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
 import { Question } from '../../question/entity/question.entity';
@@ -20,45 +20,61 @@ import { SessionClosedException } from '../exception/sessionClosed.exception';
 import { UserNotInWhitelistException } from '../exception/userNotInWhitelist.exception';
 import { EventHostEnum } from '../../event/enum/eventHost.enum';
 import { SettingsObject } from '../object/settings.object';
-import { SettingsDto } from '../dto/settings.dto';
 import { DisplaySettingsObject } from '../object/displaySettings.object';
 import { EventObserverEnum } from '../../event/enum/eventObserver.enum';
+import { Session } from '../entity/session.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserSession } from '../entity/userSession.entity';
+import { Student } from '../../user/entity/student.entity';
+import { SessionMapper } from '../mapper/session.mapper';
+import { User } from '../../user/entity/user.entity';
+import { ResultsDto } from '../dto/results.dto';
+import { SettingsInSessionDto } from '../dto/settingsInSession.dto';
+import { ResultsHostDto } from '../dto/resultsHost.dto';
+import { ResultsSettingsDto } from '../dto/resultsSettings.dto';
 import { UserService } from '../../user/service/user.service';
 
 @Injectable()
 export class SessionService {
-  private sessionMap: Map<string, Session> = new Map<string, Session>();
+  private sessionMap: Map<string, SessionTemp> = new Map<string, SessionTemp>();
   constructor(
     private questionService: QuestionService,
     private questionnaryService: QuestionnaryService,
     private userService: UserService,
     private answerMapper: AnswerMapper,
+    private readonly sessionMapper: SessionMapper,
     private eventService: EventService,
+    @InjectRepository(Session)
+    private readonly sessionRepository: Repository<Session>,
+    @InjectRepository(UserSession)
+    private readonly userSessionRepository: Repository<UserSession>,
   ) {}
 
   async initializeSession(
     teacher: Teacher,
-    ids: number[],
+    idQuestionnaryList: number[],
     settings: SettingsObject,
     whitelist: number[] = [],
     whitelistGroups: number[] = [],
-  ): Promise<Session> {
+  ): Promise<SessionTemp> {
     let idSession = this.generateIdSession();
     while (this.sessionMap.has(idSession)) {
       idSession = this.generateIdSession();
     }
-    const questionnaries: Questionnary[] = [];
-    for (const id of ids) {
-      questionnaries.push(
-        await this.questionnaryService.findQuestionnaryWithQuestionsId(id),
+    const questionnary =
+      await this.questionnaryService.createQuestionnaryFromIdArray(
+        idQuestionnaryList,
+        teacher,
       );
-    }
+
+    //const questionnaries : Questionnary = //await this.questionnaryService.findQuestionnary(id));
     this.sessionMap.set(
       idSession,
       await this.createSession(
         idSession,
         teacher,
-        questionnaries,
+        questionnary,
         settings,
         whitelist,
         whitelistGroups,
@@ -82,12 +98,12 @@ export class SessionService {
   async createSession(
     idSession: string,
     teacher: Teacher,
-    questionnaryTab: Questionnary[],
+    questionnary: Questionnary,
     settings: SettingsObject,
     whitelist: number[] = [],
     whitelistGroups: number[] = [],
-  ): Promise<Session> {
-    const session = new Session(idSession, questionnaryTab, teacher, settings);
+  ): Promise<SessionTemp> {
+    const session = new SessionTemp(idSession, questionnary, teacher, settings);
     session.whitelist = whitelist;
     session.whitelistGroups = whitelistGroups;
     return session;
@@ -105,7 +121,7 @@ export class SessionService {
       currentSession.questionNumber + 1 <
       (
         await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          currentSession.questionnaryList[currentSession.questionnaryNumber].id,
+          currentSession.questionnary.id,
         )
       ).length
     ) {
@@ -116,17 +132,6 @@ export class SessionService {
       );
       return true;
       // else check for next questionnary in the current session
-    } else if (
-      currentSession.questionnaryNumber + 1 <
-      currentSession.questionnaryList.length
-    ) {
-      currentSession.questionnaryNumber = currentSession.questionnaryNumber + 1;
-      currentSession.questionNumber = 0;
-      this.eventService.sendEvent(
-        EventParticipantEnum.NEXT_QUESTION,
-        idSession,
-      );
-      return true;
     }
     this.eventService.sendEvent(EventParticipantEnum.END_SESSION, idSession);
     currentSession.endSession = true;
@@ -136,27 +141,6 @@ export class SessionService {
 
   getMap() {
     return [...this.sessionMap];
-  }
-
-  async getQuestionList(idSession: string) {
-    if (this.sessionMap.has(idSession) == false) {
-      throw new IdSessionNoneException();
-    }
-    const currentSession = this.sessionMap.get(idSession);
-    const questionnaries = currentSession.questionnaryList;
-    for (const questionnary of questionnaries) {
-      const questionTab =
-        await this.questionnaryService.findQuestionsFromIdQuestionnary(
-          questionnary.id,
-        );
-      questionnary.questions = [];
-      for (const question of questionTab) {
-        questionnary.questions.push(
-          await this.questionService.findQuestion(question.id),
-        );
-      }
-    }
-    return questionnaries;
   }
 
   join(idSession: string, user: ParticipantInterface): void {
@@ -186,7 +170,7 @@ export class SessionService {
     }
   }
 
-  joinParticipant(session: Session, user: ParticipantInterface): void {
+  joinParticipant(session: SessionTemp, user: ParticipantInterface): void {
     session.connectedUser.add(user);
     session.userAnswers.set(user.id, new Map<Question, Answer>());
     this.eventService.sendHostEventWithPayload(
@@ -232,19 +216,35 @@ export class SessionService {
     ) {
       throw new AnswerNotOfCurrentQuestionException();
     }
+    let answerdb = new Answer();
+    if (typeof idAnswer === 'string') {
+      const answer = new Answer();
+      if (question.type === QuestionType.QOC) {
+        answer.content = idAnswer.split(/[ _]/)[0];
+      } else {
+        answer.content = idAnswer;
+      }
+
+      answer.isCorrect = true;
+      answer.question = question;
+      answerdb = await this.questionService.createAnswerOpenEnded(answer);
+    }
+
     const answer = Array.isArray(idAnswer)
       ? question.answers.filter((answer) => idAnswer.includes(answer.id))
       : typeof idAnswer === 'number'
       ? question.answers.find((answer) => answer.id === idAnswer)
+      : question.type === QuestionType.OUV
+      ? answerdb
       : question.type === QuestionType.QOC
-      ? idAnswer.split(/[ _]/)[0]
+      ? answerdb //idAnswer.split(/[ _]/)[0]
       : idAnswer;
     session.userAnswers.get(user.id).set(question, answer);
     this.sendSaveAnswerEvent(session, answer, user);
   }
 
   sendSaveAnswerEvent(
-    session: Session,
+    session: SessionTemp,
     answer: string | Answer | Answer[],
     user: ParticipantInterface,
   ) {
@@ -258,17 +258,55 @@ export class SessionService {
     );
   }
 
-  getMapUser(idSession: string) {
-    //map userAnswers with connectedUser
-    const session = this.sessionMap.get(idSession);
-    const mapUser = new Map<
-      ParticipantInterface,
-      Map<Question, Answer | string | Answer[]>
-    >();
+  //Save session into entity
+  async saveSession(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    //save session into entity
+    const sessionEntity = new Session();
+    //Define all sessionEntity's attributes
+    sessionEntity.isGlobal = session.settings.isGlobal;
+    sessionEntity.isResult = session.settings.isResult;
+    sessionEntity.isResponses = session.settings.isResponses;
+    sessionEntity.date = new Date();
+    sessionEntity.teacher = session.host;
+    sessionEntity.questionnary = session.questionnary;
+    await this.sessionRepository.save(sessionEntity);
+    //Define each userSessionEntity for each user in session
     for (const user of session.connectedUser) {
-      mapUser.set(user, session.userAnswers.get(user.id));
+      const userSessionEntity = new UserSession();
+      userSessionEntity.session = sessionEntity;
+      if (user instanceof Teacher) {
+        userSessionEntity.teacher = user;
+      } else if (user instanceof Student) {
+        userSessionEntity.student = user;
+      }
+      //Define all userSessionEntity's attributes
+      userSessionEntity.answer = [];
+      const userAnswer = session.userAnswers.get(user.id);
+      for (const [question, answer] of userAnswer) {
+        if (Array.isArray(answer)) {
+          for (const a of answer) {
+            userSessionEntity.answer.push(a);
+          }
+        } else if (typeof answer === 'string') {
+          const answerEntity = new Answer();
+          answerEntity.question = question;
+          answerEntity.content = answer;
+          answerEntity.isCorrect = true;
+          userSessionEntity.answer.push(answerEntity);
+        } else if (answer instanceof Answer) {
+          userSessionEntity.answer.push(answer);
+        }
+      }
+      await this.userSessionRepository.save(userSessionEntity, {});
     }
-    return mapUser;
+  }
+
+  //delete questionnary of a session only with idsession
+  async deleteQuestionnary(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    if (session.questionnary == undefined) return;
+    await this.questionnaryService.deleteQuestionnary(session.questionnary.id);
   }
 
   isHost(idSession: string, teacher: Teacher): boolean {
@@ -285,10 +323,10 @@ export class SessionService {
     );
   }
 
-  async getCurrentQuestion(session: Session) {
+  async getCurrentQuestion(session: SessionTemp) {
     const questionTab =
       await this.questionnaryService.findQuestionsFromIdQuestionnary(
-        session.questionnaryList[session.questionnaryNumber].id,
+        session.questionnary.id,
       );
     return await this.questionService.findQuestion(
       questionTab[session.questionNumber].id,
@@ -302,13 +340,12 @@ export class SessionService {
     return this.sessionMap.get(idSession);
   }
 
-  setSettings(idSession: string, settings: SettingsDto) {
+  setSettings(idSession: string, settings: SettingsInSessionDto) {
     const session = this.sessionMap.get(idSession);
     if (!!session) {
       session.settings.accessType = settings.accessType;
       this.setDisplaySettings(idSession, settings.displaySettings);
     }
-    console.log(session);
     return !!session;
   }
 
@@ -359,5 +396,291 @@ export class SessionService {
       );
     }
     return null;
+  }
+
+  async getListSession(user: User) {
+    if (user instanceof Teacher) {
+      return this.sessionRepository.find({
+        //Find all session where student is connected
+        relations: {
+          userSession: { student: true, teacher: true, answer: true },
+          teacher: true,
+        },
+        where: [
+          { userSession: { teacher: { id: user.id } } },
+          { teacher: { id: user.id } },
+          // Ajoutez ici votre deuxième condition avec le "OR"
+          // Exemple: { userSession: { student: { id: user.id } } }
+        ],
+        order: { date: 'DESC' },
+      });
+    } else if (user instanceof Student) {
+      return this.sessionRepository.find({
+        //Find all session where student is connected
+        relations: {
+          teacher: true,
+        },
+        where: { userSession: { student: { id: user.id } } },
+        order: { date: 'DESC' },
+      });
+    }
+  }
+
+  async getSession(idSession: number) {
+    return await this.sessionRepository.findOne({
+      where: {
+        id: idSession,
+      },
+      relations: {
+        questionnary: {
+          questions: { answers: true },
+        },
+        teacher: true,
+        userSession: {
+          student: true,
+          teacher: true,
+          answer: { question: true },
+        },
+      },
+    });
+  }
+
+  async isHostOfSession(idSession: number, user: User) {
+    const session = await this.getSession(idSession);
+    return session.teacher.id == user.id;
+  }
+
+  async isParticipantOfSession(idSession: number, user: User) {
+    const session = await this.getSession(idSession);
+    return session.userSession.some(
+      (userSession) =>
+        userSession.student?.id == user.id ||
+        userSession.teacher?.id == user.id,
+    );
+  }
+
+  async getResults(idSession: number, masterUser: User) {
+    const session = await this.getSession(idSession);
+    session.isResponses = session.isResult && session.isResponses;
+
+    //get session's questionnary
+    const questionnary = await this.questionnaryService.findQuestionnary(
+      session.questionnary.id,
+    );
+    //get questionnary's questions
+    questionnary.questions =
+      await this.questionnaryService.findQuestionsFromIdQuestionnary(
+        questionnary.id,
+      );
+    //get questionnary's questions's answers
+    for (const question of questionnary.questions) {
+      question.answers = await this.questionService.findAnswers(question.id);
+    }
+
+    const resultTab: ResultsDto = new ResultsDto();
+    let average = 0;
+    let isCurrentUser = false;
+    const averagePerQuestion = [];
+    for (const question of questionnary.questions) {
+      averagePerQuestion.push({ question: question.id, average: 0 });
+    }
+    const usersSession = session.userSession;
+    if (session.isResult || session.isGlobal) {
+      for (const userSession of usersSession) {
+        if (userSession.student && userSession.student.id === masterUser.id) {
+          isCurrentUser = true;
+          resultTab.username = userSession.student.username;
+        } else if (
+          userSession.teacher &&
+          userSession.teacher.id === masterUser.id
+        ) {
+          isCurrentUser = true;
+          resultTab.username = userSession.teacher.username;
+        } else {
+          isCurrentUser = false;
+        }
+        for (const question of questionnary.questions) {
+          const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
+          if (session.isResponses && isCurrentUser) {
+            resultTab.questions.push(mappedQuestion);
+          }
+          const questionResult = this.percentSuccess(question, userSession);
+          average += questionResult.nbCorrectAnswer;
+          averagePerQuestion.find((q) => q.question === question.id).average +=
+            questionResult.nbCorrectAnswer;
+          if (isCurrentUser) {
+            questionResult.userAnswer
+              .map((userAnswer) => userAnswer.content)
+              .every((userAnswer) =>
+                mappedQuestion.studentAnswers.push(userAnswer),
+              );
+            session.isResult
+              ? (mappedQuestion.hasAnsweredCorrectly =
+                  questionResult.nbCorrectAnswer === 1 ||
+                  question.type === 'ouv' ||
+                  question.type === 'qoc')
+              : '';
+            session.isResponses &&
+            !(question.type === 'ouv' || question.type === 'qoc')
+              ? questionResult.rightAnswer
+                  .map((answer) => answer.content)
+                  .every((correctAnswer) =>
+                    mappedQuestion.correctAnswers.push(correctAnswer),
+                  )
+              : '';
+            resultTab.personnalResult += questionResult.nbCorrectAnswer;
+          }
+        }
+      }
+    }
+    session.isGlobal
+      ? (resultTab.globalResult =
+          (average / usersSession.length / questionnary.questions.length) * 100)
+      : '';
+    if (session.isResult)
+      resultTab.personnalResult =
+        (resultTab.personnalResult / questionnary.questions.length) * 100;
+    else resultTab.personnalResult = null;
+    resultTab.teacherSurname = session.teacher.surname;
+    resultTab.sessionDate = session.date;
+    resultTab.teacherUsername = session.teacher.username;
+    if (session.isGlobal) resultTab.totalUsers = usersSession.length;
+    if (session.isGlobal) resultTab.averagePerQuestion = averagePerQuestion;
+    return resultTab;
+  }
+
+  async getResultsForHost(idSession: number) {
+    const session = await this.getSession(idSession);
+
+    //get session's questionnary
+    const questionnary = session.questionnary;
+
+    const resultHostTab = new ResultsHostDto();
+
+    const usersSession = session.userSession;
+    let average = 0;
+
+    const averagePerQuestion = [];
+    for (const question of questionnary.questions) {
+      averagePerQuestion.push({ question: question.id, average: 0 });
+    }
+
+    for (const userSession of usersSession) {
+      const userResult = new ResultsDto();
+
+      for (const question of questionnary.questions) {
+        const mappedQuestion = this.sessionMapper.mapQuestionResult(question);
+        userResult.questions.push(mappedQuestion);
+        const questionResult = this.percentSuccess(question, userSession);
+        average += questionResult.nbCorrectAnswer;
+        averagePerQuestion.find((q) => q.question === question.id).average +=
+          questionResult.nbCorrectAnswer;
+        questionResult.userAnswer
+          .map((userAnswer) => userAnswer.content)
+          .every((userAnswer) =>
+            mappedQuestion.studentAnswers.push(userAnswer),
+          );
+
+        mappedQuestion.hasAnsweredCorrectly =
+          questionResult.nbCorrectAnswer === 1 ||
+          question.type === 'ouv' ||
+          question.type === 'qoc';
+
+        questionResult.rightAnswer
+          .map((answer) => answer.content)
+          .every((correctAnswer) =>
+            mappedQuestion.correctAnswers.push(correctAnswer),
+          );
+
+        userResult.personnalResult += questionResult.nbCorrectAnswer;
+      }
+      if (userSession.student != null)
+        userResult.username = userSession.student.username;
+      else userResult.username = userSession.teacher.username;
+      userResult.personnalResult =
+        (userResult.personnalResult / questionnary.questions.length) * 100;
+      resultHostTab.usersResults.push(userResult);
+    }
+    resultHostTab.teacherUsername = session.teacher.username;
+    resultHostTab.teacherSurname = session.teacher.surname;
+    resultHostTab.sessionDate = session.date;
+    resultHostTab.globalResult =
+      (average / usersSession.length / questionnary.questions.length) * 100;
+    //get questions from questionnary but if the question type is open or qoc, we don't get the answers from existing questionnary
+    resultHostTab.questions = questionnary.questions.map((question) => {
+      question.type === 'ouv' || question.type === 'qoc'
+        ? (question.answers = [])
+        : '';
+      return question;
+    });
+    resultHostTab.averagePerQuestion = averagePerQuestion;
+    return resultHostTab;
+  }
+
+  async getResultSettings(idSession: number) {
+    const session = await this.getSession(idSession);
+    return {
+      isGlobal: session.isGlobal,
+      isResult: session.isResult,
+      isResponses: session.isResponses,
+    };
+  }
+
+  //Calculate the percent of success of a student
+  private percentSuccess(question: Question, user: UserSession) {
+    const userAnswerEveryQuestions = user.answer;
+    let nbCorrectAnswer = 0;
+    const userAnswer = userAnswerEveryQuestions.filter(
+      (answer) => answer.question.id == question.id,
+    );
+    const rightAnswer = question.answers.filter((answer) => answer.isCorrect);
+
+    if (userAnswer.length > 0) {
+      if (question.type === QuestionType.QCM) {
+        if (
+          rightAnswer
+            .map((answer) => answer.id)
+            .every((idAnswerUser) =>
+              userAnswer
+                .map((answer) => answer.id)
+                .some((idAnswerCorrect) => idAnswerCorrect === idAnswerUser),
+            )
+        ) {
+          nbCorrectAnswer++;
+        }
+      } else if (userAnswer[0].isCorrect) {
+        nbCorrectAnswer++;
+      }
+    }
+    return { nbCorrectAnswer, rightAnswer, userAnswer };
+  }
+
+  async setResultSettings(idSession: number, body: ResultsSettingsDto) {
+    const session = await this.getSession(idSession);
+    session.isGlobal = body.isGlobal;
+    session.isResult = body.isResult;
+    session.isResponses = body.isResponses;
+    await this.sessionRepository.save(session);
+  }
+
+  async stopSession(idSession: string) {
+    const session = this.getSessionOrThrow(idSession);
+    session.endSession = true;
+    this.eventService.sendEvent(
+      EventParticipantEnum.PREMATURE_END_SESSION,
+      idSession,
+    );
+    this.eventService.closeSessionGroup(idSession);
+  }
+
+  async getSessionWhereUserIsInWhitelist(user: User) {
+    const groups = await this.userService.getGroups(user);
+    return [...this.sessionMap.values()].filter(
+      (session) =>
+        session.whitelist.includes(user.id) ||
+        session.whitelistGroups.some((groupId) =>
+          groups.some((group) => group.id === groupId),
+        ),
+    );
   }
 }

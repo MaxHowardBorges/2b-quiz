@@ -1,10 +1,26 @@
 <template>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Are you sure ?</v-card-title>
+
+      <v-card-text>
+        If you stop the session, all of results will be lost !
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="yesCancel">Yes</v-btn>
+        <v-btn @click="noCancel">No</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <!-- settings dialog-->
   <set-settings-dialog ref="settingsDialog"></set-settings-dialog>
   <h1>Waiting participants...</h1>
   <div class="session-info">
     <p>Session ID: {{ sessionStore.idSession }}</p>
-    <img alt="Qr code" src="../../assets/QR_CODE.png" style="width: 200px" />
+    <qrcode-vue :value="value" :size="size" />
+    <p>
+      <a>{{ getCurrentLocation() }}</a>
+    </p>
   </div>
 
   <div>
@@ -35,26 +51,51 @@
 
 <script>
   import { ref } from 'vue';
-  import router from '@/router';
+
   import { useSessionStore } from '@/stores/sessionStore';
   import SessionSetting from '@/components/session/SessionSetting.vue';
   import SetSettingsDialog from '@/components/session/SetSettingsDialog.vue';
+  import router from '@/router';
+  import QrcodeVue from 'qrcode.vue';
 
   export default {
     name: 'SessionWaitingBlockTeacher',
-    components: { SetSettingsDialog, SessionSetting },
+    components: { SetSettingsDialog, SessionSetting, QrcodeVue },
     setup() {
       const sessionStore = useSessionStore();
+
       return {
         loading: ref(false),
         sessionStore,
+        switch1Value: ref(false),
+        switch2Value: ref(false),
+        switch3Value: ref(false),
+      };
+    },
+    data() {
+      return {
+        dialogVisible: false,
+        value: this.getCurrentLocation() + this.sessionStore.idSession,
+        size: 200,
       };
     },
     emits: ['session-start'],
     methods: {
-      async cancelSession() {
+      getCurrentLocation() {
+        return window.location.origin + this.$route.path;
+      },
+      async copyLinkToClipboard() {
+        await navigator.clipboard.writeText(this.value);
+      },
+      cancelSession() {
+        this.dialogVisible = true;
+      },
+      noCancel() {
+        this.dialogVisible = false;
+      },
+      async yesCancel() {
+        await this.sessionStore.stopSession();
         this.sessionStore.sessionEnd();
-        //TODO call api/store
         await router.push('/');
       },
       async handleLaunch() {
@@ -67,7 +108,6 @@
             const response = await this.sessionStore.nextQuestion();
             await this.sessionStore.getCurrentQuestionForTeacher(response);
           } catch (error) {
-            console.log('Error while launching session', error);
             this.sessionStore.disconnectFromSession(
               'Error while launching session',
             );

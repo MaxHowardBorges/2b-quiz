@@ -11,15 +11,15 @@
   <div
     v-if="userStore.isAuthenticated"
     class="h-100 d-flex align-center justify-center ma-2">
-    <div class="">
+    <div class="" v-if="userStore.isStudent">
       <v-btn
-        v-if="userStore.isStudent"
         @click="handleJoinSession"
         color="primary"
         class="mx-6 my-3"
         max-width="250px">
         <p class="text-white font-weight-bold pa-2">Join session</p>
       </v-btn>
+      <session-activity></session-activity>
     </div>
     <new-user-block v-if="userStore.isNotChoose" />
     <menu-teacher
@@ -27,6 +27,7 @@
       :error-snackbar="errorSnackbar"
       :dialog-error="serverError" />
     <admin-block v-if="userStore.isAdmin" />
+    <template v-if="userStore.isTeacher || userStore.isStudent"></template>
   </div>
 </template>
 
@@ -39,10 +40,12 @@
   import AdminBlock from '@/components/admin/AdminBlock.vue';
   import ErrorDialog from '@/components/commun/ErrorDialog.vue';
   import router from '@/router';
+  import SessionActivity from '@/components/session/activity/SessionActivity.vue';
 
   export default {
     name: 'HomeView',
     components: {
+      SessionActivity,
       ErrorDialog,
       AdminBlock,
       MenuTeacher,
@@ -56,6 +59,7 @@
       expiredError: Boolean,
       serverError: Boolean,
       ticket: null,
+      from: null,
     },
     setup() {
       const userStore = useUserStore();
@@ -70,6 +74,9 @@
       };
     },
     mounted() {
+      if (this.from) {
+        console.log('routeFrom', this.from);
+      }
       if (this.sessionError) {
         this.sessionErrorTitle = 'Error in the session';
         this.sessionErrorContent =

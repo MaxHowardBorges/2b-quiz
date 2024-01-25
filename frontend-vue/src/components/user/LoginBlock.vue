@@ -78,6 +78,14 @@
     },
     methods: {
       getServiceURL() {
+        if (this.$route.query.from) {
+          return (
+            window.location.origin +
+            this.$route.path +
+            '?from=' +
+            decodeURIComponent(this.$route.query.from)
+          );
+        }
         return window.location.origin + this.$route.path;
       },
       login() {
@@ -85,12 +93,17 @@
           import.meta.env.VITE_CAS_URL +
           import.meta.env.VITE_CAS_LOGIN_ROUTE +
           '?service=' +
-          encodeURI(this.getServiceURL());
+          encodeURIComponent(this.getServiceURL());
       },
       async checkTicket() {
         try {
           await this.userStore.login(this.ticket, this.getServiceURL());
-          await router.push('/');
+          console.log('Login success', this.$route.query.from);
+          if (!!this.$route.query.from) {
+            await router.push(decodeURIComponent(this.$route.query.from));
+          } else {
+            await router.push('/');
+          }
         } catch (error) {
           if (error instanceof ValidationError) {
             this.errorSnackbarContent = error.message;

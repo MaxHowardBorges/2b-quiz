@@ -5,17 +5,10 @@ import { useUserStore } from '@/stores/userStore';
 import QuestionaryView from '@/views/QuestionaryView.vue';
 import DisplayView from '@/views/DisplayView.vue';
 import { UserRoles } from '@/utils/userRoles';
+import SessionHistoryView from '@/views/SessionHistoryView.vue';
+import SessionHandleResults from '@/components/session/SessionHandleResults.vue';
 
 const routes = [
-  {
-    path: '/session',
-    name: 'Session',
-    component: SessionView,
-    meta: { inMenu: true },
-    props: (route) => ({
-      isCreating: !!route.query.isCreating,
-    }),
-  },
   {
     path: '/',
     name: 'Home',
@@ -25,9 +18,47 @@ const routes = [
       serverError: !!route.query.serverError,
       ticket: route.query.ticket,
       sessionError: route.query.sessionError,
+      from: decodeURIComponent(route.query.from),
     }),
     component: HomeView,
     meta: { public: true, inMenu: true },
+  },
+  {
+    path: '/session/:idSession',
+    name: 'SessionRouted',
+    component: SessionView,
+    meta: { inMenu: false },
+    props: (route) => ({
+      isCreating: !!route.query.isCreating,
+      idSession: route.params.idSession,
+      errorSnackbar: route.query.errorSnackbar,
+      serverError: !!route.query.serverError,
+    }),
+  },
+  {
+    path: '/session/',
+    name: 'Session',
+    component: SessionView,
+    meta: { inMenu: true },
+    props: (route) => ({
+      isCreating: !!route.query.isCreating,
+      errorSnackbar: route.query.errorSnackbar,
+      serverError: !!route.query.serverError,
+    }),
+  },
+  {
+    path: '/history/:idSession',
+    name: 'Session Handle Results',
+    component: SessionHandleResults, //
+    props: (route) => ({
+      idSession: route.params.idSession,
+    }),
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
+    meta: { inMenu: true },
   },
   {
     path: '/user',
@@ -37,8 +68,12 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/UserView.vue'),
   },
   {
-    path: '/questionary',
-    name: 'questionary',
+    path: '/questionnary',
+    name: 'questionnary',
+    props: (route) => ({
+      toCreateBool: route.query.toCreateBool === 'true',
+      toBankBool: route.query.toBankBool === 'true',
+    }),
     component: QuestionaryView,
     meta: { inMenu: true, roles: [UserRoles.TEACHER] },
   },
@@ -53,10 +88,10 @@ const routes = [
   },
   {
     path: '/group',
-    name: 'group',
+    name: 'Group',
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/GroupView.vue'),
-    meta: { inMenu: true },
+    meta: { inMenu: true, roles: [UserRoles.TEACHER] },
   },
 ];
 
@@ -76,7 +111,7 @@ router.beforeEach((to, from, next) => {
     return;
   }
   if (!userStore.isAuthenticated) {
-    next({ name: 'Login' });
+    next({ name: 'Home', query: { from: encodeURIComponent(to.fullPath) } });
     return;
   }
   next();

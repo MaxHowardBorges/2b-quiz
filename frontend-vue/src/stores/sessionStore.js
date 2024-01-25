@@ -3,13 +3,19 @@ import {
   addToWhitelist,
   createSession,
   getCurrentQuestion,
+  getCurrentSessions,
   getNextQuestion,
+  getResults,
   getSessionDisplaySettings,
-  getSessionResults,
+  getSessionList,
+  getSessionResultSettings,
   getSessionStatus,
   joinSession,
   sendAnswer,
+  setSessionResultSettings,
   setSessionSettings,
+  startEndingSession,
+  stopSession,
 } from '@/api/session';
 import { throwIfNotOK } from '@/utils/apiUtils';
 import { useSessionEventStore } from '@/stores/sessionEventStore';
@@ -35,6 +41,9 @@ export const useSessionStore = defineStore('session', {
       displayAnswer: true,
     },
   }),
+  getters: {
+    isInSession: (state) => state.idSession !== null && !state.ended,
+  },
   actions: {
     setQuestion(question) {
       this.question = question;
@@ -60,7 +69,6 @@ export const useSessionStore = defineStore('session', {
       userStore.updateToken(response.headers.get('Authorization'));
       const content = await response.json();
       this.isParticipant = true;
-      console.log(content.isStarted);
       return content.isStarted;
     },
     async getCurrentQuestions() {
@@ -96,7 +104,6 @@ export const useSessionStore = defineStore('session', {
       selectedGroupsId = null,
     ) {
       this.setEnded(false);
-      //this.setIsDisplay(true);
       const userStore = useUserStore();
       userStore.reloadState();
       let body;
@@ -131,7 +138,6 @@ export const useSessionStore = defineStore('session', {
       try {
         const userStore = useUserStore();
         this.settings = settings;
-        console.log(settings);
         const response = await setSessionSettings(
           userStore.getToken(),
           this.idSession,
@@ -176,22 +182,28 @@ export const useSessionStore = defineStore('session', {
     },
     async getCurrentQuestionForTeacher(responseText) {
       if (responseText.isEnded) {
-        await this.fetchResults();
+        await this.endSession();
         this.setEnded(true);
-        this.sessionEnd(); //TODO adapt to session result
       } else {
         await this.getCurrentQuestions();
       }
     },
-    async fetchResults() {
+    async endSession() {
       const userStore = useUserStore();
-      const response = await getSessionResults(
+      const response = await startEndingSession(
         this.idSession,
-        userStore.getToken(),
+        userStore.token,
       );
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.setTabResult(await response.json());
+    },
+    //if stop session, delete questionnary compiled
+    async stopSession() {
+      const userStore = useUserStore();
+      const response = await stopSession(this.idSession, userStore.getToken());
+      await throwIfNotOK(response, 204);
+      userStore.updateToken(response.headers.get('Authorization'));
     },
     async getSessionStatus() {
       const userStore = useUserStore();
@@ -238,6 +250,47 @@ export const useSessionStore = defineStore('session', {
       this.isHost = null;
       this.settings = null;
       this.setIdSession(null);
+    },
+    async getResults(idSession) {
+      const userStore = useUserStore();
+      const response = await getResults(idSession, userStore.token);
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async getSessions() {
+      const userStore = useUserStore();
+      const response = await getSessionList(userStore.token);
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async getSessionResultSettings(idSession) {
+      const userStore = useUserStore();
+      const response = await getSessionResultSettings(
+        userStore.getToken(),
+        idSession,
+      );
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
+    },
+    async setSessionResultSettings(idSession, body) {
+      const userStore = useUserStore();
+      const response = await setSessionResultSettings(
+        userStore.getToken(),
+        idSession,
+        body,
+      );
+      await throwIfNotOK(response, 204);
+      userStore.updateToken(response.headers.get('Authorization'));
+    },
+    async getCurrentSessions() {
+      const userStore = useUserStore();
+      const response = await getCurrentSessions(userStore.getToken());
+      await throwIfNotOK(response, 200);
+      userStore.updateToken(response.headers.get('Authorization'));
+      return await response.json();
     },
   },
 });
