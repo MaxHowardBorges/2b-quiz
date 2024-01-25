@@ -213,7 +213,7 @@
                   selectedGroupsId,
                 );
                 await router.replace({
-                  name: 'SessionRouted',
+                  name: 'menu.SessionRouted',
                   params: { idSession: this.sessionStore.idSession },
                 });
               } else {
