@@ -46,15 +46,17 @@ export async function createSession(token, body) {
   });
 }
 
-export async function getNextQuestion(body, token) {
-  return await fetch(import.meta.env.VITE_API_URL + '/session/nextQuestion', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+export async function getNextQuestion(id, token) {
+  return await fetch(
+    import.meta.env.VITE_API_URL + '/session/' + id + '/next/',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-    body: JSON.stringify(body),
-  });
+  );
 }
 
 export async function startEndingSession(idSession, token) {
@@ -72,22 +74,7 @@ export async function startEndingSession(idSession, token) {
 
 export async function stopSession(idSession, token) {
   return await fetch(
-    import.meta.env.VITE_API_URL +
-      '/session/stopSession?idsession=' +
-      idSession,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-}
-
-export async function getGlobalResults(idSession, token) {
-  return await fetch(
-    import.meta.env.VITE_API_URL + '/session/' + idSession + '/result/global',
+    import.meta.env.VITE_API_URL + '/session/' + idSession + '/stop',
     {
       method: 'GET',
       headers: {
