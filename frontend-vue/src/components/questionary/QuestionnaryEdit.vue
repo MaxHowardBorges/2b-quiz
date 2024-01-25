@@ -66,7 +66,7 @@
       v-model:search="searchTags"
       :items="this.tagList"
       item-title="description"
-      return-object
+      return-object=""
       :chips="true"
       :closable-chips="true"
       label="Select Tags"
@@ -150,7 +150,7 @@
     <v-dialog v-model="confirmationDialog" max-width="600">
       <v-card>
         <v-card-title class="headline">
-          {{ $t('questionnary.Confirmation') }}
+          {{ $t('questionnary.confirmation') }}
         </v-card-title>
         <v-card-text>
           {{ $t('questionnary.confirmLeave') }}

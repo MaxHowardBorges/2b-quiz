@@ -48,7 +48,7 @@
     "deleteAnswer": "Supprimer une réponse",
     "done": "Valider",
     "confirmLeave": "Êtes-vous sûr de quitter sans sauvegarder ?",
-    "Confirmation": "Confirmation",
+    "confirmation": "Confirmation",
     "NoQuestion": "Veuillez noter que votre questionnaire ne comporte aucune question. Si vous le quittez, il ne sera pas sauvegardé.",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce questionnaire ?",
     "AreSureDeleteQuestion": "Êtes-vous sûr de vouloir supprimer cette question :",

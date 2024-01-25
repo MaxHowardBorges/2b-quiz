@@ -82,7 +82,7 @@
       <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
       <v-btn
         id="ic"
-        :icon="!showDropdown ? 'visibility_off' : 'visibility'"
+        :icon="showDropdown ? 'visibility_off' : 'visibility'"
         class="mx-2"
         @click="toggleDropdown"></v-btn>
       <v-btn id="ic" icon="library_add" @click="addToQuestionnary"></v-btn>

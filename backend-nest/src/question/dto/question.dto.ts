@@ -9,7 +9,6 @@ import {
 import { Type } from 'class-transformer';
 import { QuestionType } from '../constants/questionType.constant';
 import { TagDto } from './tag.dto';
-import { QuestionnaryDto } from '../../questionnary/dto/questionnary.dto';
 
 export class QuestionDto {
   @IsNumber()
