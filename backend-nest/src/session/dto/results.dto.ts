@@ -20,7 +20,7 @@ export class ResultsDto {
 
   sessionDate?: Date;
 
-  averagePerQuestion: { id: number; average: number }[];
+  averagePerQuestion?: { id: number; average: number }[];
 
   totalUsers: number;
 }

@@ -258,9 +258,36 @@
     methods: {
       getTimeFromDate,
       parseDate,
+      roundNumber() {
+        if (this.results.usersResults !== undefined) {
+          this.results.globalResult = Math.round(this.results.globalResult);
+          this.results.averagePerQuestion = this.results.averagePerQuestion.map(
+            (q) => {
+              q.average = Math.round(q.average);
+              return q;
+            },
+          );
+          this.results.usersResults = this.results.usersResults.map((u) => {
+            u.personnalResult = Math.round(u.personnalResult);
+            return u;
+          });
+        } else {
+          this.results.globalResult = Math.round(this.results.globalResult);
+          this.results.personnalResult = Math.round(
+            this.results.personnalResult,
+          );
+          this.results.averagePerQuestion = this.results.averagePerQuestion.map(
+            (q) => {
+              q.average = Math.round(q.average);
+              return q;
+            },
+          );
+        }
+      },
       async loadData() {
         try {
           this.results = await this.sessionStore.getResults(this.idSession);
+          this.roundNumber();
           this.user = await this.userStore.getSelf();
           if (this.isHost()) {
             const settings = await this.sessionStore.getSessionResultSettings(
