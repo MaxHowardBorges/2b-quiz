@@ -75,7 +75,6 @@
     }),
     methods: {
       async importCsv() {
-        console.log(this.csv[0]);
         try {
           const usersData = await parseUserListCsv(this.csv[0]);
           usersData.forEach((user) => {
@@ -86,7 +85,6 @@
           this.succes = this.$t('login.Preview');
           this.error = '';
         } catch (error) {
-          console.log(error);
           this.succes = '';
           this.error = this.$t('login.FileError');
         }
@@ -100,7 +98,6 @@
         reader.onload = (e) => {
           const text = e.target.result;
           const lines = text.split(/[\r\n]/);
-          console.log(lines);
           this.preview = lines.slice(0, 5).join('\n');
         };
         reader.readAsText(file);

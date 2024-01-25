@@ -49,7 +49,6 @@ export class EventController {
     @Res() res: Response,
     @Param('idSession') idSession: string,
   ) {
-    console.log('observer', idSession, req.user.id);
     const client = await this.eventService.createObserver(
       idSession,
       req.user.id,

@@ -214,7 +214,6 @@ export const useSessionStore = defineStore('session', {
       await throwIfNotOK(response);
       userStore.updateToken(response.headers.get('Authorization'));
       this.status = await response.json();
-      console.log(this.status);
     },
     disconnectFromSession(error) {
       const sessionEventStore = useSessionEventStore();

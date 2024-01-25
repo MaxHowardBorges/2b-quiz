@@ -160,7 +160,6 @@
           this.users = [];
         } catch (error) {
           if (error instanceof ValidationError) {
-            console.log(error.message);
             if (error.message.includes('duplicate username error:'))
               this.$emit(
                 'error-register-multiple-duplicate',
@@ -194,7 +193,7 @@
             item.validate = true;
             this.errorMessage = '';
           } else {
-            console.log('Username déjà existant dans une autre ligne.');
+
             this.errorMessage = this.$t('login.UsernameAlready');
           }
         } else {

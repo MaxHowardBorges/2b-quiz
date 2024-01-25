@@ -261,7 +261,6 @@
       async loadData() {
         try {
           this.results = await this.sessionStore.getResults(this.idSession);
-          console.log(this.results);
           this.user = await this.userStore.getSelf();
           if (this.isHost()) {
             const settings = await this.sessionStore.getSessionResultSettings(

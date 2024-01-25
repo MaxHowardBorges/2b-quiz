@@ -25,7 +25,6 @@ function parseFile(file) {
 }
 
 export function validateUserList(userList) {
-  console.log(userList);
   return userList.some(
     (user) =>
       !(

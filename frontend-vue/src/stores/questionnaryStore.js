@@ -76,7 +76,6 @@ export const useQuestionnaryStore = defineStore('questionnary', {
         await throwIfNotOK(response, 200);
         userStore.updateToken(response.headers.get('Authorization'));
         this.questionnary = await response.json();
-        console.log(this.questionnary);
       }
     },
     async getQuestions() {

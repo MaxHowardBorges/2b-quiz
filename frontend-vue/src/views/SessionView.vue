@@ -150,10 +150,6 @@
       }
     },
     mounted() {
-      console.log('joinSession', this.idSession);
-      console.log('isCreating', this.isCreating);
-      console.log('serverError', this.serverError);
-      console.log('errorSnackbar', this.errorSnackbar);
       if (this.errorSnackbar) {
         this.errorSnackbarContent = this.errorSnackbar;
         this.$refs.errorSnackbar.setSnackbarError(true);
@@ -186,7 +182,6 @@
       },
       subscribeToEvents() {
         this.subscribe = this.sessionStore.$subscribe((mutation, state) => {
-          console.log(this.ended, state.ended);
           if (state.ended !== this.ended) {
             this.ended = true;
           } else if (
