@@ -3,14 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Questionnary } from '../entity/questionnary.entity';
 import { QuestionService } from '../../question/service/question.service';
-import { Question } from '../../question/entity/question.entity';
 import { QuestionnaryCreateDto } from '../dto/questionnaryCreate.dto';
 import { QuestionCreateDto } from '../../question/dto/questionCreate.dto';
-import { AnswerCreateDto } from '../../question/dto/answerCreate.dto';
-import { Answer } from '../../question/entity/answer.entity';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { QuestionnaryDto } from '../dto/questionnary.dto';
-import { QuestionnaryMapper } from '../../questionnary/mapper/questionnary.mapper';
+import { QuestionnaryMapper } from '../mapper/questionnary.mapper';
 
 @Injectable()
 export class QuestionnaryService {
@@ -71,39 +68,6 @@ export class QuestionnaryService {
     return await this.createQuestionnary(questionnaryDtoCombined, author, true);
   }
 
-  //Transform Questionnary to QuestionnaryCreateDto
-  async questionnaryToDto(questionnary: Questionnary) {
-    const questionnaryDto = new QuestionnaryCreateDto();
-    questionnaryDto.title = questionnary.title;
-    questionnaryDto.questions = [];
-    const questions = await this.questionService.findQuestions(questionnary);
-    for (const question of questions) {
-      questionnaryDto.questions.push(await this.questionToDto(question));
-    }
-    return questionnaryDto;
-  }
-
-  //Transform Question to QuestionCreateDto
-  async questionToDto(question: Question) {
-    const questionDto = new QuestionCreateDto();
-    questionDto.content = question.content;
-    questionDto.type = question.type;
-    questionDto.answers = [];
-    const answers = await this.questionService.findAnswers(question.id);
-    for (const answer of answers) {
-      questionDto.answers.push(this.answerToDto(answer));
-    }
-    return questionDto;
-  }
-
-  //Transform Answer to AnswerCreateDto
-  answerToDto(answer: Answer) {
-    const answerDto = new AnswerCreateDto();
-    answerDto.content = answer.content;
-    answerDto.isCorrect = answer.isCorrect;
-    return answerDto;
-  }
-
   async deleteQuestionnary(idQuestionnary: number) {
     const questionnary = await this.questionnaryRepository.findOne({
       relations: {
@@ -128,15 +92,6 @@ export class QuestionnaryService {
   async findQuestionnary(idQuestionnary: number) {
     //questionnary without questions
     return await this.questionnaryRepository.findOne({
-      where: { id: idQuestionnary },
-    });
-  }
-
-  async findQuestionnaryWithQuestionsId(idQuestionnary: number) {
-    return await this.questionnaryRepository.findOne({
-      relations: {
-        questions: true,
-      },
       where: { id: idQuestionnary },
     });
   }
