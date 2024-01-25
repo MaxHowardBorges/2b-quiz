@@ -310,7 +310,7 @@
       },
       async returnHistory() {
         await router.push({
-          name: 'History',
+          name: 'menu.history',
         });
       },
       getSurname() {

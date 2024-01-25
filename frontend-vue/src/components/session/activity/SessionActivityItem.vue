@@ -25,7 +25,7 @@
     methods: {
       async handleJoin() {
         await router.push({
-          name: 'SessionRouted',
+          name: 'menu.SessionRouted',
           params: { idSession: this.session.idSession },
         });
       },

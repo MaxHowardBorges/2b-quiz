@@ -219,7 +219,7 @@
               } else {
                 await this.sessionStore.createSession(settings);
                 await router.replace({
-                  name: 'SessionRouted',
+                  name: 'menu.SessionRouted',
                   params: { idSession: this.sessionStore.idSession },
                 });
               }

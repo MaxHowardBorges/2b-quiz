@@ -121,7 +121,7 @@
       },
       launchWindows() {
         const routeData = router.resolve({
-          name: 'public',
+          name: 'menu.public',
           query: { idSession: this.sessionStore.idSession },
         });
         window.open(routeData.href, '_blank');

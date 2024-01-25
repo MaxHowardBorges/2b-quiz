@@ -111,7 +111,7 @@ router.beforeEach((to, from, next) => {
     return;
   }
   if (!userStore.isAuthenticated) {
-    next({ name: 'Home', query: { from: encodeURIComponent(to.fullPath) } });
+    next({ name: 'menu.home', query: { from: encodeURIComponent(to.fullPath) } });
     return;
   }
   next();

@@ -151,13 +151,13 @@
       },
       handleCreateQuestionnary() {
         router.push({
-          name: 'questionnary',
+          name: 'menu.questionnary',
           query: { toCreateBool: true, toBankBool: false },
         });
       },
       handleGoToQuestionBank() {
         router.push({
-          name: 'questionnary',
+          name: 'menu.questionnary',
           query: { toCreateBool: false, toBankBool: true },
         });
       },

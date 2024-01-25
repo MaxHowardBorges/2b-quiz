@@ -60,7 +60,7 @@
       async handleJoinSession() {
         this.loading = true;
         await router.replace({
-          name: 'SessionRouted',
+          name: 'menu.SessionRouted',
           params: { idSession: this.idSession.toString() },
         });
         router.go(0);

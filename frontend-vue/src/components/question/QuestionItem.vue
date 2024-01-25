@@ -3,7 +3,8 @@
     :color="getColor()"
     elevation="3"
     rounded="lg"
-    class="d-flex flex-column my-2 pa-3 w-100">
+    class="d-flex flex-column my-2 pa-3 w-100"
+  v-if='!question.answers'>
     <div class="d-flex flex-row">
       <p class="text-h5">
         <b>{{ question.content }}</b>
@@ -75,6 +76,58 @@
         </v-sheet>
         <v-spacer></v-spacer>
       </v-sheet>
+    </v-list>
+  </v-sheet>
+  <v-sheet
+    v-else
+    :color="getColor()"
+    elevation="3"
+    rounded="lg"
+    class="d-flex flex-column my-2 pa-3 w-100">
+    <div class="d-flex flex-row">
+      <p class="text-h5">
+        <b>{{ question.content }}</b>
+      </p>
+      <v-spacer></v-spacer>
+      <v-btn
+        id="ic"
+        icon="edit"
+        @click="modifyQuestion"></v-btn>
+      <v-btn
+        id="ic"
+        :icon="!showDropdown ? 'visibility_off' : 'visibility'"
+        class="mx-2"
+        @click="toggleDropdown"></v-btn>
+      <v-btn
+        id="ic"
+        icon="library_add"
+        @click="addToQuestionnary"></v-btn>
+    </div>
+    <div class="text-button text-start">
+      <b>
+        {{
+          this.typeOptions.filter((type) => type.typeCode === question.type)[0]
+            .typeLabel
+        }}
+      </b>
+    </div>
+    <v-list
+      v-if="showDropdown && question"
+      id="dropdown"
+      class="mt-2">
+      <v-list-item>
+        <v-list-item v-for="(answer, index) in question.answers" :key="index">
+          <template #default>
+            <v-list-item>
+              <v-list-item-title class="text-subtitle-1">
+                {{ $t("question.Reponse") }} {{ index + 1 }}
+              </v-list-item-title>
+              {{ answer.content }}
+              <v-icon v-if="answer.isCorrect">check</v-icon>
+            </v-list-item>
+          </template>
+        </v-list-item>
+      </v-list-item>
     </v-list>
   </v-sheet>
 </template>

@@ -146,7 +146,9 @@
     "ResultsSettingsLabel": "Paramètres des résultats",
     "DisplayPersonalResultLabel": "Afficher le résultat personnel après la fin du questionnaire",
     "DisplayCorrectResponsesLabel": "Afficher les réponses correctes après la fin du questionnaire",
-    "DisplayGlobalResultLabel": "Afficher le résultat global après la fin du questionnaire"
+    "DisplayGlobalResultLabel": "Afficher le résultat global après la fin du questionnaire",
+    "CreateSession": "Créer une session",
+    "Join a session": "Rejoindre une session"
   },
 
   "Result": {

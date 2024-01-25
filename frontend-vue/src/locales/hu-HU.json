@@ -145,7 +145,9 @@
     "ResultsSettingsLabel": "Eredmények beállításai",
     "DisplayPersonalResultLabel": "Személyes eredmény megjelenítése a kérdőív vége után",
     "DisplayCorrectResponsesLabel": "Helyes válaszok megjelenítése a kérdőív vége után",
-    "DisplayGlobalResultLabel": "Általános eredmény megjelenítése a kérdőív vége után"
+    "DisplayGlobalResultLabel": "Általános eredmény megjelenítése a kérdőív vége után",
+    "CreateSession": "Munkamenet létrehozása",
+    "JoinSession": "Csatlakozás egy munkamenethez"
   },
 
   "Result": {

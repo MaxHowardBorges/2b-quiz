@@ -64,8 +64,8 @@
         variant="outlined"
         class="mb-4"
         color="primary">
-        <v-btn value="true" @click="isCreating = true">Create a session</v-btn>
-        <v-btn value="false" @click="isCreating = false">Join a session</v-btn>
+        <v-btn value="true" @click="isCreating = true">{{ $t('session.CreateSession') }}</v-btn>
+        <v-btn value="false" @click="isCreating = false">{{ $t('session.JoinSession') }}</v-btn>
       </v-btn-toggle>
       <template
         v-if="isCreating && userStore.isTeacher"

@@ -79,7 +79,7 @@ export const useGroupStore = defineStore('group', {
       try {
         const response = await getGroup(idGroup, userStoreU.token);
         if (!response.ok) {
-          throw new Error('Erreur de chargement du groupe'); // TODO manage error
+          throw new Error('Erreur de chargement du groupe');
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();

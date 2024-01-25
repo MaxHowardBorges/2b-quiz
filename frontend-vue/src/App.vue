@@ -28,7 +28,7 @@
     if (!userStore.interval) {
       userStore.intervalChecker();
     }
-    document.title = 'Système de Vote en Direct';
+    document.title = 'SVD' ;
   });
 </script>
 

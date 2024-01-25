@@ -73,13 +73,13 @@
       },
       handleManageResults() {
         router.push({
-          name: 'Session Handle Results',
+          name: 'menu.SessionHandleResults',
           params: { idSession: this.session.id },
         });
       },
       SeeResults() {
         router.push({
-          name: 'Session Handle Results',
+          name: 'menu.SessionHandleResults',
           params: { idSession: this.session.id },
         });
       },

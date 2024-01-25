@@ -23,5 +23,5 @@ export function getAllRoutes(userRole) {
 }
 
 export async function serverError() {
-  await router.push({ name: 'Home', query: { serverError: 'true' } });
+  await router.push({ name: 'menu.home', query: { serverError: 'true' } });
 }
