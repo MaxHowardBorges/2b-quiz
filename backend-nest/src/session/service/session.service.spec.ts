@@ -1,24 +1,37 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { SessionService } from './session.service';
 import { QuestionService } from '../../question/service/question.service';
 import { AnswerMapper } from '../../question/mapper/answer.mapper';
 import { EventService } from '../../event/service/event.service';
 import { SessionTemp } from '../temp/sessionTemp';
-import { Question } from '../../question/entity/question.entity';
 import { Questionnary } from '../../questionnary/entity/questionnary.entity';
-import { QuestionType } from '../../question/constants/questionType.constant';
-import { Answer } from '../../question/entity/answer.entity';
 import { QuestionnaryService } from '../../questionnary/service/questionnary.service';
-import { generateTeacherMock } from '../../../test/mock/user.mock';
-import { ParticipantInterface } from '../../user/interface/participant.interface';
-import { DisplaySettingsObject } from '../object/displaySettings.object';
-import { SettingsObject } from '../object/settings.object';
+import {
+  generateRandomParticipantMockList,
+  generateStudentMock,
+  generateTeacherMock,
+} from '../../../test/mock/user.mock';
 import { TestBed } from '@automock/jest';
 import { UserService } from '../../user/service/user.service';
 import { SessionMapper } from '../mapper/session.mapper';
 import { Repository } from 'typeorm';
 import { Session } from '../entity/session.entity';
 import { UserSession } from '../entity/userSession.entity';
+import { generateQuestionnaryMock } from '../../../test/mock/questionnary.mock';
+import { Teacher } from '../../user/entity/teacher.entity';
+import {
+  generateSessionMock,
+  generateSessionTempMock,
+  generateSettingsMock,
+  generateUserSessionMock,
+} from '../../../test/mock/session.mock';
+import { AccessTypeEnum } from '../enum/accessType.enum';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { EventHostEnum } from '../../event/enum/eventHost.enum';
+import { IdSessionNoneException } from '../exception/idSessionNone.exception';
+import { DisplaySettingsObject } from '../object/displaySettings.object';
+import { User } from '../../user/entity/user.entity';
+import { Student } from '../../user/entity/student.entity';
+import { EventParticipantEnum } from '../../event/enum/eventParticipant.enum';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -32,144 +45,11 @@ describe('SessionService', () => {
   let userSessionRepository: jest.Mocked<Repository<UserSession>>;
   let sessionMap: Map<string, SessionTemp>;
 
-  const hostTeacher = generateTeacherMock();
-
-  const questionnary: Questionnary = {
-    id: 15,
-    title: 'morocco',
-    author: hostTeacher,
-    questions: [],
-    isCompilated: false,
-  };
-  const questions: Question[] = [
-    {
-      id: 36,
-      content: 'Quelle est la capitale du Maroc?',
-      questionnary: questionnary,
-      type: QuestionType.QCU,
-      answers: [],
-      tags: [],
-      author: null,
-      equals(question: Question): boolean {
-        return this.id === question.id;
-      },
-    },
-    {
-      id: 37,
-      content: 'Qui a écrit "Romeo et Juliette"?',
-      questionnary: questionnary,
-      type: QuestionType.QCU,
-      answers: [],
-      tags: [],
-      author: null,
-      equals(question: Question): boolean {
-        return this.id === question.id;
-      },
-    },
-    {
-      id: 38,
-      content: "Quel est le symbole chimique de l'oxygène?",
-      questionnary: questionnary,
-      type: QuestionType.QCU,
-      answers: [],
-      tags: [],
-      author: null,
-      equals(question: Question): boolean {
-        return this.id === question.id;
-      },
-    },
-  ];
-
-  const answers1: Answer[] = [
-    {
-      id: 104,
-      content: 'Tunis',
-      isCorrect: false,
-      question: questions[0],
-    },
-    {
-      id: 105,
-      content: 'Aggrabah',
-      isCorrect: false,
-      question: questions[0],
-    },
-    {
-      id: 106,
-      content: 'Rabat',
-      isCorrect: true,
-      question: questions[0],
-    },
-  ];
-  const answers2: Answer[] = [
-    {
-      id: 107,
-      content: 'William Shakespeare',
-      isCorrect: true,
-      question: questions[1],
-    },
-    {
-      id: 108,
-      content: 'Charles Dickens',
-      isCorrect: false,
-      question: questions[1],
-    },
-    {
-      id: 109,
-      content: 'Jane Austen',
-      isCorrect: false,
-      question: questions[1],
-    },
-    {
-      id: 110,
-      content: 'George Orwell',
-      isCorrect: false,
-      question: questions[1],
-    },
-  ];
-  const answers3: Answer[] = [
-    {
-      id: 111,
-      content: 'O',
-      isCorrect: true,
-      question: questions[2],
-    },
-    {
-      id: 112,
-      content: 'H',
-      isCorrect: false,
-      question: questions[2],
-    },
-    {
-      id: 113,
-      content: 'C',
-      isCorrect: false,
-      question: questions[2],
-    },
-    {
-      id: 114,
-      content: 'N',
-      isCorrect: false,
-      question: questions[2],
-    },
-    {
-      id: 115,
-      content: 'S',
-      isCorrect: false,
-      question: questions[2],
-    },
-  ];
-
-  questions[0].answers = answers1;
-  questions[1].answers = answers2;
-  questions[2].answers = answers3;
-
-  questionnary.questions = questions;
-
-  const questionnaryTest = new Questionnary();
-  questionnaryTest.questions = questions;
-  questionnaryTest.id = 15;
-  questionnaryTest.author = hostTeacher;
-  questionnaryTest.title = 'morocco';
+  let teacherMock: Teacher;
+  let questionnaryMock: Questionnary;
+  let sessionTempMock: SessionTemp;
+  let sessionMock: Session;
+  let participantMock: ParticipantInterface[];
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(SessionService).compile();
@@ -185,86 +65,588 @@ describe('SessionService', () => {
     userSessionRepository = unitRef.get('UserSessionRepository');
   });
 
+  beforeEach(() => {
+    teacherMock = generateTeacherMock();
+    questionnaryMock = generateQuestionnaryMock(teacherMock);
+    participantMock = generateRandomParticipantMockList(5);
+    sessionTempMock = generateSessionTempMock(
+      AccessTypeEnum.Public,
+      participantMock,
+    );
+    sessionMock = generateSessionMock(sessionTempMock);
+  });
+
+  // initializeSession
   describe('initializeSession', () => {
-    it('generate idSession : should be returned an idSession, should be a STRING', async () => {
-      const test = service.generateIdSession();
-      expect(typeof test).toBe('string');
-      expect(test.length).toEqual(6);
-      expect(typeof test).not.toBe('Integer');
-    });
-    //TODO BROKEN TEST
-    /* it('initializeSession : should be not equal to the empty session', async () => {
-      mockQuestionnaryService.findQuestionnaryWithQuestionsId.mockResolvedValue(
-        questionnary.questions,
+    it('should initialize a session', async () => {
+      sessionTempMock.questionnary = questionnaryMock;
+      eventService.createSessionGroup.mockReturnValue(null);
+
+      const session = await service.initializeSession(
+        sessionTempMock.host,
+        [questionnaryMock.id],
+        sessionTempMock.settings,
+        sessionTempMock.whitelist,
+        sessionTempMock.whitelistGroups,
       );
-      const testSession = await service.initializeSession(
-        hostTeacher,
-        [questionnary.id],
-        new SettingsObject(new DisplaySettingsObject(true, true)),
-        [],
-        [],
-      );
-      expect(testSession).not.toEqual(session);
-      expect(testSession).toBeInstanceOf(SessionTemp);
-      expect(testSession.id).not.toBeNull();
-      expect(testSession.id).not.toMatch(/[a-zÀ-ÿ]/);
+      sessionTempMock.questionnary = undefined;
+      sessionTempMock.id = session.id;
+
+      expect(session).toEqual(sessionTempMock);
     });
   });
 
-  describe('CreateSession', () => {
-    it('should create a session and return a Session', async () => {
-      let test = await service.createSession(
-        service.generateIdSession(),
-        hostTeacher,
-        [questionnary],
-        new SettingsObject(new DisplaySettingsObject(true, true)),
-      );
-      expect(test).toBeInstanceOf(SessionTemp);
-      expect(typeof test.id).toBe('string');
+  //generateIdSession
+  describe('generateIdSession', () => {
+    it('should generate an id session', () => {
+      const idSession = service.generateIdSession();
+      expect(idSession).toBeDefined();
     });
   });
-*/
 
-    // describe('nextQuestion', () => {
-    //   it('should return the next question', async () => {
-    //     mockMap.get.mockReturnValue(session);
-    //     mockQuestionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
-    //       questions,
-    //     );
-    //     mockQuestionService.findQuestion.mockResolvedValue(questions[0]);
-    //     const mockSessionMap = new Map<string, SessionTemp>();
-    //     mockSessionMap.set('111111', session);
-    //     (service as any).sessionMap = mockSessionMap;
-    //
-    //     let test = await service.nextQuestion('111111');
-    //     expect(test).not.toBeNull();
-    //     expect(test).not.toEqual(session);
-    //     let session2: SessionTemp = session;
-    //     let quest = new Question();
-    //     quest.answers = [];
-    //
-    //     session2.questionNumber = 0;
-    //     mockSessionMap.set('111111', session2);
-    //     (service as any).sessionMap = mockSessionMap;
-    //     let test2 = await service.nextQuestion('111111');
-    //     expect(test2).not.toEqual(quest);
-    //   });
-    // });
+  //createSession
+  describe('createSession', () => {
+    it('should create a session', async () => {
+      const session = await service.createSession(
+        sessionTempMock.id,
+        sessionTempMock.host,
+        sessionTempMock.questionnary,
+        sessionTempMock.settings,
+        sessionTempMock.whitelist,
+        sessionTempMock.whitelistGroups,
+      );
+      expect(session).toEqual(sessionTempMock);
+      expect(session).toBeInstanceOf(SessionTemp);
+    });
+  });
 
-    //TODO NOT WORKING
-    /*describe('currentQuestion', () => {
+  //isSessionExists
+  describe('isSessionExists', () => {
+    it('should return true if session exist', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+
+      const isSessionExist = service.isSessionExists(sessionTempMock.id);
+      expect(isSessionExist).toEqual(true);
+    });
+
+    it('should return false if session does not exist', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      service['sessionMap'] = sessionMap;
+
+      const isSessionExist = service.isSessionExists(sessionTempMock.id);
+      expect(isSessionExist).toEqual(false);
+    });
+  });
+
+  //nextQuestion
+  describe('nextQuestion', () => {
+    beforeEach(() => {
+      sessionTempMock.questionnary.questions = [
+        sessionTempMock.questionnary.questions[0],
+        sessionTempMock.questionnary.questions[1],
+      ];
+      questionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
+        sessionTempMock.questionnary.questions,
+      );
+    });
+    it('should return true if there is the next question', async () => {
+      sessionTempMock.questionNumber = 0;
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      const question = await service.nextQuestion(sessionTempMock.id);
+      expect(question).toBeTruthy();
+    });
+
+    it('should return false if there is no next question', async () => {
+      sessionTempMock.questionNumber = 1;
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      const question = await service.nextQuestion(sessionTempMock.id);
+      expect(question).toBeFalsy();
+    });
+  });
+
+  //join
+  describe('join', () => {
+    it('should join a session', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      service.join(sessionTempMock.id, participantMock[0]);
+      expect(sessionTempMock.connectedUser.size).toEqual(1);
+    });
+  });
+
+  //joinParticipant
+  describe('joinParticipant', () => {
+    it('should join a session', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      service.joinParticipant(sessionTempMock, participantMock[0]);
+      expect(sessionTempMock.connectedUser.size).toEqual(1);
+    });
+  });
+
+  //currentQuestion
+  describe('currentQuestion', () => {
     it('should return the current question', async () => {
-      const mockSessionMap = new Map<string, Session>();
-      mockSessionMap.set('111111', session);
-      (service as any).sessionMap = mockSessionMap;
-      mockAnswerMapper.mapAnswersStudentDtos.mockReturnValue(undefined);
-      mockQuestionService.findQuestion(questions[1].id);
-      let test = service.currentQuestion('111111');
-      expect(test).toBeTruthy();
-
-      mockAnswerMapper.mapAnswersStudentDtos.mockResolvedValue(
-        new AnswerMapper(),
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.questionnary.questions[0].id = 1;
+      sessionTempMock.questionNumber = 0;
+      service['sessionMap'] = sessionMap;
+      questionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
+        sessionTempMock.questionnary.questions,
       );
-    });*/
+      answerMapper.mapAnswersStudentDtos.mockReturnValue(
+        sessionTempMock.questionnary.questions[0].answers,
+      );
+      questionService.findQuestion.mockResolvedValue(
+        sessionTempMock.questionnary.questions[0],
+      );
+      const question = await service.currentQuestion(sessionTempMock.id);
+      expect(question).toEqual(sessionTempMock.questionnary.questions[0]);
+    });
+  });
+
+  //saveAnswer
+  describe('saveAnswer', () => {
+    it('should save an answer', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      sessionTempMock.questionnary.questions[0].id = 1;
+      sessionTempMock.questionNumber = 0;
+      service.join(sessionTempMock.id, participantMock[0]);
+      questionService.findQuestion.mockResolvedValue(
+        sessionTempMock.questionnary.questions[0],
+      );
+      answerMapper.mapAnswerStudentDto.mockReturnValue(
+        sessionTempMock.questionnary.questions[0].answers[0],
+      );
+      questionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
+        sessionTempMock.questionnary.questions,
+      );
+      questionService.checkQuestionContainingAnswer.mockResolvedValue(true);
+      questionService.createAnswerOpenEnded.mockResolvedValue(
+        sessionTempMock.questionnary.questions[0].answers[0],
+      );
+      await service.saveAnswer(
+        sessionTempMock.id,
+        sessionTempMock.questionnary.questions[0].answers[0].id,
+        participantMock[0],
+      );
+      expect(sessionTempMock.userAnswers.size).toEqual(1);
+    });
+  });
+
+  //sendSaveAnswerEvent
+  describe('sendSaveAnswerEvent', () => {
+    it('should send an event', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      sessionTempMock.questionnary.questions[0].id = 1;
+      sessionTempMock.questionNumber = 0;
+      service.join(sessionTempMock.id, participantMock[0]);
+      questionService.findQuestion.mockResolvedValue(
+        sessionTempMock.questionnary.questions[0],
+      );
+      answerMapper.mapAnswerStudentDto.mockReturnValue(
+        sessionTempMock.questionnary.questions[0].answers[0],
+      );
+      questionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
+        sessionTempMock.questionnary.questions,
+      );
+      questionService.checkQuestionContainingAnswer.mockResolvedValue(true);
+      questionService.createAnswerOpenEnded.mockResolvedValue(
+        sessionTempMock.questionnary.questions[0].answers[0],
+      );
+      await service.saveAnswer(
+        sessionTempMock.id,
+        sessionTempMock.questionnary.questions[0].answers[0].id,
+        participantMock[0],
+      );
+      expect(eventService.sendHostEventWithPayload).toHaveBeenCalledWith(
+        EventHostEnum.NEW_ANSWER,
+        sessionTempMock.id,
+        {
+          user: participantMock[0],
+          answer: sessionTempMock.questionnary.questions[0].answers[0].id,
+        },
+      );
+    });
+  });
+
+  //saveSession
+  describe('saveSession', () => {
+    it('should save a session', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      sessionRepository.save.mockResolvedValue(sessionMock);
+      await service.saveSession(sessionTempMock.id);
+      expect(sessionRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  //deleteQuestionnary
+  describe('deleteQuestionnary', () => {
+    it('should delete a questionnary', async () => {
+      sessionTempMock.questionnary = questionnaryMock;
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      await service.deleteQuestionnary(sessionTempMock.id);
+      expect(questionnaryService.deleteQuestionnary).toHaveBeenCalled();
+    });
+  });
+
+  //isHost
+  describe('isHost', () => {
+    it('should return true if user is host', async () => {
+      sessionTempMock.questionnary = questionnaryMock;
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.host = teacherMock;
+      service['sessionMap'] = sessionMap;
+      const isHost = service.isHost(sessionTempMock.id, teacherMock);
+      expect(isHost).toEqual(true);
+    });
+
+    it('should return false if user is not host', async () => {
+      const teacher = generateTeacherMock();
+      const isHost = service.isHost(sessionTempMock.id, teacher);
+      expect(isHost).toEqual(false);
+    });
+  });
+
+  //isParticipant
+  describe('isParticipant', () => {
+    it('should return true if user is participant', async () => {
+      sessionTempMock.questionnary = questionnaryMock;
+      participantMock[0].id = 1;
+      sessionMap = new Map<string, SessionTemp>();
+      sessionTempMock.connectedUser.add(participantMock[0]);
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      const isParticipant = service.isParticipant(
+        sessionTempMock.id,
+        participantMock[0],
+      );
+      expect(isParticipant).toEqual(true);
+    });
+
+    it('should return false if user is not participant', async () => {
+      const teacher = generateTeacherMock();
+      const isParticipant = service.isParticipant(sessionTempMock.id, teacher);
+      expect(isParticipant).toEqual(false);
+    });
+  });
+
+  //getCurrentQuestion
+  describe('getCurrentQuestion', () => {
+    it('should return the current question', async () => {
+      sessionTempMock.questionnary.questions = [
+        sessionTempMock.questionnary.questions[0],
+        sessionTempMock.questionnary.questions[1],
+      ];
+      questionnaryService.findQuestionsFromIdQuestionnary.mockResolvedValue(
+        sessionTempMock.questionnary.questions,
+      );
+      questionService.findQuestion.mockResolvedValue(
+        sessionTempMock.questionnary.questions[0],
+      );
+      sessionTempMock.questionNumber = 0;
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      const question = await service.getCurrentQuestion(sessionTempMock);
+      expect(question).toEqual(sessionTempMock.questionnary.questions[0]);
+      expect(questionService.findQuestion).toHaveBeenCalledWith(
+        sessionTempMock.questionnary.questions[0].id,
+      );
+      expect(
+        questionnaryService.findQuestionsFromIdQuestionnary,
+      ).toHaveBeenCalledWith(sessionTempMock.questionnary.id);
+    });
+  });
+
+  //getSessionOrThrow
+  describe('getSessionOrThrow', () => {
+    it('should return a session', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+
+      const session = service.getSessionOrThrow(sessionTempMock.id);
+      expect(session).toEqual(sessionTempMock);
+    });
+
+    it('should throw an error if session does not exist', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      service['sessionMap'] = sessionMap;
+
+      expect(() => service.getSessionOrThrow(sessionTempMock.id)).toThrow(
+        IdSessionNoneException,
+      );
+    });
+  });
+
+  //setSettings
+  describe('setSettings', () => {
+    it('should set settings', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.settings = generateSettingsMock(AccessTypeEnum.Private);
+      service['sessionMap'] = sessionMap;
+      service.setSettings(sessionTempMock.id, sessionTempMock.settings);
+      expect(sessionTempMock.settings).toEqual(sessionTempMock.settings);
+    });
+  });
+
+  //addToWhitelist
+  describe('addToWhitelist', () => {
+    it('should add a user to whitelist', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.whitelist = [];
+      service['sessionMap'] = sessionMap;
+
+      service.addToWhitelist(sessionTempMock.id, [1]);
+      expect(sessionTempMock.whitelist).toEqual([1]);
+    });
+  });
+
+  //getDisplaySettings
+  describe('getDisplaySettings', () => {
+    it('should return display settings', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+
+      const displaySettings = service.getDisplaySettings(sessionTempMock.id);
+      expect(displaySettings).toEqual(sessionTempMock.settings.displaySettings);
+    });
+  });
+
+  //setDisplaySettings
+  describe('setDisplaySettings', () => {
+    it('should set display settings', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.settings.displaySettings = new DisplaySettingsObject(
+        true,
+        true,
+      );
+      service['sessionMap'] = sessionMap;
+
+      service.setDisplaySettings(
+        sessionTempMock.id,
+        sessionTempMock.settings.displaySettings,
+      );
+      expect(sessionTempMock.settings.displaySettings).toEqual(
+        sessionTempMock.settings.displaySettings,
+      );
+    });
+  });
+
+  //getSessionStatus
+  describe('getSessionStatus', () => {
+    it('should return session status', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+
+      const sessionStatus = service.getSessionStatus(sessionTempMock.id);
+      expect(sessionStatus).toEqual(sessionTempMock);
+    });
+    it('should return null if session does not exist', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      service['sessionMap'] = sessionMap;
+
+      const sessionStatus = service.getSessionStatus(sessionTempMock.id);
+      expect(sessionStatus).toEqual(null);
+    });
+  });
+
+  //isStarted
+  describe('isStarted', () => {
+    it('should return true if session is started', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.questionNumber = 0;
+      service['sessionMap'] = sessionMap;
+
+      const isStarted = service.isStarted(sessionTempMock.id);
+      expect(isStarted).toEqual(true);
+    });
+
+    it('should return false if session is not started', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      sessionTempMock.questionNumber = -1;
+      service['sessionMap'] = sessionMap;
+
+      const isStarted = service.isStarted(sessionTempMock.id);
+      expect(isStarted).toEqual(false);
+    });
+  });
+
+  //getListSession
+  describe('getListSession', () => {
+    it('should return list of session', async () => {
+      sessionRepository.find.mockResolvedValue([sessionMock]);
+      const sessionList = await service.getListSession(teacherMock);
+      expect(sessionList).toEqual([sessionMock]);
+    });
+  });
+
+  //getSession
+  describe('getSession', () => {
+    it('should return a session', async () => {
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const session = await service.getSession(sessionMock.id);
+      expect(session).toEqual(sessionMock);
+    });
+  });
+
+  //isHostOfSession
+  describe('isHostOfSession', () => {
+    it('should return true if user is host of session', async () => {
+      teacherMock.id = 1;
+      sessionMock.teacher = teacherMock;
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const isHostOfSession = await service.isHostOfSession(
+        sessionMock.id,
+        teacherMock,
+      );
+      expect(isHostOfSession).toEqual(true);
+    });
+    it('should return false if user is not host of session', async () => {
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const teacher = generateTeacherMock();
+      const isHostOfSession = await service.isHostOfSession(
+        sessionMock.id,
+        teacher,
+      );
+      expect(isHostOfSession).toEqual(false);
+    });
+  });
+
+  //isParticipantOfSession
+  describe('isParticipantOfSession', () => {
+    it('should return true if user is participant of session', async () => {
+      const student = generateStudentMock();
+      student.id = 1;
+      sessionMock.userSession = [];
+      sessionMock.userSession[0] = new UserSession();
+      sessionMock.userSession[0].student = student;
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const isParticipantOfSession = await service.isParticipantOfSession(
+        sessionMock.id,
+        student,
+      );
+      expect(isParticipantOfSession).toEqual(true);
+    });
+    it('should return false if user is not participant of session', async () => {
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const teacher = generateTeacherMock();
+      const isParticipantOfSession = await service.isParticipantOfSession(
+        sessionMock.id,
+        teacher,
+      );
+      expect(isParticipantOfSession).toEqual(false);
+    });
+  });
+
+  //getResults
+  describe('getResults', () => {
+    it('should return results', async () => {
+      teacherMock.id = 1;
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      sessionMock.questionnary.id = 1;
+      questionnaryService.findQuestionnary.mockResolvedValue(
+        sessionMock.questionnary,
+      );
+      const results = await service.getResults(sessionMock.id, teacherMock);
+      expect(results).toBeDefined();
+    });
+  });
+
+  //getResultsForHost
+  describe('getResultsForHost', () => {
+    it('should return results for host', async () => {
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const results = await service.getResultsForHost(sessionMock.id);
+      expect(results).toBeDefined();
+    });
+  });
+
+  //getResultSettings
+  describe('getResultSettings', () => {
+    it('should return result settings', async () => {
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      const resultSettings = await service.getResultSettings(sessionMock.id);
+      expect(resultSettings).toBeDefined();
+      expect(resultSettings).toEqual({
+        isResult: sessionMock.isResult,
+        isGlobal: sessionMock.isGlobal,
+        isResponses: sessionMock.isResponses,
+      });
+    });
+  });
+
+  //percentSuccess
+  describe('percentSuccess', () => {
+    it('should return percent success', async () => {
+      sessionRepository.findOne.mockResolvedValue(sessionMock);
+      sessionMock.userSession.push(
+        generateUserSessionMock(participantMock[0], sessionTempMock),
+      );
+      const percentSuccess = service['percentSuccess'](
+        sessionMock.questionnary.questions[0],
+        sessionMock.userSession[0],
+      );
+      expect(percentSuccess).toBeDefined();
+    });
+  });
+
+  //stopSession
+  describe('stopSession', () => {
+    it('should stop session', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+
+      await service.stopSession(sessionTempMock.id);
+      expect(eventService.sendEvent).toHaveBeenCalledWith(
+        EventParticipantEnum.PREMATURE_END_SESSION,
+        sessionTempMock.id,
+      );
+      expect(sessionTempMock.endSession).toEqual(true);
+      expect(eventService.closeSessionGroup).toHaveBeenCalledWith(
+        sessionTempMock.id,
+      );
+    });
+  });
+
+  //getSessionWhereUserIsInWhitelist
+  describe('getSessionWhereUserIsInWhitelist', () => {
+    it('should return session where user is in whitelist', async () => {
+      sessionMap = new Map<string, SessionTemp>();
+      sessionMap.set(sessionTempMock.id, sessionTempMock);
+      service['sessionMap'] = sessionMap;
+      sessionTempMock.whitelist = [1];
+      teacherMock.id = 1;
+      const session =
+        await service.getSessionWhereUserIsInWhitelist(teacherMock);
+      expect(session).toEqual([sessionTempMock]);
+    });
   });
 });

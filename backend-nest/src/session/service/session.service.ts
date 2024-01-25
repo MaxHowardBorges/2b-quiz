@@ -139,10 +139,6 @@ export class SessionService {
     return false;
   }
 
-  getMap() {
-    return [...this.sessionMap];
-  }
-
   join(idSession: string, user: ParticipantInterface): void {
     if (!this.sessionMap.has(idSession)) {
       throw new IdSessionNoneException();
