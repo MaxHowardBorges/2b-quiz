@@ -9,7 +9,7 @@
       <v-btn id="ic" icon="undo" @click="returnHome"></v-btn>
     </div>
     <div style="display: flex">
-      <h1>Session History</h1>
+      <h1>{{ $t('history.SessionHistory') }}</h1>
     </div>
 
     <div class="w-100" v-for="(session, index) in sessions" :key="index">
@@ -49,7 +49,7 @@
         try {
           return await this.sessionStore.getSessions();
         } catch (e) {
-          alert('Error while getting session list');
+          alert(this.$t('history.ErrorGettingList'));
         }
       },
     },

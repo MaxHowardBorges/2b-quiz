@@ -11,7 +11,7 @@ import SessionHandleResults from '@/components/session/SessionHandleResults.vue'
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'menu.home',
     props: (route) => ({
       errorSnackbar: route.query.errorSnackbar,
       expiredError: !!route.query.expiredError,
@@ -25,7 +25,7 @@ const routes = [
   },
   {
     path: '/session/:idSession',
-    name: 'SessionRouted',
+    name: 'menu.SessionRouted',
     component: SessionView,
     meta: { inMenu: false },
     props: (route) => ({
@@ -37,7 +37,7 @@ const routes = [
   },
   {
     path: '/session/',
-    name: 'Session',
+    name: 'menu.session',
     component: SessionView,
     meta: { inMenu: true },
     props: (route) => ({
@@ -48,7 +48,7 @@ const routes = [
   },
   {
     path: '/history/:idSession',
-    name: 'Session Handle Results',
+    name: 'menu.SessionHandleResults',
     component: SessionHandleResults, //
     props: (route) => ({
       idSession: route.params.idSession,
@@ -56,20 +56,20 @@ const routes = [
   },
   {
     path: '/history',
-    name: 'History',
+    name: 'menu.history',
     component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
     meta: { inMenu: true },
   },
   {
     path: '/user',
-    name: 'User',
+    name: 'menu.user',
     meta: { inMenu: true },
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/UserView.vue'),
   },
   {
     path: '/questionnary',
-    name: 'questionnary',
+    name: 'menu.questionnary',
     props: (route) => ({
       toCreateBool: route.query.toCreateBool === 'true',
       toBankBool: route.query.toBankBool === 'true',
@@ -79,7 +79,7 @@ const routes = [
   },
   {
     path: '/public',
-    name: 'public',
+    name: 'menu.public',
     component: DisplayView,
     meta: { inMenu: false },
     props: (route) => ({
@@ -88,7 +88,7 @@ const routes = [
   },
   {
     path: '/group',
-    name: 'Group',
+    name: 'menu.group',
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/GroupView.vue'),
     meta: { inMenu: true, roles: [UserRoles.TEACHER] },

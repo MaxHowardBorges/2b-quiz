@@ -2,7 +2,14 @@
   "menu": {
     "menuTeacher": "Menu enseignant",
     "home": "Page d'accueil",
-    "questionnary": "Questionnaire"
+    "questionnary": "Questionnaire",
+    "SessionRouted": "Session",
+    "session": "Session",
+    "SessionHandleResults": "Gérer les résultats",
+    "history": "Historique",
+    "user": "Utilisateur",
+    "public": "Public",
+    "group": "Groupe"
   },
 
   "home": {
@@ -274,5 +281,10 @@
 
   "layout": {
     "LogoText": "Système de Vote en Direct"
+  },
+
+  "history": {
+    "SessionHistory": "Historique des sessions",
+    "ErrorGettingList": "Erreur lors de la récupération de la liste des sessions"
   }
 }
