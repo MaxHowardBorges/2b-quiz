@@ -4,33 +4,23 @@
     elevation="3"
     rounded="lg"
     class="d-flex flex-column my-2 pa-3 w-100"
-  v-if='!question.answers'>
+    v-if="isHost">
     <div class="d-flex flex-row">
       <p class="text-h5">
         <b>{{ question.content }}</b>
       </p>
       <v-spacer></v-spacer>
       <div v-if="global || global === 0" class="mt-3 ml-3 mr-5 text-h5">
-        {{ $t('question.TauxReussite')}}:
+        {{ $t('question.TauxReussite') }}:
         <br />
         {{ global }}/{{ total }}
       </div>
-      <v-btn
-        v-if="isHost === null"
-        id="ic"
-        icon="edit"
-        @click="modifyQuestion"></v-btn>
       <v-btn
         v-if="!(!isHost && !question)"
         id="ic"
         :icon="showDropdown ? 'visibility_off' : 'visibility'"
         class="mx-2"
         @click="toggleDropdown"></v-btn>
-      <v-btn
-        v-if="isHost === null"
-        id="ic"
-        icon="library_add"
-        @click="addToQuestionnary"></v-btn>
     </div>
     <div class="text-button text-start">
       <b>
@@ -51,7 +41,7 @@
           <template #default>
             <v-list-item>
               <v-list-item-title class="text-subtitle-1">
-               {{ $t("question.Reponse") }} {{ index + 1 }}
+                {{ $t('question.Reponse') }} {{ index + 1 }}
               </v-list-item-title>
               {{ answer.content }}
               <template v-if="results"></template>
@@ -89,19 +79,13 @@
         <b>{{ question.content }}</b>
       </p>
       <v-spacer></v-spacer>
-      <v-btn
-        id="ic"
-        icon="edit"
-        @click="modifyQuestion"></v-btn>
+      <v-btn id="ic" icon="edit" @click="modifyQuestion"></v-btn>
       <v-btn
         id="ic"
         :icon="!showDropdown ? 'visibility_off' : 'visibility'"
         class="mx-2"
         @click="toggleDropdown"></v-btn>
-      <v-btn
-        id="ic"
-        icon="library_add"
-        @click="addToQuestionnary"></v-btn>
+      <v-btn id="ic" icon="library_add" @click="addToQuestionnary"></v-btn>
     </div>
     <div class="text-button text-start">
       <b>
@@ -111,16 +95,13 @@
         }}
       </b>
     </div>
-    <v-list
-      v-if="showDropdown && question"
-      id="dropdown"
-      class="mt-2">
+    <v-list v-if="showDropdown && question" id="dropdown" class="mt-2">
       <v-list-item>
         <v-list-item v-for="(answer, index) in question.answers" :key="index">
           <template #default>
             <v-list-item>
               <v-list-item-title class="text-subtitle-1">
-                {{ $t("question.Reponse") }} {{ index + 1 }}
+                {{ $t('question.Reponse') }} {{ index + 1 }}
               </v-list-item-title>
               {{ answer.content }}
               <v-icon v-if="answer.isCorrect">check</v-icon>
