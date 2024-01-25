@@ -1,4 +1,5 @@
 {
+  "locale": "magyar",
   "menu": {
     "menuTeacher": "Tanár menü",
     "home": "Kezdőlap",
@@ -10,7 +11,8 @@
     "user": "Felhasználó",
     "public": "Nyilvános képernyő",
     "group": "Csoport",
-    "translationListTitle": "Válts nyelvet"
+    "translationListTitle": "Válts nyelvet",
+    "addTranslation": "Fordítások hozzáadása"
   },
 
   "home": {
