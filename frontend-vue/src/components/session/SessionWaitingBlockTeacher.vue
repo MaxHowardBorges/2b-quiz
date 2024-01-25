@@ -1,14 +1,14 @@
 <template>
   <v-dialog v-model="dialogVisible" max-width="500">
     <v-card>
-      <v-card-title>Are you sure ?</v-card-title>
+      <v-card-title>{{ $t('session.ConfirmationTitle') }}</v-card-title>
 
       <v-card-text>
-        If you stop the session, all of results will be lost !
+        {{ $t('session.ConfirmationDescription') }}
       </v-card-text>
       <v-card-actions class="text-center">
-        <v-btn @click="yesCancel">Yes</v-btn>
-        <v-btn @click="noCancel">No</v-btn>
+        <v-btn @click="yesCancel">{{ $t('session.YesButton') }}</v-btn>
+        <v-btn @click="noCancel">{{ $t('session.NoButton') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
