@@ -6,13 +6,13 @@
         <v-row>
           <v-col>
             <span>
-              <b>Date de création:</b>
+              <b>{{ $t('Result.CreatedDate') }}:</b>
               {{ creationDate }}
             </span>
           </v-col>
           <v-col>
             <span>
-              <b>Créé par:</b>
+              <b>{{ $t('Result.CreatedBy') }}:</b>
               {{ createdBy }}
             </span>
           </v-col>
@@ -21,13 +21,13 @@
       <span class="spacer"></span>
       <span class="spacer"></span>
       <v-btn id="ic" @click="showGlobalResults" text>
-        Voir les résultats globaux
+        {{ $t('Result.ViewGlobalResults') }}
       </v-btn>
       <v-btn id="ic" @click="toggleDropdown" text>
-        Voir les réponses correctes
+        {{ $t('Result.ViewCorrectAnswers') }}
       </v-btn>
       <v-btn id="ic" @click="showStudentResponses" text>
-        Voir les réponses des étudiants
+        {{ $t('Result.ViewStudentResponses') }}
       </v-btn>
     </div>
 
@@ -39,7 +39,7 @@
             <template #default>
               <v-list-item-content>
                 <v-list-item-title class="text-h6">
-                  Question {{ index + 1 }}
+                  {{ $t('Result.Question') }} {{ index + 1 }}
                 </v-list-item-title>
                 {{ answer }}
               </v-list-item-content>
@@ -55,7 +55,7 @@
             <template #default>
               <v-list-item-content>
                 <v-list-item-title class="text-h6">
-                  Question {{ index + 1 }}
+                  {{ $t('Result.Question') }} {{ index + 1 }}
                 </v-list-item-title>
                 {{ answer }}
               </v-list-item-content>

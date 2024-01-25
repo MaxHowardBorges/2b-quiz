@@ -8,7 +8,7 @@
     @click="rail = false">
     <v-list>
       <v-list-item :nav="true">
-        <v-list-item-title class="text-h4 py-4">Invitations</v-list-item-title>
+        <v-list-item-title class="text-h4 py-4">{{ $t("session.Invitations")}}</v-list-item-title>
         <template v-slot:prepend>
           <v-btn variant="text" @click.stop="rail = !rail" icon>
             <v-fade-transition>

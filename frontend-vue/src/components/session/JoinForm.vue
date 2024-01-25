@@ -28,7 +28,7 @@
         color="primary"
         class="mx-6 my-3"
         max-width="250px">
-        <p class="text-white font-weight-bold pa-2">Session history</p>
+        <p class="text-white font-weight-bold pa-2">{{ $t('session.SessionHistoryLabel') }}</p>
       </v-btn>
     </v-form>
   </v-sheet>

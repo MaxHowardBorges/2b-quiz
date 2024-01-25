@@ -44,7 +44,13 @@
     "AreSureDeleteQuestion": "Are you sure to delete the question :",
     "True": "True",
     "False": "False",
-    "NoQuestionnaries": "No questionnaires"
+    "NoQuestionnaries": "No questionnaires",
+    "ConfirmationTitle": "Confirmation",
+    "ConfirmationText": "Are you sure you want to delete the questionnaire {{ tagDescription }} ?",
+    "BelongsToQuestionsText": "This questionnaire belongs to the following questions:",
+    "NotAssignedText": "It is not assigned to any questions",
+    "CancelButton": "Cancel",
+    "ConfirmButton": "Confirm"
   },
 
   "question": {
@@ -118,13 +124,32 @@
     "SettingsTitle": "Settings",
     "CompletedText": "Completed",
     "CancelButton": "Cancel",
-    "SaveButton": "Save"
+    "SaveButton": "Save",
+    "Invitations": "Invitations",
+    "Join": "Join",
+    "ConfirmationTitle": "Are you sure?",
+    "ConfirmationDescription": "If you stop the session, all of results will be lost!",
+    "YesButton": "Yes",
+    "NoButton": "No",
+    "ManageResultsButton": "Manage Results",
+    "ViewResultsButton": "View Results",
+    "SessionHistoryLabel": "Session History",
+    "ResultsSettingsLabel": "Results Settings",
+    "DisplayPersonalResultLabel": "Display personal result after the end of the questionnaire",
+    "DisplayCorrectResponsesLabel": "Display correct responses after the end of the questionnaire",
+    "DisplayGlobalResultLabel": "Display global result after the end of the questionnaire"
   },
 
   "Result": {
     "Participant": "Participants",
     "Setting": "Setting",
-    "NoParticipantdataAvailable": "No participant data available"
+    "NoParticipantdataAvailable": "No participant data available",
+    "CreatedDate": "Creation Date",
+    "CreatedBy": "Created By",
+    "ViewGlobalResults": "View Global Results",
+    "ViewCorrectAnswers": "View Correct Answers",
+    "ViewStudentResponses": "View Student Responses",
+    "Question": "Question"
   },
 
   "user": {

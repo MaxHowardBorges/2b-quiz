@@ -7,10 +7,10 @@
     <span class="spacer"></span>
     <span class="spacer"></span>
     <v-btn v-if="sessionStore.isHost" @click="handleManageResults">
-      Gérer les résultats
+      {{ $t('session.ManageResultsButton') }}
     </v-btn>
     <v-btn v-if="sessionStore.isParticipant" @click="seeResults">
-      Voir les résultats
+      {{ $t('session.ViewResultsButton') }}
     </v-btn>
     <v-btn
       min-width="190px"

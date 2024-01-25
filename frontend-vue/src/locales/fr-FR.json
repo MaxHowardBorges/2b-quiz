@@ -44,7 +44,13 @@
     "AreSureDeleteQuestion": "Êtes-vous sûr de vouloir supprimer cette question :",
     "True": "Vrai",
     "False": "Faux",
-    "NoQuestionnaries": "Aucun questionnaire"
+    "NoQuestionnaries": "Aucun questionnaire",
+    "ConfirmationTitle": "Confirmation",
+    "ConfirmationText": "Êtes-vous sûr de vouloir supprimer le questionnaire {{ tagDescription }} ?",
+    "BelongsToQuestionsText": "Ce questionnaire appartient aux questions suivantes :",
+    "NotAssignedText": "Il n'est assigné à aucune question",
+    "CancelButton": "Annuler",
+    "ConfirmButton": "Confirmer"
   },
 
   "question": {
@@ -119,13 +125,32 @@
     "SettingsTitle": "Paramètres",
     "CompletedText": "A complété",
     "CancelButton": "Annuler",
-    "SaveButton": "Enregistrer"
+    "SaveButton": "Enregistrer",
+    "Invitations": "Invitations",
+    "Join": "Rejoindre",
+    "ConfirmationTitle": "Êtes-vous sûr ?",
+    "ConfirmationDescription": "Si vous arrêtez la session, tous les résultats seront perdus !",
+    "YesButton": "Oui",
+    "NoButton": "Non",
+    "ManageResultsButton": "Gérer les résultats",
+    "ViewResultsButton": "Voir les résultats",
+    "SessionHistoryLabel": "Historique des sessions",
+    "ResultsSettingsLabel": "Paramètres des résultats",
+    "DisplayPersonalResultLabel": "Afficher le résultat personnel après la fin du questionnaire",
+    "DisplayCorrectResponsesLabel": "Afficher les réponses correctes après la fin du questionnaire",
+    "DisplayGlobalResultLabel": "Afficher le résultat global après la fin du questionnaire"
   },
 
   "Result": {
     "Participant": "Participants",
     "Setting": "Paramètres",
-    "NoParticipantdataAvailable": "Aucune donnée de participant disponible"
+    "NoParticipantdataAvailable": "Aucune donnée de participant disponible",
+    "CreatedDate": "Date de création",
+    "CreatedBy": "Créé par",
+    "ViewGlobalResults": "Voir les résultats globaux",
+    "ViewCorrectAnswers": "Voir les réponses correctes",
+    "ViewStudentResponses": "Voir les réponses des étudiants",
+    "Question": "Question"
   },
 
   "user": {

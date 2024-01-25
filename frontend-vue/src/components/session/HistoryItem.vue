@@ -29,10 +29,10 @@
 
       <!-- Un seul bouton pour gérer les résultats -->
       <v-btn v-if="isHost()" @click="handleManageResults" color="primary">
-        Gérer les résultats
+        {{ $t('session.ManageResultsButton') }}
       </v-btn>
       <v-btn v-else @click="SeeResults" color="primary">
-        Voir les résultats
+        {{ $t('session.ViewResultsButton') }}
       </v-btn>
     </div>
   </v-sheet>

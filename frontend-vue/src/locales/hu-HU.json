@@ -44,7 +44,13 @@
     "AreSureDeleteQuestion": "Biztosan törölni szeretnéd ezt a kérdést:",
     "True": "Igaz",
     "False": "Hamis",
-    "NoQuestionnaries": "Nincs kérdőív"
+    "NoQuestionnaries": "Nincs kérdőív",
+    "ConfirmationTitle": "Megerősítés",
+    "ConfirmationText": "Biztosan törölni szeretné a kérdőívet: {{ tagDescription }}?",
+    "BelongsToQuestionsText": "Ez a kérdőív a következő kérdésekhez tartozik:",
+    "NotAssignedText": "Nincs hozzárendelve egyetlen kérdéshez sem",
+    "CancelButton": "Mégse",
+    "ConfirmButton": "Megerősít"
   },
 
   "question": {
@@ -118,13 +124,33 @@
     "SettingsTitle": "Beállítások",
     "CompletedText": "Kész",
     "CancelButton": "Mégse",
-    "SaveButton": "Mentés"
+    "SaveButton": "Mentés",
+    "Invitations": "Meghívások",
+    "Join": "Csatlakozás",
+    "ConfirmationTitle": "Biztos vagy benne?",
+    "ConfirmationDescription": "Ha leállítja a szakaszt, az összes eredmény elveszik!",
+    "YesButton": "Igen",
+    "NoButton": "Nem",
+    "ManageResultsButton": "Eredmények kezelése",
+    "ViewResultsButton": "Eredmények megtekintése",
+    "SessionHistoryLabel": "Munkamenet történet",
+    "ResultsSettingsLabel": "Eredmények beállításai",
+    "DisplayPersonalResultLabel": "Személyes eredmény megjelenítése a kérdőív vége után",
+    "DisplayCorrectResponsesLabel": "Helyes válaszok megjelenítése a kérdőív vége után",
+    "DisplayGlobalResultLabel": "Általános eredmény megjelenítése a kérdőív vége után"
   },
 
   "Result": {
     "Participant": "Résztvevők",
     "Setting": "Beállítások",
-    "NoParticipantdataAvailable": "Nincs résztvevői adat elérhető"
+    "NoParticipantdataAvailable": "Nincs résztvevői adat elérhető",
+    "CreatedDate": "Létrehozás dátuma",
+    "CreatedBy": "Készítette",
+    "ViewGlobalResults": "globális eredmények megtekintése",
+    "ViewCorrectAnswers": "Helyes válaszok megtekintése",
+    "ViewStudentResponses": "Diákok válaszainak megtekintése",
+    "Question": "Kérdés"
+
   },
   "user": {
     "SVD": "ÉSR",

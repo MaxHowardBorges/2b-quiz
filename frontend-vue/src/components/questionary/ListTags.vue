@@ -35,25 +35,25 @@
 
   <v-dialog v-model="confirmationDialog" max-width="600">
     <v-card v-if="!!this.selectedTag">
-      <v-card-title class="headline">Confirmation</v-card-title>
+      <v-card-title class="headline">{{ $t('questionnary.ConfirmationTitle') }}</v-card-title>
       <v-card-text>
-        Are you sure you want to delete the tag
+        {{ $t('questionnary.ConfirmationText') }}
         {{ this.selectedTag.description }}
         ?
       </v-card-text>
       <v-card-text v-if="this.selectedTag.questionsName.length > 0">
-        this tag belong to the following questions :
+        {{ $t('questionnary.BelongsToQuestionsText') }}
         <ul v-for="questionName in this.selectedTag.questionsName">
           <li>
             {{ questionName }}
           </li>
         </ul>
       </v-card-text>
-      <v-card-text v-else>It is not assigned to any questions</v-card-text>
+      <v-card-text v-else>{{ $t('questionnary.NotAssignedText') }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="confirmationDialog = false" color="error">Cancel</v-btn>
-        <v-btn @click="DeleteTag" color="success">confirm</v-btn>
+        <v-btn @click="confirmationDialog = false" color="error">{{ $t('questionnary.CancelButton') }}</v-btn>
+        <v-btn @click="DeleteTag" color="success">{{ $t('questionnary.ConfirmButton') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

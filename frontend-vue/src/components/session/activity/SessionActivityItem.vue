@@ -4,7 +4,7 @@
     <p class="text-caption text-start">Par {{ session.teacherUsername }}</p>
     <div class="d-flex my-1">
       <v-spacer></v-spacer>
-      <v-btn @click="handleJoin()">Join</v-btn>
+      <v-btn @click="handleJoin()">{{ $t("session.Join")}}</v-btn>
     </div>
   </v-sheet>
 </template>
