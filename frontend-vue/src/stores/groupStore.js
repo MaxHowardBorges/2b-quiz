@@ -42,10 +42,9 @@ export const useGroupStore = defineStore('group', {
 
     async getGroups() {
       const userStoreU = useUserStore();
-      console.log('getGroups');
+
       const response = await getGroupsOfTeacher(userStoreU.token);
-      console.log('response : ');
-      console.log(response);
+
       userStoreU.updateToken(response.headers.get('Authorization'));
       const groups = await response.json();
       await this.setTabsGroups(groups);
@@ -55,10 +54,7 @@ export const useGroupStore = defineStore('group', {
     async createGroup(body) {
       const userStoreU = useUserStore();
       try {
-        console.log('createGroup');
         const bodytosend = { name: body };
-        console.log('bodytosend : ');
-        console.log(bodytosend);
         const response = await createGroup(bodytosend, userStoreU.token);
         if (!response.ok || response.status !== 201) {
           throw new Error('Erreur de réponse'); // TODO manage error
@@ -66,8 +62,6 @@ export const useGroupStore = defineStore('group', {
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = JSON.parse(await response.text());
         this.setTabsGroups(group);
-        console.log('group : ');
-        console.log(group);
         await this.getGroups();
       } catch (error) {
         console.error(error);
@@ -106,13 +100,9 @@ export const useGroupStore = defineStore('group', {
     async getTeachers() {
       const userStoreU = useUserStore();
       try {
-        console.log('getTeachers');
         const response = await getTeachers(userStoreU.token);
-        console.log('response : ');
-        console.log(response);
         userStoreU.updateToken(response.headers.get('Authorization'));
         const teachers = await response.json();
-        console.log('Teacher', teachers);
         return teachers;
       } catch (error) {
         console.error(error);
@@ -128,7 +118,6 @@ export const useGroupStore = defineStore('group', {
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();
-        console.log(group);
         await this.getGroups();
       } catch (error) {
         console.error(error);
@@ -148,7 +137,6 @@ export const useGroupStore = defineStore('group', {
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();
-        console.log(group);
         await this.getGroups();
       } catch (error) {
         console.error(error);
@@ -168,7 +156,6 @@ export const useGroupStore = defineStore('group', {
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();
-        console.log(group);
         await this.getGroups();
       } catch (error) {
         console.error(error);

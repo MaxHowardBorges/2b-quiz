@@ -27,7 +27,6 @@ describe('AppController (e2e)', () => {
 
       expect(questionnary.status).toBe(201);
 
-      console.log(questionnary.body.id);
       await request('http://localhost:3000/questionnary')
         .post('/' + questionnary.body.id + '/add-question')
         .send({

@@ -96,7 +96,7 @@
     },
     async mounted() {
       this.user = await this.userStore.getSelf();
-      console.log('user', this.user);
+
     },
     methods: {
       async updateUserData() {

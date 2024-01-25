@@ -217,11 +217,9 @@
       async updateIsDeletedUsers(value) {
         this.isDeletedUsers = value;
         await this.loadUser();
-        console.log(this.users);
       },
       async restoreUser(id) {
         this.userToRestore = this.users.find((user) => user.id === id);
-        console.log(this.userToRestore);
         this.$refs.restoreUserDialog.dialog = true;
       },
       async restoreConfirmUser(user) {

@@ -61,7 +61,6 @@ describe('AppController (e2e)', () => {
         .send({ idSession: session.body.id })
         .expect(201);
 
-      console.log(questionnary.body.questions);
       expect(nextQ.status).toBe(201);
       expect(nextQ.noContent).toBeFalsy();
       expect(nextQ.body.answers.length).toBeGreaterThanOrEqual(2);
@@ -88,7 +87,6 @@ describe('AppController (e2e)', () => {
       let questionanryDto = await request('http://localhost:3000/questionnary')
         .get('/' + questionnary.body.id + '/select')
         .expect(200);
-      //console.log(questionnary.body);
       let session = await request('http://localhost:3000/session')
         .post('/create')
         .send([questionanryDto.body])
@@ -111,7 +109,6 @@ describe('AppController (e2e)', () => {
       expect(currentQ.body.answers.length).toBeGreaterThanOrEqual(2);
       expect(currentQ.body.id).not.toBeNull();
       expect(typeof currentQ.body.content).toBe('string');
-      console.log(questionanryDto.body.answers);
     });
 
     it('join', async () => {
@@ -169,7 +166,6 @@ describe('AppController (e2e)', () => {
         .send({ idSession: session.body.id })
         .expect(201);
 
-      console.log(questionnaryDto.body.questions[0].answers[0].id);
       let response = await request('http://localhost:3000/session')
         .post('/respond')
         .send({
@@ -177,8 +173,6 @@ describe('AppController (e2e)', () => {
           answer: questionnaryDto.body.questions[0].answers[0].id,
           username: session.body.connectedUser.username, //,'UserTest',
         });
-      console.log(session.body.connectedUser);
-      console.log(response.body);
       expect(response.status).toBe(204);
     });*/
   });

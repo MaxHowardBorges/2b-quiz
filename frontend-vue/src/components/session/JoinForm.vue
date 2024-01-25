@@ -8,10 +8,6 @@
     position="relative">
     <v-form @submit.prevent="handleJoinSession">
       <v-text-field
-        id="username"
-        v-model="username"
-        :label ="$t('home.username')"></v-text-field>
-      <v-text-field
         id="idSession"
         v-model="idSession"
         :label ="$t('home.SessionID')" ></v-text-field>

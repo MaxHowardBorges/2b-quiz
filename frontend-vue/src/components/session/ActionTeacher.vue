@@ -84,7 +84,6 @@
         this.loadingNextQuestion = true;
         try {
           const response = await this.sessionStore.nextQuestion();
-          console.log('ok');
           await this.sessionStore.getCurrentQuestionForTeacher(response);
           if (this.sessionStore.ended) {
             this.$emit('session-end');

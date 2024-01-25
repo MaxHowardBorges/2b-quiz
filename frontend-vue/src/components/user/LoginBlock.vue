@@ -98,7 +98,6 @@
       async checkTicket() {
         try {
           await this.userStore.login(this.ticket, this.getServiceURL());
-          console.log('Login success', this.$route.query.from);
           if (!!this.$route.query.from) {
             await router.push(decodeURIComponent(this.$route.query.from));
           } else {

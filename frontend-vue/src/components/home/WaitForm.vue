@@ -40,13 +40,10 @@
     },
     methods: {
       async handleJoinSession() {
-        console.log(this.sessionStore.start);
-
         if (!this.sessionStore.start) {
           this.loading = true;
           try {
             const userStore = useUserStore();
-            console.log(this.sessionStore.idSession);
             await this.$router.push({
               path: '/session',
               query: { idSession: this.sessionStore.idSession, key: 'display' },
