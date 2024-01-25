@@ -163,7 +163,11 @@
     "SaveChangesButton": "Enregistrer les modifications",
     "GlobalResultsTitle": "Résultats globaux",
     "SuccessRate": "de réussite",
-    "NoAnswer": "Aucune réponse"
+    "NoAnswer": "Aucune réponse",
+    "Session": "Session",
+    "Par": "Par",
+    "SearchQuestionnaire": "Rechercher un questionnaire",
+    "SessionID": "ID de la session"
   },
 
   "Result": {

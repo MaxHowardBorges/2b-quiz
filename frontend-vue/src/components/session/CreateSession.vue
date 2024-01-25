@@ -77,7 +77,7 @@
             <v-text-field
               v-model="searchQuery"
               @update:model-value="updateSearchQuery"
-              label="Rechercher un questionnaire"></v-text-field>
+              :label="$t('session.SearchQuestionnaire')"></v-text-field>
             <!-- Liste des questionnaires disponibles (peut provenir de votre API, etc.) -->
             <v-list>
               <v-list-item

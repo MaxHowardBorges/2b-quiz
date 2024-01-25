@@ -8,7 +8,7 @@
     <h1 v-if="!waitingSessionStart">{{ $t('session.AnswerSub') }}</h1>
     <div>
       <p v-if="!waitingSessionStart">{{ $t('session.WaitingNext') }}</p>
-      <p>Session ID: {{ idSession }}</p>
+      <p>{{ $t('session.SessionID') }}: {{ idSession }}</p>
     </div>
   </v-sheet>
 </template>

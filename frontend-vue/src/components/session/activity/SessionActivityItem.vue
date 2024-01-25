@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="ma-1 px-3 py-2" border="border" rounded="lg">
     <p class="text-subtitle-1 text-start">{{ session.idSession }}</p>
-    <p class="text-caption text-start">Par {{ session.teacherUsername }}</p>
+    <p class="text-caption text-start">{{ $t('session.Par') }} {{ session.teacherUsername }}</p>
     <div class="d-flex my-1">
       <v-spacer></v-spacer>
       <v-btn @click="handleJoin()">{{ $t("session.Join")}}</v-btn>

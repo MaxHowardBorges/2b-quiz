@@ -162,7 +162,11 @@
     "SaveChangesButton": "Save changes",
     "GlobalResultsTitle": "Global Results",
     "SuccessRate": "success rate",
-    "NoAnswer": "No answer"
+    "NoAnswer": "No answer",
+    "Session": "Session",
+    "Par": "by",
+    "SearchQuestionnaire": "Search for a questionnary",
+    "SessionID": "Session ID"
   },
 
   "Result": {

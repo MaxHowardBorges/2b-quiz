@@ -5,7 +5,7 @@
     max-width="800px"
     class="d-flex flex-column my-2 pa-3 w-100 mx-auto">
     <div class="mb-4">
-      <b>Session</b>
+      <b>{{ $t('session.Session') }}</b>
       <div class="mt-4 mb-4">
         <v-row>
           <v-col class="text-left ml-1">
@@ -59,7 +59,7 @@
       return {
         userStore,
         sessionStore,
-        question: ref('Session 1'),
+        question: ref(''),
         showDropdown: ref(false),
         showGlobal: ref(false),
         showStudentResponsesTable: ref(false),

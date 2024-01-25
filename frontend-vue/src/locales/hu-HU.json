@@ -162,7 +162,11 @@
     "SaveChangesButton": "Változások mentése",
     "GlobalResultsTitle": "Általános Eredmények",
     "SuccessRate": "sikerarány",
-    "NoAnswer": "Nincs válasz"
+    "NoAnswer": "Nincs válasz",
+    "Session": "Munkamenet",
+    "Par": "által",
+    "SearchQuestionnaire": "Kérdőív keresése",
+    "SessionID": "Munkamenet azonosítója"
   },
 
   "Result": {
