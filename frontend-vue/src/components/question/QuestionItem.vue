@@ -4,7 +4,7 @@
     elevation="3"
     rounded="lg"
     class="d-flex flex-column my-2 pa-3 w-100"
-    v-if="isHost">
+    v-if="isHost !== null">
     <div class="d-flex flex-row">
       <p class="text-h5">
         <b>{{ question.content }}</b>
