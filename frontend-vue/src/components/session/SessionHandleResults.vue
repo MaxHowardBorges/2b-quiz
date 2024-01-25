@@ -27,7 +27,7 @@
             </v-col>
             <v-col>
               <span>
-                <b>Créé par:</b>
+                <b>{{ $t('session.CreatedByLabel') }}:</b>
                 {{ getSurname() }}
               </span>
             </v-col>
