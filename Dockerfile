@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 COPY package.json ./
 COPY yarn.lock ./
 COPY backend-nest/package.json ./backend-nest/
+COPY backend-nest/user.json backend-nest/
 
 # Install dependences
 RUN yarn install
@@ -26,6 +27,7 @@ WORKDIR /usr/src/app
 COPY package.json ./
 COPY yarn.lock ./
 COPY backend-nest/package.json ./backend-nest/
+COPY backend-nest/user.json backend-nest/
 
 # Copy builded files
 COPY --from=api-build-stage /usr/src/app/backend-nest/dist  /usr/src/app/backend-nest/dist
