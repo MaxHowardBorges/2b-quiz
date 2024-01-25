@@ -24,6 +24,8 @@ describe('UserService', () => {
   let service: UserService;
   let userRepository: jest.Mocked<Repository<User>>;
   let groupRepository: jest.Mocked<Repository<Group>>;
+  let studentRepository: jest.Mocked<Repository<Student>>;
+  let teacherRepository: jest.Mocked<Repository<Teacher>>;
 
   let teacherMock = generateTeacherMock();
   let teacherGroupMock = generateTeacherGroupMock();
@@ -52,6 +54,8 @@ describe('UserService', () => {
     service = unit;
     userRepository = unitRef.get('UserRepository');
     groupRepository = unitRef.get('GroupRepository');
+    studentRepository = unitRef.get('StudentRepository');
+    teacherRepository = unitRef.get('TeacherRepository');
   });
 
   it('should be defined', () => {
@@ -689,6 +693,64 @@ describe('UserService', () => {
         where: { tabUsers: { id: group.teacher.id } },
       });
       expect(test).toEqual([group]);
+      expect(test).toBeInstanceOf(Array);
+    });
+  });
+
+  // getStudent
+  describe('getStudent', () => {
+    it('should get a student', async () => {
+      const student = studentMock;
+      userRepository.findOne.mockResolvedValue(student);
+      const test = await service.getStudent(student.id);
+      expect(test).toEqual(student);
+      expect(test).toBeInstanceOf(Student);
+    });
+    it('should throw an error if student is not found', async () => {
+      const student = studentMock;
+      userRepository.findOne.mockResolvedValue(null);
+      await expect(service.getStudent(student.id)).rejects.toThrow(
+        UserNotFoundException,
+      );
+    });
+  });
+
+  //getUserWithGroup
+  describe('getUserWithGroup', () => {
+    it('if teacher should get a user with joinedGroups and createdGroups', async () => {
+      const user = teacherMock;
+      userRepository.findOne.mockResolvedValue(user);
+      const test = await service.getUserWithGroup(user.id);
+      expect(test).toEqual(user);
+      expect(test).toBeInstanceOf(User);
+    });
+    it('if student should get a user with joinedGroups', async () => {
+      const user = studentMock;
+      userRepository.findOne.mockResolvedValue(user);
+      const test = await service.getUserWithGroup(user.id);
+      expect(test).toEqual(user);
+      expect(test).toBeInstanceOf(User);
+    });
+  });
+
+  //getStudents
+  describe('getStudents', () => {
+    it('should get students', async () => {
+      const student = studentMock;
+      studentRepository.find.mockResolvedValue([student]);
+      const test = await service.getStudents(teacherMock);
+      expect(test).toEqual([student]);
+      expect(test).toBeInstanceOf(Array);
+    });
+  });
+
+  //getOtherTeacher
+  describe('getOtherTeacher', () => {
+    it('should get other teachers', async () => {
+      const teacher = teacherMock;
+      teacherRepository.find.mockResolvedValue([teacher]);
+      const test = await service.getOtherTeacher(teacher);
+      expect(test).toEqual([teacher]);
       expect(test).toBeInstanceOf(Array);
     });
   });

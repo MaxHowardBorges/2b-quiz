@@ -56,4 +56,14 @@ describe('BlacklistService', () => {
       expect(service.isOlderThanOneHour(Date.now())).toBeFalsy();
     });
   });
+
+  //removeOldTokens
+  describe('removeOldTokens', () => {
+    it('should remove old tokens', () => {
+      service.addToBlacklist('token');
+      service.isOlderThanOneHour = jest.fn().mockReturnValue(true);
+      service.removeOldTokens();
+      expect(service.isTokenBlacklisted('token')).toBeFalsy();
+    });
+  });
 });
