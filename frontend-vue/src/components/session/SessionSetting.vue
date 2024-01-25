@@ -123,24 +123,24 @@
         :disabled="!displaySettings.displayQuestion" />
     </div>
     <v-divider class="ma-2" v-if="!isInSession"></v-divider>
-    <p class="text-h5" v-if="!isInSession">Results settings</p>
+    <p class="text-h5" v-if="!isInSession">{{ $t('session.ResultsSettingsLabel') }}</p>
     <div class="d-flex mt-1" v-if="!isInSession">
       <!--      TODO add tooltip for "can be changed later"-->
       <v-switch
         color="primary"
-        label="Display personal result after the end of the questionnary"
+        :label="$t('session.DisplayPersonalResultLabel')"
         v-model="isResult"
         @update:model-value="isResponses = isResponses && isResult" />
 
       <v-switch
         color="primary"
-        label="Display correct reponses result after the end of the questionnary"
+        :label="$t('session.DisplayCorrectResponsesLabel')"
         v-model="isResponses"
         :disabled="!isResult" />
 
       <v-switch
         color="primary"
-        label="Display global result after the end of the questionnary"
+        :label="$t('session.DisplayGlobalResultLabel')"
         v-model="isGlobal" />
     </div>
   </div>
