@@ -2,7 +2,14 @@
   "menu": {
     "menuTeacher": "Tanár menü",
     "home": "Kezdőlap",
-    "questionnary": "Kérdőív"
+    "questionnary": "Kérdőív",
+    "SessionRouted": "Munkamenet",
+    "session": "Munkamenet",
+    "SessionHandleResults": "Eredmények kezelése",
+    "history": "Előzmények",
+    "user": "Felhasználó",
+    "public": "Nyilvános képernyő",
+    "group": "Csoport"
   },
 
   "home": {
@@ -273,5 +280,10 @@
 
   "layout": {
     "LogoText": "Élő szavazási rendszer"
+  },
+
+  "history": {
+    "SessionHistory": "Munkamenet előzmények",
+    "ErrorGettingList": "Hiba a szakaszlista lekérése közben"
   }
 }

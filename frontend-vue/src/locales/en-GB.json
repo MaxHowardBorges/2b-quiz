@@ -2,7 +2,14 @@
   "menu": {
     "menuTeacher": "Teacher menu",
     "home": "Home",
-    "questionnary": "Questionnary"
+    "questionnary": "Questionnary",
+    "SessionRouted": "Session Routed",
+    "session": "Session",
+    "SessionHandleResults": "Session Handle Results",
+    "history": "History",
+    "user": "User",
+    "public": "Public",
+    "group": "Group"
   },
 
   "home": {
@@ -273,5 +280,10 @@
 
   "layout" : {
     "LogoText": "Live Voting System"
+  },
+
+  "history": {
+    "SessionHistory": "Session History",
+    "ErrorGettingList": "Error while getting session list"
   }
 }
