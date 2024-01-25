@@ -282,5 +282,10 @@
 
   "layout": {
     "LogoText": "Système de Vote en Direct"
+  },
+
+  "history": {
+    "SessionHistory": "Historique des sessions",
+    "ErrorGettingList": "Erreur lors de la récupération de la liste des sessions"
   }
 }
