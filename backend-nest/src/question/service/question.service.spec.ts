@@ -471,4 +471,101 @@ describe('QuestionService', () => {
       });
     });
   });
+
+  //modifyQuestionsOriginalId
+  describe('modifyQuestionsOriginalId', () => {
+    it('should modify questions original id', async () => {
+      questionsMock[0].id = 1;
+      questionRepository.find.mockResolvedValue(questionsMock);
+      await service.modifyQuestionsOriginalId(questionsMock[0].id);
+      expect(questionRepository.find).toHaveBeenCalledWith({
+        where: { originalId: questionsMock[0].id },
+      });
+      expect(questionRepository.save).toHaveBeenCalledWith(questionsMock[0]);
+    });
+    it('should not modify questions original id', async () => {
+      questionRepository.find.mockResolvedValue([]);
+      questionsMock[0].id = 1;
+      const isModified = await service.modifyQuestionsOriginalId(
+        questionsMock[0].id,
+      );
+      expect(isModified).toBeFalsy();
+      expect(questionRepository.find).toHaveBeenCalledWith({
+        where: { originalId: questionsMock[0].id },
+      });
+    });
+  });
+
+  //findQuestions
+  describe('findQuestions', () => {
+    it('should find questions', async () => {
+      const questionnary = generateQuestionnaryMock(teacher);
+      questionnary.id = 1;
+      questionRepository.find.mockResolvedValue(questionsMock);
+      const questions = await service.findQuestions(questionnary);
+      expect(questions).toBeDefined();
+      expect(questions).toEqual(questionsMock);
+      expect(questionRepository.find).toHaveBeenCalledWith({
+        where: { questionnary: { id: questionnary.id } },
+        relations: ['tags'],
+      });
+    });
+  });
+
+  //findAnswers
+  describe('findAnswers', () => {
+    it('should find answers', async () => {
+      const question = questionsMock[0];
+      question.id = 1;
+      questionRepository.findOne.mockResolvedValue(question);
+      const answers = await service.findAnswers(question.id);
+      const returnedAnswers = [];
+      for (const answer of answers) {
+        const answerR = new Answer();
+        answerR.id = answer.id;
+        answerR.content = answer.content;
+        answerR.isCorrect = answer.isCorrect;
+        answerR.question = null;
+        returnedAnswers.push(answerR);
+      }
+      expect(answers).toBeDefined();
+      expect(answers).toEqual(returnedAnswers);
+      expect(questionRepository.findOne).toHaveBeenCalledWith({
+        where: { id: question.id },
+        relations: ['answers'],
+      });
+    });
+  });
+
+  //deleteQuestion
+  describe('deleteQuestion', () => {
+    it('should delete a question', async () => {
+      const questionnary = generateQuestionnaryMock(teacher);
+      const question = questionsMock[0];
+      question.id = 1;
+      questionRepository.findOne.mockResolvedValueOnce(question);
+      questionRepository.delete.mockResolvedValue(undefined);
+      questionRepository.find.mockResolvedValueOnce(questionsMock);
+      const isDeleted = await service.deleteQuestion(questionnary, question.id);
+      expect(isDeleted).toBeTruthy();
+      expect(questionRepository.findOne).toHaveBeenCalledWith({
+        where: { questionnary: { id: questionnary.id }, id: question.id },
+      });
+      expect(questionRepository.delete).toHaveBeenCalledWith({
+        questionnary: { id: questionnary.id },
+        id: question.id,
+      });
+    });
+    it('should not delete a question', async () => {
+      const questionnary = generateQuestionnaryMock(teacher);
+      const question = questionsMock[0];
+      question.id = 1;
+      questionRepository.findOne.mockResolvedValue(undefined);
+      const isDeleted = await service.deleteQuestion(questionnary, question.id);
+      expect(isDeleted).toBeFalsy();
+      expect(questionRepository.findOne).toHaveBeenCalledWith({
+        where: { questionnary: { id: questionnary.id }, id: question.id },
+      });
+    });
+  });
 });

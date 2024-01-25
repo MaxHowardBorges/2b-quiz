@@ -11,6 +11,8 @@ import { Subject } from 'rxjs';
 import { SessionNotFoundException } from '../exception/sessionNotFound.exception';
 import { UserUnauthorisedException } from '../exception/userUnauthorised.exception';
 import { ParticipantSessionObject } from '../object/participantSession.object';
+import { EventHostEnum } from '../enum/eventHost.enum';
+import { EventObserverEnum } from '../enum/eventObserver.enum';
 
 describe('EventService', () => {
   let service: EventService;
@@ -197,6 +199,35 @@ describe('EventService', () => {
       const session = service.getSession(idSession);
       expect(session).toBeDefined();
       expect(session).toBeInstanceOf(ParticipantSessionObject);
+    });
+  });
+
+  //sendHostEventWithPayload
+  describe('sendHostEventWithPayload', () => {
+    it('should send event to host', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      service.sendHostEventWithPayload(EventHostEnum.NEW_ANSWER, idSession, {});
+      expect(service.getSession(idSession)).toBeDefined();
+      expect(
+        service.getSession(idSession).getParticipantSubjectList().length,
+      ).toBe(5);
+    });
+  });
+
+  //sendObserverEvent
+  describe('sendObserverEvent', () => {
+    it('should send event to observer', async () => {
+      const idSession = '123456';
+      service.createSessionGroup(idSession, host.id, participant);
+      service.sendObserverEvent(
+        EventObserverEnum.NEW_DISPLAY_SETTINGS,
+        idSession,
+      );
+      expect(service.getSession(idSession)).toBeDefined();
+      expect(
+        service.getSession(idSession).getParticipantSubjectList().length,
+      ).toBe(5);
     });
   });
 });
