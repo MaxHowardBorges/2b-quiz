@@ -149,7 +149,20 @@
     "DisplayCorrectResponsesLabel": "Display correct responses after the end of the questionnaire",
     "DisplayGlobalResultLabel": "Display global result after the end of the questionnaire",
     "CreateSession": "Create a session",
-    "JoinSession": "Join a session"
+    "JoinSession": "Join a session",
+    "CreatedDateLabel": "Created date",
+    "CreatedByLabel": "Created by",
+    "You": "You",
+    "YourGradeLabel": "Here is your grade",
+    "SuccessRateLabel": "success rate",
+    "UnavailableLabel": "Unavailable",
+    "ShowGlobalResultsLabel": "Show global results",
+    "ShowStudentResponsesLabel": "Show student responses",
+    "Title": "Session settings",
+    "SaveChangesButton": "Save changes",
+    "GlobalResultsTitle": "Global Results",
+    "SuccessRate": "success rate",
+    "NoAnswer": "No answer"
   },
 
   "Result": {

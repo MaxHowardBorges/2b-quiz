@@ -18,9 +18,9 @@
           <v-row>
             <v-col>
               <span>
-                <b>Date de création:</b>
+                <b>{{ $t('session.CreatedDateLabel') }}:</b>
                 {{ parseDate(results.sessionDate).replace(' ', '&nbsp;') }}
-                à&nbsp;{{
+                -&nbsp;{{
                   getTimeFromDate(results.sessionDate).replace(' ', '&nbsp;')
                 }}
               </span>
@@ -36,13 +36,13 @@
             <v-row>
               <v-col>
                 <span v-if="results.personnalResult !== null">
-                  <b>Voici ta note :</b>
-                  {{ Math.round(results.personnalResult * 100) / 100 }}% de
-                  réussite
+                  <b>{{ $t('session.YourGradeLabel') }} :</b>
+                  {{ Math.round(results.personnalResult * 100) / 100 }}%
+                  {{ $t('session.SuccessRateLabel') }}
                 </span>
                 <span v-else>
-                  <b>Voici ta note :</b>
-                  Indisponible
+                  <b>{{ $t('session.YourGradeLabel') }} :</b>
+                  {{ $t('session.UnavailableLabel') }}
                 </span>
               </v-col>
             </v-row>
@@ -55,10 +55,10 @@
         <template v-if="isHost()">
           <v-btn-toggle color="primary" border="sm">
             <v-btn id="ic" @click="showGlobalResults">
-              Voir les résultats globaux
+              {{ $t('session.ShowGlobalResultsLabel') }}
             </v-btn>
             <v-btn id="ic" @click="showStudentResponses">
-              Voir les réponses des étudiants
+              {{ $t('session.ShowStudentResponsesLabel') }}
             </v-btn>
           </v-btn-toggle>
           <v-btn
@@ -76,26 +76,26 @@
           max-width="800px"
           class="mx-auto"
           v-if="isHost() && viewSettings">
-          <p class="mt-2 text-h5">Session results visibility settings</p>
+          <p class="mt-2 text-h5">{{ $t('session.Title') }}</p>
           <v-sheet class="d-flex mx-auto flex-wrap">
             <v-switch
               class="mx-5 mt-3"
               color="primary"
-              label="Display personal result after the end of the questionnary"
+              :label="$t('session.DisplayPersonalResultLabel')"
               v-model="isResult"
               @update:model-value="isResponses = isResponses && isResult" />
 
             <v-switch
               class="mx-5"
               color="primary"
-              label="Display correct reponses result after the end of the questionnary"
+              :label="$t('session.DisplayCorrectResponsesLabel')"
               v-model="isResponses"
               :disabled="!isResult" />
 
             <v-switch
               class="mx-5"
               color="primary"
-              label="Display global result after the end of the questionnary"
+              :label="$t('session.DisplayGlobalResultLabel')"
               v-model="isGlobal" />
           </v-sheet>
           <v-expand-transition>
@@ -103,7 +103,7 @@
               class="mb-3"
               v-if="!isEqualsToSettings()"
               @click="saveChanges()">
-              Save changes
+              {{ $t('session.SaveChangesButton') }}
             </v-btn>
           </v-expand-transition>
         </v-sheet>
@@ -116,9 +116,9 @@
             <v-list-item v-if="results.globalResult">
               <template #default>
                 <v-list-item-title class="text-h5">
-                  Résultats globaux :
+                  {{ $t('session.GlobalResultsTitle') }} :
                 </v-list-item-title>
-                {{ results.globalResult }}% de réussite
+                {{ results.globalResult }}% {{ $t('session.SuccessRate') }}
               </template>
             </v-list-item>
             <template v-if="this.results.questions.length > 0">
@@ -182,7 +182,7 @@
                         : 'bg-success'
                     ">
                     <template v-if="question.studentAnswers.length === 0">
-                      Aucune réponse
+                      {{ $t('session.NoAnswer') }}
                     </template>
                     <template v-else>
                       {{ question.studentAnswers.join(', ') }}

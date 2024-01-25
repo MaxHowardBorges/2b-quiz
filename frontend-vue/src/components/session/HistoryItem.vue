@@ -10,16 +10,16 @@
         <v-row>
           <v-col class="text-left ml-1">
             <span>
-              <b>Date de création:</b>
-              {{ parseDate(session.date).replace(' ', '&nbsp;') }} à&nbsp;{{
+              <b>{{ $t('session.CreatedDateLabel') }}:</b>
+              {{ parseDate(session.date).replace(' ', '&nbsp;') }} - &nbsp;{{
                 getTimeFromDate(session.date).replace(' ', '&nbsp;')
               }}
             </span>
           </v-col>
           <v-col class="text-right mr-1">
             <span>
-              <b>Créé par:</b>
-              {{ isHost() ? 'Vous' : session.teacher.username }}
+              <b>{{ $t('session.CreatedByLabel') }}:</b>
+              {{ isHost() ? $t('session.You') : session.teacher.username }}
             </span>
           </v-col>
         </v-row>

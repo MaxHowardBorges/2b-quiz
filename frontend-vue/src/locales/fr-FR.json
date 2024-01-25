@@ -150,7 +150,20 @@
     "DisplayCorrectResponsesLabel": "Afficher les réponses correctes après la fin du questionnaire",
     "DisplayGlobalResultLabel": "Afficher le résultat global après la fin du questionnaire",
     "CreateSession": "Créer une session",
-    "Join a session": "Rejoindre une session"
+    "Join a session": "Rejoindre une session",
+    "CreatedDateLabel": "Date de création",
+    "CreatedByLabel": "Créé par",
+    "You": "Vous",
+    "YourGradeLabel": "Voici ta note",
+    "SuccessRateLabel": "de réussite",
+    "UnavailableLabel": "Indisponible",
+    "ShowGlobalResultsLabel": "Voir les résultats globaux",
+    "ShowStudentResponsesLabel": "Voir les réponses des étudiants",
+    "Title": "Paramètres de la session",
+    "SaveChangesButton": "Enregistrer les modifications",
+    "GlobalResultsTitle": "Résultats globaux",
+    "SuccessRate": "de réussite",
+    "NoAnswer": "Aucune réponse"
   },
 
   "Result": {

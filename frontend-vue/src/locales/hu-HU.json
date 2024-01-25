@@ -149,7 +149,20 @@
     "DisplayCorrectResponsesLabel": "Helyes válaszok megjelenítése a kérdőív vége után",
     "DisplayGlobalResultLabel": "Általános eredmény megjelenítése a kérdőív vége után",
     "CreateSession": "Munkamenet létrehozása",
-    "JoinSession": "Csatlakozás egy munkamenethez"
+    "JoinSession": "Csatlakozás egy munkamenethez",
+    "CreatedDateLabel": "Létrehozás dátuma",
+    "CreatedByLabel": "Készítette",
+    "You": "Ön",
+    "YourGradeLabel": "Itt van a jegyed",
+    "SuccessRateLabel": "sikerráta",
+    "UnavailableLabel": "Nem elérhető",
+    "ShowGlobalResultsLabel": "Mutassa a globális eredményeket",
+    "ShowStudentResponsesLabel": "Mutassa a hallgató válaszokat",
+    "Title": "Ülési beállítások",
+    "SaveChangesButton": "Változások mentése",
+    "GlobalResultsTitle": "Általános Eredmények",
+    "SuccessRate": "sikerarány",
+    "NoAnswer": "Nincs válasz"
   },
 
   "Result": {
