@@ -173,9 +173,11 @@ export const useSessionStore = defineStore('session', {
     async nextQuestion() {
       const userStore = useUserStore();
       userStore.reloadState();
-      const body = { idSession: this.idSession };
-      const response = await getNextQuestion(body, userStore.getToken());
-      await throwIfNotOK(response, 201);
+      const response = await getNextQuestion(
+        this.idSession,
+        userStore.getToken(),
+      );
+      await throwIfNotOK(response, 200);
       userStore.updateToken(response.headers.get('Authorization'));
       await this.getSessionStatus();
       return await response.json();

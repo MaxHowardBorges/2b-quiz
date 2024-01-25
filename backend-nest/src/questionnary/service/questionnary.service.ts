@@ -34,7 +34,6 @@ export class QuestionnaryService {
     return questionnary;
   }
 
-  //Create new questionnary from Questionnary id array
   async createQuestionnaryFromIdArray(
     idQuestionnarys: number[],
     author: Teacher,
@@ -55,7 +54,6 @@ export class QuestionnaryService {
         );
       }
     }
-    //Combine all questionnaryDto in one questionnaryDto
     const questionnaryDtoCombined = new QuestionnaryCreateDto();
     questionnaryDtoCombined.title = 'Questionnary Combined';
     questionnaryDtoCombined.questions = [];
@@ -64,7 +62,6 @@ export class QuestionnaryService {
         questionnaryDtoCombined.questions.push(question);
       }
     }
-    //Create questionnary from questionnaryDtoCombined
     return await this.createQuestionnary(questionnaryDtoCombined, author, true);
   }
 
@@ -98,8 +95,6 @@ export class QuestionnaryService {
 
   async findQuestionnariesFromIdUser(teacher: Teacher) {
     // questionnaires without questions
-    //TODO get from user questionnary bank
-
     return await this.questionnaryRepository.find({
       relations: {
         author: true,
@@ -110,7 +105,6 @@ export class QuestionnaryService {
 
   async findQuestionnariesFromIdUserWithQuestions(teacher: Teacher) {
     // questionnaires without questions
-
     return await this.questionnaryRepository.find({
       relations: {
         author: true,

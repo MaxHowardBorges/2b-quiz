@@ -20,7 +20,6 @@ import { UserRequest } from '../../auth/config/user.request';
 import { IsNotHostException } from '../exception/isNotHost.exception';
 import { IsHostException } from '../exception/isHost.exception';
 import { RespondQuestionDto } from '../dto/respondQuestion.dto';
-import { NextQuestionDto } from '../dto/nextQuestion.dto';
 import { WhitelistDto } from '../dto/whitelist.dto';
 import { Teacher } from '../../user/entity/teacher.entity';
 import { IsNotParticipantException } from '../exception/isNotParticipant.exception';
@@ -57,14 +56,14 @@ export class SessionController {
   }
 
   @Roles([UserType.TEACHER])
-  @Post('/nextQuestion') //TODO replace with /:idSession/
+  @Get('/:idSession/next')
   async nextQuestion(
     @Req() request: UserRequest,
-    @Body(new ValidationPipe()) body: NextQuestionDto,
+    @Param('idSession') idSession: string,
   ): Promise<NextQuestionReturnDto> {
-    if (!this.sessionService.isHost(body.idSession, request.user as Teacher))
+    if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
-    const isEnded = !(await this.sessionService.nextQuestion(body.idSession));
+    const isEnded = !(await this.sessionService.nextQuestion(idSession));
     return { isEnded };
   }
 
@@ -156,10 +155,10 @@ export class SessionController {
 
   @Roles([UserType.TEACHER])
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Get('/stopSession') //TODO replace with /:idSession/
+  @Get('/:idSession/stop')
   async stopSession(
     @Req() request: UserRequest,
-    @Query('idsession') idSession: string,
+    @Param('idSession') idSession: string,
   ) {
     if (!this.sessionService.isHost(idSession, request.user as Teacher))
       throw new IsNotHostException();
@@ -235,8 +234,6 @@ export class SessionController {
       throw new IsNotHostException();
     this.sessionService.addToWhitelist(idSession, body.whitelist);
   }
-
-  //TODO add /:idSession/whitelist/addGroup
 
   @Roles([UserType.TEACHER])
   @Get('/:idSession/display-settings')

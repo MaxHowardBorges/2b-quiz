@@ -9,13 +9,6 @@ import { QuestionnaryNbQuestionDto } from '../dto/questionnaryNbQuestion.dto';
 export class QuestionnaryMapper {
   constructor(private readonly questionMapper: QuestionMapper) {}
 
-  entityToQuestionnaryDtoTab(
-    questionnaries: Questionnary[],
-  ): QuestionnaryDto[] {
-    return questionnaries.map((questionnary) =>
-      this.entityToQuestionnaryDto(questionnary),
-    );
-  }
   entityToQuestionnaryDto(questionnary: Questionnary): QuestionnaryDto {
     return {
       id: questionnary.id,
