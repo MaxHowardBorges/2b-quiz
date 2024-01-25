@@ -1,4 +1,5 @@
 {
+  "locale": "français",
   "menu": {
     "menuTeacher": "Menu enseignant",
     "home": "Page d'accueil",
@@ -10,7 +11,8 @@
     "user": "Utilisateur",
     "public": "Public",
     "group": "Groupe",
-    "translationListTitle": "Changer la langue"
+    "translationListTitle": "Changer la langue",
+    "addTranslation": "Ajouter une traduction"
   },
 
   "home": {

@@ -1,4 +1,5 @@
 {
+  "locale": "english",
   "menu": {
     "menuTeacher": "Teacher menu",
     "home": "Home",
@@ -10,7 +11,8 @@
     "user": "User",
     "public": "Public",
     "group": "Group",
-    "translationListTitle": "Change language"
+    "translationListTitle": "Change language",
+    "addTranslation": "Add translation"
   },
 
   "home": {

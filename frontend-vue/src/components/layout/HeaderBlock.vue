@@ -41,14 +41,17 @@
       <v-dialog v-model="showTranslation" max-width="500">
         <v-card>
           <v-card-title>{{ $t('menu.translationListTitle') }}</v-card-title>
-
           <v-card-text>
             <v-list
               v-for="(language, index) in this.$i18n.availableLocales"
               :key="index">
               <v-list-item @click="toggleLocale(language)">
                 <v-list-item-title>
-                  {{ language.charAt(0).toUpperCase() + language.slice(1) }}
+                  {{
+                    $t('locale', 'language', {
+                      locale: language,
+                    })
+                  }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
