@@ -9,7 +9,8 @@
     "history": "Historique",
     "user": "Utilisateur",
     "public": "Public",
-    "group": "Groupe"
+    "group": "Groupe",
+    "translationListTitle": "Changer la langue"
   },
 
   "home": {
@@ -281,10 +282,5 @@
 
   "layout": {
     "LogoText": "Système de Vote en Direct"
-  },
-
-  "history": {
-    "SessionHistory": "Historique des sessions",
-    "ErrorGettingList": "Erreur lors de la récupération de la liste des sessions"
   }
 }

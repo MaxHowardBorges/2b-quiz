@@ -37,22 +37,24 @@
 
     <template v-slot:append>
       <v-btn icon="dark_mode" @click="toggleTheme" class=""></v-btn>
-      <v-btn icon="translate" @click="toggleLocale"></v-btn>
-      <!--      <v-dialog v-model="showTranslation" max-width="500">-->
-      <!--        <v-card>-->
-      <!--          <v-card-title>{{ $t('') }}</v-card-title>-->
+      <v-btn icon="translate" @click="showLanguageList"></v-btn>
+      <v-dialog v-model="showTranslation" max-width="500">
+        <v-card>
+          <v-card-title>{{ $t('menu.translationListTitle') }}</v-card-title>
 
-      <!--          <v-card-text>-->
-      <!--            <v-list-->
-      <!--              v-for="(language, index) in this.$i18n.availableLocales"-->
-      <!--              :key="index">-->
-      <!--              <v-list-item @click="toggleLocale(language)">-->
-      <!--                <v-list-item-title>{{ language }}</v-list-item-title>-->
-      <!--              </v-list-item>-->
-      <!--            </v-list>-->
-      <!--          </v-card-text>-->
-      <!--        </v-card>-->
-      <!--      </v-dialog>-->
+          <v-card-text>
+            <v-list
+              v-for="(language, index) in this.$i18n.availableLocales"
+              :key="index">
+              <v-list-item @click="toggleLocale(language)">
+                <v-list-item-title>
+                  {{ language.charAt(0).toUpperCase() + language.slice(1) }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
       <v-btn
         v-if="userStore.isAuthenticated && !sessionStore.isDisplay"
         icon="logout"
@@ -136,16 +138,8 @@
       showLanguageList() {
         this.showTranslation = !this.showTranslation;
       },
-      toggleLocale() {
-        console.log(this.$i18n.availableLocales);
-        const id = this.$i18n.availableLocales.findIndex(
-          (locale) => locale === this.$i18n.locale,
-        );
-        this.$i18n.locale =
-          this.$i18n.availableLocales[
-            (id + 1) % this.$i18n.availableLocales.length
-          ];
-        //this.$i18n.locale = language;
+      toggleLocale(language) {
+        this.$i18n.locale = language;
       },
     },
   };

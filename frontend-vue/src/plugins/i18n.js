@@ -1,7 +1,7 @@
 import { createI18n } from 'vue-i18n';
-import en_GB from '@/locales/en-GB.json';
-import fr_FR from '@/locales/fr-FR.json';
-import hu_HU from '@/locales/hu-HU.json';
+import english from '@/locales/en-GB.json';
+import français from '@/locales/fr-FR.json';
+import magyar from '@/locales/hu-HU.json';
 
 export const i18n = createI18n({
   locale: import.meta.env.VITE_DEFAULT_LOCALE,
@@ -9,8 +9,8 @@ export const i18n = createI18n({
   legacy: false,
   globalInjection: true,
   messages: {
-    en_GB,
-    fr_FR,
-    hu_HU,
+    english,
+    français,
+    magyar,
   },
 });

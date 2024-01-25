@@ -9,7 +9,8 @@
     "history": "History",
     "user": "User",
     "public": "Public",
-    "group": "Group"
+    "group": "Group",
+    "translationListTitle": "Change language"
   },
 
   "home": {
