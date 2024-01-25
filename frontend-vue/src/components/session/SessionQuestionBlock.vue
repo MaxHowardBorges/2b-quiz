@@ -1,7 +1,7 @@
 <template>
   <div class="d-inline-flex align-center flex-column px-6 widthQuest">
     <v-card
-      min-width="200px"
+      min-width="350px"
       max-width="1000px"
       border="lg primary"
       border-color="primary"

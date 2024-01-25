@@ -17,6 +17,7 @@
       v-else-if="sessionStore.isHost"
       rounded="lg"
       width="90%"
+      min-width="400px"
       class="mt-5 px-6 py-8 mx-auto d-flex flex-row main-block"
       elevation="5">
       <div class="left-panel h-100">
@@ -170,13 +171,10 @@
 
   .left-panel {
     flex-basis: 70%;
+    min-width: 350px;
   }
 
   .right-panel {
     flex-basis: 30%;
-  }
-
-  .main-block {
-    height: 70vh;
   }
 </style>
