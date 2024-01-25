@@ -39,7 +39,7 @@ const routes = [
     path: '/session/',
     name: 'menu.session',
     component: SessionView,
-    meta: { inMenu: true },
+    meta: { inMenu: true, roles: [UserRoles.TEACHER, UserRoles.STUDENT] },
     props: (route) => ({
       isCreating: !!route.query.isCreating,
       errorSnackbar: route.query.errorSnackbar,
@@ -50,6 +50,7 @@ const routes = [
     path: '/history/:idSession',
     name: 'menu.SessionHandleResults',
     component: SessionHandleResults, //
+    meta: { roles: [UserRoles.TEACHER, UserRoles.STUDENT] },
     props: (route) => ({
       idSession: route.params.idSession,
     }),
@@ -58,7 +59,7 @@ const routes = [
     path: '/history',
     name: 'menu.history',
     component: SessionHistoryView, // Assurez-vous d'ajuster le chemin du composant
-    meta: { inMenu: true },
+    meta: { inMenu: true, roles: [UserRoles.TEACHER, UserRoles.STUDENT] },
   },
   {
     path: '/user',
@@ -93,6 +94,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/GroupView.vue'),
     meta: { inMenu: true, roles: [UserRoles.TEACHER] },
   },
+  { path: '/:pathMatch(.*)*', redirect: { name: 'menu.home' } },
 ];
 
 const router = createRouter({
@@ -111,7 +113,17 @@ router.beforeEach((to, from, next) => {
     return;
   }
   if (!userStore.isAuthenticated) {
-    next({ name: 'menu.home', query: { from: encodeURIComponent(to.fullPath) } });
+    next({
+      name: 'menu.home',
+      query: { from: encodeURIComponent(to.fullPath) },
+    });
+    return;
+  }
+  if (to.meta.roles && to.meta.roles.length > 0) {
+    if (!to.meta.roles.includes(userStore.userRole)) {
+      next({ name: 'menu.home' });
+      return;
+    } else next();
     return;
   }
   next();
