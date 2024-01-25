@@ -55,7 +55,7 @@
             name: 'menu.home',
           },
           {
-            link: '/questionary',
+            link: '/questionnary',
             name: 'menu.questionnary',
           },
           {

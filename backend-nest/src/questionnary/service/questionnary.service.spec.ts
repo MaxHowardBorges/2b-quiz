@@ -14,8 +14,7 @@ describe('QuestionnaryService', () => {
   let service: QuestionnaryService;
   let questionnaryRepository: jest.Mocked<Repository<Questionnary>>;
   let questionService: jest.Mocked<QuestionService>;
-  let mockTeacher: Teacher;
-  mockTeacher = generateTeacherMock();
+  const mockTeacher: Teacher = generateTeacherMock();
 
   // TODO deplace questionnary/question generation in /test/mock
   const questionnary: Questionnary = {

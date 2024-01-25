@@ -22,7 +22,7 @@
             {{ this.questionnaryName }}
           </div>
           <div v-if="!OnList">
-            {{$t('questionnary.question')}} N°{{
+            {{ $t('questionnary.question') }} N°{{
               this.idQuestion
                 ? this.useQ.questions.findIndex(
                     (question) => question.id === this.idQuestion,
@@ -66,7 +66,7 @@
       v-model:search="searchTags"
       :items="this.tagList"
       item-title="description"
-      return-object=""
+      return-object
       :chips="true"
       :closable-chips="true"
       label="Select Tags"
@@ -122,7 +122,7 @@
       class="blocklist"
       v-if="!this.useQ.isCreated && this.OnListQuestionnary">
       <b>
-        {{$t('questionnary.zeroquestion')}}
+        {{ $t('questionnary.zeroquestion') }}
       </b>
     </div>
 
@@ -149,24 +149,27 @@
 
     <v-dialog v-model="confirmationDialog" max-width="600">
       <v-card>
-        <v-card-title class="headline">{{$t('questionnary.Confirmation')}}</v-card-title>
+        <v-card-title class="headline">
+          {{ $t('questionnary.Confirmation') }}
+        </v-card-title>
         <v-card-text>
-          {{$t('questionnary.confirmLeave')}}
+          {{ $t('questionnary.confirmLeave') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="confirmationDialog = false" color="error">
-            {{$t('user.cancel')}}
+            {{ $t('user.cancel') }}
           </v-btn>
-          <v-btn @click="leaveWithoutSaving" color="success">{{$t('user.confirm')}}</v-btn>
+          <v-btn @click="leaveWithoutSaving" color="success">
+            {{ $t('user.confirm') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-btn
-      v-if="OnListQuestionnary"
-      class="mt-5"
-      @click="EmitGoList">{{$t('questionnary.done')}}</v-btn>
+    <v-btn v-if="OnListQuestionnary" class="mt-5" @click="EmitGoList">
+      {{ $t('questionnary.done') }}
+    </v-btn>
   </v-sheet>
 
   <list-tags v-if="showTagPanel" @toggleTagPanel="toggleTagPanel"></list-tags>
@@ -236,7 +239,6 @@
     beforeMount() {
       this.loadData();
     },
-
     methods: {
       async loadData() {
         if (this.useQ.isCreated) {
@@ -265,21 +267,6 @@
           alert('Le tag est vide ou existe déjà.');
         }
       },
-      async createNewTag() {
-        const tagToAdd = this.newTag.trim();
-        if (
-          tagToAdd &&
-          !this.useQ.tagList.some((t) => t.description === tagToAdd)
-        ) {
-          await this.useQ.createTag({
-            description: tagToAdd,
-          });
-          this.tagList = this.useQ.tagList;
-          this.newTag = '';
-        } else {
-          alert('Le tag est vide ou existe déjà.');
-        }
-      },
       toggleTypeSelector() {
         this.statusQ = 'add';
         this.showTypeSelector = !this.showTypeSelector;
@@ -297,7 +284,7 @@
         )[0].typeLabel;
         this.statusQ = 'modify';
         this.idQuestion = idQuestion;
-        !this.isFromBank ? this.useQ.getAnswers(idQuestion) : '';
+        !this.isFromBank ? await this.useQ.getAnswers(idQuestion) : '';
 
         this.showTypeSelector = !this.showTypeSelector;
         this.OnListQuestionnary = !this.OnListQuestionnary;
@@ -310,12 +297,15 @@
         const questionsList = this.isFromBank
           ? this.useQ.privateQuestions
           : this.useQ.questions;
-        this.selectedTags = this.tagList.filter((tl) =>
-          questionsList
-            .find((q) => q.id === this.idQuestion)
-            .tags.map((t) => t.description)
-            .some((questionTag) => questionTag === tl.description),
-        );
+        this.selectedTags =
+          questionsList.length > 0
+            ? this.tagList.filter((tl) =>
+                questionsList
+                  .find((q) => q.id === this.idQuestion)
+                  .tags.map((t) => t.description)
+                  .some((questionTag) => questionTag === tl.description),
+              )
+            : [];
       },
       sendModifyingQuestion(question) {
         this.modifyingQuestion = question;
@@ -437,17 +427,19 @@
         this.useQ.idQuestionnary = null;
         this.$emit('returnToBank');
       },
-      toggleTagPanel() {
-        this.tagList = this.useQ.tagList;
+      async toggleTagPanel() {
         const questionsList = this.isFromBank
           ? this.useQ.privateQuestions
           : this.useQ.questions;
-        this.selectedTags = this.tagList.filter((tl) =>
-          questionsList
-            .find((q) => q.id === this.idQuestion)
-            .tags.map((t) => t.description)
-            .some((questionTag) => questionTag === tl.description),
-        );
+        this.selectedTags =
+          questionsList.length > 0
+            ? this.tagList.filter((tl) =>
+                questionsList
+                  .find((q) => q.id === this.idQuestion)
+                  .tags.map((t) => t.description)
+                  .some((questionTag) => questionTag === tl.description),
+              )
+            : [];
         this.showTypeSelector = !this.showTypeSelector;
         this.OnListQuestion = !this.OnListQuestion;
         this.showTagPanel = !this.showTagPanel;

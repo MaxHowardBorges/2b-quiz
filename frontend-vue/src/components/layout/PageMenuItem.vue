@@ -12,7 +12,7 @@
   export default {
     name: 'PageMenuItem',
     props: {
-      vertical: false,
+      vertical: { type: Boolean, default: false },
       showTabs: Boolean,
       content: String,
       to: String,
