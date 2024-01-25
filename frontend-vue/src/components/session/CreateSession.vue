@@ -60,7 +60,13 @@
           :isInSession="false"></session-setting>
       </v-sheet>
 
-      <v-btn @click="handleCreateSession" class="mt-4">{{ $t('session.StartSessionButton') }}</v-btn>
+      <v-btn
+        @click="handleCreateSession"
+        class="mt-4"
+        :loading="loadingStart"
+        color="primary">
+        {{ $t('session.StartSessionButton') }}
+      </v-btn>
 
       <!-- Fenêtre pop-up -->
       <v-dialog v-model="popup" max-width="600">
@@ -109,6 +115,7 @@
   import { ValidationError } from '@/utils/valdiationError';
   import SessionSetting from '@/components/session/SessionSetting.vue';
   import { AccessType } from '@/utils/accesType';
+  import router from '@/router';
 
   export default {
     name: 'CreateSession',
@@ -130,6 +137,7 @@
         availableQuestionnaires: [],
         displayedAvailableQuestionnaires: [],
         selectedQuestionnary: [],
+        loadingStart: false,
       };
     },
     methods: {
@@ -179,6 +187,7 @@
         }
       },
       async handleCreateSession() {
+        this.loadingStart = true;
         await this.addSelectId();
         if (this.selectedQuestionnary.length > 0) {
           const settings = this.$refs.sessionSettings.getSettings();
@@ -191,7 +200,7 @@
             alert('Aucun utilisateur ou groupe ont été sélectionné');
           } else {
             this.sessionStore.questionnary = this.selectedQuestionnary;
-            this.loading = true;
+            this.loadingStart = true;
             try {
               if (settings.accessType === AccessType.PRIVATE) {
                 const selectedUsersId =
@@ -203,8 +212,16 @@
                   selectedUsersId,
                   selectedGroupsId,
                 );
+                await router.replace({
+                  name: 'SessionRouted',
+                  params: { idSession: this.sessionStore.idSession },
+                });
               } else {
                 await this.sessionStore.createSession(settings);
+                await router.replace({
+                  name: 'SessionRouted',
+                  params: { idSession: this.sessionStore.idSession },
+                });
               }
             } catch (error) {
               if (error instanceof ValidationError) {
@@ -216,8 +233,9 @@
               }
             }
           }
-          this.loading = false;
+          this.loadingStart = false;
         } else alert('Selectionnez au moins 1 questionnaire');
+        this.loadingStart = false;
       },
     },
   };

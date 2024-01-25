@@ -310,4 +310,11 @@ export class UserService {
     const newUser = await this.getUser(idUser);
     return group.tabUsers.some((user) => user.id === newUser.id);
   }
+
+  async getGroups(user: User) {
+    return await this.groupRepository.find({
+      where: { tabUsers: { id: user.id } },
+      relations: ['teacher', 'tabUsers'],
+    });
+  }
 }

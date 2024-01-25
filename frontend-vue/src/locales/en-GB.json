@@ -15,7 +15,8 @@
     "ErrorConnectingSession": "Error while connecting to the session",
     "TheServerOffline": "The Server is offline",
     "PleaseTryLater": "Please, try later.",
-    "JoinSession": "Join session"
+    "JoinSession": "Join session",
+    "WaitingQuestionnaryLaunch": "Waiting for the questionnary launch..."
   },
 
   "teacher": {
@@ -62,7 +63,9 @@
     "CreateQuiz": "Create quiz",
     "PrivateQuestionBankTitle": "Private Question Bank",
     "QuestionnaryListTitle": "Questionnary list",
-    "NoQuestionnariesMessage": "No questionnaires"
+    "NoQuestionnariesMessage": "No questionnaires",
+    "TauxReussite": "Success rate",
+    "Reponse": "Answer"
   },
 
   "session": {

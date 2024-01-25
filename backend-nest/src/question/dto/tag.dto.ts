@@ -8,4 +8,7 @@ export class TagDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @IsOptional()
+  questionsName?: string[];
 }

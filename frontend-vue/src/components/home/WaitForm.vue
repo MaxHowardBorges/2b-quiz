@@ -6,7 +6,7 @@
        elevation="3"
        rounded="lg"
        position="relative">
-    <h2 > Waiting for the questionnary launch... </h2>
+    <h2 > {{ $t("home.WaitingQuestionnaryLaunch")}} </h2>
     <h1> {{idSession}}</h1>
     <v-btn @click='handleJoinSession'>okk</v-btn>
   </v-sheet>

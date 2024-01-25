@@ -62,7 +62,7 @@
         !mdAndUp &&
         showTabs &&
         userStore.isAuthenticated &&
-        this.sessionStore.idSession === null
+        !this.sessionStore.isInSession
       "
       class="mt-16 z-3"
       position="fixed">

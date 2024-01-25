@@ -15,7 +15,8 @@
     "ErrorConnectingSession": "Hiba a munkamenethez való csatlakozás közben",
     "TheServerOffline": "A szerver nem elérhető",
     "PleaseTryLater": "Kérlek, próbáld újra később.",
-    "JoinSession": "Csatlakozás munkamenethez"
+    "JoinSession": "Csatlakozás munkamenethez",
+    "WaitingQuestionnaryLaunch": "Várakozás a kérdőív indítására..."
   },
 
   "teacher": {
@@ -62,7 +63,9 @@
     "CreateQuiz": "Kvíz létrehozása",
     "PrivateQuestionBankTitle": "Privát kérdésbank",
     "QuestionnaryListTitle": "Kérdőív lista",
-    "NoQuestionnariesMessage": "Nincs kérdőív"
+    "NoQuestionnariesMessage": "Nincs kérdőív",
+    "TauxReussite": "Sikerességi arány",
+    "Reponses": "Válaszok"
   },
 
   "session": {

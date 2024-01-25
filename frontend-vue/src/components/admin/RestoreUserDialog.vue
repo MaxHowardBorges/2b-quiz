@@ -5,8 +5,8 @@
         {{ this.$t('admin.RestoreUser') }}  {{ user.username }}
       </v-card-title>
       <v-card-text>
-        <v-text-field v-model="name" label="Name" />
-        <v-text-field v-model="surname" label="Surname" />
+        <v-text-field v-model="name" :label="$t('user.name')" />
+        <v-text-field v-model="surname" :label="$t('user.surname')" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>

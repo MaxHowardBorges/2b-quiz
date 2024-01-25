@@ -9,6 +9,8 @@
     :content="errorSnackbarContent"
     ref="errorSnackbar"></error-snackbar>
 
+  <session-activity></session-activity>
+
   <v-sheet
     min-width="150px"
     class="pa-7 d-block my-6 mx-auto"
@@ -48,8 +50,23 @@
       </v-btn>
     </div>
     <div class="">
-      <v-btn color="primary" class="mx-6 my-3 w-100" max-width="250px">
+      <v-btn
+        @click="redirectToSessionHistory"
+        color="primary"
+        class="mx-6 my-3 w-100"
+        max-width="250px">
         <p class="text-white font-weight-bold pa-2">{{ $t('teacher.SessionHist') }}</p>
+      </v-btn>
+    </div>
+    <div class="">
+      <v-btn
+        @click="handleGoToQuestionBank"
+        color="primary"
+        class="mx-6 my-3"
+        max-width="250px">
+        <p class="text-white font-weight-bold pa-2">
+          {{ $t('question.PrivateQuestionBankTitle') }}
+        </p>
       </v-btn>
     </div>
   </v-sheet>
@@ -62,13 +79,14 @@
   import router from '@/router';
   import { ref } from 'vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
+  import SessionActivity from '@/components/session/activity/SessionActivity.vue';
 
   export default {
     name: 'MenuTeacherBlock',
-    components: { ErrorSnackbar, ErrorDialog },
+    components: { SessionActivity, ErrorSnackbar, ErrorDialog },
     props: {
-      dialogError: false,
-      errorSnackbar: false,
+      dialogError: { type: Boolean, default: false },
+      errorSnackbar: { type: Boolean, default: false },
     },
     setup() {
       const sessionStore = useSessionStore();
@@ -132,7 +150,19 @@
         });
       },
       handleCreateQuestionnary() {
-        router.push('/questionary');
+        router.push({
+          name: 'questionnary',
+          query: { toCreateBool: true, toBankBool: false },
+        });
+      },
+      handleGoToQuestionBank() {
+        router.push({
+          name: 'questionnary',
+          query: { toCreateBool: false, toBankBool: true },
+        });
+      },
+      redirectToSessionHistory() {
+        router.push('/history');
       },
     },
   };

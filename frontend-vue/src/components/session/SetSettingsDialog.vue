@@ -5,8 +5,6 @@
         <span class="headline">{{ $t('session.SettingsTitle') }}</span>
       </v-card-title>
 
-      <v-card-text>{{ $t('session.CompletedText') }}</v-card-text>
-
       <session-setting
         :isInSession="true"
         ref="sessionSetting"></session-setting>

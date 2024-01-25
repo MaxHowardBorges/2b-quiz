@@ -139,7 +139,14 @@ export const useUserStore = defineStore('user', {
     },
     async forceLogout() {
       await this.logoutUser();
-      await router.push({ name: 'Home', query: { expiredError: 'true' } });
+      const from = router.currentRoute.value.fullPath;
+      await router.push({
+        name: 'Home',
+        query: {
+          expiredError: 'true',
+          from,
+        },
+      });
     },
     async logoutUser() {
       clearInterval(this.interval);

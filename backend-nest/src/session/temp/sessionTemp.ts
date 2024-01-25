@@ -1,14 +1,14 @@
-import { Questionnary } from '../questionnary/entity/questionnary.entity';
-import { Question } from '../question/entity/question.entity';
-import { Answer } from '../question/entity/answer.entity';
-import { Teacher } from '../user/entity/teacher.entity';
-import { ParticipantInterface } from '../user/interface/participant.interface';
-import { SettingsObject } from './object/settings.object';
+import { Questionnary } from '../../questionnary/entity/questionnary.entity';
+import { Question } from '../../question/entity/question.entity';
+import { Answer } from '../../question/entity/answer.entity';
+import { ParticipantInterface } from '../../user/interface/participant.interface';
+import { Teacher } from '../../user/entity/teacher.entity';
+import { SettingsObject } from '../object/settings.object';
 
-export class Session {
+export class SessionTemp {
   id: string;
 
-  questionnaryList: Questionnary[];
+  questionnary: Questionnary;
 
   questionnaryNumber: number;
 
@@ -22,31 +22,31 @@ export class Session {
 
   host: Teacher;
 
+  settings: SettingsObject;
+
   whitelist: number[];
 
   whitelistGroups: number[];
 
-  settings: SettingsObject;
-
   constructor(
     idSession: string,
-    tabQuestionnary: Questionnary[],
+    questionnary: Questionnary,
     host: Teacher,
     settings: SettingsObject,
   ) {
     this.id = idSession;
     this.questionNumber = -1;
     this.questionnaryNumber = 0;
-    this.questionnaryList = tabQuestionnary;
+    this.questionnary = questionnary;
     this.connectedUser = new Set<ParticipantInterface>();
     this.userAnswers = new Map<
       number,
       Map<Question, Answer | string | Answer[]>
     >();
     this.endSession = false;
-    this.whitelist = [];
     this.host = host;
     this.settings = settings;
+    this.whitelist = [];
     this.whitelistGroups = [];
   }
 
@@ -56,9 +56,21 @@ export class Session {
 
   getCurrentQuestion(): Question {
     if (this.questionNumber === -1) return null;
-    return this.questionnaryList[this.questionnaryNumber].questions[
-      this.questionNumber
-    ];
+    return this.questionnary.questions[this.questionNumber];
+  }
+
+  getCurrentQuestionInMap(
+    userAnswers: Map<Question, Answer | string | Answer[]>,
+    idQuestion: number,
+  ): Answer | string | Answer[] {
+    let question: Question;
+    if (this.questionNumber === -1) return null;
+    question = this.questionnary.questions[idQuestion];
+    const answers = [...userAnswers.entries()].find(([q]) =>
+      q.equals(question),
+    );
+    if (answers === undefined) return null;
+    return answers[1];
   }
 
   getNbAnsweredForCurrentQuestion(): number {
@@ -67,7 +79,8 @@ export class Session {
     for (const user of this.connectedUser) {
       const questionMap = this.userAnswers.get(user.id);
       if (questionMap !== undefined)
-        if (questionMap.has(this.getCurrentQuestion())) sum++;
+        if (this.getCurrentQuestionInMap(questionMap, this.questionNumber))
+          sum++;
     }
     return sum;
   }

@@ -1,21 +1,38 @@
 <template>
+  <v-dialog v-model="dialogVisible" max-width="500">
+    <v-card>
+      <v-card-title>Are you sure ?</v-card-title>
+
+      <v-card-text>
+        If you stop the session, all of results will be lost !
+      </v-card-text>
+      <v-card-actions class="text-center">
+        <v-btn @click="yesCancel">Yes</v-btn>
+        <v-btn @click="noCancel">No</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   <div class="action-block">
-    <div v-if="!sessionStore.status.nbAnswered">
+    <div v-if="sessionStore.status.nbAnswered !== null">
       idSession: {{ sessionStore.idSession }}
     </div>
     <div>
-      <p v-if="!sessionStore.status.nbAnswered">
-        {{ sessionStore.status.nbJoined }} {{ $t('session.UserJoined') }}
-      </p>
-      <p v-else>
-        {{ sessionStore.status.nbAnswered }}/{{ sessionStore.status.nbJoined }}
+      <p v-if="sessionStore.status.nbAnswered !== null">
+        {{
+          sessionStore.status.nbAnswered ? sessionStore.status.nbAnswered : 0
+        }}/{{ sessionStore.status.nbJoined }}
         {{ $t('session.UsersAnswered')}}
       </p>
+      <p v-else>{{ sessionStore.status.nbJoined }} {{ $t('session.UserJoined') }}</p>
     </div>
-    <v-btn @click="endSession" class="btn" color="primary">
+    <v-btn @click="cancelSession" class="btn" color="primary">
       {{ $t('session.EndSession') }}
     </v-btn>
-    <v-btn @click="nextQuestion" class="btn" color="success">
+    <v-btn
+      @click="nextQuestion"
+      class="btn"
+      color="success"
+      :loading="loadingNextQuestion">
       {{ $t('session.NextQuestion') }}
     </v-btn>
     <v-btn @click="openSettings" class="btn" color="info">
@@ -40,25 +57,52 @@
         sessionStore,
       };
     },
+    data() {
+      return {
+        dialogVisible: false,
+        loadingNextQuestion: false,
+      };
+    },
     methods: {
       async endSession() {
         this.sessionStore.sessionEnd();
         await router.push('/');
         //TODO to finish
       },
+      async cancelSession() {
+        this.dialogVisible = true;
+      },
+      async noCancel() {
+        this.dialogVisible = false;
+      },
+      async yesCancel() {
+        await this.sessionStore.stopSession();
+        this.sessionStore.sessionEnd();
+        await router.push('/');
+      },
       async nextQuestion() {
+        this.loadingNextQuestion = true;
         try {
           const response = await this.sessionStore.nextQuestion();
+          console.log('ok');
           await this.sessionStore.getCurrentQuestionForTeacher(response);
+          if (this.sessionStore.ended) {
+            this.$emit('session-end');
+          }
         } catch (e) {
           this.sessionStore.disconnectFromSession(
             'Error handling next question: ' + e.message,
           );
         }
+        this.loadingNextQuestion = false;
       },
       openSettings() {
         this.$refs.settingsDialog.openSettings();
       },
+    },
+    emits: ['session-end'],
+    watch: {
+      'sessionStore.status.nbAnswered': true,
     },
   };
 </script>

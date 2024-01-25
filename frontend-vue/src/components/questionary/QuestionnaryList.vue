@@ -16,7 +16,8 @@
     },
     props: {
       numberLabel: { type: String, default: 'N°' },
-      typeLabel: { type: String, default: 'type' },
+      typeLabel: { type: String, default: 'Unique' },
+      typeCode: { type: String, default: 'qcu' },
       idQuestion: { type: Number, default: null },
     },
     methods: {
@@ -29,7 +30,7 @@
         }
       },
       modifyQuest() {
-        this.$emit('ChangeStatuss', this.idQuestion, this.typeLabel);
+        this.$emit('ChangeStatuss', this.idQuestion, this.typeCode);
       },
     },
   };
@@ -38,11 +39,20 @@
 <template>
   <div class="blocklist">
     <b>{{ numberLabel }}</b>
-    <span class="spacer"></span>
-    <b>{{ typeLabel }}</b>
-    <span class="spacer"></span>
-    <v-btn icon="edit" @click="modifyQuest"></v-btn>
-    <v-btn icon="delete" @click="deleteQuest"></v-btn>
+    <v-spacer></v-spacer>
+    <b>
+      {{ typeCode.toLocaleUpperCase() }}
+      <v-tooltip activator="parent" location="top end" origin="bottom center">
+        {{ typeLabel.toLocaleUpperCase() }}
+      </v-tooltip>
+    </b>
+    <v-btn icon="edit" @click="modifyQuest" class="mx-2"></v-btn>
+    <v-btn
+      elevation="2"
+      icon="delete"
+      @click="deleteQuest"
+      color="error"
+      variant="text"></v-btn>
   </div>
 
   <v-dialog v-model="alertQuestionDelete" max-width="600">
@@ -73,10 +83,6 @@
 
   .blocklist b {
     margin-right: 20px;
-  }
-
-  .blocklist .spacer {
-    flex: 1;
   }
 
   .blocklist v-btn {

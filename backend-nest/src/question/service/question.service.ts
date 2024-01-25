@@ -58,8 +58,9 @@ export class QuestionService {
   }
 
   async getTag(id: number) {
-    const tag = await this.tagRepository.findOneBy({
-      idTag: id,
+    const tag = await this.tagRepository.findOne({
+      where: { idTag: id },
+      relations: ['questions'],
     });
     if (tag) {
       return tag;
@@ -69,6 +70,7 @@ export class QuestionService {
   async getTags(teacher: Teacher) {
     return await this.tagRepository.find({
       where: { author: { id: teacher.id } },
+      relations: ['questions'],
     });
   }
 
@@ -78,6 +80,15 @@ export class QuestionService {
       relations: ['question'],
     });
     return answer.question.id === question.id;
+  }
+
+  async createAnswerOpenEnded(answer: Answer) {
+    const answerDB = new Answer();
+    answerDB.content = answer.content;
+    answerDB.isCorrect = true;
+    answerDB.question = answer.question;
+    await this.answerRepository.save(answerDB);
+    return answerDB;
   }
 
   async createQuestion(q: Question, questionnary: Questionnary) {
@@ -234,6 +245,7 @@ export class QuestionService {
 
   async isQuestionFromTeacher(idQuestion: number, teacher: Teacher) {
     const question = await this.findOneQuestion(idQuestion, ['author']);
+    if (!question) return false;
     return question.author.id === teacher.id;
   }
 

@@ -15,7 +15,8 @@
     "ErrorConnectingSession": "Erreur lors de la connexion à la session",
     "TheServerOffline": "Le serveur est hors ligne",
     "PleaseTryLater": "Veuillez réessayer plus tard.",
-    "JoinSession": "Rejoindre une session"
+    "JoinSession": "Rejoindre une session",
+    "WaitingQuestionnaryLaunch": "En attente du lancement du questionnaire..."
   },
 
   "teacher": {
@@ -62,7 +63,9 @@
     "CreateQuiz": "Créer un quiz",
     "PrivateQuestionBankTitle": "Banque de questions privées",
     "QuestionnaryListTitle": "Liste des questionnaires",
-    "NoQuestionnariesMessage": "Aucun questionnaire"
+    "NoQuestionnariesMessage": "Aucun questionnaire",
+    "TauxReussite": "Taux de réussite",
+    "Reponse": "Réponse"
   },
 
 

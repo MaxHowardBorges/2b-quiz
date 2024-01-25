@@ -10,8 +10,8 @@ import { Type } from 'class-transformer';
 
 export class QuestionnaryDto {
   @IsNumber()
-  @IsNotEmpty()
-  id: number;
+  @IsOptional()
+  id?: number;
 
   @IsString()
   @IsNotEmpty()
