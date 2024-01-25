@@ -106,11 +106,16 @@ export class QuestionnaryService {
 
   async deleteQuestionnary(idQuestionnary: number) {
     const questionnary = await this.questionnaryRepository.findOne({
+      relations: {
+        questions: true,
+      },
       where: { id: idQuestionnary },
     });
 
     if (questionnary) {
-      await this.questionService.deleteQuestions(questionnary);
+      for (const question of questionnary.questions) {
+        await this.questionService.deleteQuestion(questionnary, question.id);
+      }
       await this.questionnaryRepository.delete(idQuestionnary);
     }
     return !!questionnary;

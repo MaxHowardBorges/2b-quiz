@@ -97,7 +97,12 @@ export class QuestionService {
     question.content = q.content;
     question.type = q.type;
     question.author = q.author;
-    question.originalId = q.originalId;
+    if (questionnary.isCompilated) {
+      question.originalId = null;
+    } else {
+      question.originalId = q.originalId;
+    }
+
     if (q.type == 'ouv') {
       q.answers = [];
     }
@@ -186,6 +191,16 @@ export class QuestionService {
     const question = await this.questionRepository.findOne({
       where: { questionnary: { id: questionnary.id }, id: idQuestion },
     });
+
+    const questionCopies = await this.questionRepository.find({
+      where: { originalId: idQuestion },
+    });
+
+    for (const questionCopy of questionCopies) {
+      questionCopy.originalId = null;
+      await this.questionRepository.save(questionCopy);
+    }
+
     if (question) {
       await this.answerRepository.delete({ question: { id: question.id } });
       await this.questionRepository.delete({
