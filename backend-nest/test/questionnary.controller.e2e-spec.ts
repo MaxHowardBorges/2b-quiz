@@ -46,6 +46,55 @@ describe('QuestionnaryController (e2e)', () => {
         })
         .expect(201);
     });
+    it('modifyQuestionnary', async () => {
+      let questionnary = await request(app.getHttpServer())
+        .post('/questionnary/create')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'testQuestionnary',
+          questions: [],
+        })
+        .expect(201);
+
+      questionnary = await request(app.getHttpServer())
+        .patch(`/questionnary/${questionnary.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'testQuestionnary2',
+          questions: [],
+        })
+        .expect(200);
+    });
+    it('deleteQuestionnary', async () => {
+      let questionnary = await request(app.getHttpServer())
+        .post('/questionnary/create')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'testQuestionnary',
+          questions: [],
+        })
+        .expect(201);
+
+      questionnary = await request(app.getHttpServer())
+        .delete(`/questionnary/${questionnary.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    });
+  });
+  it('selectQuestionnary', async () => {
+    let questionnary = await request(app.getHttpServer())
+      .post('/questionnary/create')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'testQuestionnary',
+        questions: [],
+      })
+      .expect(201);
+
+    questionnary = await request(app.getHttpServer())
+      .get(`/questionnary/${questionnary.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
   });
 
   afterAll(async () => {

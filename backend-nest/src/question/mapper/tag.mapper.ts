@@ -12,7 +12,9 @@ export class TagMapper {
       idTag: tag.idTag,
       description: tag.description,
       questionsName: !!tag.questions
-        ? tag.questions.map((question) => question.content)
+        ? tag.questions
+            .filter((question) => question.author !== null)
+            .map((question) => question.content)
         : [],
     };
   }
