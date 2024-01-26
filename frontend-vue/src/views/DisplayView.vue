@@ -11,20 +11,16 @@
 </template>
 
 <script>
-  import WaitForm from '@/components/home/WaitForm.vue';
   import SessionQuestionBlock from '@/components/session/SessionQuestionBlock.vue';
   import SessionWaitingBlockStudent from '@/components/session/SessionWaitingBlockStudent.vue';
   import { useSessionStore } from '@/stores/sessionStore';
   import { useUserStore } from '@/stores/userStore';
-  import ActionTeacher from '@/components/session/ActionTeacher.vue';
 
   export default {
     name: 'DisplayView',
     components: {
-      ActionTeacher,
       SessionWaitingBlockStudent,
       SessionQuestionBlock,
-      WaitForm,
     },
     props: {
       idSession: String,

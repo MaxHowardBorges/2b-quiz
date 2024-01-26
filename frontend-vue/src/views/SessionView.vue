@@ -167,13 +167,13 @@
         } catch (error) {
           if (error instanceof ValidationError) {
             await router.replace({
-              name: 'Session',
+              name: 'menu.session',
               query: { errorSnackbar: error.message },
             });
             router.go(0);
           } else {
             await router.replace({
-              name: 'Session',
+              name: 'menu.session',
               query: { serverError: error.message },
             });
             router.go(0);

@@ -68,12 +68,17 @@ export const useSessionEventStore = defineStore('sessionEvent', {
         eventSource.onmessage = async (message) => {
           message = JSON.parse(message.data);
           let user = message.payload;
+          let answer = '';
           switch (message.event) {
             case HostEvents.NEW_ANSWER:
               user = message.payload.user;
-              this.eventList.push(
-                user.username + ' answered ' + message.payload.answer.content,
-              );
+              answer = Array.isArray(message.payload.answer)
+                ? ': ' +
+                  message.payload.answer
+                    .map((answer) => answer.content)
+                    .join(', ')
+                : message.payload.answer.content;
+              this.eventList.push(user.username + ' answered ' + answer);
               await sessionStore.getSessionStatus();
               break;
             case HostEvents.NEW_CONNECTION:

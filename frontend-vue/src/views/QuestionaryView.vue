@@ -23,7 +23,6 @@
   import QuestionnaryEdit from '@/components/questionary/QuestionnaryEdit.vue';
   import ListOfQuestionnary from '@/components/questionary/ListOfQuestionnary.vue';
   import { useQuestionnaryStore } from '@/stores/questionnaryStore';
-  import QuestionResult from '@/components/results/QuestionResult.vue';
   import ListOfQuestion from '@/components/question/ListOfQuestion.vue';
   import { ref } from 'vue';
 
@@ -88,11 +87,9 @@
     },
     name: 'QuestionaryView',
     components: {
-      QuestionResult,
       ListOfQuestion,
       QuestionnaryEdit,
       ListOfQuestionnary,
     },
   };
 </script>
-

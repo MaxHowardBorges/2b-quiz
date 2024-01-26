@@ -141,7 +141,7 @@ export const useUserStore = defineStore('user', {
       await this.logoutUser();
       const from = router.currentRoute.value.fullPath;
       await router.push({
-        name: 'Home',
+        name: 'menu.home',
         query: {
           expiredError: 'true',
           from,

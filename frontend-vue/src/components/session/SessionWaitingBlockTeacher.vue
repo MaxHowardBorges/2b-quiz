@@ -53,14 +53,13 @@
   import { ref } from 'vue';
 
   import { useSessionStore } from '@/stores/sessionStore';
-  import SessionSetting from '@/components/session/SessionSetting.vue';
   import SetSettingsDialog from '@/components/session/SetSettingsDialog.vue';
   import router from '@/router';
   import QrcodeVue from 'qrcode.vue';
 
   export default {
     name: 'SessionWaitingBlockTeacher',
-    components: { SetSettingsDialog, SessionSetting, QrcodeVue },
+    components: { SetSettingsDialog, QrcodeVue },
     setup() {
       const sessionStore = useSessionStore();
 
