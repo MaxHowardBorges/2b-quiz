@@ -62,7 +62,7 @@ Setup the CAS server url in the .env.local file of the backend-nest app.
 #### With docker
 Execute `docker-compose -f .\docker-compose.dev.yaml up -d`.
 
-<span style="color: #E40306">**ATTENTION**: Port 3307 and 7777 must not be in use.</span>
+<span style="color: #E40306">**WARNING**: Port 3307 and 7777 must not be in use.</span>
 
 To down the docker container, execute `docker-compose -f .\docker-compose.dev.yaml down`.
 
