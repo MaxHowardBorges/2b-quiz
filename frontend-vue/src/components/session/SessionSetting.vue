@@ -64,7 +64,7 @@
         </template>
         <template
           v-if="selectedUsers.length !== 0 && selectedGroups.length !== 0">
-          {{ $t('session.And') }}
+          {{ ' ' + $t('session.And') + ' ' }}
         </template>
         <template v-if="selectedGroups.length !== 0">
           {{ selectedGroups.length }} {{ $t('session.GroupSelected') }}
