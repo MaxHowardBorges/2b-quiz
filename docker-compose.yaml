@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
       target: front-production-stage
     ports:
-      - 80:80
+      - 80:4173
   db-prod:
     image: mariadb
     restart: always
