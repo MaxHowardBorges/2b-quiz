@@ -26,14 +26,18 @@
       color="primary"
       max-width="250"
       class="mx-6 my-3 flex-grow-1">
-      <p class="text-white font-weight-bold">{{ $t('session.StopTheSession') }}</p>
+      <p class="text-white font-weight-bold">
+        {{ $t('session.StopTheSession') }}
+      </p>
     </v-btn>
     <v-btn
       @click="handleNextQuestion"
       color="primary"
       max-width="250"
       class="mx-6 my-3 flex-grow-1">
-      <p class="text-white font-weight-bold">{{ $t('session.NextQuestion') }} </p>
+      <p class="text-white font-weight-bold">
+        {{ $t('session.NextQuestion') }}
+      </p>
     </v-btn>
   </div>
 </template>
@@ -86,18 +90,20 @@
         await this.sessionStore.stopSession();
       },
       async handleSubmit() {
-        try {
-          await this.sessionStore.sendAnswer(this.selectedValue);
-          this.$emit('answer-sent');
-        } catch (e) {
-          if (e instanceof ValidationError) {
-            this.sessionStore.disconnectFromSession(
-              'Error while sending answer: ' + e.message,
-            );
-          } else {
-            this.sessionStore.disconnectFromSession(
-              'Error while sending answer',
-            );
+        if (this.selectedValue !== '') {
+          try {
+            await this.sessionStore.sendAnswer(this.selectedValue);
+            this.$emit('answer-sent');
+          } catch (e) {
+            if (e instanceof ValidationError) {
+              this.sessionStore.disconnectFromSession(
+                'Error while sending answer: ' + e.message,
+              );
+            } else {
+              this.sessionStore.disconnectFromSession(
+                'Error while sending answer',
+              );
+            }
           }
         }
       },
