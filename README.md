@@ -35,6 +35,17 @@ Follow the examples in `.env.example` in each app.
 If the environment parameters of `.env` suit to you, you doesn,'t need to create a `.env.local` file.
 
 
+
+### Setup CAS/SSO
+Clone and start [CAS server](https://iut-git.unice.fr/pt102004/cas-apereo-mock)
+
+From utils folder, copy the content of 'user.sql' and paste it into the adminer of the CAS server.
+(You can access to adminer with the url: http://localhost:55555)
+(The password par default for the root user of Cas Server is 'ThisIsThePasswordForRoot')
+
+Setup the CAS server url in the .env.local file of the frontend-vue app.
+Setup the CAS server url in the .env.local file of the backend-nest app.
+
 ### Setup local database
 #### With docker
 Execute `docker-compose -f .\docker-compose.dev.yaml up -d`.
