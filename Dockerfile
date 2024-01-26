@@ -59,7 +59,7 @@ CMD ["yarn", "start:prod"]
 FROM node:lts-alpine as front-build-stage
 
 # Definition workdir
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy yarn files
 COPY package.json ./
@@ -75,12 +75,24 @@ COPY frontend-vue ./frontend-vue/
 # Build projet
 RUN yarn build-frontend-prod
 
-FROM nginx:stable-alpine as front-production-stage
+FROM node:lts-bookworm-slim as front-production-stage
 
-# Copy builded files
-COPY --from=front-build-stage /app/frontend-vue/dist /usr/share/nginx/html
+# Definition workdir
+WORKDIR /usr/src/app
 
-# Expose port
-EXPOSE 80
-# Start the server using the production build
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=front-build-stage /usr/src/app/frontend-vue/dist  ./frontend-vue/dist
+
+# Copy yarn files
+COPY package.json ./
+COPY yarn.lock ./
+COPY frontend-vue ./frontend-vue/
+# Install dependences
+RUN yarn install
+
+# Copy codes files
+
+EXPOSE 4173
+
+# Build projet
+WORKDIR /usr/src/app/frontend-vue/
+CMD ["yarn", "preview"]
