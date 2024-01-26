@@ -15,6 +15,18 @@ Detailed commands of each app is in their README.md
 ---
 
 ## Deployment build and launch
+### Setup CAS/SSO
+Clone and start [CAS server](https://iut-git.unice.fr/pt102004/cas-apereo-mock)
+
+From utils folder, copy the content of 'user.sql' and paste it into the adminer of the CAS server.
+(You can access to adminer with the url: http://localhost:55555)
+(The password par default for the root user of Cas Server is 'ThisIsThePasswordForRoot')
+
+Setup the CAS server url in the .env.local file of the frontend-vue app.
+Setup the CAS server url in the .env.local file of the backend-nest app.
+
+### Launch
+
 * Optional: setup custom (or exposed) IP address:
   * Create a `.env.production.local` file from a copy of `.env`.
   * Replace `localhost` in the line `VITE_API_URL` with the IP address.
