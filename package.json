@@ -1,8 +1,8 @@
 {
   "name": "two-bee-quizz",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "equipe2b",
-  "description": "A quizz solution fro the SAE 5.01",
+  "description": "A quizz solution for the SAE 5.01",
   "private": true,
   "workspaces": {
     "packages": [
