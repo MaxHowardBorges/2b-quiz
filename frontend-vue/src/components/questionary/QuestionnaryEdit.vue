@@ -64,7 +64,7 @@
       v-if="OnListQuestion"
       v-model="selectedTags"
       v-model:search="searchTags"
-      :items="this.tagList"
+      :items="tagList"
       item-title="description"
       return-object=""
       :chips="true"
@@ -238,6 +238,10 @@
     },
     beforeMount() {
       this.loadData();
+    },
+    async mounted() {
+      await this.useQ.getTags();
+      this.tagList = this.useQ.tagList;
     },
     methods: {
       async loadData() {

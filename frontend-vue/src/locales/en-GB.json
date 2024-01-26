@@ -56,7 +56,7 @@
     "False": "False",
     "NoQuestionnaries": "No questionnaires",
     "ConfirmationTitle": "Confirmation",
-    "ConfirmationText": "Are you sure you want to delete the questionnaire {{ tagDescription }} ?",
+    "ConfirmationText": "Are you sure you want to delete the questionnaire ",
     "BelongsToQuestionsText": "This questionnaire belongs to the following questions:",
     "NotAssignedText": "It is not assigned to any questions",
     "CancelButton": "Cancel",

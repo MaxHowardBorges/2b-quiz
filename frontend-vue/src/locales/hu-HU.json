@@ -56,7 +56,7 @@
     "False": "Hamis",
     "NoQuestionnaries": "Nincs kérdőív",
     "ConfirmationTitle": "Megerősítés",
-    "ConfirmationText": "Biztosan törölni szeretné a kérdőívet: {{ tagDescription }}?",
+    "ConfirmationText": "Biztosan törölni szeretné a kérdőívet ",
     "BelongsToQuestionsText": "Ez a kérdőív a következő kérdésekhez tartozik:",
     "NotAssignedText": "Nincs hozzárendelve egyetlen kérdéshez sem",
     "CancelButton": "Mégse",
