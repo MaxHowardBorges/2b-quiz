@@ -34,7 +34,7 @@ export class GroupController {
   }
 
   @Roles([UserType.TEACHER])
-  @Delete('/:id') //TODO to test
+  @Delete('/:id')
   async deleteGroup(
     @Req() request: UserRequest,
     @Param('id', ParseIntPipe) idGroup: number,
@@ -51,7 +51,7 @@ export class GroupController {
   }
 
   @Roles([UserType.TEACHER, UserType.STUDENT])
-  @Get('/:id') //TODO to test
+  @Get('/:id')
   async getGroup(@Param('id', ParseIntPipe) idGroup: number) {
     return this.groupMapper.mapGroup(await this.userService.getGroup(idGroup));
   }
@@ -95,7 +95,7 @@ export class GroupController {
     return this.userService.removeUserFromGroup(idGroup, idUser);
   }
 
-  @Get('/:id/user') //TODO to test weirder than before
+  @Get('/:id/user')
   async getUser(@Param('id', ParseIntPipe) idGroup: number) {
     return this.userService.getUserWithGroup(idGroup);
   }

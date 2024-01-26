@@ -35,7 +35,6 @@ export async function getAnswersFromQuestion(id, token) {
   );
 }
 
-//TODO error 401 Unauthorized
 export async function getTags(token) {
   return await fetch(import.meta.env.VITE_API_URL + '/question/tag', {
     method: 'GET',

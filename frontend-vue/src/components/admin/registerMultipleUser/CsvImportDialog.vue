@@ -1,11 +1,13 @@
 <template>
   <v-dialog v-model="importCsvDialog" max-width="600px">
     <template v-slot:activator="{ props }">
-      <v-btn dark class="mb-2" v-bind="props">{{ $t('login.ImportFromCSV') }}</v-btn>
+      <v-btn dark class="mb-2" v-bind="props">
+        {{ $t('login.ImportFromCSV') }}
+      </v-btn>
     </template>
     <v-card class="pa-2">
       <v-card-title>
-        <span> {{ $t('login.ImportCSV') }}</span>
+        <span>{{ $t('login.ImportCSV') }}</span>
       </v-card-title>
       <v-card-text>
         <v-alert color="info" icon="$info" class="mb-5 mx-5">
@@ -39,26 +41,22 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="text" @click="importCsvDialog = false">{{ $t('user.cancel') }}</v-btn>
-        <!-- TODO: add close popup message -->
+        <v-btn variant="text" @click="importCsvDialog = false">
+          {{ $t('user.cancel') }}
+        </v-btn>
+
         <v-btn variant="text" @click="importCsv" :disabled="!(csv && csv[0])">
           Save
         </v-btn>
       </v-card-actions>
-      <v-alert
-        color="red"
-        dismissible
-        type="warning"
-        v-if="error"
-      > {{ error }} </v-alert>
+      <v-alert color="red" dismissible type="warning" v-if="error">
+        {{ error }}
+      </v-alert>
     </v-card>
   </v-dialog>
-  <v-alert
-    color="green"
-    dismissible
-    type="success"
-    v-if="succes"
-  > {{ succes }} </v-alert>
+  <v-alert color="green" dismissible type="success" v-if="succes">
+    {{ succes }}
+  </v-alert>
 </template>
 
 <script>
@@ -70,8 +68,8 @@
       importCsvDialog: false,
       csv: null,
       preview: '',
-      succes: "",
-      error: "",
+      succes: '',
+      error: '',
     }),
     methods: {
       async importCsv() {

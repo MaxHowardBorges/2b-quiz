@@ -68,7 +68,7 @@ export class SessionController {
   }
 
   @Roles([UserType.STUDENT, UserType.TEACHER])
-  @Post('/respond') //TODO replace with /:idSession/
+  @Post('/respond')
   @HttpCode(HttpStatus.NO_CONTENT)
   async respondQuestion(
     @Req() request: UserRequest,

@@ -120,9 +120,6 @@ export const useUserStore = defineStore('user', {
     intervalChecker() {
       const activityStore = useActivityStore();
       this.interval = setInterval(() => {
-        if (activityStore.isInactive) {
-          //TODO show inactivity message
-        }
         if (activityStore.isInactiveAndClosed) {
           this.forceLogout().then();
         }

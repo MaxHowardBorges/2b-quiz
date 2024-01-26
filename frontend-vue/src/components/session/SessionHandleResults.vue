@@ -253,7 +253,6 @@
     },
     async beforeMount() {
       await this.loadData();
-      console.log(this.results);
     },
     methods: {
       getTimeFromDate,
