@@ -60,7 +60,9 @@
     "BelongsToQuestionsText": "Ez a kérdőív a következő kérdésekhez tartozik:",
     "NotAssignedText": "Nincs hozzárendelve egyetlen kérdéshez sem",
     "CancelButton": "Mégse",
-    "ConfirmButton": "Megerősít"
+    "ConfirmButton": "Megerősít",
+    "SelectTags": "Címkék kiválasztása",
+    "SeeTags": "Címkék megtekintése"
   },
 
   "question": {

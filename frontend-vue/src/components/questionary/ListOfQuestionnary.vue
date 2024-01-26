@@ -20,9 +20,15 @@
     </v-sheet>
 
     <v-sheet class="d-flex flex-row w-100">
-      <v-btn @click="backHome" class="flex-1-1 ma-2">{{$t('questionnary.BackHome')}}</v-btn>
-      <v-btn @click="bank" class="flex-1-1 ma-2"> {{$t('question.PrivateQuestionBankTitle')}} </v-btn>
-      <v-btn @click="edit" class="flex-1-1 ma-2">{{$t('questionnary.newquestionnary')}}</v-btn>
+      <v-btn @click="backHome" class="flex-1-1 ma-2">
+        {{ $t('questionnary.BackHome') }}
+      </v-btn>
+      <v-btn @click="bank" class="flex-1-1 ma-2">
+        {{ $t('question.PrivateQuestionBankTitle') }}
+      </v-btn>
+      <v-btn @click="edit" class="flex-1-1 ma-2">
+        {{ $t('questionnary.newquestionnary') }}
+      </v-btn>
     </v-sheet>
   </v-sheet>
 </template>
@@ -68,9 +74,5 @@
 <style scoped>
   * {
     color: #007ea1;
-  }
-
-  h1 {
-    color: black;
   }
 </style>

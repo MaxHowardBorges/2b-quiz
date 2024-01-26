@@ -6,7 +6,9 @@
     elevation="4"
     rounded="lg">
     <div class="w-75 mx-auto">
-      <h2 class="text-center text-h2">{{ $t('session.CreateSessionTitle') }}</h2>
+      <h2 class="text-center text-h2">
+        {{ $t('session.CreateSessionTitle') }}
+      </h2>
 
       <table class="questionnary-table mx-auto w-100">
         <thead>
@@ -89,7 +91,9 @@
                   {{ availableQuestionnaire.title }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ $t('session.ComposedOfNumQuestions')}} {{ availableQuestionnaire.nbQuestion }} {{ $t('session.questions')}}
+                  {{ $t('session.ComposedOfNumQuestions') }}
+                  {{ availableQuestionnaire.nbQuestion }}
+                  {{ $t('session.questions') }}
                 </v-list-item-subtitle>
                 <template v-slot:append>
                   <v-btn @click="addQuestionnaire(availableQuestionnaire, i)">
@@ -246,7 +250,6 @@
     width: 70%;
     margin: 20px auto;
     border-collapse: collapse;
-    background-color: #fff;
   }
 
   .questionnary-table th,
@@ -270,10 +273,6 @@
 
   table.questionnary-table tr th:nth-child(3) {
     width: 35% !important;
-  }
-
-  .questionnary-table th {
-    background-color: #f2f2f2;
   }
 
   .questionnary-table span {

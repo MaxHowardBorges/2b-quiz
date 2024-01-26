@@ -6,12 +6,12 @@
     <h1 class="text-h4 ma-5">{{ $t('group.GroupName') }}</h1>
     <table class="w-full">
       <thead>
-      <tr>
-        <th class="text-center">{{ $t('group.ID') }}</th>
-        <th class="text-center">{{ $t('group.GroupName') }}</th>
-        <th class="text-center">{{ $t('group.NumberOfPeople') }}</th>
-        <th class="text-center">{{ $t('group.Actions') }}</th>
-      </tr>
+        <tr>
+          <th class="text-center">{{ $t('group.ID') }}</th>
+          <th class="text-center">{{ $t('group.GroupName') }}</th>
+          <th class="text-center">{{ $t('group.NumberOfPeople') }}</th>
+          <th class="text-center">{{ $t('group.Actions') }}</th>
+        </tr>
       </thead>
       <tbody>
         <tr class="ma-2" v-for="(group, index) in ListOFGroup" :key="index">
@@ -45,9 +45,11 @@
     <v-dialog v-model="deleteDialog" max-height="700px" max-width="700px">
       <v-card>
         <v-card-title>{{ $t('group.DeleteGroupTitle') }}</v-card-title>
-        <v-card-text>{{ $t('group.DeleteGroupConfirmation') }} </v-card-text>
+        <v-card-text>{{ $t('group.DeleteGroupConfirmation') }}</v-card-text>
         <v-card-actions>
-          <v-btn @click="deleteGroup(this.SelectGroupID)">{{ $t('group.Yes') }}</v-btn>
+          <v-btn @click="deleteGroup(this.SelectGroupID)">
+            {{ $t('group.Yes') }}
+          </v-btn>
           <v-btn @click="closeDialogs">{{ $t('group.No') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -59,12 +61,14 @@
         <v-card-text>
           <v-text-field
             v-model="nameOFGroup"
-            label="Group name"
+            :label="$t('group.GroupName')"
             required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
-          <v-btn @click="HandleCreateGroup">{{ $t('group.CreateButton') }}</v-btn>
+          <v-btn @click="HandleCreateGroup">
+            {{ $t('group.CreateButton') }}
+          </v-btn>
           <v-btn @click="closeDialogs">{{ $t('group.CancelButton') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -78,7 +82,9 @@
         <v-card-title class="headline font-weight-bold">
           Display group
         </v-card-title>
-        <v-card-text class="subtitle-1">{{ $t('group.UsersListTitle') }}</v-card-text>
+        <v-card-text class="subtitle-1">
+          {{ $t('group.UsersListTitle') }}
+        </v-card-text>
 
         <table class="mx-2">
           <thead>
@@ -101,7 +107,7 @@
           </tbody>
         </table>
         <v-card-actions>
-          <v-btn @click="closeDialogs">{{ $t('admin.close') }} </v-btn>
+          <v-btn @click="closeDialogs">{{ $t('admin.close') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -113,7 +119,9 @@
           {{ $t('group.DeleteUserConfirmation') }}
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="deleteUserFromGroup(this.SelectedUserID)">{{ $t('group.Yes') }}</v-btn>
+          <v-btn @click="deleteUserFromGroup(this.SelectedUserID)">
+            {{ $t('group.Yes') }}
+          </v-btn>
           <v-btn @click="closeDialogs">{{ $t('group.CancelButton') }}</v-btn>
         </v-card-actions>
       </v-card>

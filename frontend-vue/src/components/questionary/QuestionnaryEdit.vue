@@ -46,9 +46,10 @@
       <v-btn
         v-if="OnListQuestion"
         style="margin-bottom: 30px"
-        text="See Tags"
         class="mt-5"
-        @click="toggleTagPanel"></v-btn>
+        @click="toggleTagPanel">
+        {{ $t('questionnary.SeeTags') }}
+      </v-btn>
     </div>
     <v-select
       v-if="showTypeSelector"
@@ -69,7 +70,7 @@
       return-object=""
       :chips="true"
       :closable-chips="true"
-      label="Select Tags"
+      :label="$t('questionnary.SelectTags')"
       class="w-33"
       style="min-width: 200px"
       multiple=""

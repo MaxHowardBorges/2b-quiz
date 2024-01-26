@@ -60,7 +60,9 @@
     "BelongsToQuestionsText": "Ce questionnaire appartient aux questions suivantes :",
     "NotAssignedText": "Il n'est assigné à aucune question",
     "CancelButton": "Annuler",
-    "ConfirmButton": "Confirmer"
+    "ConfirmButton": "Confirmer",
+    "SelectTags": "Sélectionner des tags",
+    "SeeTags": "Voir les tags"
   },
 
   "question": {

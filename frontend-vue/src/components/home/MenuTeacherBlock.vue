@@ -25,8 +25,10 @@
         @click="handleCreateSession"
         color="primary"
         class="mx-6 my-3 w-100"
-        max-width="250px">
-        <p class="text-white font-weight-bold pa-2">{{ $t('teacher.createSess') }}</p>
+        max-width="275px">
+        <p class="text-white font-weight-bold pa-2">
+          {{ $t('teacher.createSess') }}
+        </p>
       </v-btn>
     </div>
 
@@ -35,8 +37,10 @@
         @click="handleJoinSession"
         color="primary"
         class="mx-6 my-3 w-100"
-        max-width="250px">
-        <p class="text-white font-weight-bold pa-2">{{ $t('home.JoinSession') }}</p>
+        max-width="275px">
+        <p class="text-white font-weight-bold pa-2">
+          {{ $t('home.JoinSession') }}
+        </p>
       </v-btn>
     </div>
 
@@ -45,8 +49,10 @@
         @click="handleCreateQuestionnary"
         color="primary"
         class="mx-6 my-3 w-100"
-        max-width="250px">
-        <p class="text-white font-weight-bold pa-2">{{ $t('teacher.CreateNewQuestionnary') }}</p>
+        max-width="275px">
+        <p class="text-white font-weight-bold pa-2">
+          {{ $t('teacher.CreateNewQuestionnary') }}
+        </p>
       </v-btn>
     </div>
     <div class="">
@@ -54,16 +60,18 @@
         @click="redirectToSessionHistory"
         color="primary"
         class="mx-6 my-3 w-100"
-        max-width="250px">
-        <p class="text-white font-weight-bold pa-2">{{ $t('teacher.SessionHist') }}</p>
+        max-width="275px">
+        <p class="text-white font-weight-bold pa-2">
+          {{ $t('teacher.SessionHist') }}
+        </p>
       </v-btn>
     </div>
     <div class="">
       <v-btn
         @click="handleGoToQuestionBank"
         color="primary"
-        class="mx-6 my-3"
-        max-width="250px">
+        class="mx-6 my-3 w-100"
+        max-width="275px">
         <p class="text-white font-weight-bold pa-2">
           {{ $t('question.PrivateQuestionBankTitle') }}
         </p>
