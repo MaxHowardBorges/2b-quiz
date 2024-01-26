@@ -57,7 +57,7 @@ export const useGroupStore = defineStore('group', {
         const bodytosend = { name: body };
         const response = await createGroup(bodytosend, userStoreU.token);
         if (!response.ok || response.status !== 201) {
-          throw new Error('Erreur de réponse'); // TODO manage error
+          throw new Error('Erreur de réponse');
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = JSON.parse(await response.text());
@@ -88,7 +88,7 @@ export const useGroupStore = defineStore('group', {
       try {
         const response = await getStudent(userStoreU.token);
         if (!response.ok) {
-          throw new Error('Erreur de chargement du groupe'); // TODO manage error
+          throw new Error('Erreur de chargement du groupe');
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         return await response.json();
@@ -114,7 +114,7 @@ export const useGroupStore = defineStore('group', {
       try {
         const response = await deleteGroup(idGroup, userStoreU.token);
         if (!response.ok) {
-          throw new Error('Erreur de chargement du groupe'); // TODO manage error
+          throw new Error('Erreur de chargement du groupe');
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();
@@ -133,7 +133,7 @@ export const useGroupStore = defineStore('group', {
           userStoreU.token,
         );
         if (!response.ok) {
-          throw new Error('Erreur de chargement du groupe'); // TODO manage error
+          throw new Error('Erreur de chargement du groupe');
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();
@@ -152,7 +152,7 @@ export const useGroupStore = defineStore('group', {
           userStoreU.token,
         );
         if (!response.ok) {
-          throw new Error('Erreur de chargement du groupe'); // TODO manage error
+          throw new Error('Erreur de chargement du groupe');
         }
         userStoreU.updateToken(response.headers.get('Authorization'));
         const group = await response.json();

@@ -70,7 +70,6 @@
       async endSession() {
         this.sessionStore.sessionEnd();
         await router.push('/');
-        //TODO to finish
       },
       async cancelSession() {
         this.dialogVisible = true;

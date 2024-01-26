@@ -92,9 +92,6 @@ export const useSessionStore = defineStore('session', {
       const response = await sendAnswer(body, userStore.getToken());
       if (!response.ok && response.status !== 408) {
         await throwIfNotOK(response, 204);
-        if (response.status === 408) {
-          //TODO Show error for late answer
-        }
       }
       userStore.updateToken(response.headers.get('Authorization'));
     },
@@ -167,7 +164,6 @@ export const useSessionStore = defineStore('session', {
       }
     },
     async addToWhiteListGroup(selectedGroupsId) {
-      //TODO call api
       this.whitelistGroups.concat(selectedGroupsId);
     },
     async nextQuestion() {

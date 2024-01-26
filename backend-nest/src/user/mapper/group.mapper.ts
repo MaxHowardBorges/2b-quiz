@@ -15,8 +15,8 @@ export class GroupMapper {
     return {
       groupName: group.groupName,
       id: group.id,
-      tabUsers: group.tabUsers, //TODO map tab user to dto
-      teacher: group.teacher, //TODO map teacher to dto
+      tabUsers: group.tabUsers,
+      teacher: group.teacher,
       nbTabUsers: group.tabUsers.length,
     };
   }

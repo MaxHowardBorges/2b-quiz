@@ -9,9 +9,15 @@
       <v-card-title>{{ $t('session.ChooseMembersTitle') }}</v-card-title>
       <v-card-text>
         <v-btn-toggle v-model="toggleTable" color="primary">
-          <v-btn @click="openDisplayUserStudent">{{ $t('session.StudentsButton') }}</v-btn>
-          <v-btn @click="openDisplayUserTeacher">{{ $t('session.TeachersButton') }}</v-btn>
-          <v-btn @click="openDisplayUserGroup">{{ $t('session.GroupsButton') }}</v-btn>
+          <v-btn @click="openDisplayUserStudent">
+            {{ $t('session.StudentsButton') }}
+          </v-btn>
+          <v-btn @click="openDisplayUserTeacher">
+            {{ $t('session.TeachersButton') }}
+          </v-btn>
+          <v-btn @click="openDisplayUserGroup">
+            {{ $t('session.GroupsButton') }}
+          </v-btn>
         </v-btn-toggle>
         <v-text-field
           v-model="search"
@@ -72,7 +78,9 @@
       </v-alert>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="closeSelectionDialog">{{ $t('session.CloseButton') }}</v-btn>
+        <v-btn @click="closeSelectionDialog">
+          {{ $t('session.CloseButton') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -92,7 +100,7 @@
       <v-select
         v-model="selectedAcces"
         :items="itemsAcces"
-        :label=" $t('session.AccessTypeLabel')"
+        :label="$t('session.AccessTypeLabel')"
         class="mt-4 mx-3"
         outlined
         dense
@@ -123,9 +131,10 @@
         :disabled="!displaySettings.displayQuestion" />
     </div>
     <v-divider class="ma-2" v-if="!isInSession"></v-divider>
-    <p class="text-h5" v-if="!isInSession">{{ $t('session.ResultsSettingsLabel') }}</p>
+    <p class="text-h5" v-if="!isInSession">
+      {{ $t('session.ResultsSettingsLabel') }}
+    </p>
     <div class="d-flex mt-1" v-if="!isInSession">
-      <!--      TODO add tooltip for "can be changed later"-->
       <v-switch
         color="primary"
         :label="$t('session.DisplayPersonalResultLabel')"
